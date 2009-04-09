@@ -112,6 +112,16 @@ include_once('common.inc.php');
 	if (mysql_error() == "Unknown column 'media' in '{$_SESSION['current_game_prefix']}locations'") echo 'Not Needed';
 	else echo mysql_error();
 	
+	echo "<h3>QR Code Support</h3>";
+	$query = "CREATE TABLE IF NOT EXISTS {$_SESSION['current_game_prefix']}qrcodes (
+	qrcode_id int(11) NOT NULL auto_increment,
+	type enum('Node','Event','Item','Npc') NOT NULL,
+	type_id int(11) NOT NULL,
+	PRIMARY KEY  (qrcode_id))";
+	mysql_query($query);
+	if (mysql_error() == "Duplicate column name 'type'") echo 'Not Needed';
+	else echo mysql_error();	
+	
 	echo "<h3>Item Type Support</h3>";
 	$query = "ALTER TABLE {$_SESSION['current_game_prefix']}items
 	ADD `type` ENUM(  'AV','Image' ) NOT NULL DEFAULT 'Image'";
