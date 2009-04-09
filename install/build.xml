@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ARIS" default="build" basedir=".">
+	<!-- global properties -->
+	<property name="project.root" value="${basedir}"/>
+	<property name="install.root" value="${project.root}/../"/>
+	
+	<!-- configurable properties -->
+	<property name="dbname" value="arisci"/>
+	<property name="dbuser" value="arisusr"/>
+	<property name="dbpass" value="arispwd"/>
+	<property name="dbhost" value="localhost"/>
+	<property name="googleMapsKey" value="ABQIAAAAfdZ9Azvb5igK5sNf5UCmHxT6o893zRLLR1hye7TfaY4kp60RIxT0Ts5HoVsHjhK0Imf4POFwYzq5aA"/>
+	<property name="gamesWWWPath" value="http://localhost/aris/games"/>
+	<property name="gamesSystemPath" value="/Library/WebServer/Documents/aris/games"/>
+	<property name="mysqlBinPath" value="/usr/local/mysql/bin"/>
+	<property name="svnBinPath" value="/usr/local/mysql/bin"/>
+	
+	<filter token="dbnameToken" value="${dbname}"/>
+	<filter token="dbuserToken" value="${dbuser}"/>
+	<filter token="dbpassToken" value="${dbpass}"/>
+	<filter token="dbhostToken" value="${dbhost}"/>
+	<filter token="googleMapsKeyToken" value="${googleMapsKey}"/>
+	<filter token="gamesWWWPathToken" value="${gamesWWWPath}"/>
+	<filter token="gamesSystemPathToken" value="${gamesSystemPath}"/>
+	<filter token="mysqlBinPathToken" value="${mysqlBinPath}"/>
+	<filter token="svnBinPathToken" value="${svnBinPath}"/>
+	
+	<property name="cc.dir" value="${project.root}/cc" />
+	<property name="config.dir" value="${project.root}/config" />
+	<property name="tests.dir" value="${project.root}/tests" />
+	
+	<property name="editor.dir" value="${install.root}/editor"/>
+	<property name="games.dir" value="${install.root}/games"/>
+	<property name="gamesSite.dir" value="${games.dir}/Framework/Site"/>
+	
+	<property name="svn.url" value="https://atsvn.doit.wisc.edu/default/ls" />
+	
+	<!-- :::::: clean :::::: -->
+	<target name="clean">
+		<delete dir="${editor.dir}"/>
+		<delete dir="${games.dir}"/>
+	</target>
+	
+	<!-- :::::: export from subversion :::::: -->
+	<target name="export">
+		<exec executable="/usr/bin/svn">
+			<arg line="-q"/>
+			<arg line="export ${svn.url}/ARIS/editor/trunk ${editor.dir}"/>
+		</exec>
+		<exec executable="/usr/bin/svn">
+			<arg line="-q"/>
+			<arg line="export ${svn.url}/ARIS/engine/trunk ${games.dir}"/>
+		</exec>
+	</target>
+	
+	
+	<!-- :::::: assemble :::::: -->
+	<target name="assemble">
+		<!-- copy editor config -->
+		<copy file="${config.dir}/config.inc.php" filtering="true" overwrite="true" todir="${editor.dir}" />
+		
+		<!-- copy games config -->
+		<copy file="${config.dir}/config.xml" filtering="true" overwrite="true" todir="${games.dir}/Framework/Site/Default" />
+		
+		<exec executable="chmod">
+			<arg line="-R"/>
+			<arg line="777"/>
+			<arg line="${games.dir}"/>
+		</exec>
+		
+	</target>
+	
+	<!-- :::::: unit tests :::::: -->
+	<target name="phpunit">
+		<exec executable="phpunit" dir="${basedir}" failonerror="on">
+			<arg line=" --log-xml log.xml ${tests.dir}/AllTests.php" />
+		</exec>
+	</target>
+	
+	
+	<target name="build" depends="clean,export,assemble,phpunit"/>
+</project>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="helloworld" default="build" basedir=".">
+	<target name="phpunit">
+		<exec executable="phpunit" dir="${basedir}" failonerror="on">
+			<arg line=" --log-xml log.xml source/AllTests.php" />
+		</exec>
+	</target>
+   
+   <target name="checkout">
+    <exec executable="svn" dir="${basedir}/source">
+      <arg line="up" />
+    </exec>
+  </target>
+   
+  <target name="build" depends="checkout,phpunit" />
+</project>
