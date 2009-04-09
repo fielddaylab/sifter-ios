@@ -125,5 +125,10 @@
 		echo '<p>' . $query . '</p>';
 		echo mysql_error();
 		
+		$query = "DROP TABLE {$prefix}_qrcodes";
+		mysql_query($query);
+		echo '<p>' . $query . '</p>';
+		echo mysql_error();
+		
 		echo '<h3>Done! Review the messages above for errors.</h3>';
 	}
