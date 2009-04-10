@@ -303,6 +303,15 @@
 									'sort'     => true,
 									'help'		=> 'If this is not set, the location (or any others in range) will not tripper properly. '
 	);
+	
+	$opts['fdd']['item_qty'] = array(
+									'name'     => 'If item, QTY of the item placed here',
+									'select'   => 'T',
+									'maxlen'   => 11,
+									'sort'     => true,
+									 'sqlw'		=>'IF($val_qas = "", NULL, $val_qas)',	 
+									'help'		=> 'Leave blank for an unlimited number of items here'
+									);
 
 	$opts['fdd']['require_event_id'] = array(
 											 'default'    => '',

@@ -189,6 +189,7 @@ if (isSet($_REQUEST['short']) and isSet($_REQUEST['name'])) {
 		error double default '0.0005',												
 		type enum('Node','Event','Item','Npc') default NULL,
 		type_id int(11) default NULL,
+		item_qty int(11) default NULL,
 		require_event_id int(10) unsigned default NULL,
 		remove_if_event_id int(10) unsigned default NULL,
 		add_event_id int(10) unsigned default NULL,

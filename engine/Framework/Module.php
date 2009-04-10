@@ -238,26 +238,35 @@ abstract class Framework_Module extends Framework_Object_Web
     }
 	
 	/**
+     * Decrement the item_qty at the specified location by the specified amount, default of 1
+     */ 
+    static protected function decrementItemQtyAtLocation($locationID, $qty = 1) {
+   		//If this location has a null item_qty, decrementing it will still be a null
+		$sql = Framework::$db->prefix("UPDATE _P_locations 
+									  SET item_qty=item_qty-1
+									  WHERE location_id = '{$locationID}'");
+    	Framework::$db->exec($sql);
+	}
+	
+	/**
      * Adds an item to Locations at the specified latitude, longitude
      */ 
-    static protected function giveItemToWorld($itemID, $lat, $long, $hidden = FALSE) {
+    static protected function giveItemToWorld($itemID, $lat, $long, $qty = 1) {
     	
-		//Check that the items exists
+		//Check that the items exists and lookup the name
 		$sql = Framework::$db->prefix("SELECT * FROM _P_items
 									  WHERE item_id = $itemID");
-    	$row = Framework::$db->getRow($sql);
+    	$itemRow = Framework::$db->getRow($sql);
     	
-    	if ($row) {
+    	if ($itemRow) {
 			//Create a location that points to this item
-    		$sql = Framework::$db->prefix("INSERT INTO _P_locations (type,type_id,latitude,longitude,hidden)
-										  VALUES ('Item','{$itemID}','{$lat}','{$long}','{$hidden}')");
+    		$sql = Framework::$db->prefix("INSERT INTO _P_locations (name,type,type_id,latitude,longitude, item_qty)
+										  VALUES ('{$itemRow['name']}','Item','{$itemID}','{$lat}','{$long}','{$qty}')");
     		Framework::$db->exec($sql);
     		return TRUE;
 		}
 		else return FALSE;
     }
-	
-	
 	
     
     /**
@@ -268,10 +277,10 @@ abstract class Framework_Module extends Framework_Object_Web
 	 * @access protected
      * @return int
      */
-	protected function createItem($name, $description, $type, $image = null) {
+	protected function createItem($name, $description, $type, $media = null) {
    		$sql = Framework::$db->prefix("INSERT INTO _P_items 
 										  (name, description, type, media) 
-										VALUES ('{$name}', '{$description}', '{$type}' , '{$image}')");
+										VALUES ('{$name}', '{$description}', '{$type}' , '{$media}')");
     	Framework::$db->exec($sql);
 		return mysql_insert_id();
 	}	

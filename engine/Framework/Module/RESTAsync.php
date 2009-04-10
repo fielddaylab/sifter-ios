@@ -184,7 +184,7 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     				? $this->findMedia($item['media'], 'defaultInventory.png') : null;
     
     	array_push($links, 
-    		$this->makeLink(TYPE_ITEM, "&amp;event=addItem&amp;item_id={$location['type_id']}", 
+    		$this->makeLink(TYPE_ITEM, "&amp;event=addItem&amp;location_id={$location['location_id']}&amp;item_id={$location['type_id']}", 
     			$itemName, $media));
     }
     
