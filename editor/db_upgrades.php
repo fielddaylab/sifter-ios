@@ -124,15 +124,16 @@ include_once('common.inc.php');
 	
 	echo "<h3>Item Type Support</h3>";
 	$query = "ALTER TABLE {$_SESSION['current_game_prefix']}items
-	ADD 'type' ENUM(  'AV','Image' ) NOT NULL DEFAULT 'Image'";
+	ADD type ENUM(  'AV','Image' ) NOT NULL DEFAULT 'Image'";
 	mysql_query($query);
-	if (mysql_error() == "Duplicate column name 'type'") echo 'Not Needed'; else echo mysql_error();
+	if (mysql_error() == "Duplicate column name 'type'") echo 'Not Needed';
 	else echo mysql_error();	
 
 	echo "<h3>Item QTY Support</h3>";
-	$query = "ALTER TABLE  {$_SESSION['current_game_prefix']}locations ADD  'item_qty' INT NULL AFTER  'type_id' ;";
+	$query = "ALTER TABLE  {$_SESSION['current_game_prefix']}locations 
+	ADD item_qty INT NULL AFTER type_id";
 	mysql_query($query);
-	if (mysql_error() == "Duplicate column name 'type'") echo 'Not Needed'; else echo mysql_error();
+	if (mysql_error() == "Duplicate column name 'item_qty'") echo 'Not Needed'; 
 	else echo mysql_error();	
 	
 	
