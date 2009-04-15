@@ -37,11 +37,15 @@ class Framework_Module_RESTSelectGame extends Framework_Auth_No
     	
 		error_log("user id: " . $user['player_id']);
 		//Determine Games Available to this user		
+		
+		/*
 		$sql = sprintf("SELECT * FROM games
 					   LEFT JOIN game_players
 					   ON games.game_id = game_players.game_id
 					   WHERE game_players.player_id = '%s'", 
 					   $user['player_id']);
+		*/
+		$sql = sprintf("SELECT * FROM games");
 		$available_games = Framework::$db->getAll($sql);
 		
 		$this->available_games = $available_games;
