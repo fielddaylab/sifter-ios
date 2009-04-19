@@ -48,6 +48,11 @@ class Framework_Module_RESTSelectGame extends Framework_Auth_No
 		$sql = sprintf("SELECT * FROM games");
 		$available_games = Framework::$db->getAll($sql);
 		
+		//Groom the prefix to become the site name
+		foreach ($available_games as $gameItem=> &$game) {
+			$game['prefix'] = substr($game['prefix'], 0, strlen($game['prefix'])-1);
+		}
+		
 		$this->available_games = $available_games;
 				
     }

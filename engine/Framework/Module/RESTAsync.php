@@ -54,6 +54,7 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     	$this->chromeless = true;
     	
 		$this->links = $this->processLocationRequest();
+		//var_dump ($this->links);
 	}
     
 	
@@ -91,7 +92,9 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
 				WHERE latitude < ({$_REQUEST['latitude']} + error) 
 					AND latitude > ({$_REQUEST['latitude']} - error)
 					AND longitude < ({$_REQUEST['longitude']} + error)
-					AND longitude > ({$_REQUEST['longitude']} - error)"); 
+					AND longitude > ({$_REQUEST['longitude']} - error)
+					AND (item_qty is null OR item_qty > 0)
+					ORDER BY location_id"); 
 			$locations = $this->db->getAll($sql);
 			
 			$sql = $this->db->prefix("SELECT event_id FROM _P_player_events WHERE player_id = 
@@ -173,19 +176,16 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     }
     
     protected function processItem($location, &$links) {
-    	$sql = $this->db->prefix("SELECT * FROM _P_items 
+		$sql = $this->db->prefix("SELECT * FROM _P_items 
     		WHERE item_id={$location['type_id']}");
     	$item = $this->db->getRow($sql);
-    
-    	$itemName = (array_key_exists('name', $item) && !empty($item['name']))
-    		? $item['name'] : 'undefined';
-    	$media = (array_key_exists('media', $item) 
-    			&& !empty($item['media']))
-    				? $this->findMedia($item['media'], 'defaultInventory.png') : null;
-    
-    	array_push($links, 
-    		$this->makeLink(TYPE_ITEM, "&amp;event=addItem&amp;location_id={$location['location_id']}&amp;item_id={$location['type_id']}", 
-    			$itemName, $media));
+		
+		$item['location_id'] = $location['location_id'];
+		$item['mediaURL'] = 'http://' . $_SERVER['SERVER_NAME'] . $this->findMedia($item['media'], 'defaultInventory.png');
+		$item['icon'] = 'http://' . $_SERVER['SERVER_NAME'] . $this->findMedia(Framework::$site->config->aris->inventory->imageIcon, NULL);	
+		$item['object_type'] = "Item";
+    	array_push($links, $item);
+
     }
     
     protected function processNpc($location, &$links) {
