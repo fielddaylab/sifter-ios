@@ -93,8 +93,9 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
 					AND latitude > ({$_REQUEST['latitude']} - error)
 					AND longitude < ({$_REQUEST['longitude']} + error)
 					AND longitude > ({$_REQUEST['longitude']} - error)
-					AND (item_qty is null OR item_qty > 0)
+					AND (item_qty is null OR item_qty > 0 OR type != 'Item')
 					ORDER BY location_id"); 
+
 			$locations = $this->db->getAll($sql);
 			
 			$sql = $this->db->prefix("SELECT event_id FROM _P_player_events WHERE player_id = 
@@ -188,8 +189,8 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
 
     }
     
-    protected function processNpc($location, &$links) {
-    	$sql = $this->db->prefix("SELECT * FROM _P_npcs 
+    protected function processNpc($location, &$links) {		
+		$sql = $this->db->prefix("SELECT * FROM _P_npcs 
     		WHERE npc_id={$location['type_id']}");
     	$npc = $this->db->getRow($sql);
     
