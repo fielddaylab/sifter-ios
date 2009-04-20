@@ -162,6 +162,7 @@ SCRIPT;
 		
 		//echo 'Viewer: A request to load node ' . $_REQUEST['node_id'] . '<br/>';
 		
+		if (!isSet($_REQUEST['npc_id']) or $_REQUEST['npc_id'] < 1) $_REQUEST['npc_id'] = 0;
 		RESTNodeManager::loadNode($_REQUEST['node_id'], $_REQUEST['npc_id']);
 		
 		//echo '<p>Viewer: Back from request to load node ' . $_REQUEST['node_id'] . '</p>';
