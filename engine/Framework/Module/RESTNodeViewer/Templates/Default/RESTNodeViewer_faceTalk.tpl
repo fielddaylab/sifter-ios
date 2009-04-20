@@ -11,6 +11,8 @@
     <input name="module" type="hidden" value="RESTNodeViewer" />
     <input name="event" type="hidden" value="faceTalk" />
     <input name="site" type="hidden" value="{$site}" />
+	<input name="user_name" type="hidden" value="{$username}" />
+    <input name="password" type="hidden" value="{$password}" />
     <input name="node_id" type="hidden" value="{$node.node_id}" />
     <input name="npc_id" type="hidden" value="{if is_null($npc)}-1{else}{$npc.npc_id}{/if}" />
     <input id="answer_string" name="answer_string" style="width: 50%; margin: 5px;" />
