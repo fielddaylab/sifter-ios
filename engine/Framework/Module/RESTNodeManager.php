@@ -80,7 +80,7 @@ class RESTNodeManager
 		
 		if (self::$node['require_event_id'] > 0) {
 	    	self::checkRequiredEvent($userID, self::$node['require_event_id'],
-									self::$node['required_condition_not_met_node_id'], $npcID);
+				self::$node['required_condition_not_met_node_id'], $npcID);
 		}
 
     	if (self::$node['add_item_id']) {
@@ -93,6 +93,10 @@ class RESTNodeManager
 
     	if (self::$node['add_event_id']) {
 			Framework_Module::addEvent($userID, self::$node['add_event_id']);
+    	}
+		
+		if (self::$node['remove_event_id']) {
+			Framework_Module::removePlayerEvent($userID, self::$node['remove_event_id']);
     	}
 
        	// TODO: Check for a remove event_id

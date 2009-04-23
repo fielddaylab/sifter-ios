@@ -450,6 +450,27 @@
 														);		
 	
 	
+	$opts['fdd']['remove_event_id'] = array(
+										 'default'    => '',
+										 'maxlen'     => 20,
+										 'name'       => 'Remove an Event from the Player',
+										 'options'    => 'AVCPD',
+										 'required'   => false,
+										 'select'     => 'T',
+										 'size|ACP'   => 20,
+										 'sqlw'		=>'IF($val_qas = "", NULL, $val_qas)',	 
+										 'sort'       => true,
+										 'values'     => array(
+															   'db'          	=> $opts['db'],
+															   'table'       	=> $_SESSION['current_game_prefix'] . 'events',
+															   'column'      	=> 'event_id',
+															   'description'	=> array('columns' => array('0' => 'description')),
+															   'orderby'     => 'event_id')
+										 );	
+	$opts['fdd']['remove_event_id']['values2'] = array(
+													null => '-Not Used-',
+													'ADD' => '-Add a new Event-'
+													);
 	
 	
 	

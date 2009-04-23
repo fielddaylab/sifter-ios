@@ -75,7 +75,9 @@ class NodeManager
 			Framework_Module::addEvent($userID, self::$node['add_event_id']);
     	}
 
-       	// TODO: Check for a remove event_id
+		if (self::$node['remove_event_id']) {
+			Framework_Module::removePlayerEvent($userID, self::$node['remove_event_id']);
+    	}
 
 		// NOTE: calling methods should check for 'require_answer_string' 
 		// to handle input

@@ -441,6 +441,23 @@ abstract class Framework_Module extends Framework_Object_Web
 		}
     }
 	
+	/** 
+	 * removePlayerEvent
+	 *
+     * Removes the specified event from the Specified player.
+	 *
+	 * @param		string	$userID
+     * @param		string	$eventID
+	 * @access public
+     * @return void
+     */
+    public function removePlayerEvent($userID, $eventID) {
+		$sql = Framework::$db->prefix("DELETE FROM _P_player_events 
+									  WHERE player_id = '{$userID}' AND event_id = '{$eventID}'");
+			Framework::$db->exec($sql);
+
+    }
+	
 	
 	/** 
 	 * checkForEvent
