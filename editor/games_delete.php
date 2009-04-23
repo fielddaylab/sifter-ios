@@ -11,7 +11,7 @@
 	
 	if (isset($_REQUEST['prefix']) and isset($_REQUEST['confirmed'])) {
 		//Go ahead and delete the data
-		delete($_REQUEST['prefix'],$engine_sites_path, $_REQUEST['game_id']);
+		delete($opts['db'],$_REQUEST['prefix'],$engine_sites_path, $_REQUEST['game_id']);
 		//echo $_REQUEST['prefix'];
 		
 	}
@@ -28,7 +28,7 @@
 	
 	
 
-	function delete($prefix,$path,$game_id) {		
+	function delete($schema,$prefix,$path,$game_id) {		
 	
 		echo '<h3>Start Delete...</h3>';
 	
@@ -69,66 +69,20 @@
 		echo '<p>' . $query . '</p>';
 		echo mysql_error();
 		
-		//Delete each table with this prefix
-		$query = "DROP TABLE {$prefix}_applications";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
 		
-		$query = "DROP TABLE {$prefix}_events";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
+		//Fetch the table names for this game
+		$query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='{$schema}' AND TABLE_NAME LIKE '{$prefix}_%'";
+		$result = mysql_query($query);
+		echo '<p>Finding a list of tables for this game using the command:' . $query . '</p>';
 		echo mysql_error();
+		while ($table = mysql_fetch_array($result)) {
+			 $query = "DROP TABLE {$table['TABLE_NAME']}";
+			 mysql_query($query);
+			 echo '<p>' . $query . '</p>';
+			 echo mysql_error();
+		}
 		
-		$query = "DROP TABLE {$prefix}_items";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_locations";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_log";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_nodes";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_npc_conversations";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_npcs";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_player_applications";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_player_events";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_player_items";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
-		
-		$query = "DROP TABLE {$prefix}_qrcodes";
-		mysql_query($query);
-		echo '<p>' . $query . '</p>';
-		echo mysql_error();
+
 		
 		echo '<h3>Done! Review the messages above for errors.</h3>';
 	}
