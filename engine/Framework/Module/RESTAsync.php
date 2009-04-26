@@ -66,8 +66,8 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     		Framework::$site->config->aris->async->notification;
     }
     
-	protected function makeLink($type, $url, $label, $icon = null) {
-		$item = array('type' => $type, 'url' => $url, 'label' => $label);
+	protected function makeLink($type, $force_view, $url, $label, $icon = null) {
+		$item = array('type' => $type, 'force_view' => $force_view, 'url' => $url, 'label' => $label);
 		$item['icon'] = (is_null($icon)) ? $this->findMedia("async{$type}.png",
 			'defaultAsync.png') : $icon;
 		return $item;
@@ -164,7 +164,7 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     			&& !empty(NodeManager::$node['media']))
     				? $this->findMedia(NodeManager::$node['media'], 'defaultAsync.png') : null;
     		array_push($links, 
-    			$this->makeLink(TYPE_NODE, "&amp;event=faceTalk&amp;npc_id=-1&amp;node_id=" 
+    			$this->makeLink(TYPE_NODE,$location['force_view'], "&amp;event=faceTalk&amp;npc_id=-1&amp;node_id=" 
     				. NodeManager::$node['node_id'], NodeManager::$node['title'], $media));
     	}
     }
@@ -199,7 +199,7 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     	$npcMedia = (array_key_exists('media', $npc) && !empty($npc['media']))
     		? $this->findMedia($npc['media'], 'defaultUser.png') : null;
     
-    	array_push($links, $this->makeLink(TYPE_NPC,
+    	array_push($links, $this->makeLink(TYPE_NPC,$location['force_view'],
     		"&amp;event=faceConversation&amp;npc_id=" . $location['type_id'],
     		$npcName, $npcMedia));
     }

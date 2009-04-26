@@ -136,5 +136,11 @@ include_once('common.inc.php');
 	if (mysql_error() == "Duplicate column name 'item_qty'") echo 'Not Needed'; 
 	else echo mysql_error();	
 	
+	echo "<h3>Force Display Location Support</h3>";
+	$query = "ALTER TABLE  {$_SESSION['current_game_prefix']}locations 
+	ADD force_view ENUM('0','1') NOT NULL DEFAULT '0' COMMENT 'Forces this Location to Display when nearby' AFTER hidden";
+	mysql_query($query);
+	if (mysql_error() == "Duplicate column name 'force_view'") echo 'Not Needed'; 
+	else echo mysql_error();	
 	
 ?>

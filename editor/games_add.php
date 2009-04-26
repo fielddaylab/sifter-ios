@@ -194,6 +194,7 @@ if (isSet($_REQUEST['short']) and isSet($_REQUEST['name'])) {
 		remove_if_event_id int(10) unsigned default NULL,
 		add_event_id int(10) unsigned default NULL,
 		hidden enum('0','1') default '0',
+		force_view enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Forces this Location to Display when nearby',
 		PRIMARY KEY  (location_id),
 		KEY require_event_id (require_event_id)
 		)";

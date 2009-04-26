@@ -285,6 +285,16 @@
 								   'sort'     => true 
 	);	
 	
+	
+	$opts['fdd']['force_view'] = array(
+								   'name'     => 'Automatically display this location when nearby',
+								   'select'   => 'C', 
+								   'maxlen'   => 1, 
+								   'values2'  => array("No","Yes"), 
+								   'sort'     => true 
+	);	
+	
+	
 	$opts['fdd']['type'] = array(
 								 'name'     => 'What is at this location?',
 								 'select'   => 'T',
