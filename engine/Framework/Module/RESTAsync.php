@@ -128,12 +128,14 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
 		}
 		
 		//Check if an event should be added
+		/*
 		if (array_key_exists($location['add_event_id'], $location)
 			&& $location['add_event_id'] > 0
 			&& !array_key_exists($location['add_event_id'], $this->events)) 
 		{
 			$this->addEvent($_SESSION['player_id'], $location['add_event_id']);
 		}
+		 */
 		
 		if ($location['type_id'] < 1) return;
     
