@@ -155,7 +155,7 @@
 								  
 								  'input'      => 'F',
 								  'imagepath'  =>  $image_path,
-								  'URL'        => $image_www_path .'$key.$value',
+								  'URL'        => $image_www_path .'$value',
 								  'URLtarget'  => '_blank',
 								  'maxlen'     => 128,
 								  'name'       => 'Image',
