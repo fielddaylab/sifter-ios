@@ -53,7 +53,7 @@ abstract class Framework_Module extends Framework_Object_Web
      * @var         array       $controllers     Array of acceptable controllers
      * @see         Framework_Controller
      */
-    public $controllers = array('Web', 'REST');
+    public $controllers = array('Web', 'REST', 'SimpleREST');
 
     /**
      * $data
@@ -214,7 +214,7 @@ abstract class Framework_Module extends Framework_Object_Web
 										  ON duplicate KEY UPDATE item_id = $itemID");
     		Framework::$db->exec($sql);
     	}
-    	else {
+	else {
     		//Throw exception
     	}
     }
@@ -532,7 +532,7 @@ abstract class Framework_Module extends Framework_Object_Web
      */
     public function findMedia($filename, $default, $defaultPath = null) {
     	$basePath = !is_null($defaultPath) 
-    		? $defaultPath : $this->frameworkTplPath . '/';
+    		? $defaultPath : dirname($_SERVER['PHP_SELF']) . ltrim($this->frameworkTplPath, '.') . '/';
     	if (!empty($filename)) {
     		$sitePath = Framework::$site->getPath() . '/Templates/' . 	
     			Framework::$site->template . '/templates';
