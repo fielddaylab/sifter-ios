@@ -137,5 +137,43 @@
 			//Check if an image was specified and can be found, if not, load the default
 			$this->media = $this->findMedia($this->item['media'], DEFAULT_IMAGE);
 		}
+		
+		public function dropItemHere(){
+						
+			if (empty($_REQUEST['item_id'])) {
+				$this->title = "Error";
+				$this->message = "No item selected.";
+				return;
+			}
+			
+			//Place this item in the world inventory
+			$this->giveItemToWorld($_REQUEST['item_id'], $this->user->latitude, $this->user->longitude);
+			
+			//Remove from the player's inventory
+			$this->takeItemFromPlayer($_REQUEST['item_id'], $this->user->player_id);
+			
+		}
+		
+		public function destroyPlayerItem(){
+					
+			if (empty($_REQUEST['item_id'])) {
+				$this->title = "Error";
+				$this->message = "No item selected.";
+				return;
+			}
+			
+			//Remove from the player's inventory
+			$this->takeItemFromPlayer($_REQUEST['item_id'], $this->user->player_id);
+			
+		}		
+		
+		public function pickupItem() {
+						
+			$item = NodeManager::addItem($_SESSION['player_id'], 
+										 $_REQUEST['item_id']);
+			
+			if (isset($_REQUEST['location_id'])) $this->decrementItemQtyAtLocation($_REQUEST['location_id'], 1);
+		}		
+		
 	}
 	?>
