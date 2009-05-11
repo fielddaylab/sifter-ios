@@ -29,7 +29,7 @@ define('TYPE_JS', 'JS');
  */
 class Framework_Module_Async extends Framework_Auth_User
 {
-	public $controllers = array('JSON', 'Web');
+	public $controllers = array('JSON', 'Web', 'SimpleREST');
 
 	protected $events;
 	protected $items;
