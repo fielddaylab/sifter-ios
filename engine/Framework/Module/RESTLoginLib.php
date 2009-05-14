@@ -15,13 +15,13 @@ function loginUser() {
 		
 		// Query the database
 		$sql = sprintf("SELECT * FROM %s 
-			WHERE user_name='%s' AND password='%s'", 
+			WHERE UPPER(user_name) LIKE UPPER('%s') AND password='%s'", 
 			Framework::$site->config->user->userTable,
 			$_REQUEST['user_name'], $_REQUEST['password']);
 		
 		$row = Framework::$db->getRow($sql);
 		
-		if($_REQUEST['user_name'] == $row['user_name'] && $_REQUEST['password'] == $row['password']) {
+		if(strtoupper($_REQUEST['user_name']) == strtoupper($row['user_name']) && $_REQUEST['password'] == $row['password']) {
 				$session->authorization = array('user_name' => $_REQUEST['user_name'], "$userField" => $row["$userField"]);
 			
 			$session->{$userField} = $row["$userField"];
