@@ -33,16 +33,22 @@
 	//Create SQL File
 	$sqlFile = 'database.sql';
 	
-	$getTablesCommand = "mysql --user={$opts['un']} --password={$opts['pw']} -B --skip-column-names INFORMATION_SCHEMA -e \"SELECT TABLE_NAME FROM TABLES WHERE TABLE_SCHEMA='{$opts['db']}' AND TABLE_NAME LIKE '{$prefix}_%'\"";
+	$getTablesCommand = "{$mysql_bin_path}/mysql --user={$opts['un']} --password={$opts['pw']} -B --skip-column-names INFORMATION_SCHEMA -e \"SELECT TABLE_NAME FROM TABLES WHERE TABLE_SCHEMA='{$opts['db']}' AND TABLE_NAME LIKE '{$prefix}_%'\"";
 	//echo "<p>Running: $getTablesCommand </p>";
 	
 	exec($getTablesCommand, $output, $return);
+	
+	if ($output == 127) die ("<h3>There was an error fetching the table names for this game.</h3>
+							 <p>Check your config file for the mysql bin path and username / password<p>");
+	
 	
 	$tables = '';
 	foreach ($output as $table) {
 		$tables .= $table;
 		$tables .= ' ';
 	}
+	//echo "<p>Tables to backup: $tables </p>";
+
 	
 	$createSQLCommand = "{$mysql_bin_path}/mysqldump -u {$opts['un']} --password={$opts['pw']} {$opts['db']} $tables > {$engine_sites_path}/Backups/{$tmpDir}/{$sqlFile}";
 	//echo "<p>Running: $createSQLCommand </p>";
@@ -70,7 +76,7 @@
 	
 	//Create a version file
 	$versionCommand = "{$svn_bin_path}/svnversion {$engine_path} > {$engine_sites_path}/Backups/{$tmpDir}/version";
-	//echo "<p>Running: $versionCommand </p>";
+	echo "<p>Running: $versionCommand </p>";
 	exec($versionCommand, $output, $return);
 	if ($return) echo ("<h3>There was an error creating a version file: $return </h3>
 					  <p>Check your svn_bin_path in the config file<p>");
