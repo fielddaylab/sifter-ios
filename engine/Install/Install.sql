@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `player_id` int(11) unsigned NOT NULL auto_increment,
   `first_name` varchar(25) default NULL,
   `last_name` varchar(25) default NULL,
+  `email` varchar(50) default NULL,
   `photo` varchar(25) default NULL,
   `password` varchar(32) default NULL,
   `user_name` varchar(30) default NULL,

@@ -143,4 +143,11 @@ include_once('common.inc.php');
 	if (mysql_error() == "Duplicate column name 'force_view'") echo 'Not Needed'; 
 	else echo mysql_error();	
 	
+	echo "<h3>Add Email to players Table</h3>";
+	$query = "ALTER TABLE  players
+		ADD  email VARCHAR( 50 ) NULL AFTER `last_name`";
+	mysql_query($query);
+	if (mysql_error() == "Duplicate column name 'email'") echo 'Not Needed'; 
+	else echo mysql_error();	
+	
 ?>
