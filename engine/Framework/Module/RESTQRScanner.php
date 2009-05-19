@@ -63,17 +63,19 @@ class Framework_Module_RESTQRScanner extends Framework_Auth_User
 									 WHERE qrcode_id = {$session->qrcode_id}"); 
 			$qrcode = $this->db->getRow($sql);
 			
-			$this->link = $this->processQRCode($qrcode);
+			$this->object = $this->processQRCode($qrcode);
 		}
-		else $this->link = '';
+		else $this->object = '';
+		
 	}
 	
     
-	protected function makeLink($type, $url, $label, $icon = null) {
-		$item = array('type' => $type, 'url' => $url, 'label' => $label);
-		$item['icon'] = (is_null($icon)) ? $this->findMedia("async{$type}.png",
+	protected function makeLink($type, $url, $name, $icon = null) {
+		$object = array('QRType' => $type, 'url' => $url, 'name' => $name);
+		$object['icon'] = (is_null($icon)) ? $this->findMedia("async{$type}.png",
 															'defaultAsync.png') : $icon;
-		return $item;
+	
+		return $object;
 	}	
     
     protected function processQRCode($qrcode) {		
@@ -100,8 +102,8 @@ class Framework_Module_RESTQRScanner extends Framework_Auth_User
     }
     
     protected function processNode($qrcode) {
-    	NodeManager::loadNode($qrcode['type_id'], -1);
 		
+		NodeManager::loadNode($qrcode['type_id'], -1);
     	if (!is_null(NodeManager::$node)) {
     		$media = (array_key_exists('media', NodeManager::$node) 
 					  && !empty(NodeManager::$node['media']))
@@ -119,18 +121,14 @@ class Framework_Module_RESTQRScanner extends Framework_Auth_User
     }
     
     protected function processItem($qrcode) {
-    	$sql = $this->db->prefix("SELECT * FROM _P_items 
+		$sql = $this->db->prefix("SELECT * FROM _P_items 
 								 WHERE item_id={$qrcode['type_id']}");
     	$item = $this->db->getRow($sql);
-		
-    	$itemName = (array_key_exists('name', $item) && !empty($item['name']))
-		? $item['name'] : 'undefined';
-    	$media = (array_key_exists('media', $item) 
-				  && !empty($item['media']))
-		? $this->findMedia($item['media'], 'defaultInventory.png') : null;
-		
-    	return $this->makeLink(TYPE_ITEM, "&amp;event=addItem&amp;item_id={$qrcode['type_id']}", 
-								   $itemName, $media);
+		$item['mediaURL'] = $this->findMedia($item['media'], 'defaultInventory.png');
+		$item['icon'] = $this->findMedia(Framework::$site->config->aris->inventory->imageIcon, NULL);	
+		$item['QRType'] = "Item";
+    	
+		return $item;
     }
     
     protected function processNpc($qrcode) {

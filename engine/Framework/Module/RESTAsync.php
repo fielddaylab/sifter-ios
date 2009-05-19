@@ -54,7 +54,6 @@ class Framework_Module_RESTAsync extends Framework_Auth_User
     	$this->chromeless = true;
     	
 		$this->links = $this->processLocationRequest();
-		//var_dump ($this->links);
 	}
     
 	
