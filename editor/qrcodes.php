@@ -111,20 +111,31 @@
 	 descriptions fields are also possible. Check documentation for this.
 	 */
 	$opts['fdd']['qrcode_id'] = array(
-								   'name'     => 'QR Code Image for Print',
+								   'name'     => 'QR Code Index',
 								   'select'   => 'T',
-								   'options'  => 'LVCPDR', // auto increment
+									  'options'  => 'VPDR', // auto increment
 								   'maxlen'   => 11,
 								   'default'  => '0',
 								   'sort'     => true,
-									'sql|LF' => 'CONCAT(\'<img width = "50px" src="http://qrcode.kaywa.com/code/16/\', qrcode_id, \'">\')', 
 									'escape' => false, 
 									'input' => 'VR'
 	);
+	$opts['fdd']['qrcode_id|1'] = array(
+									  'name'     => 'QR Code Image for Print',
+									  'select'   => 'T',
+									  'options'  => 'LVPDR', // auto increment
+									  'maxlen'   => 11,
+									  'default'  => '0',
+									  'sort'     => true,
+									  'sql|LF' => 'CONCAT(\'<img width = "50px" src="http://qrcode.kaywa.com/code/16/\', qrcode_id, \'">\')', 
+									  'escape' => false, 
+									  'input' => 'VR'
+									  );
 	$opts['fdd']['type'] = array(
 								 'name'     => 'Link Type',
 								 'select'   => 'T',
 								 'maxlen'   => 5,
+								 'options'    => 'ACPVDFL',
 								 'values'   => array(
 													 "Node",
 													 "Event",
@@ -137,6 +148,7 @@
 									'select'   => 'T',
 									'maxlen'   => 11,
 									'sort'     => true,
+									'options'    => 'ACPVDFL',
 									'help'		=> 'If this is not set, the code will not tripper properly. '
 									);
 
