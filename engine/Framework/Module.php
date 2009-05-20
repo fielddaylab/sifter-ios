@@ -224,7 +224,7 @@ abstract class Framework_Module extends Framework_Object_Web
      * Removes the specified item from the user.
      */ 
     static protected function takeItemFromPlayer($itemID, $userID) {
-    	$sql = Framework::$db->prefix("SELECT * FROM _P_items
+		$sql = Framework::$db->prefix("SELECT * FROM _P_items
 									  WHERE item_id = $itemID");
     	$row = Framework::$db->getRow($sql);
     	

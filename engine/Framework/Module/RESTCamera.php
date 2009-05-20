@@ -45,35 +45,28 @@ class Framework_Module_RESTCamera extends Framework_Auth_User
     	}
     	
 		$this->chromeless = true;
+
 		
-		//Check for data in $FILES[]
-		if (isset ($_FILES['image'])) {
-		
-			//Move uplaoded image to the site's UserFiles directory using a unique name
-			$targetPath = Framework::$site->getPath() . '/Templates/Default/templates/';
-			$fileExtension = substr(strrchr($_FILES['image']['name'], "."), 1); 
-			$randomName = md5(rand() * time());
-			$newName = $randomName . '.' . $fileExtension;
-			$fullPath = $targetPath . $newName;
-		
-			if (!move_uploaded_file($_FILES['image']['tmp_name'], $fullPath)) {
-				//Throw an exception
-			}
-				
-		
-			//Create an item for the file
-			if (isset ($_REQUEST['name']) && strlen($_REQUEST['name']) > 0) $name = $_REQUEST['name']; else $name = "Camera Image";
-			if (isset ($_REQUEST['name']) && strlen($_REQUEST['description']) > 0) $description = $_REQUEST['description']; else $description = "Taken " . date("l F d, Y");
-		
-			$newItemID = $this->createItem($name, $description, "Image", $newName);
-			
-			//Give the player this item
-			$this->giveItemToPlayer($newItemID, $_SESSION['player_id']);
-			
-			$this->message = "Image Upload Sucessfull";
+		//Move uplaoded image to the site's UserFiles directory using a unique name
+		$targetPath = Framework::$site->getPath() . '/Templates/Default/templates/';
+		$fileExtension = substr(strrchr($_FILES['image']['name'], "."), 1); 
+		$randomName = md5(rand() * time());
+		$newName = $randomName . '.' . $fileExtension;
+		$fullPath = $targetPath . $newName;
+					if (!move_uploaded_file($_FILES['image']['tmp_name'], $fullPath)) {
+						//Throw an exception
 		}
+			
+		//Create an item for the file
+		if (isset ($_REQUEST['name']) && strlen($_REQUEST['name']) > 0) $name = $_REQUEST['name']; else $name = "Camera Image";
+		if (isset ($_REQUEST['name']) && strlen($_REQUEST['description']) > 0) $description = $_REQUEST['description']; else $description = "Taken " . date("l F d, Y");
+		$newItemID = $this->createItem($name, $description, "Image", $newName);
 		
-		$this->message = "No file was present in POST";
+		//Give the player this item
+		$this->giveItemToPlayer($newItemID, $_SESSION['player_id']);
+		
+		$this->message = "Image Upload Sucessfull";
+
 		
 	}//default
 
