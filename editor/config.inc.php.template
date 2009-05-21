@@ -17,6 +17,7 @@
 	
 	$engine_path = '/Groups/web/arisgames/games';
 	// /Users/davidgagnon/Sites/aris/src for Dave's Laptop
+	// /Users/tomhenage/Documents/ARIS/SVN/engine for Thomas's Laptop
 	// /Groups/web/aris/games for atsosxdev
 	// /Groups/web/arisgames/games for arisgames.org
 	
