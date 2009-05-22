@@ -9,7 +9,7 @@ configuration stuff here.
 <framework>
     <db>
         <type>MySQL</type>
-        <dsn>mysql:dbname=aris;host=localhost;username=arisuser;password=arispwd</dsn>
+        <dsn>mysql:dbname=aris;host=localhost;username=root;password=root</dsn>
     </db>
 
     <!-- 

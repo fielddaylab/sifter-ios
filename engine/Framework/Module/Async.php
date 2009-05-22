@@ -42,8 +42,25 @@ class Framework_Module_Async extends Framework_Auth_User
      */
     public function __default()
     {
-		$links = $this->process();
-		if (count($links) == 1) {
+        $links = $this->process();
+        $results = array();
+        foreach ($links as $link) {
+            array_push($results,
+                array(
+                    'icon' => $link['icon'],
+                    'url' => $link['url'],
+                    'isRawFunction' => ($link['type'] == TYPE_JS),
+                    'function' => ($link['type'] == TYPE_JS
+                        ? 'raw' : 'notify'),
+                    'name' => $link['label'],
+                    'type' => strtolower($link['type']),
+                    'locationId' => $link['id'],
+                    'forceView' => $link['forceView'],
+                    'xmlType' => strtolower($link['type'])
+                ));
+        }
+        $this->results = $results;
+/*		if (count($links) == 1) {
 			$this->icon = $links[0]['icon'];
 			$this->url = $links[0]['url'];
 			$this->isRawFunction = $links[0]['type'] == TYPE_JS;
@@ -57,8 +74,9 @@ class Framework_Module_Async extends Framework_Auth_User
 			$this->isRawFunction = false;
 			$this->function = 'notify';
 			$this->label = 'Mixed';
-		}
+        }
 		else $this->function = '';
+ */
     }
     
     public function displayList() {
@@ -69,8 +87,9 @@ class Framework_Module_Async extends Framework_Auth_User
     		Framework::$site->config->aris->async->notification;
     }
     
-	protected function makeLink($type, $url, $label, $icon = null) {
-		$item = array('type' => $type, 'url' => $url, 'label' => $label);
+	protected function makeLink($type, $location, $url, $label, $icon = null) {
+        $item = array('type' => $type, 'id' => $location['location_id'],
+            'url' => $url, 'label' => $label, 'forceView' => $location['force_view']);
 		$item['icon'] = (is_null($icon)) ? $this->findMedia("async{$type}.png",
 			'defaultAsync.png') : $icon;
 		return $item;
@@ -96,7 +115,8 @@ class Framework_Module_Async extends Framework_Auth_User
 					AND latitude > ({$_REQUEST['latitude']} - error)
 					AND longitude < ({$_REQUEST['longitude']} + error)
 					AND longitude > ({$_REQUEST['longitude']} - error)
-					AND (item_qty IS NULL OR item_qty > 0"); 
+                    AND (item_qty IS NULL OR item_qty > 0 OR type != 'Item')
+                    ORDER BY location_id"); 
 			$locations = $this->db->getAll($sql);
 			
 			$sql = $this->db->prefix("SELECT event_id FROM _P_player_events WHERE player_id = 
@@ -132,7 +152,6 @@ class Framework_Module_Async extends Framework_Auth_User
 		}
 		
 		if ($location['type_id'] < 1) return;
-    
     	switch($location['type']) {
     		case TYPE_NODE:
     			$this->processNode($location, $links);
@@ -162,7 +181,7 @@ class Framework_Module_Async extends Framework_Auth_User
     			&& !empty(NodeManager::$node['media']))
     				? $this->findMedia(NodeManager::$node['media'], 'defaultAsync.png') : null;
     		array_push($links, 
-    			$this->makeLink(TYPE_NODE, "NodeViewer&event=faceTalk&npc_id=-1&node_id=" 
+    			$this->makeLink(TYPE_NODE, $location, "NodeViewer&event=faceTalk&npc_id=-1&node_id=" 
     				. NodeManager::$node['node_id'], NodeManager::$node['title'], $media));
     	}
     }
@@ -188,7 +207,7 @@ class Framework_Module_Async extends Framework_Auth_User
     				? $this->findMedia($item['media'], 'defaultInventory.png') : null;
     
     	array_push($links, 
-    		$this->makeLink(TYPE_ITEM, "Inventory&event=addItem&item_id={$location['type_id']}", 
+    		$this->makeLink(TYPE_ITEM, $location, "Inventory&event=addItem&item_id={$location['type_id']}", 
     			$itemName, $media));
     }
     
@@ -202,13 +221,13 @@ class Framework_Module_Async extends Framework_Auth_User
     	$npcMedia = (array_key_exists('media', $npc) && !empty($npc['media']))
     		? $this->findMedia($npc['media'], 'defaultUser.png') : null;
     
-    	array_push($links, $this->makeLink(TYPE_NPC,
+    	array_push($links, $this->makeLink(TYPE_NPC, $location,
     		"NodeViewer&event=faceConversation&npc_id=" . $location['type_id'],
     		$npcName, $npcMedia));
     }
     
     protected function processJS($location, &$links) {
-    	array_push($links, $this->makeLink(TYPE_JS, "", "", ""));
+    	array_push($links, $this->makeLink(TYPE_JS, $location, "", "", ""));
     }
 }
 
