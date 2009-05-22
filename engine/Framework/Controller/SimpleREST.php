@@ -178,9 +178,7 @@ class Framework_Controller_SimpleREST extends Framework_Controller_Web
                         }
                         else {
                             // It's safe to add them as attributes
-                            $groupChild = array_key_exists('xmlType', $childV)
-                                ? $child->addChild($childV['xmlType'])
-                                : $child->addChild('row');
+                            $groupChild = $child->addChild('row');
                             foreach ($childV as $testK => $testV) {
                                 $groupChild->addAttribute($testK,
                                     $testV);

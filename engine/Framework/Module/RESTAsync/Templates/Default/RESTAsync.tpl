@@ -1,7 +1,7 @@
 <nearbyLocations>
 {foreach from=$links item=object}
 	{if $object.object_type == 'Item'}
-		<item id="{$object.item_id}" locationID="{$object.location_id}" name="{$object.name}" type="{$object.type}" description="{$object.description}" icon="{$object.icon}" media="{$object.mediaURL}" />
+		<item id="{$object.item_id}" locationID="{$object.location_id}" name="{$object.name}" type="{$object.type}" description="{$object.description}" iconURL="{$object.icon}" mediaURL="{$object.mediaURL}" />
 	{else}
 		<nearbyLocation type="{$object.type}" forceView="{$object.force_view}" id="{$object.id}" label="{$object.label}" iconURL="{$object.icon}" URL = "{$object.url}"/>
 	{/if}
