@@ -1,0 +1,52 @@
+// !$*UTF8*$!
+{
+	A7093B630FC81E9E0041ED6F /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		addToTargets = (
+		);
+		codeSenseManager = A7093B680FC81E9E0041ED6F /* Code sense */;
+		ignoreBreakpointsInProjectsDict = {
+		};
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					341,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 264773399;
+			PBXWorkspaceStateSaveDate = 264773399;
+		};
+		sourceControlManager = A7093B670FC81E9E0041ED6F /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	A7093B670FC81E9E0041ED6F /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryName = ATSVN;
+		};
+	};
+	A7093B680FC81E9E0041ED6F /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+}
