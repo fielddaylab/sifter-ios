@@ -142,7 +142,7 @@
 													'2' => 'last_name'),
        								'divs'    => array('0' => ' - ', '1' => ' ')
      								),
-					'filters'     => "site = '{$short_name}'",
+					
     					'orderby'     => 'player_id')
 	);
 	
