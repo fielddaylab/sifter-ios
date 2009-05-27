@@ -23,31 +23,31 @@
 	</div>";
 	
 	
-	echo "<h3>Basic Options</h3>
+	echo "<h3>Triggers</h3>
 			<table class = 'gametasks' width = '600px'>
 			<tr>
 				<td width = '50px'><a href = 'locations.php'><img src = 'images/location_icon.png'/></a></td><td width = '250px'><a href = 'locations.php'>Locations</a></td>
-				<td width = '50px'><a href = 'nodes.php'><img src = 'images/nodes.png'/></a></td><td width = '250px'><a href = 'nodes.php'>Nodes</a></td>
+				<td width = '50px'><a href = 'qrcodes.php'><img src = 'images/qrcode_icon.png'/></a></td><td width = '250px'><a href = 'qrcodes.php'>QR Codes</a></td>
 			</tr>
 			<tr>
-				<td width = '50px'><a href = 'qrcodes.php'><img src = 'images/qrcode_icon.png'/></a></td><td width = '250px'><a href = 'qrcodes.php'>QR Codes</a></td>
+				<td><a href = 'events.php'><img src = 'images/events.png'/></a></td><td><a href = 'events.php'>Events</a></td>
 				<td>&nbsp;</td><td>&nbsp;</td>
 			</tr>
 			
 			</table>
 	
-			<h3>Intermediate Options</h3>
+			<h3>Content</h3>
 			<table class = 'gametasks' width = '600px'>
 			<tr>
+				<td width = '50px'><a href = 'nodes.php'><img src = 'images/nodes.png'/></a></td><td width = '250px'><a href = 'nodes.php'>Nodes</a></td>
+				<td width = '50px'><a href = 'items.php'><img src = 'images/item_icon.png'/></a></td><td width = '250px'><a href = 'items.php'>Items</a></td>
+			</tr>
+			<tr>
 				<td width = '50px'><a href = 'npcs.php'><img src = 'images/npcs.png'/></a></td><td width = '250px'><a href = 'npcs.php'>NPCs</a></td>
-				<td width = '50px'><a href = 'conversations.php'><img src = 'images/conversation_icon.png'/></a></td><td width = '250px'><a href = 'conversations.php'>NPC Conversations</a></td>
+				<td width = '50px'><a href = 'conversations.php'><img src = 'images/conversation_icon.png'/></a></td><td width = '250px'><a href = 'conversations.php'>NPC Conversations</a></td>				
 			</tr>
 			<tr>
 				<td><a href = 'quests.php'><img src = 'images/quests.png'/></a></td><td><a href = 'quests.php'>Quests</a></td>
-				<td><a href = 'items.php'><img src = 'images/item_icon.png'/></a></td><td><a href = 'items.php'>Items</a></td>
-			</tr>
-			<tr>
-				<td><a href = 'events.php'><img src = 'images/events.png'/></a></td><td><a href = 'events.php'>Events</a></td>
 				<td>&nbsp;</td><td>&nbsp;</td>
 			</tr>
 			</table>
