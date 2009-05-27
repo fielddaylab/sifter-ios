@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		A72A97900FCE058400EC050E /* qrcodes_random_id.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = qrcodes_random_id.php; sourceTree = "<group>"; };
 		A791114E0FC81F05007F5650 /* applications.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = applications.php; sourceTree = "<group>"; };
 		A791114F0FC81F05007F5650 /* common.inc.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = common.inc.php; sourceTree = "<group>"; };
 		A79111500FC81F05007F5650 /* config.inc.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = config.inc.php; sourceTree = "<group>"; };
@@ -434,6 +435,7 @@
 				A79112050FC81F05007F5650 /* quests.php */,
 				A79112060FC81F05007F5650 /* refresh.inc.php */,
 				A79112070FC81F05007F5650 /* uploader.php */,
+				A72A97900FCE058400EC050E /* qrcodes_random_id.php */,
 			);
 			path = triggers;
 			sourceTree = "<group>";
