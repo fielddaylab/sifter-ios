@@ -125,7 +125,7 @@ class Framework_Module_RESTQRScanner extends Framework_Auth_User
 								 WHERE item_id={$qrcode['type_id']}");
 
 		$item = $this->db->getRow($sql);
-		$item['description'] = htmlentities($item['description']);
+		$item['description'] = str_replace("\r\n", '&#13;&#10;', htmlentities($item['description']));
 		$item['mediaURL'] = $this->findMedia($item['media'], 'defaultInventory.png');
 		$item['icon'] = $this->findMedia(Framework::$site->config->aris->inventory->imageIcon, NULL);	
 		$item['QRType'] = "Item";
