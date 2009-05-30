@@ -273,6 +273,9 @@
 								<string>A79112DC0FC81F30007F5650</string>
 								<string>A79112DE0FC81F30007F5650</string>
 								<string>A79112DF0FC81F30007F5650</string>
+								<string>A79112FE0FC81F30007F5650</string>
+								<string>A79113000FC81F30007F5650</string>
+								<string>A79113010FC81F30007F5650</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
@@ -285,7 +288,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 322}, {349, 971}}</string>
+							<string>{{0, 451}, {349, 971}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -306,7 +309,7 @@
 							<real>327</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>56 32 1429 1030 0 0 1920 1178 </string>
+						<string>1 129 1429 1030 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -322,7 +325,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RESTMap.php</string>
+								<string>RESTInventory.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -330,11 +333,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RESTMap.php</string>
+										<string>RESTInventory.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A7E32E780FD1C8340058EDB7</string>
+										<string>A7E32EB10FD1D49A0058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A79114360FC81F5D007F5650</string>
@@ -344,12 +347,14 @@
 											<string>A7AED25E0FD0390C00AA9DBD</string>
 											<string>A7E32E410FD1C6FD0058EDB7</string>
 											<string>A7E32E420FD1C6FD0058EDB7</string>
-											<string>A7E32E430FD1C6FD0058EDB7</string>
 											<string>A7E32E440FD1C6FD0058EDB7</string>
 											<string>A7E32E450FD1C6FD0058EDB7</string>
 											<string>A7E32E460FD1C6FD0058EDB7</string>
 											<string>A7E32E750FD1C8340058EDB7</string>
-											<string>A7E32E760FD1C8340058EDB7</string>
+											<string>A7E32E830FD1CE800058EDB7</string>
+											<string>A7E32E840FD1CE800058EDB7</string>
+											<string>A7E32E850FD1CE800058EDB7</string>
+											<string>A7E32E860FD1CE800058EDB7</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -370,6 +375,9 @@
 											<string>A7E32E500FD1C6FD0058EDB7</string>
 											<string>A7E32E510FD1C6FD0058EDB7</string>
 											<string>A7E32E770FD1C8340058EDB7</string>
+											<string>A7E32E870FD1CE800058EDB7</string>
+											<string>A7E32E880FD1CE800058EDB7</string>
+											<string>A7E32E890FD1CE800058EDB7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -381,14 +389,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1058, 677}}</string>
+								<string>{{0, 0}, {1058, 436}}</string>
 								<key>RubberWindowFrame</key>
-								<string>56 32 1429 1030 0 0 1920 1178 </string>
+								<string>1 129 1429 1030 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>677pt</string>
+							<string>436pt</string>
 						</dict>
 						<dict>
 							<key>BecomeActive</key>
@@ -398,7 +406,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RESTMap.tpl</string>
+								<string>RESTMap.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -406,11 +414,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RESTMap.tpl</string>
+										<string>RESTMap.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A7E32E790FD1C8340058EDB7</string>
+										<string>A7E32EB20FD1D49A0058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A79114360FC81F5D007F5650</string>
@@ -424,7 +432,13 @@
 											<string>A7E32E440FD1C6FD0058EDB7</string>
 											<string>A7E32E450FD1C6FD0058EDB7</string>
 											<string>A7E32E460FD1C6FD0058EDB7</string>
-											<string>A7E32E520FD1C6FD0058EDB7</string>
+											<string>A7E32E8B0FD1CE800058EDB7</string>
+											<string>A7E32E8C0FD1CE800058EDB7</string>
+											<string>A7E32E8D0FD1CE800058EDB7</string>
+											<string>A7E32E8E0FD1CE800058EDB7</string>
+											<string>A7E32E8F0FD1CE800058EDB7</string>
+											<string>A7E32E900FD1CE800058EDB7</string>
+											<string>A7E32E910FD1CE800058EDB7</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -440,6 +454,15 @@
 											<string>A7E32E4F0FD1C6FD0058EDB7</string>
 											<string>A7E32E500FD1C6FD0058EDB7</string>
 											<string>A7E32E510FD1C6FD0058EDB7</string>
+											<string>A7E32E920FD1CE800058EDB7</string>
+											<string>A7E32E930FD1CE800058EDB7</string>
+											<string>A7E32E940FD1CE800058EDB7</string>
+											<string>A7E32E950FD1CE800058EDB7</string>
+											<string>A7E32E960FD1CE800058EDB7</string>
+											<string>A7E32E970FD1CE800058EDB7</string>
+											<string>A7E32E980FD1CE800058EDB7</string>
+											<string>A7E32E990FD1CE800058EDB7</string>
+											<string>A7E32E9A0FD1CE800058EDB7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -451,14 +474,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 682}, {1058, 223}}</string>
+								<string>{{0, 441}, {1058, 464}}</string>
 								<key>RubberWindowFrame</key>
-								<string>56 32 1429 1030 0 0 1920 1178 </string>
+								<string>1 129 1429 1030 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>223pt</string>
+							<string>464pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -473,7 +496,7 @@
 								<key>Frame</key>
 								<string>{{0, 910}, {1058, 79}}</string>
 								<key>RubberWindowFrame</key>
-								<string>56 32 1429 1030 0 0 1920 1178 </string>
+								<string>1 129 1429 1030 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -638,7 +661,7 @@
 		<string>/Users/davidgagnon/Documents/Aris/svn/engine/ARIS Engine.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>56 32 1429 1030 0 0 1920 1178 </string>
+	<string>1 129 1429 1030 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
