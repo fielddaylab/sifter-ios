@@ -28,7 +28,7 @@
 		<td>
 			<ul>
 				<li>{$quest.name}</li>
-				<li>{$quest.description}</li>
+				<li>{$quest.text_when_complete}</li>
 			</ul>
 		</td>
 	</tr>
