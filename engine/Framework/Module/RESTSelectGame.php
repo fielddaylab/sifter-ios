@@ -56,6 +56,23 @@ class Framework_Module_RESTSelectGame extends Framework_Auth_No
 		$this->available_games = $available_games;
 				
     }
+	
+	public function setGame(){
+		$this->pageTemplateFile = 'empty.tpl';
+    	
+    	$user = loginUser();
+    	
+    	//$session = Framework_Session::singleton();
+		
+		$player_id = $user['player_id'];
+		$site = Framework::$site->name;
+		
+		$sql = $this->db->prefix("UPDATE players
+								 SET site = '$site'
+								 WHERE player_id = '$player_id'");
+		$this->db->exec($sql);
+	}
+	
 	/*
 	public function loadGame()
 	{
