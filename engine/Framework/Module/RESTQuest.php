@@ -60,7 +60,8 @@ class Framework_Module_RESTQuest extends Framework_Auth_User
 				AND (_P_log.complete_if_event_id IS NULL 
 				OR _P_log.complete_if_event_id 
 					NOT IN (SELECT event_id FROM _P_player_events 
-						WHERE player_id = $userID))");
+					WHERE player_id = $userID))
+			ORDER BY _P_log.log_id ASC");
 		$quests = $this->db->getAll($sql);
 		
 		foreach ($quests as &$quest) {
@@ -76,7 +77,8 @@ class Framework_Module_RESTQuest extends Framework_Auth_User
 		$sql = $this->db->prefix("SELECT * FROM _P_log
 			WHERE _P_log.complete_if_event_id IN 
 				(SELECT event_id FROM _P_player_events 
-					WHERE player_id = $userID)");
+				WHERE player_id = $userID)
+			ORDER BY _P_log.log_id ASC");
 		$quests = $this->db->getAll($sql);
 		
 		foreach ($quests as &$quest) {
