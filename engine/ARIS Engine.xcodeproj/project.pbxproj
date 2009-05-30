@@ -403,6 +403,7 @@
 		A79114330FC81F31007F5650 /* install.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = install.rtf; sourceTree = "<group>"; };
 		A79114340FC81F31007F5650 /* Install.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Install.sql; sourceTree = "<group>"; };
 		A79114350FC81F31007F5650 /* update_location.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = update_location.php; sourceTree = "<group>"; };
+		A7E32E7A0FD1CAD40058EDB7 /* RESTSelectGame_setGame.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RESTSelectGame_setGame.tpl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -1289,6 +1290,7 @@
 			isa = PBXGroup;
 			children = (
 				A79113020FC81F30007F5650 /* RESTSelectGame.tpl */,
+				A7E32E7A0FD1CAD40058EDB7 /* RESTSelectGame_setGame.tpl */,
 			);
 			path = Default;
 			sourceTree = "<group>";
