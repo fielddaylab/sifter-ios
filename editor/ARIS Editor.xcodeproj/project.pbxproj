@@ -187,6 +187,7 @@
 		A79112060FC81F05007F5650 /* refresh.inc.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = refresh.inc.php; sourceTree = "<group>"; };
 		A79112070FC81F05007F5650 /* uploader.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = uploader.php; sourceTree = "<group>"; };
 		A79112080FC81F05007F5650 /* version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = version; sourceTree = "<group>"; };
+		A7E32F500FD20DE70058EDB7 /* items.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = items.php; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -436,6 +437,7 @@
 				A79112060FC81F05007F5650 /* refresh.inc.php */,
 				A79112070FC81F05007F5650 /* uploader.php */,
 				A72A97900FCE058400EC050E /* qrcodes_random_id.php */,
+				A7E32F500FD20DE70058EDB7 /* items.php */,
 			);
 			path = triggers;
 			sourceTree = "<group>";

@@ -17,8 +17,10 @@
 	$opts['tb'] = $_SESSION['current_game_prefix'] . 'items';
 	
 	//Triggers
-	$opts['triggers']['insert']['after'] = 'triggers/uploader.php';
-	$opts['triggers']['update']['before'] = 'triggers/uploader.php';	
+	$opts['triggers']['insert']['after'][0] = 'triggers/items.php';
+	$opts['triggers']['update']['before'][0] = 'triggers/items.php';
+	$opts['triggers']['insert']['after'][1] = 'triggers/uploader.php';
+	$opts['triggers']['update']['before'][1] = 'triggers/uploader.php';	
 	
 	// Name of field which is the unique key
 	$opts['key'] = 'item_id';
@@ -168,6 +170,34 @@
 								  'sort'       => true,
 								  'help'		=> 'Use images (.gif .png .jpg), audio (.mp3 .aac) or video (.mp4 h.264) files'
 	);
+	
+	
+	$opts['fdd']['event_id_when_viewed'] = array(
+											 'default'    => '',
+											 'maxlen'     => 20,
+											 'name'       => 'Set this event when player views the item',
+											 'options'    => 'AVCPD',
+											 'required'   => false,
+											 'select'     => 'T',
+											 'size|ACP'   => 20,
+											 'sqlw'		=>'IF($val_qas = "", NULL, $val_qas)',	 
+											 'sort'       => true,
+											 'values'     => array(
+																   'db'          	=> $opts['db'],
+																   'table'       	=> $_SESSION['current_game_prefix'] . 'events',
+																   'column'      	=> 'event_id',
+																   'description'	=> array('columns' => array('0' => 'description')),
+																   'orderby'     => 'event_id')
+											 );	
+	$opts['fdd']['event_id_when_viewed']['values2'] = array(
+														null => '-Not Used-',
+														'ADD' => '-Add a new Event-'
+														);		
+	
+	
+	
+	
+	
 	
 	// Now important call to phpMyEdit
 	require_once('phpMyEdit.class.php');

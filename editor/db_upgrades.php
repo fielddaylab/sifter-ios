@@ -150,4 +150,13 @@ include_once('common.inc.php');
 	if (mysql_error() == "Duplicate column name 'email'") echo 'Not Needed'; 
 	else echo mysql_error();	
 	
+	echo "<h3>Add 'Event When Viewed' capacity to Items</h3>";
+	$query = "ALTER TABLE  {$_SESSION['current_game_prefix']}items 
+	ADD  event_id_when_viewed INT UNSIGNED NULL";
+	mysql_query($query);
+	if (mysql_error() == "Duplicate column name 'event_id_when_viewed'") echo 'Not Needed'; 
+	else echo mysql_error();	
+	
+	
+	
 ?>

@@ -288,7 +288,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 451}, {349, 971}}</string>
+							<string>{{0, 0}, {349, 971}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -309,7 +309,7 @@
 							<real>327</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1 129 1429 1030 0 0 1920 1178 </string>
+						<string>17 138 1429 1030 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -337,7 +337,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A7E32EB10FD1D49A0058EDB7</string>
+										<string>A7E32F460FD20B510058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A79114360FC81F5D007F5650</string>
@@ -391,7 +391,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1058, 436}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1 129 1429 1030 0 0 1920 1178 </string>
+								<string>17 138 1429 1030 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -418,7 +418,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A7E32EB20FD1D49A0058EDB7</string>
+										<string>A7E32F470FD20B510058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A79114360FC81F5D007F5650</string>
@@ -476,7 +476,7 @@
 								<key>Frame</key>
 								<string>{{0, 441}, {1058, 464}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1 129 1429 1030 0 0 1920 1178 </string>
+								<string>17 138 1429 1030 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -496,7 +496,7 @@
 								<key>Frame</key>
 								<string>{{0, 910}, {1058, 79}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1 129 1429 1030 0 0 1920 1178 </string>
+								<string>17 138 1429 1030 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -661,7 +661,7 @@
 		<string>/Users/davidgagnon/Documents/Aris/svn/engine/ARIS Engine.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>1 129 1429 1030 0 0 1920 1178 </string>
+	<string>17 138 1429 1030 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>

@@ -284,7 +284,20 @@ abstract class Framework_Module extends Framework_Object_Web
     	Framework::$db->exec($sql);
 		return mysql_insert_id();
 	}	
-	
+
+	/**
+     * Marks the item as viewed by the player
+     */ 
+    static protected function itemViewedByPlayer($itemID, $userID) {
+		//Load the item
+		$sql = Framework::$db->prefix("SELECT * FROM _P_items
+									  WHERE item_id = '$itemID'");
+		//echo $sql;
+		$row = Framework::$db->getRow($sql);
+		
+		//If it has an event to set, give it to the player
+		if ($row['event_id_when_viewed']) self::addEvent($userID, $row['event_id_when_viewed']);
+    }
 	
     /**
      * loadApplications
@@ -316,7 +329,7 @@ abstract class Framework_Module extends Framework_Object_Web
     		. Framework::$site->template . '/templates';
     	$files = array();
     	$pattern = '/\.([pP][nN][gG]|[jJ][pP][eE]?[gG]|[gG][iI][fF])$/';
-    	
+    	 
     	if ($handle = opendir($sitePath)) {
     		while (false !== ($file = readdir($handle))) {
     			if (preg_match($pattern, $file) > 0) $files[] = $file;

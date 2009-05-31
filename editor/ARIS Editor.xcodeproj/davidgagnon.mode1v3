@@ -230,6 +230,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -274,13 +276,20 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>42</integer>
+									<integer>0</integer>
+								</array>
+								<array>
+									<integer>36</integer>
+									<integer>0</integer>
+								</array>
+								<array>
+									<integer>51</integer>
 									<integer>41</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 234}, {311, 782}}</string>
+							<string>{{0, 172}, {311, 782}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -301,7 +310,7 @@
 							<real>289</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>331 120 1554 841 0 0 1920 1178 </string>
+						<string>249 155 1554 841 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -312,14 +321,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>qrcodes.php</string>
+								<string>qrcodes_random_id.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -327,11 +334,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>qrcodes.php</string>
+										<string>qrcodes_random_id.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A72A97CC0FCE09CD00EC050E</string>
+										<string>A72A97D30FCE0DC100EC050E</string>
 										<key>history</key>
 										<array>
 											<string>A72A97810FCE055900EC050E</string>
@@ -339,11 +346,11 @@
 											<string>A72A97830FCE055900EC050E</string>
 											<string>A72A97840FCE055900EC050E</string>
 											<string>A72A97850FCE055900EC050E</string>
-											<string>A72A97970FCE068200EC050E</string>
 											<string>A72A97980FCE068200EC050E</string>
 											<string>A72A97990FCE068200EC050E</string>
 											<string>A72A97A30FCE06B400EC050E</string>
-											<string>A72A97910FCE05CC00EC050E</string>
+											<string>A72A97D00FCE0DC100EC050E</string>
+											<string>A72A97D10FCE0DC100EC050E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -359,6 +366,7 @@
 											<string>A72A979C0FCE068200EC050E</string>
 											<string>A72A979D0FCE068200EC050E</string>
 											<string>A72A97A40FCE06B400EC050E</string>
+											<string>A72A97D20FCE0DC100EC050E</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -372,7 +380,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1221, 460}}</string>
 								<key>RubberWindowFrame</key>
-								<string>331 120 1554 841 0 0 1920 1178 </string>
+								<string>249 155 1554 841 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -397,7 +405,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A72A97CD0FCE09CD00EC050E</string>
+										<string>A72A97D40FCE0DC100EC050E</string>
 										<key>history</key>
 										<array>
 											<string>A72A97810FCE055900EC050E</string>
@@ -431,7 +439,7 @@
 								<key>Frame</key>
 								<string>{{0, 465}, {1221, 269}}</string>
 								<key>RubberWindowFrame</key>
-								<string>331 120 1554 841 0 0 1920 1178 </string>
+								<string>249 155 1554 841 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -451,7 +459,7 @@
 								<key>Frame</key>
 								<string>{{0, 739}, {1221, 62}}</string>
 								<key>RubberWindowFrame</key>
-								<string>331 120 1554 841 0 0 1920 1178 </string>
+								<string>249 155 1554 841 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -617,7 +625,7 @@
 		<string>/Users/davidgagnon/Documents/Aris/svn/editor/ARIS Editor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>331 120 1554 841 0 0 1920 1178 </string>
+	<string>249 155 1554 841 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
