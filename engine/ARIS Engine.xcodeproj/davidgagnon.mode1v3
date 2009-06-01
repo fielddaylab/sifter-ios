@@ -270,9 +270,6 @@
 								<string>A7093B550FC81E930041ED6F</string>
 								<string>A791121A0FC81F30007F5650</string>
 								<string>A79112310FC81F30007F5650</string>
-								<string>A79112DC0FC81F30007F5650</string>
-								<string>A79112DE0FC81F30007F5650</string>
-								<string>A79112DF0FC81F30007F5650</string>
 								<string>A79112FE0FC81F30007F5650</string>
 								<string>A79113000FC81F30007F5650</string>
 								<string>A79113010FC81F30007F5650</string>
@@ -281,14 +278,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>53</integer>
-									<integer>9</integer>
+									<integer>65</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {349, 971}}</string>
+							<string>{{0, 357}, {349, 971}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -320,12 +316,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RESTInventory.php</string>
+								<string>Module.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -333,11 +331,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RESTInventory.php</string>
+										<string>Module.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A7E32F460FD20B510058EDB7</string>
+										<string>A7E32FE50FD240CB0058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A79114360FC81F5D007F5650</string>
@@ -354,7 +352,8 @@
 											<string>A7E32E830FD1CE800058EDB7</string>
 											<string>A7E32E840FD1CE800058EDB7</string>
 											<string>A7E32E850FD1CE800058EDB7</string>
-											<string>A7E32E860FD1CE800058EDB7</string>
+											<string>A7E32FE20FD240CB0058EDB7</string>
+											<string>A7E32FE30FD240CB0058EDB7</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -364,20 +363,15 @@
 											<string>A79831480FCB590F00C1C2E7</string>
 											<string>A79831490FCB590F00C1C2E7</string>
 											<string>A7AED25F0FD0390C00AA9DBD</string>
-											<string>A7E32E480FD1C6FD0058EDB7</string>
 											<string>A7E32E490FD1C6FD0058EDB7</string>
 											<string>A7E32E4A0FD1C6FD0058EDB7</string>
-											<string>A7E32E4B0FD1C6FD0058EDB7</string>
-											<string>A7E32E4C0FD1C6FD0058EDB7</string>
-											<string>A7E32E4D0FD1C6FD0058EDB7</string>
 											<string>A7E32E4E0FD1C6FD0058EDB7</string>
 											<string>A7E32E4F0FD1C6FD0058EDB7</string>
 											<string>A7E32E500FD1C6FD0058EDB7</string>
 											<string>A7E32E510FD1C6FD0058EDB7</string>
-											<string>A7E32E770FD1C8340058EDB7</string>
 											<string>A7E32E870FD1CE800058EDB7</string>
-											<string>A7E32E880FD1CE800058EDB7</string>
 											<string>A7E32E890FD1CE800058EDB7</string>
+											<string>A7E32FE40FD240CB0058EDB7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -399,14 +393,12 @@
 							<string>436pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RESTMap.php</string>
+								<string>Inventory.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -414,11 +406,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RESTMap.php</string>
+										<string>Inventory.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A7E32F470FD20B510058EDB7</string>
+										<string>A7E32FE90FD240CB0058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A79114360FC81F5D007F5650</string>
@@ -438,7 +430,8 @@
 											<string>A7E32E8E0FD1CE800058EDB7</string>
 											<string>A7E32E8F0FD1CE800058EDB7</string>
 											<string>A7E32E900FD1CE800058EDB7</string>
-											<string>A7E32E910FD1CE800058EDB7</string>
+											<string>A7E32FE60FD240CB0058EDB7</string>
+											<string>A7E32FE70FD240CB0058EDB7</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -454,15 +447,13 @@
 											<string>A7E32E4F0FD1C6FD0058EDB7</string>
 											<string>A7E32E500FD1C6FD0058EDB7</string>
 											<string>A7E32E510FD1C6FD0058EDB7</string>
-											<string>A7E32E920FD1CE800058EDB7</string>
 											<string>A7E32E930FD1CE800058EDB7</string>
 											<string>A7E32E940FD1CE800058EDB7</string>
 											<string>A7E32E950FD1CE800058EDB7</string>
 											<string>A7E32E960FD1CE800058EDB7</string>
 											<string>A7E32E970FD1CE800058EDB7</string>
-											<string>A7E32E980FD1CE800058EDB7</string>
 											<string>A7E32E990FD1CE800058EDB7</string>
-											<string>A7E32E9A0FD1CE800058EDB7</string>
+											<string>A7E32FE80FD240CB0058EDB7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -521,9 +512,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>A7E32DEA0FD185B90058EDB7</string>
+				<string>A7E32FEA0FD240CB0058EDB7</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>A7E32DEB0FD185B90058EDB7</string>
+				<string>A7E32FEB0FD240CB0058EDB7</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
@@ -657,9 +648,7 @@
 	<key>WindowJustification</key>
 	<integer>5</integer>
 	<key>WindowOrderList</key>
-	<array>
-		<string>/Users/davidgagnon/Documents/Aris/svn/engine/ARIS Engine.xcodeproj</string>
-	</array>
+	<array/>
 	<key>WindowString</key>
 	<string>17 138 1429 1030 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
