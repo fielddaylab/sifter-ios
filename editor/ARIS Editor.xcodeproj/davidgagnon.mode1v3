@@ -230,8 +230,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -276,20 +274,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>0</integer>
-								</array>
-								<array>
-									<integer>36</integer>
-									<integer>0</integer>
-								</array>
-								<array>
-									<integer>51</integer>
+									<integer>52</integer>
 									<integer>41</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 172}, {311, 782}}</string>
+							<string>{{0, 259}, {311, 782}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -310,7 +301,7 @@
 							<real>289</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>249 155 1554 841 0 0 1920 1178 </string>
+						<string>26 310 1554 841 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -326,7 +317,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>qrcodes_random_id.php</string>
+								<string>items.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -334,14 +325,13 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>qrcodes_random_id.php</string>
+										<string>items.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A72A97D30FCE0DC100EC050E</string>
+										<string>A7E32FCF0FD240CA0058EDB7</string>
 										<key>history</key>
 										<array>
-											<string>A72A97810FCE055900EC050E</string>
 											<string>A72A97820FCE055900EC050E</string>
 											<string>A72A97830FCE055900EC050E</string>
 											<string>A72A97840FCE055900EC050E</string>
@@ -350,7 +340,13 @@
 											<string>A72A97990FCE068200EC050E</string>
 											<string>A72A97A30FCE06B400EC050E</string>
 											<string>A72A97D00FCE0DC100EC050E</string>
-											<string>A72A97D10FCE0DC100EC050E</string>
+											<string>A7E32FBD0FD240CA0058EDB7</string>
+											<string>A7E32FBE0FD240CA0058EDB7</string>
+											<string>A7E32FBF0FD240CA0058EDB7</string>
+											<string>A7E32FC00FD240CA0058EDB7</string>
+											<string>A7E32FC10FD240CA0058EDB7</string>
+											<string>A7E32FC20FD240CA0058EDB7</string>
+											<string>A7E32FC30FD240CA0058EDB7</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -359,14 +355,22 @@
 											<string>A72A97890FCE055900EC050E</string>
 											<string>A72A978A0FCE055900EC050E</string>
 											<string>A72A978B0FCE055900EC050E</string>
-											<string>A72A978C0FCE055900EC050E</string>
 											<string>A72A97940FCE05CC00EC050E</string>
 											<string>A72A97950FCE05CC00EC050E</string>
 											<string>A72A979B0FCE068200EC050E</string>
 											<string>A72A979C0FCE068200EC050E</string>
 											<string>A72A979D0FCE068200EC050E</string>
-											<string>A72A97A40FCE06B400EC050E</string>
-											<string>A72A97D20FCE0DC100EC050E</string>
+											<string>A7E32FC40FD240CA0058EDB7</string>
+											<string>A7E32FC50FD240CA0058EDB7</string>
+											<string>A7E32FC60FD240CA0058EDB7</string>
+											<string>A7E32FC70FD240CA0058EDB7</string>
+											<string>A7E32FC80FD240CA0058EDB7</string>
+											<string>A7E32FC90FD240CA0058EDB7</string>
+											<string>A7E32FCA0FD240CA0058EDB7</string>
+											<string>A7E32FCB0FD240CA0058EDB7</string>
+											<string>A7E32FCC0FD240CA0058EDB7</string>
+											<string>A7E32FCD0FD240CA0058EDB7</string>
+											<string>A7E32FCE0FD240CA0058EDB7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -378,22 +382,24 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1221, 460}}</string>
+								<string>{{0, 0}, {1221, 386}}</string>
 								<key>RubberWindowFrame</key>
-								<string>249 155 1554 841 0 0 1920 1178 </string>
+								<string>26 310 1554 841 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>460pt</string>
+							<string>386pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>qrcodes_random_id.php</string>
+								<string>items.php</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -401,11 +407,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>qrcodes_random_id.php</string>
+										<string>items.php</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>A72A97D40FCE0DC100EC050E</string>
+										<string>A7E32FDF0FD240CA0058EDB7</string>
 										<key>history</key>
 										<array>
 											<string>A72A97810FCE055900EC050E</string>
@@ -415,7 +421,13 @@
 											<string>A72A97850FCE055900EC050E</string>
 											<string>A72A97910FCE05CC00EC050E</string>
 											<string>A72A97920FCE05CC00EC050E</string>
-											<string>A72A97960FCE05CC00EC050E</string>
+											<string>A7E32FD00FD240CA0058EDB7</string>
+											<string>A7E32FD10FD240CA0058EDB7</string>
+											<string>A7E32FD20FD240CA0058EDB7</string>
+											<string>A7E32FD30FD240CA0058EDB7</string>
+											<string>A7E32FD40FD240CA0058EDB7</string>
+											<string>A7E32FD50FD240CA0058EDB7</string>
+											<string>A7E32FD60FD240CA0058EDB7</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -426,6 +438,14 @@
 											<string>A72A978B0FCE055900EC050E</string>
 											<string>A72A97940FCE05CC00EC050E</string>
 											<string>A72A97950FCE05CC00EC050E</string>
+											<string>A7E32FD70FD240CA0058EDB7</string>
+											<string>A7E32FD80FD240CA0058EDB7</string>
+											<string>A7E32FD90FD240CA0058EDB7</string>
+											<string>A7E32FDA0FD240CA0058EDB7</string>
+											<string>A7E32FDB0FD240CA0058EDB7</string>
+											<string>A7E32FDC0FD240CA0058EDB7</string>
+											<string>A7E32FDD0FD240CA0058EDB7</string>
+											<string>A7E32FDE0FD240CA0058EDB7</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -437,14 +457,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 465}, {1221, 269}}</string>
+								<string>{{0, 391}, {1221, 342}}</string>
 								<key>RubberWindowFrame</key>
-								<string>249 155 1554 841 0 0 1920 1178 </string>
+								<string>26 310 1554 841 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>269pt</string>
+							<string>342pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -457,9 +477,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 739}, {1221, 62}}</string>
+								<string>{{0, 738}, {1221, 62}}</string>
 								<key>RubberWindowFrame</key>
-								<string>249 155 1554 841 0 0 1920 1178 </string>
+								<string>26 310 1554 841 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -484,9 +504,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>A72A97A10FCE068200EC050E</string>
+				<string>A7E32FE00FD240CA0058EDB7</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>A72A97A20FCE068200EC050E</string>
+				<string>A7E32FE10FD240CA0058EDB7</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
@@ -620,12 +640,9 @@
 	<key>WindowJustification</key>
 	<integer>5</integer>
 	<key>WindowOrderList</key>
-	<array>
-		<string>A72A977C0FCDF97900EC050E</string>
-		<string>/Users/davidgagnon/Documents/Aris/svn/editor/ARIS Editor.xcodeproj</string>
-	</array>
+	<array/>
 	<key>WindowString</key>
-	<string>249 155 1554 841 0 0 1920 1178 </string>
+	<string>26 310 1554 841 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
