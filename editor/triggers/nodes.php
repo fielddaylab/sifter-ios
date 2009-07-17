@@ -114,10 +114,10 @@
 		}
 	}
 	
-	function new_node($text) {
+	function new_node($title) {
 		//Insert a new node
 		$table = $_SESSION['current_game_prefix'].'nodes';
-		$query = "INSERT INTO $table (text) VALUES ('{$text}')";
+		$query = "INSERT INTO $table (title, text) VALUES ('{$title}','')";
 		mysql_query($query);
 		return mysql_insert_id();	
 	}
