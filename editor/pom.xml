@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.arisgames</groupId>
+    <artifactId>editor</artifactId>
+    <version>1.0</version>
+    <packaging>swf</packaging>
+    <name>ARIS Games Editor</name>
+    <description>This is the ARIS Games Editor.</description>
+
+    <repositories>
+        <repository>
+            <id>atsosxdev-maven2-repository</id>
+            <name>Maven Repository On atsosxdev</name>
+            <url>http://atsosxdev.doit.wisc.edu/maven2</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>sonatype-flex-repository</id>
+            <name>Sonatype's Maven Repository</name>
+            <url>http://repository.sonatype.org/content/groups/flexgroup</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+    <build>
+        <sourceDirectory>src/main/flex</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.flexmojos</groupId>
+                <artifactId>flexmojos-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <sourceFile>org/arisgames/editor/MainMX.mxml</sourceFile>
+                    <debug>true</debug>
+                    <allowSourcePathOverlap>true</allowSourcePathOverlap>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>compiler</artifactId>
+                        <version>3.5.0.12683</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>flex-framework</artifactId>
+            <version>3.5.0.12683</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google</groupId>
+            <artifactId>map_flex</artifactId>
+            <version>1.18</version>
+            <type>swc</type>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.flexmojos</groupId>
+            <artifactId>flexmojos-unittest-support</artifactId>
+            <version>3.5.0</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
