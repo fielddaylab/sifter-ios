@@ -16,14 +16,15 @@
             <mx:FormItem label="Character Name">
                 <mx:TextInput id="theName" width="200"/>
             </mx:FormItem>
-            <mx:FormItem label="Description">
-                <mx:TextArea id="description" width="200" height="110"/>
+            <mx:FormItem label="Greeting">
+                <mx:TextArea id="greeting" width="200" height="80"/>
             </mx:FormItem>
         </mx:Form>
         <mx:Form>
-            <mx:FormItem label="Greeting">
-                <mx:TextArea id="greeting" width="200"/>
+            <mx:FormItem label="Notes (Not Displayed to Player)">
+                <mx:TextArea id="description" width="200" height="110"/>
             </mx:FormItem>
+            
         </mx:Form>
     </mx:HBox>
 
@@ -34,7 +35,7 @@
     </mx:ControlBar>
 
     <mx:StringValidator id="v1" source="{theName}" property="text" minLength="1" maxLength="50" required="true"/>
-    <mx:StringValidator id="v2" source="{description}" property="text" minLength="1" maxLength="255" required="true"/>
+    <mx:StringValidator id="v2" source="{description}" property="text" minLength="1" maxLength="255" required="false"/>
     <mx:StringValidator id="v3" source="{greeting}" property="text" minLength="1" maxLength="255" required="true"/>
 
 </v:ItemEditorCharacterView>
