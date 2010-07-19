@@ -53,6 +53,9 @@ public class ItemEditorPlaqueView extends Panel
         trace("in ItemEditorPlaqueView's handleInit");
         cancelButton.addEventListener(MouseEvent.CLICK, handleCancelButton);
         saveButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
+		// WB Bugfix for MediaPickers losing saved information
+		mediaDisplay.iconPopupMediaPickerButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
+		mediaDisplay.mediaPopupMediaPickerButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
     }
 
     public function setObjectPaletteItem(opi:ObjectPaletteItemBO):void

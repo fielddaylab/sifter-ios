@@ -187,12 +187,14 @@ public class ItemEditorMediaDisplayView extends HBox
     private function handleIconPickerButton(evt:MouseEvent):void
     {
         trace("handleIconPickerButton() called...");
+		// WB Need to call save for rest of Editor here..?
         this.openMediaPicker(true);
     }
 
     private function handleMediaPickerButton(evt:MouseEvent):void
     {
         trace("handleMediaPickerButton() called...");
+		// WB Need to call save for rest of Editor here..?
         this.openMediaPicker(false);
     }
 

@@ -40,6 +40,8 @@ public class GameEditorObjectPaletteView extends VBox
     [Bindable] public var objectPalette:Panel;
     [Bindable] public var addObjectButton:Button;
     [Bindable] public var addFolderButton:Button;
+	[Bindable] public var editQuestsButton:Button;
+	[Bindable] public var editDialogButton:Button;
     [Bindable] public var trashIcon:Image;
     [Bindable] public var glowImage:Glow;
 
@@ -67,6 +69,8 @@ public class GameEditorObjectPaletteView extends VBox
     {
         addObjectButton.addEventListener(MouseEvent.CLICK, addObjectButtonOnClick);
         addFolderButton.addEventListener(MouseEvent.CLICK, addFolderButtonOnClick);
+		editQuestsButton.addEventListener(MouseEvent.CLICK, editQuestsButtonOnClick);
+		editDialogButton.addEventListener(MouseEvent.CLICK, editDialogButtonOnClick);
         paletteTree.addEventListener(ListEvent.ITEM_EDIT_END, handlePaletteObjectDataEditFinished);
         AppDynamicEventManager.getInstance().addEventListener(AppConstants.APPLICATIONDYNAMICEVENT_REDRAWOBJECTPALETTE, handleRedrawTreeEvent);
     }
@@ -137,7 +141,7 @@ public class GameEditorObjectPaletteView extends VBox
         pt.y = addObjectButton.y;
         pt = addObjectButton.localToGlobal(pt);
 
-        myMenu.show(pt.x + 100, pt.y);
+        myMenu.show(pt.x + 20, pt.y);
     }
 
     private function addFolderButtonOnClick(evt:MouseEvent):void
@@ -148,6 +152,16 @@ public class GameEditorObjectPaletteView extends VBox
         o.name = "New Folder " + new Date();
         this.addObjectPaletteItem(o);
     }
+	
+	private function editQuestsButtonOnClick(evt:MouseEvent):void 
+	{
+		trace("editQuestsButtonOnClick() started... ");
+	}
+	
+	private function editDialogButtonOnClick(evt:MouseEvent):void
+	{
+		trace("editDialogButtonOnClick() started... ");
+	}
 
     private function menuHandler(event:MenuEvent):void
     {

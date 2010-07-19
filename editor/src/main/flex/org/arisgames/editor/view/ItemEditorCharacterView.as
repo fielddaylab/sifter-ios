@@ -50,6 +50,9 @@ public class ItemEditorCharacterView extends Panel
         trace("in ItemEditorCharacterView's handleInit");
         cancelButton.addEventListener(MouseEvent.CLICK, handleCancelButton);
         saveButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
+		// WB Bugfix for MediaPickers losing saved information
+		mediaDisplay.iconPopupMediaPickerButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
+		mediaDisplay.mediaPopupMediaPickerButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
     }
 
     public function setObjectPaletteItem(opi:ObjectPaletteItemBO):void

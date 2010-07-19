@@ -73,7 +73,9 @@ public class AppConstants
     public static const REQUIREMENT_PLAYER_HAS_NOT_VIEWED_NPC_HUMAN:String = "Player Never Greeted By Character";
     public static const REQUIREMENT_PLAYER_HAS_UPLOADED_MEDIA_ITEM_DATABASE:String = "PLAYER_HAS_UPLOADED_MEDIA_ITEM";
     public static const REQUIREMENT_PLAYER_HAS_UPLOADED_MEDIA_ITEM_HUMAN:String = "Player Has Uploaded Media Item";
-
+	public static const REQUIREMENT_PLAYER_HAS_COMPLETED_QUEST_DATABASE:String = "PLAYER_HAS_COMPLETED_QUEST";
+	public static const REQUIREMENT_PLAYER_HAS_COMPLETED_QUEST:String = "Player Has Completed Quest";
+	
     // Defaults
     public static const DEFAULT_ICON_MEDIA_ID_NPC:Number = 1;
     public static const DEFAULT_ICON_MEDIA_ID_ITEM:Number = 2;
