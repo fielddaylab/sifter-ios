@@ -37,6 +37,5 @@
     </mx:ControlBar>
 
     <mx:StringValidator id="v1" source="{theName}" property="text" minLength="1" maxLength="50" required="true"/>
-    <mx:StringValidator id="v2" source="{description}" property="text" minLength="1" maxLength="255" required="true"/>
 
 </v:ItemEditorItemView>
