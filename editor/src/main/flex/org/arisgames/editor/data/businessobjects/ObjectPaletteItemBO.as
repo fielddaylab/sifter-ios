@@ -63,7 +63,7 @@ public class ObjectPaletteItemBO
         if (!isFolder() && iconMedia != null)
         {
             var url:String = iconMedia.urlPath + iconMedia.fileName;
-            trace("iconPath being returned = '" + url + "'");
+            //trace("iconPath being returned = '" + url + "'");
             return IconUtility.getClass(url, 20, 20);
         }
         trace("iconMedia is null, so returning NULL for iconPath.");

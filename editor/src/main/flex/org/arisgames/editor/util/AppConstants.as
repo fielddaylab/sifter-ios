@@ -10,6 +10,7 @@ public class AppConstants
     // Dynamic Events
     public static const APPLICATIONDYNAMICEVENT_CURRENTSTATECHANGED:String = "ApplicationDynamicEventCurrentStateChanged";
     public static const APPLICATIONDYNAMICEVENT_REDRAWOBJECTPALETTE:String = "ApplicationDynamicEventRedrawObjectPalette";
+    public static const APPLICATIONDYNAMICEVENT_GAMEPLACEMARKSLOADED:String = "ApplicationDynamicEventGamePlacemarksLoaded";
     public static const DYNAMICEVENT_GEOSEARCH:String = "DynamicEventGeoSearch";
     public static const DYNAMICEVENT_PLACEMARKSELECTED:String = "DynamicEventPlaceMarkSelected";
     public static const DYNAMICEVENT_PLACEMARKREQUESTSDELETION:String = "DynamicEventPlaceMarkRequestsDeletion";

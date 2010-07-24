@@ -221,7 +221,7 @@ public class AppUtils
 
     public static function matchDataWithGameObject(obj:ObjectPaletteItemBO, objType:String, npc:NPC, item:Item, node:Node):void
     {
-        trace("matchDataWithGameObject() called: Looking at Game Object Id '" + obj.id + ".  It's Object Type = '" + obj.objectType + "', while it's Content Id = '" + obj.objectId + "'; Is Folder? " + obj.isFolder() + "");
+        //trace("matchDataWithGameObject() called: Looking at Game Object Id '" + obj.id + ".  It's Object Type = '" + obj.objectType + "', while it's Content Id = '" + obj.objectId + "'; Is Folder? " + obj.isFolder() + "");
 
         if (!obj.isFolder() && obj.objectType == objType)
         {
@@ -231,22 +231,22 @@ public class AppUtils
                 case AppConstants.CONTENTTYPE_CHARACTER_DATABASE:
                     if (obj.objectId == npc.npcId)
                     {
-                        trace("Just matched Game Object Id " + obj.id + " with Character of ID = " + npc.npcId);
+                        //trace("Just matched Game Object Id " + obj.id + " with Character of ID = " + npc.npcId);
                         obj.character = npc;
                     }
                     break;
                 case AppConstants.CONTENTTYPE_ITEM_DATABASE:
                     if (obj.objectId == item.itemId)
                     {
-                        trace("Just matched Game Object Id " + obj.id + " with Item of ID = " + item.itemId);
+                        //trace("Just matched Game Object Id " + obj.id + " with Item of ID = " + item.itemId);
                         obj.item = item;
                     }
                     break;
                 case AppConstants.CONTENTTYPE_PAGE_DATABASE:
-                    trace("Testing Node Object: Id = '" + obj.id + "'; ObjectId = '" + obj.objectId + "'; Node Id = '" + node.nodeId + "'");
+                    //trace("Testing Node Object: Id = '" + obj.id + "'; ObjectId = '" + obj.objectId + "'; Node Id = '" + node.nodeId + "'");
                     if (obj.objectId == node.nodeId)
                     {
-                        trace("Just matched Game Object Id " + obj.id + " with Node of ID = " + node.nodeId);
+                        //trace("Just matched Game Object Id " + obj.id + " with Node of ID = " + node.nodeId);
                         obj.page = node;
                     }
                     break;
@@ -254,7 +254,7 @@ public class AppUtils
         }
         else if (obj.isFolder())
         {
-            trace("This is a folder so need to check it's children.  Number of children to check = '" + obj.children.length + "'");
+            //trace("This is a folder so need to check it's children.  Number of children to check = '" + obj.children.length + "'");
             for (var lc:Number = 0; lc < obj.children.length; lc++)
             {
                 var childObj:ObjectPaletteItemBO = obj.children.getItemAt(lc) as ObjectPaletteItemBO;
@@ -282,7 +282,7 @@ public class AppUtils
         }
         else
         {
-            trace("Data passed in was not an Item Result set, returning NULL.");
+            //trace("Data passed in was not an Item Result set, returning NULL.");
             return null;
         }
     }

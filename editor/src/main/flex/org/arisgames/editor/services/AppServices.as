@@ -80,6 +80,7 @@ public class AppServices
     public function getLocationsByGameId(gid:Number, resp:IResponder):void
     {
         var l:Object;
+        trace("AppServices:Loading locations for game ID:" + gid);
         l = AppDAO.getInstance().getLocationServer().getLocations(gid);
         l.addResponder(resp);
     }
@@ -224,7 +225,7 @@ public class AppServices
     public function getItemById(gid:Number, id:Number, resp:IResponder):void
     {
         var l:Object;
-        trace("getItemById called with GID = '" + gid + "', and ID = '" + id + "'");
+        //trace("getItemById called with GID = '" + gid + "', and ID = '" + id + "'");
         l = AppDAO.getInstance().getItemServer().getItem(gid, id);
         l.addResponder(resp);
     }
@@ -232,7 +233,7 @@ public class AppServices
     public function getPageById(gid:Number, id:Number, resp:IResponder):void
     {
         var l:Object;
-        trace("getPageById called with GID = '" + gid + "', and ID = '" + id + "'");
+        //trace("getPageById called with GID = '" + gid + "', and ID = '" + id + "'");
         l = AppDAO.getInstance().getNodeServer().getNode(gid, id);
         l.addResponder(resp);
     }
@@ -240,7 +241,7 @@ public class AppServices
     public function getCharacterById(gid:Number, id:Number, resp:IResponder):void
     {
         var l:Object;
-        trace("getCharacterById called with GID = '" + gid + "', and ID = '" + id + "'");
+        //trace("getCharacterById called with GID = '" + gid + "', and ID = '" + id + "'");
         l = AppDAO.getInstance().getNPCServer().getNpc(gid, id);
         l.addResponder(resp);
     }

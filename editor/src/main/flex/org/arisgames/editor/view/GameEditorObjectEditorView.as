@@ -118,17 +118,17 @@ public class GameEditorObjectEditorView extends Canvas
             // Load the underlying data
             if (op.objectType == AppConstants.CONTENTTYPE_CHARACTER_DATABASE)
             {
-                trace("Load underlying character data...");
+                //trace("Load underlying character data...");
                 AppServices.getInstance().getCharacterById(GameModel.getInstance().game.gameId, op.objectId, new Responder(handleLoadSpecificData, handleFault));
             }
             else if (op.objectType == AppConstants.CONTENTTYPE_ITEM_DATABASE)
             {
-                trace("Load underlying item data...");
+                //trace("Load underlying item data...");
                 AppServices.getInstance().getItemById(GameModel.getInstance().game.gameId, op.objectId, new Responder(handleLoadSpecificData, handleFault));
             }
             else if (op.objectType == AppConstants.CONTENTTYPE_PAGE_DATABASE)
             {
-                trace("Load underlying page data...");
+                //trace("Load underlying page data...");
                 AppServices.getInstance().getPageById(GameModel.getInstance().game.gameId, op.objectId, new Responder(handleLoadSpecificData, handleFault));
             }
 

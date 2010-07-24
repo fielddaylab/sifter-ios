@@ -79,7 +79,7 @@ public class NavigationMap extends Map3D
         this.handlePlaceMarkModelChanges(null);
 
         // Add listener to Game model
-//        GameModel.getInstance().addEventListener(AppConstants.APPLICATIONDYNAMICEVENT_GAMEPLACEMARKSLOADED, handlePlaceMarkModelChanges);
+        AppDynamicEventManager.getInstance().addEventListener(AppConstants.APPLICATIONDYNAMICEVENT_GAMEPLACEMARKSLOADED, handlePlaceMarkModelChanges);
     }
 
     private function handlePlaceMarkModelChanges(de:DynamicEvent):void

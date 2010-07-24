@@ -14,6 +14,7 @@ import mx.controls.TextInput;
 import mx.events.FlexEvent;
 import mx.rpc.Responder;
 import mx.rpc.events.ResultEvent;
+import mx.events.DynamicEvent;
 import org.arisgames.editor.data.Game;
 import org.arisgames.editor.data.PlaceMark;
 import org.arisgames.editor.data.arisserver.Item;
@@ -27,6 +28,8 @@ import org.arisgames.editor.models.StateModel;
 import org.arisgames.editor.services.AppServices;
 import org.arisgames.editor.util.AppConstants;
 import org.arisgames.editor.util.AppUtils;
+import org.arisgames.editor.util.AppDynamicEventManager;
+
 
 public class CreateOrOpenGameSelectorView extends Panel
 {
@@ -125,7 +128,15 @@ public class CreateOrOpenGameSelectorView extends Panel
         GameModel.getInstance().game.placeMarks.removeAll();
         GameModel.getInstance().game.placeMarks.addAll(gamePlacemarks);
         trace("Done loading and casting the locations.  Size = " + gamePlacemarks.length);
+        
+        trace("Dispatching APPLICATIONDYNAMICEVENT_GAMEPLACEMARKSLOADED");
+        var de:DynamicEvent = new DynamicEvent(AppConstants.APPLICATIONDYNAMICEVENT_GAMEPLACEMARKSLOADED);
+        AppDynamicEventManager.getInstance().dispatchEvent(de);
+        
         trace("Finished with handleLoadLocations.");
+        
+       
+        
     }
 
     private function handleLoadFoldersAndContentForObjectPalette(obj:Object):void
@@ -295,17 +306,17 @@ public class CreateOrOpenGameSelectorView extends Panel
         {
             if (obj.objectType == AppConstants.CONTENTTYPE_CHARACTER_DATABASE)
             {
-                trace("Load underlying character data...");
+                //trace("Load underlying character data...");
                 AppServices.getInstance().getCharacterById(GameModel.getInstance().game.gameId, obj.objectId, new Responder(handleLoadSpecificData, handleFault));
             }
             else if (obj.objectType == AppConstants.CONTENTTYPE_ITEM_DATABASE)
             {
-                trace("Load underlying item data...");
+                //trace("Load underlying item data...");
                 AppServices.getInstance().getItemById(GameModel.getInstance().game.gameId, obj.objectId, new Responder(handleLoadSpecificData, handleFault));
             }
             else if (obj.objectType == AppConstants.CONTENTTYPE_PAGE_DATABASE)
             {
-                trace("Load underlying page data...");
+                //trace("Load underlying page data...");
                 AppServices.getInstance().getPageById(GameModel.getInstance().game.gameId, obj.objectId, new Responder(handleLoadSpecificData, handleFault));
             }
         }
@@ -364,7 +375,7 @@ public class CreateOrOpenGameSelectorView extends Panel
         for (var j:Number = 0; j < GameModel.getInstance().game.gameObjects.length; j++)
         {
             var obj:ObjectPaletteItemBO = GameModel.getInstance().game.gameObjects.getItemAt(j) as ObjectPaletteItemBO;
-            trace("j = " + j + "; Looking at Game Object Id '" + obj.id + ".  It's Object Type = '" + obj.objectType + "', while it's Content Id = '" + obj.objectId + "'; Is Folder? " + obj.isFolder() + "");
+            //trace("j = " + j + "; Looking at Game Object Id '" + obj.id + ".  It's Object Type = '" + obj.objectType + "', while it's Content Id = '" + obj.objectId + "'; Is Folder? " + obj.isFolder() + "");
             AppUtils.matchDataWithGameObject(obj, objType, npc, item, node);
         }
     }
