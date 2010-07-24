@@ -16,7 +16,7 @@
             <mx:FormItem label="Plaque Name">
                 <mx:TextInput id="theName" width="200"/>
             </mx:FormItem>
-            <mx:FormItem label="Description">
+            <mx:FormItem label="Content">
                 <mx:TextArea id="description" width="200" height="110"/>
             </mx:FormItem>
         </mx:Form>
@@ -32,5 +32,6 @@
     </mx:ControlBar>
 
     <mx:StringValidator id="v1" source="{theName}" property="text" minLength="1" maxLength="50" required="true"/>
+    <mx:StringValidator id="v2" source="{description}" property="text" minLength="1" maxLength="16384" required="false"/>
     
 </v:ItemEditorPlaqueView>
