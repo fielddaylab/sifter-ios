@@ -16,14 +16,15 @@
     <mx:Panel id="objectPalette" title="Object Palette" layout="vertical" width="100%" height="100%" paddingTop="10"
               paddingRight="10" paddingBottom="10" paddingLeft="10" horizontalAlign="center">
         <mx:HBox id="topMenuBox" width="100%" horizontalAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
-			<mx:Button id="addFolderButton" label="Add Folder"/>
-            <mx:Button id="addObjectButton" label="Add Object"/>
+			<mx:Button id="editQuestsButton" label="Edit Quests"/>
+            <mx:Button id="editDialogButton" label="Edit Dialog"/>
+			<mx:Button id="editGoogleMapButton" label="Edit Map"/>
         </mx:HBox>
-        <c:PaletteTree id="paletteTree" width="100%" showRoot="false" height="100%" dataProvider="{treeModel}"
+        <c:PaletteTree id="paletteTree" width="100%" showRoot="false" height="95%" dataProvider="{treeModel}"
                  labelField="name" render="renderTree()" dragEnabled="true" dropEnabled="true" editable="false" doubleClickEnabled="true" iconField="iconPath"/>
         <mx:HBox id="bottomMenuBox" width="100%" horizontalAlign="left" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
-            <mx:Button id="editQuestsButton" label="Edit Quests"/>
-            <mx:Button id="editDialogButton" label="Edit Dialog"/>
+			<mx:Button id="addObjectButton" label="Add Object"/>
+			<mx:Button id="addFolderButton" label="Add Folder"/>
 			<mx:Spacer width="100%"/>
             <mx:Image id="trashIcon" source="@Embed(source='/images/trashcan-small.png')" showEffect="{glowImage}" dragEnter="trashDragEnterHandler(event);" dragExit="trashDragExitHandler(event);" dragDrop="trashDragDropHandler(event);"/>
         </mx:HBox>

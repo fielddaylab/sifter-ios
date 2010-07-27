@@ -13,6 +13,7 @@ import mx.events.FlexEvent;
 import org.arisgames.editor.components.NavigationMap;
 import org.arisgames.editor.util.AppConstants;
 
+// WB: Handles GeoSearch Events for The Map, passes them along to NavigationMap for FlyTo. 
 public class GameEditorMapView extends VBox
 {
     // Map and Control Pane

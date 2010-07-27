@@ -14,6 +14,7 @@ import mx.events.FlexEvent;
 import org.arisgames.editor.models.GameModel;
 import org.arisgames.editor.util.AppConstants;
 
+// WB I don't think this class is used anymore, replaced by components.PlaceMarkEditorView.as
 public class PlaceMarkEditorFormView extends Panel
 {
     // Content Types

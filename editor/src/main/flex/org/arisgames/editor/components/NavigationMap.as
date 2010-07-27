@@ -31,6 +31,7 @@ import org.arisgames.editor.util.AppConstants;
 import org.arisgames.editor.util.AppDynamicEventManager;
 import org.arisgames.editor.util.AppUtils;
 
+// Handles most of the interfacing with the Google Map APIs
 public class NavigationMap extends Map3D
 {
     private var markers:ArrayCollection;

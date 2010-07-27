@@ -51,6 +51,7 @@ public class ItemEditorItemView extends Panel
         trace("in ItemEditorFolderView's handleInit");
         cancelButton.addEventListener(MouseEvent.CLICK, handleCancelButton);
         saveButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
+		// WB Bugfix for MediaPickers losing saved information
 		mediaDisplay.iconPopupMediaPickerButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
 		mediaDisplay.mediaPopupMediaPickerButton.addEventListener(MouseEvent.CLICK, handleSaveButton);
     }

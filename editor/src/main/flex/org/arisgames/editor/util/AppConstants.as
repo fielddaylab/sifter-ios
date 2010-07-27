@@ -23,6 +23,8 @@ public class AppConstants
     public static const DYNAMICEVENT_OPENREQUIREMENTSEDITORMAP:String = "OpenRequirementsEditorMap";
     public static const DYNAMICEVENT_CLOSEREQUIREMENTSEDITORMAP:String = "CloseRequirementsEditorMap";
     public static const DYNAMICEVENT_SAVEREQUIREMENTDUETOMAPDATACHANGE:String = "SaveRequirementDueToMapDataChange";
+	public static const DYNAMICEVENT_OPENQUESTSMAP:String = "OpenQuestsMap";
+	public static const DYNAMICEVENT_CLOSEQUESTSMAP:String = "CloseQuestsMap";
 
     // Placemark Content
     public static const CONTENTTYPE_PAGE:String = "Plaque";

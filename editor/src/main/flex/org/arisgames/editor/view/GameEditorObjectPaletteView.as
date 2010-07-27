@@ -42,6 +42,7 @@ public class GameEditorObjectPaletteView extends VBox
     [Bindable] public var addFolderButton:Button;
 	[Bindable] public var editQuestsButton:Button;
 	[Bindable] public var editDialogButton:Button;
+	[Bindable] public var editGoogleMapButton:Button;
     [Bindable] public var trashIcon:Image;
     [Bindable] public var glowImage:Glow;
 
@@ -141,7 +142,7 @@ public class GameEditorObjectPaletteView extends VBox
         pt.y = addObjectButton.y;
         pt = addObjectButton.localToGlobal(pt);
 
-        myMenu.show(pt.x + 20, pt.y);
+        myMenu.show(pt.x + 30, pt.y - 50); // WB Magic number values here, play around with them as needed
     }
 
     private function addFolderButtonOnClick(evt:MouseEvent):void
@@ -156,6 +157,8 @@ public class GameEditorObjectPaletteView extends VBox
 	private function editQuestsButtonOnClick(evt:MouseEvent):void 
 	{
 		trace("editQuestsButtonOnClick() started... ");
+		var de:DynamicEvent = new DynamicEvent(AppConstants.DYNAMICEVENT_OPENQUESTSMAP);
+		AppDynamicEventManager.getInstance().dispatchEvent(de);
 	}
 	
 	private function editDialogButtonOnClick(evt:MouseEvent):void
