@@ -10,12 +10,12 @@
     <v:GameEditorObjectPaletteMX id="gameObjectPalette" width="300" height="100%"/>
     <v:GameEditorMapMX id="gameEditor" x="301" width="100%" height="100%"/>
     <v:GameEditorObjectEditorMX id="gameEditorObjectEditor" x="301" y="-275" width="100%" height="275"/>
-	<v:QuestsMapMX id="questsMap" x="301" y="-900" width="100%" height="900"/>
+	<v:QuestsMapMX id="questsMap" x="301" y="-1200" width="100%" height="100%"/>
 
     <mx:Move id="panelOut" target="{gameEditorObjectEditor}" yTo="0"  duration="1500"/>
     <mx:Move id="panelIn" target="{gameEditorObjectEditor}" yTo="-275" duration="1000"/>
 	
 	<mx:Move id="mapShow" target="{questsMap}" yTo="0" duration="1500"/>
-	<mx:Move id="mapHide" target="{questsMap}" yTo="-900" duration="1000"/>
+	<mx:Move id="mapHide" target="{questsMap}" yTo="-1200" duration="1000"/>
 
 </v:GameEditorContainerView>

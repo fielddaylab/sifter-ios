@@ -1,6 +1,6 @@
 package org.arisgames.editor.view
 {
-	import mx.containers.VBox;
+	import mx.containers.Box;
 	import mx.containers.Canvas
 	import mx.controls.Alert;
 	import mx.controls.Button;
@@ -17,10 +17,11 @@ package org.arisgames.editor.view
 	 */
 	public class QuestsMapView extends Canvas
 	{
+		[Bindable] public var mapArea:Box;
 		[Bindable] public var closeQuestsMapButton:Button;
 		[Bindable] public var saveQuestsMapButton:Button;
 		[Bindable] public var addQuestButton:Button;
-		[Bindable] public var questEditor:QuestsMapQuestEditorView;
+		//[Bindable] public var questEditor:QuestsMapQuestEditorView;
 		[Bindable] public var questEditShow:Move;
 		[Bindable] public var questEditHide:Move;
 		// Need a "currently editing quest", as well as an array for the collection of them, as well as other things I'm sure
@@ -37,7 +38,7 @@ package org.arisgames.editor.view
 			closeQuestsMapButton.addEventListener(MouseEvent.CLICK, onCloseButtonClick);
 			saveQuestsMapButton.addEventListener(MouseEvent.CLICK, onSaveButtonClick);
 			addQuestButton.addEventListener(MouseEvent.CLICK, onAddQuestButtonClick);
-			drawQuestBubble();
+			drawQuestBubble(mapArea.width/2, mapArea.height/2, 10, 5, 0);
 		}
 		
 		private function onCloseButtonClick(event:MouseEvent):void
@@ -64,10 +65,10 @@ package org.arisgames.editor.view
 			}
 		}
 		
-		private function drawQuestBubble():void
+		private function drawQuestBubble(x:Number, y:Number, rad:Number, smallRad:Number, qId:Number):void
 		{
-			var bubble:QuestsMapQuestBubbleView = new QuestsMapQuestBubbleView();
-			bubble.draw();
+			var bubble:QuestsMapQuestBubbleView = new QuestsMapQuestBubbleView(x, y, rad, smallRad, qId);
+			this.addChild(bubble);
 		}
 	}
 }
