@@ -17,6 +17,7 @@ public class AppDAO
     private static var contentServer:RemoteObject;
     private static var mediaServer:RemoteObject;
     private static var requirementsServer:RemoteObject;
+	private static var questsServer:RemoteObject;
 
     /**
      * Singleton constructor
@@ -146,5 +147,17 @@ public class AppDAO
         }
         return requirementsServer;
     }
+
+	public function getQuestsServer():RemoteObject 
+	{
+		if (questsServer == null)
+		{
+			questsServer = new RemoteObject();
+			questsServer.source = "aris.quests";
+			questsServer.destination = "amfphp";
+			questsServer.showBusyCursor = true;
+		}
+		return questsServer;
+	}
 }
 }

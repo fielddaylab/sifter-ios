@@ -346,5 +346,21 @@ public class AppServices
         l = AppDAO.getInstance().getRequirementsServer().deleteRequirement(gid, req.requirementId);
         l.addResponder(resp);
     }
+	
+	public function getRequirementsByGameId(gid:Number, resp:IResponder):void
+	{
+		trace("getRequirements called with GameID = '" + gid + "'");
+		var l:Object;
+		l = AppDAO.getInstance().getRequirementsServer().getRequirementsForObject(gid, "", 0); // This seems to be the way to select all Requirements for a game
+		l.addResponder(resp);
+	}
+	
+	public function getQuestsByGameId(gid:Number, resp:IResponder):void
+	{
+		trace("getQuests called with GameID = '" + gid + "'");
+		var l:Object;
+		l = AppDAO.getInstance().getQuestsServer().getQuests(gid);
+		l.addResponder(resp);
+	}
 }
 }
