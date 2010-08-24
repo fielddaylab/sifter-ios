@@ -2,10 +2,10 @@ package org.arisgames.editor.util
 {
 public class AppConstants
 {
-//    public static const APPLICATION_ENVIRONMENT_UPLOAD_SERVER_URL:String = "http://atsosxdev.doit.wisc.edu/aris/server/services/aris/uploadhandler.php";
-    public static const APPLICATION_ENVIRONMENT_UPLOAD_SERVER_URL:String = "http://www.arisgames.org/stagingserver1/services/aris/uploadHandler.php";
-//    public static const APPLICATION_ENVIRONMENT_GOOGLEMAP_KEY:String = "ABQIAAAA-Z69V9McvCh02XYNV5UHBBQsvlSBtAWfm4N2P3iTGfWOp-UrmRRTU3pFPQwMJB92SZ3plLjvRpMIIw";
-    public static const APPLICATION_ENVIRONMENT_GOOGLEMAP_KEY:String = "ABQIAAAA-Z69V9McvCh02XYNV5UHBBRloMOfjiI7F4SM41AgXh_4cb6l9xTHRyPNO3mgDcJkTIE742EL8ZoQ_Q";
+    public static const APPLICATION_ENVIRONMENT_UPLOAD_SERVER_URL:String = "http://atsosxdev.doit.wisc.edu/aris/server/services/aris/uploadhandler.php";
+//    public static const APPLICATION_ENVIRONMENT_UPLOAD_SERVER_URL:String = "http://www.arisgames.org/stagingserver1/services/aris/uploadHandler.php";
+    public static const APPLICATION_ENVIRONMENT_GOOGLEMAP_KEY:String = "ABQIAAAA-Z69V9McvCh02XYNV5UHBBQsvlSBtAWfm4N2P3iTGfWOp-UrmRRTU3pFPQwMJB92SZ3plLjvRpMIIw";
+//    public static const APPLICATION_ENVIRONMENT_GOOGLEMAP_KEY:String = "ABQIAAAA-Z69V9McvCh02XYNV5UHBBRloMOfjiI7F4SM41AgXh_4cb6l9xTHRyPNO3mgDcJkTIE742EL8ZoQ_Q";
 
     // Dynamic Events
     public static const APPLICATIONDYNAMICEVENT_CURRENTSTATECHANGED:String = "ApplicationDynamicEventCurrentStateChanged";
