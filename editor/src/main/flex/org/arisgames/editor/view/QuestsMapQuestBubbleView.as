@@ -13,6 +13,7 @@ package org.arisgames.editor.view
 	import org.arisgames.editor.util.AppDynamicEventManager;
 	
 	/**
+	 * Utility visualization of Quests for use on the QuestMap
 	 * 
 	 * @author Will Buck
 	 */
