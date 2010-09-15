@@ -2,9 +2,6 @@ package org.arisgames.editor.models
 {
 import org.arisgames.editor.data.Game;
 import org.arisgames.editor.data.PlaceMark;
-import org.arisgames.editor.data.businessobjects.QuestBubbleBO;
-import mx.collections.ArrayCollection;
-
 
 public class GameModel
 {
@@ -14,7 +11,6 @@ public class GameModel
     // Data
     [Bindable] public var game:Game;
     [Bindable] public var currentPlaceMark:PlaceMark;
-	public var questBubbles:ArrayCollection;
 
     /**
      * Singleton constructor... will throw error if accessed directly
@@ -27,7 +23,6 @@ public class GameModel
         }
         instance = this;
         game = new Game();
-		questBubbles = new ArrayCollection(); 	
     }
 
     public static function getInstance():GameModel
@@ -55,14 +50,5 @@ public class GameModel
             game.placeMarks.removeItemAt(index);    
         }
     }
-	
-	public function getQuestBubbleByQuestId(id:Number):QuestBubbleBO
-	{
-		for each(var qB:QuestBubbleBO in questBubbles)
-		{
-			if (qB.quest.questId == id) return qB
-		}
-		return null;
-	}
 }
 }

@@ -56,10 +56,7 @@ public class AppConstants
 
     // Requirement Types
     public static const REQUIREMENTTYPE_LOCATION:String = "Location";
-	public static const REQUIREMENTTYPE_QUEST_DISPLAY:String = "QuestDisplay";
-	public static const REQUIREMENTTYPE_QUEST_COMPLETE:String = "QuestComplete";
-	public static const REQUIREMENTTYPE_NODE:String = "Node";
-	
+
     // Requirement Options
     public static const REQUIREMENT_PLAYER_HAS_ITEM_DATABASE:String = "PLAYER_HAS_ITEM";
     public static const REQUIREMENT_PLAYER_HAS_ITEM_HUMAN:String = "Player Has Item";

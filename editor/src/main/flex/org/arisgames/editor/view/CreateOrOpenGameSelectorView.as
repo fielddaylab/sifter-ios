@@ -21,10 +21,7 @@ import org.arisgames.editor.data.arisserver.Item;
 import org.arisgames.editor.data.arisserver.Media;
 import org.arisgames.editor.data.arisserver.NPC;
 import org.arisgames.editor.data.arisserver.Node;
-import org.arisgames.editor.data.arisserver.Quest;
-import org.arisgames.editor.data.arisserver.Requirement;
 import org.arisgames.editor.data.businessobjects.ObjectPaletteItemBO;
-import org.arisgames.editor.data.businessobjects.QuestBubbleBO;
 import org.arisgames.editor.models.GameModel;
 import org.arisgames.editor.models.SecurityModel;
 import org.arisgames.editor.models.StateModel;
@@ -104,9 +101,6 @@ public class CreateOrOpenGameSelectorView extends Panel
         GameModel.getInstance().game.gameObjects.removeAll();
         AppServices.getInstance().getLocationsByGameId(g.gameId, new Responder(handleLoadLocations, handleFault));
         AppServices.getInstance().getFoldersAndContentByGameId(g.gameId, new Responder(handleLoadFoldersAndContentForObjectPalette, handleFault));
-		// TODO: WB these two calls need fixing, currently they break the app and I'm not sure why
-		//AppServices.getInstance().getQuestsByGameId(g.gameId, new Responder(handleLoadQuests, handleFault));
-		//AppServices.getInstance().getRequirementsByGameId(g.gameId, new Responder(handleLoadReqs, handleFault));
 
         StateModel.getInstance().currentState = StateModel.VIEWGAMEEDITOR;
     }
@@ -144,56 +138,6 @@ public class CreateOrOpenGameSelectorView extends Panel
        
         
     }
-	
-	private function handleLoadQuests(obj:Object):void
-	{
-		trace("handleLoadQuests called, loading 'em up...");
-		var quests:ArrayCollection = new ArrayCollection();
-		var questBubbles:ArrayCollection = new ArrayCollection();
-		
-		for (var j:Number = 0; j < obj.result.data.list.length; j++)
-		{
-			var q:Quest = new Quest();
-			q.questId = obj.result.data.list.getItemAt(j).quest_id;
-			q.name = obj.result.data.list.getItemAt(j).name;
-			q.description = obj.result.data.list.getItemAt(j).description;
-			q.textWhenComplete = obj.result.data.list.getItemAt(j).text_when_complete;
-			q.iconMediaId = obj.result.data.list.getItemAt(j).icon_media_id;
-			//q.mediaId = obj.result.data.list.getItemAt(j).quest_id; WB Not sure if Quests use mediaIds
-			quests.addItem(q);
-			var qB:QuestBubbleBO = new QuestBubbleBO();
-			qB.quest = q;
-			questBubbles.addItem(qB);
-		}
-		
-		GameModel.getInstance().game.quests.removeAll();
-		GameModel.getInstance().game.quests.addAll(quests);
-		
-		GameModel.getInstance().questBubbles.removeAll();
-		GameModel.getInstance().questBubbles.addAll(questBubbles);
-	}
-	
-	private function handleLoadReqs(obj:Object):void
-	{
-		trace("handleLoadReqs called, loading 'em up...");
-		var reqs:ArrayCollection = new ArrayCollection();
-		
-		for (var j:Number = 0; j < obj.result.data.list.length; j++)
-		{
-			var r:Requirement = new Requirement();
-			r.requirementId = obj.result.data.list.getItemAt(j).requirement_id;
-			r.contentType = obj.result.data.list.getItemAt(j).content_type;
-			r.contentId = obj.result.data.list.getItemAt(j).content_id;
-			r.requirement = obj.result.data.list.getItemAt(j).requirement;
-			r.requirementDetail1 = obj.result.data.list.getItemAt(j).requirement_detail_1;
-			r.requirementDetail2 = obj.result.data.list.getItemAt(j).requirement_detail_2;
-			r.requirementDetail3 = obj.result.data.list.getItemAt(j).requirement_detail_3;
-			reqs.addItem(r)
-		}
-		
-		GameModel.getInstance().game.requirements.removeAll();
-		GameModel.getInstance().game.requirements.addAll(reqs);
-	}
 
     private function handleLoadFoldersAndContentForObjectPalette(obj:Object):void
     {
@@ -458,7 +402,7 @@ public class CreateOrOpenGameSelectorView extends Panel
 
     public function handleFault(obj:Object):void
     {
-        trace("Fault called.  The error is: " + obj);
+        trace("Fault called.  The error is: " + obj.fault.faultString);
         Alert.show("Error occurred: " + obj.fault.faultString, "More problems..");
     }
 }
