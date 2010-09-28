@@ -165,7 +165,7 @@ public class PlaceMarkerEditorView extends Panel
         }
         else
         {
-            trace("Create Location (Placemark) was successfull");
+            trace("Create Location (Placemark) was successful");
             Alert.show("This placemark was succesfully created.", "Successfully Created Placemark");
         }
     }
