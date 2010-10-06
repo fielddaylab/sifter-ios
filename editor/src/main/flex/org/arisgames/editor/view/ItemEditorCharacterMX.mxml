@@ -11,22 +11,17 @@
                                   >
 
     <mx:HBox id="hbox">
-        <c:ItemEditorMediaDisplayMX id="mediaDisplay"/>
+        <c:ItemEditorMediaDisplayMX id="mediaDisplay"/> </mx:HBox>
+    <mx:VBox id="vbox">
         <mx:Form>
-            <mx:FormItem label="Character Name">
-                <mx:TextInput id="theName" width="200"/>
-            </mx:FormItem>
-            <mx:FormItem label="Greeting">
-                <mx:TextArea id="greeting" width="200" height="80"/>
-            </mx:FormItem>
+            <mx:FormItem label="Character Name"/>
+            <mx:TextInput id="theName" width="200"/>
+            <mx:FormItem label="Greeting"/>
+            <mx:TextArea id="greeting" width="200" height="110"/>
+            <mx:FormItem label="Developer Notes"/>
+            <mx:TextArea id="description" width="200" height="110"/>
         </mx:Form>
-        <mx:Form>
-            <mx:FormItem label="Notes (Not Displayed to Player)">
-                <mx:TextArea id="description" width="200" height="110"/>
-            </mx:FormItem>
-            
-        </mx:Form>
-    </mx:HBox>
+    </mx:VBox>
 
     <mx:ControlBar id="folderControlBar">
         <mx:Spacer width="100%" id="spacer"/>

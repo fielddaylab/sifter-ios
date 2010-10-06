@@ -12,18 +12,18 @@
 
     <mx:HBox id="hbox">
         <c:ItemEditorMediaDisplayMX id="mediaDisplay"/>
+    </mx:HBox>
+    <mx:VBox id="vbox">
         <mx:Form>
-            <mx:FormItem label="Plaque Name">
-                <mx:TextInput id="theName" width="200"/>
-            </mx:FormItem>
-            <mx:FormItem label="Content">
-                <mx:TextArea id="description" width="200" height="110"/>
-            </mx:FormItem>
+            <mx:FormItem label="Plaque Name"/>
+            <mx:TextInput id="theName" width="200"/>
+            <mx:FormItem label="Content"/>
+            <mx:TextArea id="description" height="110" width="200"/>
         </mx:Form>
 <!--
         <v:ItemEditorMediaPickerMX id="mediaPicker" visible="false" includeInLayout="false"/>
 -->
-    </mx:HBox>
+    </mx:VBox>
 
     <mx:ControlBar id="folderControlBar">
         <mx:Spacer width="100%" id="spacer"/>
