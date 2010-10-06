@@ -142,7 +142,7 @@ public class GameEditorObjectPaletteView extends VBox
         pt.y = addObjectButton.y;
         pt = addObjectButton.localToGlobal(pt);
 
-        myMenu.show(pt.x + 30, pt.y - 50); // WB Magic number values here, play around with them as needed
+        myMenu.show(pt.x + 0, pt.y - 66); // WB Magic number values here, play around with them as needed
     }
 
     private function addFolderButtonOnClick(evt:MouseEvent):void
@@ -306,7 +306,7 @@ public class GameEditorObjectPaletteView extends VBox
             trace("Dragged Object is a folder, so check to see if it's got any children before allowing deletion.")
             if (it.children.length > 0)
             {
-                trace("This folder has childre, so can't allow it to be deleted.");
+                trace("This folder has children, so can't allow it to be deleted.");
                 okDrop = false;
             }
         }
