@@ -11,9 +11,10 @@
                                   >
 
     <mx:HBox id="hbox">
-        <c:ItemEditorMediaDisplayMX id="mediaDisplay"/> </mx:HBox>
+        <c:ItemEditorMediaDisplayMX id="mediaDisplay"/>
+    </mx:HBox>
     <mx:VBox id="vbox">
-        <mx:Form>
+        <mx:Form id="theForm">
             <mx:FormItem label="Character Name"/>
             <mx:TextInput id="theName" width="200"/>
             <mx:FormItem label="Greeting"/>
