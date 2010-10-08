@@ -11,7 +11,8 @@
                                   >
 
     <mx:HBox id="hbox">
-        <c:ItemEditorMediaDisplayMX id="mediaDisplay"/></mx:HBox>
+        <c:ItemEditorMediaDisplayMX id="mediaDisplay"/>
+    </mx:HBox>
     <mx:VBox id="vbox">
     	<mx:Form id="theForm">
             <mx:FormItem label="Item Name"/>
