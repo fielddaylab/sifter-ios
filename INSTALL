@@ -15,35 +15,7 @@ For this example we will say you called the schema "aris_schema" and game it the
 4. Edit config.class to match your database configuration from above.
 
 5. Import the aris_server/aris_db_install.sql file into your new schema. 
-You can do this via commandline: mysql -u aris_username -p aris_schema < aris_db_install.sql
-
-
-
-
-BUILDING AND INSTALLING THE EDITOR
-
-1. Edit editor/src/main/resources/services-config.xml to point to the server you created above
-
-2. Edit editor/src/main/flex/org/arisgames/editor/util/AppConstants.as changing 
-APPLICATION_ENVIRONMENT_UPLOAD_SERVER_URL to the server created above and 
-APPLICATION_ENVIRONMENT_GOOGLEMAP_KEY to your google map api key
-
-3. Download the Maven 2.2.1 binary, then follow the instructions on installation from the bottom of the same page.
-Make sure to take the optional step described in the install doc to set the memory size to 2048 (eg. add "export JAVA_OPTS=-Xmx2048M" and "export MAVEN_OPTS=-Xmx2048M"  to your terminal/shell launch script)
-
-4. Change directory to the 'editor' directory and run 'mvn clean package'
-
-5. If everything runs correctly, it should download a bunch of packages and create a "target" directory where the build will sit.
-
-6. Copy target/editor-1.0.swf into target/classes
-
-7. Rename target/classes/editor-1.0.swf to ARISEditor.swf
-
-8. Copy the "target" directory and it's contents to your web server, renaming it whatever you wish. 
-For this example we will say you called it "aris_editor" and it is available at http://myserver.com/aris_editor
-
-9. Open http://myserver.com/aris_editor in a web browser
-
+You can do this via commandline: mysql -u aris_username -p aris_schema < aris_db_install
 
 
 BUILDING THE CLIENT
