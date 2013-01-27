@@ -18,11 +18,11 @@ For this example we will say you called the schema "aris_schema" and game it the
 
 5. Import the aris_server/aris_db_install.sql file into your new schema. 
 
-	mysql -u aris_username -p aris_schema < aris_db_install
+	mysql -u aris_username -p aris_schema < aris_db_install.sql
 
 6. Run the DB update script to make sure everything is up to snuff (this might produce a lot of errors, but you shouldn't need to mind them.
 
-	http://myserver.com/aris_server/json.php/aris_1_5.games.upgradeGameDatabases/0
+	http://myserver.com/aris_server/json.php/v1.games.upgradeGameDatabases/0
 
 7. Set file permissions so that the web server can write to the gamedata directory
 
@@ -30,9 +30,3 @@ For this example we will say you called the schema "aris_schema" and game it the
 	chmod -R 775 aris_server
 	chmod -R u+s gamedata
  
-
-BUILDING THE CLIENT
-
-You really shouldn't need to rebuild the client unless you want to change the default server it points to. 
-
-That is done by editing the root.plist file in the Settings Bundle.
