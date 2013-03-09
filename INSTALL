@@ -26,7 +26,7 @@ For this example we will say you called the schema "aris_schema" and game it the
 
 7. Set file permissions so that the web server can write to the gamedata directory
 
-	chmod -R apache:apache aris_server
+	chown -R apache:apache aris_server
 	chmod -R 775 aris_server
 	chmod -R u+s gamedata
  
