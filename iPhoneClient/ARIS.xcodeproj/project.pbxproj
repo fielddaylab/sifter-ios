@@ -387,11 +387,14 @@
 		DB7EEF7C15AB40C2009369D4 /* InventoryTradeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB7EEF7A15AB40C2009369D4 /* InventoryTradeViewController.xib */; };
 		DBBCE9E115937704006994F9 /* DefaultPCImage.png in Resources */ = {isa = PBXBuildFile; fileRef = DBBCE9E015937704006994F9 /* DefaultPCImage.png */; };
 		DBC3441315ADEED200FA902F /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBC3441115ADEED200FA902F /* RootViewController.m */; };
+		DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD235FCA1700DCCB00795077 /* InnovViewController.m */; };
+		DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD235FCB1700DCCB00795077 /* InnovViewController.xib */; };
 		DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C285016F3BF0D00CBC085 /* Logger.m */; };
 		DDBD616A1615127C00D492DB /* IconQuestsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DDBD61691615127C00D492DB /* IconQuestsButton.m */; };
 		DDC495DC16407DE500D4C063 /* PopOverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC495DA16407DE500D4C063 /* PopOverViewController.m */; };
 		DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC495DB16407DE500D4C063 /* PopOverViewController.xib */; };
 		DDC4ABDC15F117C500D525BA /* RoundedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC4ABDB15F117C500D525BA /* RoundedTableViewCell.m */; };
+		DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */; };
 		DDCD2DE316275A5B003AAC64 /* QuestDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCD2DE116275A5B003AAC64 /* QuestDetailsViewController.m */; };
 		DDCD2DE416275A5B003AAC64 /* QuestDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDCD2DE216275A5B003AAC64 /* QuestDetailsViewController.xib */; };
 		DDD0603216C3019500C5F37E /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD0603116C3019500C5F37E /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -1026,6 +1029,9 @@
 		DBBCE9E015937704006994F9 /* DefaultPCImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DefaultPCImage.png; sourceTree = "<group>"; };
 		DBC3441015ADEED200FA902F /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootViewController.h; path = Classes/RootViewController.h; sourceTree = "<group>"; };
 		DBC3441115ADEED200FA902F /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootViewController.m; path = Classes/RootViewController.m; sourceTree = "<group>"; };
+		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
+		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
+		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
 		DD3C284F16F3BF0D00CBC085 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		DD3C285016F3BF0D00CBC085 /* Logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logger.m; sourceTree = "<group>"; };
 		DDBD61681615127C00D492DB /* IconQuestsButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconQuestsButton.h; sourceTree = "<group>"; };
@@ -1035,6 +1041,8 @@
 		DDC495DB16407DE500D4C063 /* PopOverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopOverViewController.xib; sourceTree = "<group>"; };
 		DDC4ABDA15F117C500D525BA /* RoundedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoundedTableViewCell.h; path = Classes/RoundedTableViewCell.h; sourceTree = "<group>"; };
 		DDC4ABDB15F117C500D525BA /* RoundedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoundedTableViewCell.m; path = Classes/RoundedTableViewCell.m; sourceTree = "<group>"; };
+		DDCD2A281704C38700B2E4D1 /* CameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraOverlayView.h; sourceTree = "<group>"; };
+		DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraOverlayView.m; sourceTree = "<group>"; };
 		DDCD2DE016275A5B003AAC64 /* QuestDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestDetailsViewController.h; sourceTree = "<group>"; };
 		DDCD2DE116275A5B003AAC64 /* QuestDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestDetailsViewController.m; sourceTree = "<group>"; };
 		DDCD2DE216275A5B003AAC64 /* QuestDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuestDetailsViewController.xib; sourceTree = "<group>"; };
@@ -1302,6 +1310,7 @@
 				AB1CA8AA13C7CC9000131F81 /* Frameworks and Dependancies */,
 				AB0A5BA3120365420065CE68 /* Localizable.strings */,
 				A7149F9C0FB89DC8008BAB5D /* Settings.bundle */,
+				DD5C6AA71700D6FE00717031 /* InnovationViewControllers */,
 				A7986D6A0F8FEC7200A5469F /* Core App */,
 				A760473F0FC0AA1E00219A53 /* NearbyObjects */,
 				AB6B774810C9D61200275650 /* ARView */,
@@ -1615,6 +1624,8 @@
 				A7E39EAC0F5F60D000826198 /* CameraViewController.m */,
 				A7E39EC90F5F655E00826198 /* Camera.xib */,
 				AB4151CA11595A2600DBA15F /* cameraBackground.jpg */,
+				DDCD2A281704C38700B2E4D1 /* CameraOverlayView.h */,
+				DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */,
 			);
 			name = Camera;
 			sourceTree = "<group>";
@@ -2117,6 +2128,16 @@
 			name = "NPC Dialog";
 			sourceTree = "<group>";
 		};
+		DD5C6AA71700D6FE00717031 /* InnovationViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				DD235FC91700DCCB00795077 /* InnovViewController.h */,
+				DD235FCA1700DCCB00795077 /* InnovViewController.m */,
+				DD235FCB1700DCCB00795077 /* InnovViewController.xib */,
+			);
+			name = InnovationViewControllers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2398,6 +2419,7 @@
 				DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */,
 				AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */,
 				AAA5890216DE714A00C2445B /* BumpTestViewController.xib in Resources */,
+				DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2615,6 +2637,8 @@
 				AAA5890116DE714A00C2445B /* BumpTestViewController.m in Sources */,
 				AA73E48216E141D2001F11A6 /* GameObjectDisplayViewController.m in Sources */,
 				DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */,
+				DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */,
+				DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

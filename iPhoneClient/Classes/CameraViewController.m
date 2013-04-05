@@ -15,18 +15,20 @@
 #import "GPSViewController.h"
 #import "NoteCommentViewController.h"
 #import "NoteEditorViewController.h"
+#import "InnovViewController.h"
 #import "AssetsLibrary/AssetsLibrary.h"
 #import "UIImage+Scale.h"
 #import "UIImage+Resize.h"
 #import "UIImage+fixOrientation.h"
 #import "NSMutableDictionary+ImageMetadata.h"
 #import <ImageIO/ImageIO.h>
+#import <QuartzCore/QuartzCore.h>
 
 @implementation CameraViewController
 
 //@synthesize imagePickerController;
 @synthesize cameraButton;
-@synthesize libraryButton;
+//@synthesize libraryButton;
 @synthesize mediaData;
 @synthesize mediaFilename;
 @synthesize profileButton,parentDelegate,backView,showVid, noteId,editView,picker;
@@ -47,18 +49,23 @@
 	
 	//self.imagePickerController = [[UIImagePickerController alloc] init];
 	
-	[libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateNormal];
-	[libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];	
+	//[libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateNormal];
+//	[libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
 	
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateNormal];
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateHighlighted];	
     [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateNormal];
-    [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateHighlighted];    
+    [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateHighlighted];
+    
+    libraryButton.layer.borderWidth = 1.0f;
+    libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
+    libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+    libraryButton.layer.cornerRadius = 15.0f;
 		
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		self.cameraButton.enabled = YES;
+		self.cameraButton.enabled = NO;
 		self.cameraButton.alpha = 1.0;
-        self.profileButton.enabled = YES;
+        self.profileButton.enabled = NO;
         self.profileButton.alpha  = 1.0;
 	}
 	else {
@@ -77,8 +84,9 @@
     if(bringUpCamera){
         bringUpCamera = NO;
 
-   if(showVid) [self cameraButtonTouchAction];
-    else [self libraryButtonTouchAction];
+    if(showVid) [self cameraButtonTouchAction];
+    else
+        [self libraryButtonTouchAction:self];
     }
 }
 
@@ -90,9 +98,9 @@
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     picker.allowsEditing = NO;
 	picker.showsCameraControls = YES;
+    picker.cameraOverlayView = overlay;
 	[self presentModalViewController:picker animated:NO];
 }
-
         
 /*- (BOOL) isVideoCameraAvailable{
        // UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -106,14 +114,14 @@
         return YES;
     }*/
 
-- (IBAction)libraryButtonTouchAction {
+- (IBAction)libraryButtonTouchAction:(id)sender {
 	NSLog(@"Library Button Pressed");
-    picker = [[UIImagePickerController alloc]init];
+    if (sender != libraryButton) picker = [[UIImagePickerController alloc]init];
     picker.delegate = self;
     picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 	picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
-	[self presentModalViewController:picker animated:NO];
+	if (sender != libraryButton) [self presentModalViewController:picker animated:NO];
 }
 
 - (IBAction)profileButtonTouchAction {
@@ -221,8 +229,31 @@
                 }
                 ];
             }];
-        } 
-	}	
+        }
+        else{
+            // save image to temporary directory to be able to upload it
+            
+            NSURL *url = [NSURL URLWithString:path];
+            NSData *data = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
+            UIImage *img = [[UIImage alloc] initWithData:data];
+            
+            ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
+            UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
+            NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
+            NSData *imageData = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
+            imageData = [self dataWithEXIFUsingData:imageData];
+            
+            NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+            NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+            
+            [imageData writeToURL:imageURL atomically:YES];
+            
+            //Do the upload
+            [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+            if([self.editView isKindOfClass:[NoteEditorViewController class]])
+                [self.editView refreshViewFromModel];
+        }
+	}
 	else if ([mediaType isEqualToString:@"public.movie"]){
 		NSLog(@"CameraViewController: Found a Movie");
 		NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
@@ -254,7 +285,7 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)aPicker {
     [aPicker dismissModalViewControllerAnimated:NO];
-    if([backView isKindOfClass:[NotebookViewController class]]){
+    if([backView isKindOfClass:[NotebookViewController class]] || [backView isKindOfClass:[InnovViewController class]]){
         [[AppServices sharedAppServices]deleteNoteWithNoteId:self.noteId];
         [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];   
     }
@@ -339,4 +370,9 @@
 }
 
 
+- (void)viewDidUnload {
+    overlay = nil;
+    libraryButton = nil;
+    [super viewDidUnload];
+}
 @end

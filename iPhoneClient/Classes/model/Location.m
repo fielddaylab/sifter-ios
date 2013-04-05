@@ -140,7 +140,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"Location- Id:%d\tName:%@\tType:%@",self.locationId,self.name,self.objectType];
+    return [NSString stringWithFormat:@"Location- Id:%d \t Name:%@ \t Type:%@",self.locationId,self.name,self.objectType];
 }
 
 @end

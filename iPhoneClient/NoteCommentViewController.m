@@ -65,6 +65,16 @@
     self.navigationItem.rightBarButtonItem = addCommentButton;
     
     myIndexPath = [[NSIndexPath alloc] init];
+    
+    //Note to self: iOS is doing back button title/action on its own. Perform is not used
+  /*  UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
+                                   initWithTitle: NSLocalizedString(@"BackButtonKey", @"")
+                                   style: UIBarButtonItemStyleBordered
+                                   target: self action: @selector(perform:)];
+    
+    [self.navigationItem setBackBarButtonItem: backButton];
+    [self.navigationItem setLeftBarButtonItem:backButton]; */
+    
     [self.navigationItem.backBarButtonItem setAction:@selector(perform:)];
     // Do any additional setup after loading the view from its nib.
 }

@@ -7,6 +7,7 @@
 //
 
 #import "ARISAppDelegate.h"
+#import "InnovViewController.h"
 
 @implementation ARISAppDelegate
 
@@ -44,10 +45,12 @@ int steps = 0;
 	//To set these defaults, edit Settings.bundle->Root.plist
 	[[AppModel sharedAppModel] initUserDefaults];
 
+    InnovViewController *innov = [[InnovViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
     if([window respondsToSelector:@selector(setRootViewController:)])
-        [window setRootViewController:[RootViewController sharedRootViewController]];
+        [window setRootViewController:nav];
     else
-        [window addSubview:[RootViewController sharedRootViewController].view];
+        [window addSubview:nav.view];
     
     [Crittercism enableWithAppID: @"5101a46d59e1bd498c000002"];
 }

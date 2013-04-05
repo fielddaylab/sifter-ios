@@ -21,6 +21,7 @@
 #import "DropOnMapViewController.h"
 #import "NoteCommentViewController.h"
 #import "NoteDetailsViewController.h"
+#import "InnovViewController.h"
 #import "AppModel.h"
 #import "NoteContentCell.h"
 #import "NoteContentProtocol.h"
@@ -165,7 +166,7 @@
     if([self.delegate isKindOfClass:[GPSViewController class]]){
         [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
     }
-    if([self.delegate isKindOfClass:[NoteDetailsViewController class]]){
+    if([self.delegate isKindOfClass:[NoteDetailsViewController class]] || [self.delegate isKindOfClass:[InnovViewController class]]){
         [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.textField.text publicToMap:self.note.showOnMap publicToList:self.note.showOnList];
         self.note.title = self.textField.text;
         // if(![AppModel sharedAppModel].isGameNoteList)

@@ -1277,9 +1277,9 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 - (void)fetchAllPlayerLists
 {
 	[self fetchPlayerLocationList];
-	[self fetchPlayerQuestList];
-	[self fetchPlayerInventory];
-    [self fetchPlayerOverlayList];
+	//[self fetchPlayerQuestList];
+	//[self fetchPlayerInventory];
+    //[self fetchPlayerOverlayList];
 }
 
 - (void)resetAllPlayerLists

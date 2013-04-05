@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "AppModel.h"
+#import "CameraOverlayView.h"
 
 
 @interface CameraViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
 	IBOutlet UIButton *cameraButton;
-	IBOutlet UIButton *libraryButton;
+	//IBOutlet UIButton *libraryButton;
     IBOutlet UIButton *profileButton;
+    __weak IBOutlet UIButton *libraryButton;
 
  //   UIImagePickerController *imagePickerController;
 	NSData *mediaData;
@@ -23,11 +25,12 @@
     int noteId;
     BOOL bringUpCamera;
     UIImagePickerController *picker;
+    __weak IBOutlet CameraOverlayView *overlay;
 }
 
 @property (nonatomic) IBOutlet UIButton *cameraButton;
 @property (nonatomic) IBOutlet UIButton *profileButton;
-@property (nonatomic) IBOutlet UIButton *libraryButton;
+//@property (nonatomic) IBOutlet UIButton *libraryButton;
 //@property (nonatomic, retain) UIImagePickerController *imagePickerController;
 @property (nonatomic) NSData *mediaData;
 @property (nonatomic) NSString *mediaFilename;
@@ -41,7 +44,7 @@
 
 
 - (IBAction)cameraButtonTouchAction;
-- (IBAction)libraryButtonTouchAction;
+- (IBAction)libraryButtonTouchAction:(id)sender;
 - (IBAction)profileButtonTouchAction;
 //- (BOOL) isVideoCameraAvailable;
 -(void) uploadMedia;
