@@ -394,6 +394,8 @@
 		DDC495DC16407DE500D4C063 /* PopOverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC495DA16407DE500D4C063 /* PopOverViewController.m */; };
 		DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC495DB16407DE500D4C063 /* PopOverViewController.xib */; };
 		DDC4ABDC15F117C500D525BA /* RoundedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC4ABDB15F117C500D525BA /* RoundedTableViewCell.m */; };
+		DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */; };
+		DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */; };
 		DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */; };
 		DDCD2DE316275A5B003AAC64 /* QuestDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCD2DE116275A5B003AAC64 /* QuestDetailsViewController.m */; };
 		DDCD2DE416275A5B003AAC64 /* QuestDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDCD2DE216275A5B003AAC64 /* QuestDetailsViewController.xib */; };
@@ -1041,6 +1043,9 @@
 		DDC495DB16407DE500D4C063 /* PopOverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopOverViewController.xib; sourceTree = "<group>"; };
 		DDC4ABDA15F117C500D525BA /* RoundedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoundedTableViewCell.h; path = Classes/RoundedTableViewCell.h; sourceTree = "<group>"; };
 		DDC4ABDB15F117C500D525BA /* RoundedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoundedTableViewCell.m; path = Classes/RoundedTableViewCell.m; sourceTree = "<group>"; };
+		DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteEditorViewController.h; sourceTree = "<group>"; };
+		DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteEditorViewController.m; sourceTree = "<group>"; };
+		DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovNoteEditorViewController.xib; sourceTree = "<group>"; };
 		DDCD2A281704C38700B2E4D1 /* CameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraOverlayView.h; sourceTree = "<group>"; };
 		DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraOverlayView.m; sourceTree = "<group>"; };
 		DDCD2DE016275A5B003AAC64 /* QuestDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestDetailsViewController.h; sourceTree = "<group>"; };
@@ -2134,6 +2139,9 @@
 				DD235FC91700DCCB00795077 /* InnovViewController.h */,
 				DD235FCA1700DCCB00795077 /* InnovViewController.m */,
 				DD235FCB1700DCCB00795077 /* InnovViewController.xib */,
+				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
+				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
+				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
 			);
 			name = InnovationViewControllers;
 			sourceTree = "<group>";
@@ -2420,6 +2428,7 @@
 				AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */,
 				AAA5890216DE714A00C2445B /* BumpTestViewController.xib in Resources */,
 				DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */,
+				DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2639,6 +2648,7 @@
 				DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */,
 				DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */,
 				DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */,
+				DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

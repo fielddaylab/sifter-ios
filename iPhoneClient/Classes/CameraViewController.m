@@ -231,16 +231,11 @@
             }];
         }
         else{
-            // save image to temporary directory to be able to upload it
             
-            NSURL *url = [NSURL URLWithString:path];
             NSData *data = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
             UIImage *img = [[UIImage alloc] initWithData:data];
             
-            ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
-            UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
-            NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
-            NSData *imageData = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
+            NSData *imageData = UIImageJPEGRepresentation(img, 0.4);
             imageData = [self dataWithEXIFUsingData:imageData];
             
             NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];

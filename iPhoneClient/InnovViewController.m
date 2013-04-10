@@ -8,10 +8,12 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "InnovViewController.h"
+#import "Note.h"
 #import "NoteDetailsViewController.h"
 #import "NoteEditorViewController.h"
 
 #define INITIALSPAN 0.001
+#define WIDESPAN    0.025
 
 @interface InnovViewController ()
 
@@ -19,7 +21,7 @@
 
 @implementation InnovViewController
 
-@synthesize note;
+@synthesize isLocal, lastLocation, noteToAdd;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -31,16 +33,138 @@
         locationsToAdd    = [[NSMutableArray alloc] initWithCapacity:10];
         locationsToRemove = [[NSMutableArray alloc] initWithCapacity:10];
 		
-     //   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeLoadingIndicator)     name:@"ConnectionLost"                               object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                name:@"PlayerMoved"                                  object:nil];
-	//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeLoadingIndicator)     name:@"ReceivedLocationList"                         object:nil];
-    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOverlays)             name:@"NewOverlayListReady"                          object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)
+            name:@"PlayerMoved"                                  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"           object:nil];
    //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
     }
     return self;
 }
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    
+#warning unimplemented: change game and finalize settings
+    
+    Game *game = [[Game alloc] init];
+    game.gameId = 3377;
+    game.hasBeenPlayed            = YES;
+    game.isLocational             = YES;
+    game.showPlayerLocation       = YES;
+    game.allowNoteComments        = YES;
+    game.allowNoteLikes           = YES;
+    game.inventoryModel.weightCap = 0;
+    game.rating                   = 5;
+    game.pcMediaId                = 0;
+    game.numPlayers               = 10;
+    game.playerCount              = 5;
+    game.gdescription             = @"Fun";
+    game.name                     = @"Note Share";
+    game.authors                  = @"Jacob Hanshaw";
+    game.mapType                  = @"STREET";
+    [game getReadyToPlay];
+    [AppModel sharedAppModel].currentGame = game;
+    [AppModel sharedAppModel].playerId = 7;
+    [AppModel sharedAppModel].loggedIn = YES;
+#warning Make initially not logged in
+    
+    [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
+    
+    [contentView addSubview:mapContentView];
+    [mapView setDelegate:self];
+    
+#warning update madison's center
+    madisonCenter = [[CLLocation alloc] initWithLatitude:43.07 longitude:-89.41];
+    
+    //Center on Madison
+	MKCoordinateRegion region = mapView.region;
+	region.center = madisonCenter.coordinate;
+	region.span = MKCoordinateSpanMake(WIDESPAN, WIDESPAN);
+    
+	[mapView setRegion:region animated:NO];
+    
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    
+    showTagsButton.layer.cornerRadius = 4.0f;
+    
+    switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    switchButton.frame = CGRectMake(0, 0, 30, 30);
+    [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateNormal];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateHighlighted];
+    switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
+    self.navigationItem.leftBarButtonItem = switchViewsBarButton;
+    
+    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
+    self.navigationItem.rightBarButtonItem = settingsBarButton;
+    
+    tracking = NO;
+    
+	trackingButton.backgroundColor = [UIColor lightGrayColor];
+    trackingButton.layer.cornerRadius = 4.0f;
+    trackingButton.hidden = YES;
+    
+    searchBarTop = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, 320.0, 44.0)];
+    searchBarTop.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    searchBarTop.barStyle = UIBarStyleBlack;
+    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, 44.0)];
+    searchBarView.autoresizingMask = 0;
+    searchBarTop.delegate = self;
+    [searchBarView addSubview:searchBarTop];
+    self.navigationItem.titleView = searchBarView;
+    
+    [self refresh];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    
+    //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
+    //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
+    //   else                                                                                  mapView.mapType = MKMapTypeStandard;
+    
+    if(noteToAdd != nil){
+#warning unimplemented
+        //hide new note
+    }
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    
+    [super viewDidAppear:animated];
+    
+	[[AppServices sharedAppServices] updateServerMapViewed];
+    
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
+	
+    [self refreshViewFromModel];
+	[self refresh];
+	
+	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
+	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
+    
+    if(noteToAdd != nil){
+#warning unimplemented
+        [self animateInNewNote];
+        noteToAdd = nil;
+    }
+    
+}
+
+- (void) animateInNewNote {
+#warning unimplemented
+    //Switch to mapview
+    //Animate in note
+}
+
 /*
 - (IBAction) changeMapType:(id)sender
 {
@@ -61,9 +185,9 @@
 	}
 }
 */
-- (IBAction) refreshButtonAction
+- (IBAction)trackingButtonPressed:(id)sender
 {
-	//[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
+	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
 	
 	tracking = YES;
 	trackingButton.backgroundColor = [UIColor blueColor];
@@ -73,125 +197,27 @@
     
 	[self refresh];
 }
-/*
-- (void)playerButtonTouch
-{
-    [AppModel sharedAppModel].hidePlayers = ![AppModel sharedAppModel].hidePlayers;
-    [self hideOrShowPlayerLocations];
-}
-
-- (void)hideOrShowPlayerLocations
-{
-    if([AppModel sharedAppModel].hidePlayers)
-    {
-        [playerButton setStyle:UIBarButtonItemStyleBordered];
-        if (mapContentView)
-        {
-            NSEnumerator *existingAnnotationsEnumerator = [[[mapContentView annotations] copy] objectEnumerator];
-            Annotation *annotation;
-            while (annotation = [existingAnnotationsEnumerator nextObject])
-            {
-                if (annotation != (Annotation *)mapView.userLocation && annotation.kind == NearbyObjectPlayer)
-                    [mapView removeAnnotation:annotation];
-            }
-        }
-    }
-    else
-        [playerButton setStyle:UIBarButtonItemStyleDone];
-    
-	[[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
-	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
-    
-    tracking = NO;
-	[self refresh];
-}
-
-- (IBAction) addMediaButtonAction:(id)sender
-{
-    NoteEditorViewController *noteVC = [[NoteEditorViewController alloc] initWithNibName:@"NoteEditorViewController" bundle:nil];
-    noteVC.delegate = self;
-    [self.navigationController pushViewController:noteVC animated:YES];
-}
-
-
-- (MKOverlayView *) mapView:(MKMapView *)mapView viewForOverlay:(id)ovrlay
-{
-    TileOverlayView *view = [[TileOverlayView alloc] initWithOverlay:ovrlay];
-    view.tileAlpha = 1;
-    
-    [AppModel sharedAppModel].overlayIsVisible = true;
-    
-    return view;
-}
-
-- (void) updateOverlays
-{
-    [overlayArray removeAllObjects];
-    [mapContentView removeOverlays:[mapContentView overlays]];
-    
-    for(int i = 0; i < [[AppModel sharedAppModel].overlayList count]; i++)
-    {
-        overlay = [[TileOverlay alloc] initWithIndex: i];
-        if(overlay != NULL)
-        {
-            [overlayArray addObject:overlay];
-            [mapContentView addOverlay:overlay];
-        }
-    }
-}
-*/
-- (void) viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-
- //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
- //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
- //   else                                                                                  mapView.mapType = MKMapTypeStandard;
-    [mapView setShowsUserLocation:YES];
- //   [self hideOrShowPlayerLocations];
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-	[[AppServices sharedAppServices] updateServerMapViewed];
-    
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
-	
-    [self refreshViewFromModel];
-	[self refresh];
-	
-	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
-	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
-   // [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-}
 
 - (void) refresh
 {
     if (mapView)
     {
-        if ([AppModel sharedAppModel].currentGame.gameId != 0)
-        {
-            [[AppServices sharedAppServices] fetchPlayerLocationList];
-       //     [[AppServices sharedAppServices] fetchPlayerOverlayList];
-       //     [self showLoadingIndicator];
-        }
+        [[AppServices sharedAppServices] fetchPlayerLocationList];
+        [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
+        [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
         
         if (tracking) [self zoomAndCenterMap];
-        
-        //What? Pen down? What's going on here?
-        /* if(mapTrace){
-         [self.route addObject:[AppModel sharedAppModel].playerLocation];
-         MKPolyline *line = [[MKPolyline alloc] init];
-         line
-         }*/
     }
 }
 
 - (void) playerMoved
 {
+    CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
+    
+#warning update distance magic number
+    isLocal = distance <= 20000;
+    trackingButton.hidden = !isLocal;
+    [mapView setShowsUserLocation:isLocal];
     if (mapView && tracking) [self zoomAndCenterMap];
 }
 
@@ -201,25 +227,13 @@
 	
 	//Center the map on the player
 	MKCoordinateRegion region = mapView.region;
-	region.center = [AppModel sharedAppModel].playerLocation.coordinate; //FIX: CHANGE TO CENTER OF MADISON
+	region.center = [AppModel sharedAppModel].playerLocation.coordinate;
+    #warning CHANGE TO CENTER OF MADISON
 	region.span = MKCoordinateSpanMake(INITIALSPAN, INITIALSPAN);
     
 	[mapView setRegion:region animated:YES];
 }
-/*
-- (void) showLoadingIndicator
-{
-	UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-	UIBarButtonItem * barButton = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
-	[[self navigationItem] setRightBarButtonItem:barButton];
-	[activityIndicator startAnimating];
-}
 
-- (void) removeLoadingIndicator
-{
-	[[self navigationItem] setRightBarButtonItem:nil];
-}
-*/
 - (void) addLocationsToNewQueue:(NSNotification *)notification
 {
     //Quickly make sure we're not re-adding any info (let the 'newly' added ones take over)
@@ -292,7 +306,7 @@
     for (int i = 0; i < [locationsToAdd count]; i++)
     {
         tmpLocation = (Location *)[locationsToAdd objectAtIndex:i];
-        if (tmpLocation.hidden == YES || (tmpLocation.kind == NearbyObjectPlayer && [AppModel sharedAppModel].hidePlayers)) continue;
+        if (tmpLocation.hidden == YES || tmpLocation.kind != NearbyObjectNote) continue; //Would check if player and if players should be shown, but only adds notes anyway, also removed some items code
         
         CLLocationCoordinate2D locationLatLong = tmpLocation.location.coordinate;
         
@@ -302,41 +316,9 @@
         annotation.kind = tmpLocation.kind;
         annotation.iconMediaId = tmpLocation.iconMediaId;
         
-        if (tmpLocation.kind == NearbyObjectItem && tmpLocation.qty > 1 && annotation.title != nil)
-            annotation.subtitle = [NSString stringWithFormat:@"x %d",tmpLocation.qty];
-        
-        if(annotation.kind == NearbyObjectNote) [mapView addAnnotation:annotation];
+        [mapView addAnnotation:annotation];
     }
     [locationsToAdd removeAllObjects];
-}
-
-- (void)dealloc
-{
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
--(BOOL)shouldAutorotate
-{
-    return YES;
-}
-
--(NSInteger)supportedInterfaceOrientations
-{
-    NSInteger mask = 0;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
-        mask |= UIInterfaceOrientationMaskLandscapeLeft;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
-        mask |= UIInterfaceOrientationMaskLandscapeRight;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
-        mask |= UIInterfaceOrientationMaskPortrait;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
-        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
-    return mask;
 }
 
 #pragma mark MKMapViewDelegate
@@ -399,18 +381,6 @@
     }
 }
 
-- (double)getZoomLevel:(MKMapView *)mV
-{
-    double MERCATOR_RADIUS = 85445659.44705395;
-    double MAX_GOOGLE_LEVELS  = 20;
-    CLLocationDegrees longitudeDelta = mV.region.span.longitudeDelta;
-    CGFloat mapWidthInPixels = mV.bounds.size.width;
-    double zoomScale = longitudeDelta * MERCATOR_RADIUS * M_PI / (180.0 * mapWidthInPixels);
-    double zoomer = MAX_GOOGLE_LEVELS - log2( zoomScale );
-    if ( zoomer < 0 ) zoomer = 0;
-    return zoomer;
-}
-
 #pragma mark UIActionSheet Delegate
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -433,67 +403,6 @@
             NSLog(@"InnovViewController: ERROR: attempted to display nil note");
         }
     }
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    Game *game = [[Game alloc] init];
-    game.gameId = 3377;
-    game.hasBeenPlayed            = YES;
-    game.isLocational             = YES;
-    game.showPlayerLocation       = YES;
-    game.allowNoteComments        = YES;
-    game.allowNoteLikes           = YES;
-    game.inventoryModel.weightCap = 0;
-    game.rating                   = 5;
-    game.pcMediaId                = 0;
-    game.numPlayers               = 10;
-    game.playerCount              = 5;
-    game.gdescription             = @"Fun";
-    game.name                     = @"Note Share";
-    game.authors                  = @"Jacob Hanshaw";
-    game.mapType                  = @"STREET";
-    [game getReadyToPlay];
-    [AppModel sharedAppModel].currentGame = game;
-    [AppModel sharedAppModel].playerId = 7;
-    [AppModel sharedAppModel].loggedIn = YES;
-    
-    [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
-    
-    [contentView addSubview:mapContentView];
-    [mapView setDelegate:self];
-    showTagsButton.layer.cornerRadius = 4.0f;
-    trackingButton.layer.cornerRadius = 4.0f;
-    
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    switchButton.frame = CGRectMake(0, 0, 30, 30);
-    [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateNormal];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateHighlighted];
-    switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
-    self.navigationItem.leftBarButtonItem = switchViewsBarButton;
-    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
-    self.navigationItem.rightBarButtonItem = settingsBarButton;
-	trackingButton.backgroundColor = [UIColor blueColor];
-    
-    searchBarTop = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, 320.0, 44.0)];
-    searchBarTop.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    searchBarTop.barStyle = UIBarStyleBlack;
-    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, 44.0)];
-    searchBarView.autoresizingMask = 0;
-    searchBarTop.delegate = self;
-    [searchBarView addSubview:searchBarTop];
-    self.navigationItem.titleView = searchBarView;
-    
-    //addMediaButton.target = self;
-    //addMediaButton.action = @selector(addMediaButtonAction:);
-	
-    //[self updateOverlays];
-    [self refresh];
 }
 
 - (void)switchViews {
@@ -537,21 +446,23 @@
     [UIView commitAnimations];
 }
 
-- (void)settingsPressed {
+- (void)settingsPressed
+{
+#warning unimplemented
 }
 
-- (IBAction)showTagsPressed:(id)sender {
+- (IBAction)showTagsPressed:(id)sender
+{
+#warning unimplemented
 }
 
 - (IBAction)cameraPressed:(id)sender {
-    NoteEditorViewController *noteVC = [[NoteEditorViewController alloc] initWithNibName:@"NoteEditorViewController" bundle:nil];
-    noteVC.startWithView = [sender tag] + 1;
-    noteVC.delegate = self;
-    [self.navigationController pushViewController:noteVC animated:NO];
-}
-
-- (IBAction)trackingButtonPressed:(id)sender {
-    [self refreshButtonAction];
+    
+    editorVC = [[InnovNoteEditorViewController alloc] init];
+    editorVC.delegate = self;
+    lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
+    
+    [self.navigationController pushViewController:editorVC animated:NO];
 }
 
 #pragma mark UISearchBar Methods 
@@ -564,7 +475,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBarTop resignFirstResponder];
-    //FIX: THEN DO FUN THINGS!
+    #warning THEN DO FUN THINGS!
 }
 
 #pragma mark TableView Delegate and Datasource Methods
@@ -601,6 +512,35 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 	
+}
+
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+-(NSInteger)supportedInterfaceOrientations
+{
+    NSInteger mask = 0;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
+        mask |= UIInterfaceOrientationMaskLandscapeLeft;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
+        mask |= UIInterfaceOrientationMaskLandscapeRight;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
+        mask |= UIInterfaceOrientationMaskPortrait;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
+        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
+    return mask;
 }
 
 - (void)didReceiveMemoryWarning

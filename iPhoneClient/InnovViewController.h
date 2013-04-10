@@ -13,6 +13,7 @@
 #import "Location.h"
 #import "Annotation.h"
 #import "AnnotationView.h"
+#import "InnovNoteEditorViewController.h"
 #import "Note.h"
 
 @interface InnovViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, UIActionSheetDelegate, UISearchBarDelegate> {
@@ -31,15 +32,22 @@
     UISearchBar *searchBarTop;
     
     BOOL tracking;
+    BOOL isLocal;
+    CLLocation *madisonCenter;
+    CLLocation *lastLocation;
     BOOL appSetNextRegionChange;
     NSTimer *refreshTimer;
     NSMutableArray *locationsToAdd;
     NSMutableArray *locationsToRemove;
     
-    Note *note;
+    Note *noteToAdd;
+    
+    InnovNoteEditorViewController *editorVC;
 }
 
-@property(nonatomic)Note *note;
+@property (readwrite) BOOL isLocal;
+@property (nonatomic) CLLocation *lastLocation;
+@property (nonatomic) Note *noteToAdd;
 
 - (void)switchViews;
 - (void)settingsPressed;
