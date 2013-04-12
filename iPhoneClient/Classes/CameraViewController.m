@@ -16,6 +16,7 @@
 #import "NoteCommentViewController.h"
 #import "NoteEditorViewController.h"
 #import "InnovViewController.h"
+#import "InnovNoteEditorViewController.h"
 #import "AssetsLibrary/AssetsLibrary.h"
 #import "UIImage+Scale.h"
 #import "UIImage+Resize.h"
@@ -28,7 +29,6 @@
 
 //@synthesize imagePickerController;
 @synthesize cameraButton;
-//@synthesize libraryButton;
 @synthesize mediaData;
 @synthesize mediaFilename;
 @synthesize profileButton,parentDelegate,backView,showVid, noteId,editView,picker;
@@ -49,18 +49,15 @@
 	
 	//self.imagePickerController = [[UIImagePickerController alloc] init];
 	
-	//[libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateNormal];
-//	[libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
+	//[overlay.libraryButton setTitle: NSLocalizedString(@"CameralibraryButtonTitleKey",@"") forState: UIControlStateNormal];
+//	[overlay.libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
 	
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateNormal];
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateHighlighted];	
     [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateNormal];
     [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateHighlighted];
     
-    libraryButton.layer.borderWidth = 1.0f;
-    libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
-    libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
-    libraryButton.layer.cornerRadius = 15.0f;
+
 		
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		self.cameraButton.enabled = NO;
@@ -116,12 +113,12 @@
 
 - (IBAction)libraryButtonTouchAction:(id)sender {
 	NSLog(@"Library Button Pressed");
-    if (sender != libraryButton) picker = [[UIImagePickerController alloc]init];
+    if (sender != overlay.libraryButton) picker = [[UIImagePickerController alloc]init];
     picker.delegate = self;
     picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 	picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
-	if (sender != libraryButton) [self presentModalViewController:picker animated:NO];
+	if (sender != overlay.libraryButton) [self presentModalViewController:picker animated:NO];
 }
 
 - (IBAction)profileButtonTouchAction {
@@ -140,6 +137,25 @@
 #pragma mark UIImagePickerControllerDelegate Protocol Methods
 - (void)imagePickerController:(UIImagePickerController *)aPicker didFinishPickingMediaWithInfo:(NSDictionary  *)info
 {
+    
+    if([backView isKindOfClass:[InnovNoteEditorViewController class]]){
+        Note *note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
+        for(int i = 0; i < [note.contents count]; ++i)
+        {
+            NoteContent *noteContent = [note.contents objectAtIndex:i];
+            if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
+            {
+                if([[noteContent getUploadState] isEqualToString:@"uploadStateDONE"])
+                    [[AppServices sharedAppServices] deleteNoteContentWithContentId:[noteContent getContentId]];
+                else
+                    [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.noteId andFileURL:[NSURL URLWithString:[[noteContent getMedia] url]]];
+                
+                [note.contents removeObjectAtIndex:i];
+            }
+        }
+        
+    }
+    
 	NSLog(@"CameraViewController: User Selected an Image or Video");
     [aPicker dismissModalViewControllerAnimated:NO];
 
@@ -266,7 +282,7 @@
   [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeVideo withFileURL:videoURL];
     
     }	
-
+    
     [self.navigationController popViewControllerAnimated:NO];
 }
 
@@ -281,7 +297,7 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)aPicker {
     [aPicker dismissModalViewControllerAnimated:NO];
     if([backView isKindOfClass:[NotebookViewController class]] || [backView isKindOfClass:[InnovViewController class]]){
-        [[AppServices sharedAppServices]deleteNoteWithNoteId:self.noteId];
+        [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
         [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];   
     }
     [self.navigationController popToViewController:self.backView animated:NO];
@@ -367,7 +383,6 @@
 
 - (void)viewDidUnload {
     overlay = nil;
-    libraryButton = nil;
     [super viewDidUnload];
 }
 @end

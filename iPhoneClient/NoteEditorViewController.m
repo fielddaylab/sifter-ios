@@ -468,10 +468,10 @@
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if([[[self.note.contents objectAtIndex:indexPath.row] getUploadState] isEqualToString:@"uploadStateDONE"]){
-        [[AppServices sharedAppServices]deleteNoteContentWithContentId:[[self.note.contents objectAtIndex:indexPath.row] getContentId]];
+        [[AppServices sharedAppServices] deleteNoteContentWithContentId:[[self.note.contents objectAtIndex:indexPath.row] getContentId]];
     }
     else{
-        [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.note.noteId andFileURL:[NSURL URLWithString:[[[self.note.contents objectAtIndex:indexPath.row]getMedia] url]]];
+        [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.note.noteId andFileURL:[NSURL URLWithString:[[[self.note.contents objectAtIndex:indexPath.row] getMedia] url]]];
         
     }
     [self.note.contents removeObjectAtIndex:indexPath.row];
@@ -482,9 +482,7 @@
     [[self navigationItem] setRightBarButtonItem:nil];
     [contentTable reloadData];
 }
-- (void)tableView:(UITableView *)tableView 
-
-didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
     [contentTable reloadData];
 }
 - (void)refreshViewFromModel

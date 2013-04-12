@@ -15,7 +15,6 @@
 	IBOutlet UIButton *cameraButton;
 	//IBOutlet UIButton *libraryButton;
     IBOutlet UIButton *profileButton;
-    __weak IBOutlet UIButton *libraryButton;
 
  //   UIImagePickerController *imagePickerController;
 	NSData *mediaData;
@@ -30,7 +29,6 @@
 
 @property (nonatomic) IBOutlet UIButton *cameraButton;
 @property (nonatomic) IBOutlet UIButton *profileButton;
-//@property (nonatomic) IBOutlet UIButton *libraryButton;
 //@property (nonatomic, retain) UIImagePickerController *imagePickerController;
 @property (nonatomic) NSData *mediaData;
 @property (nonatomic) NSString *mediaFilename;

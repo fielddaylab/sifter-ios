@@ -123,8 +123,8 @@
 {
     [super viewWillAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+   // [self.navigationController setNavigationBarHidden:YES animated:NO];
+   // [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     
     //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
     //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
@@ -143,7 +143,7 @@
     
 	[[AppServices sharedAppServices] updateServerMapViewed];
     
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
+  //  [self.navigationController setNavigationBarHidden:NO animated:NO];
 	
     [self refreshViewFromModel];
 	[self refresh];
@@ -205,6 +205,7 @@
         [[AppServices sharedAppServices] fetchPlayerLocationList];
         [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
         [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+        [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously: YES];
         
         if (tracking) [self zoomAndCenterMap];
     }
@@ -462,7 +463,7 @@
     editorVC.delegate = self;
     lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
     
-    [self.navigationController pushViewController:editorVC animated:NO];
+    [self.navigationController pushViewController:editorVC animated:YES];
 }
 
 #pragma mark UISearchBar Methods 

@@ -173,7 +173,7 @@
 											[NSNumber numberWithInt:16000.0],AVSampleRateKey,
 											[NSNumber numberWithInt: 1],AVNumberOfChannelsKey,
 											[NSNumber numberWithInt: AVAudioQualityMin],AVSampleRateConverterAudioQualityKey,
-											nil];
+											nil]; 
 			
 			AVAudioRecorder *newRecorder = [[AVAudioRecorder alloc] initWithURL: soundFileURL settings: recordSettings error: nil];
 			self.soundRecorder = newRecorder;
@@ -283,8 +283,6 @@
 	[self updateButtonsForCurrentMode];
 }
 
-
-
 - (void)updateMeter {
 	[self.soundRecorder updateMeters];
 	float levelInDb = [self.soundRecorder averagePowerForChannel:0];
@@ -299,10 +297,6 @@
 	
 	[self.meter updateLevel:levelInZeroToOne];
 }
-
-
-
-
 
 #pragma mark Audio Recorder Delegate Metods
 
@@ -332,8 +326,7 @@
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
-	NSLog(@"AudioRecorder: Playback Error");
+	NSLog(@"AudioRecorder: Playback Error: %@", [error localizedDescription]);
 }
-
 
 @end

@@ -13,6 +13,9 @@
 #import "CameraViewController.h"
 #import "Tag.h"
 #import "TagCell.h"
+#import "Logger.h"
+
+#define DEFAULTTEXT @"Write a caption..."
 
 @interface InnovNoteEditorViewController ()
 
@@ -28,6 +31,8 @@
     if (self) {
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
+        
+        self.title = @"New Note";
         
         gameTagList = [[NSMutableArray alloc]initWithCapacity:10];
     }
@@ -52,8 +57,14 @@
                                                                   action:@selector(backButtonTouchAction:)];
     self.navigationItem.rightBarButtonItem = doneButton;
     
-    [[AVAudioSession sharedInstance] setDelegate: self];
+    imageView.delegate = self;
     
+    [[AVAudioSession sharedInstance] setDelegate: self];
+    NSString *tempDir = NSTemporaryDirectory ();
+    NSString *soundFilePath =[tempDir stringByAppendingString: [NSString stringWithFormat:@"%@.caf",[self getUniqueId]]];
+    soundFileURL = [[NSURL alloc] initFileURLWithPath: soundFilePath];
+    
+    [self refreshCategories];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -62,7 +73,7 @@
     
     if(note.noteId == 0)
     {
-        note = [[Note alloc]init];
+        note = [[Note alloc] init];
         note.creatorId = [AppModel sharedAppModel].playerId;
         note.username = [AppModel sharedAppModel].userName;
         note.noteId = [[AppServices sharedAppServices] createNoteStartIncomplete];
@@ -75,16 +86,37 @@
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:self.delegate cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
             [alert show];
         }
+        captionTextView.text = DEFAULTTEXT;
+        captionTextView.textColor = [UIColor lightGrayColor];
+        
+        imageView.userInteractionEnabled = NO;
+        
+        mode = kInnovAudioRecorderNoAudio;
+        [self updateButtonsForCurrentMode];
+        
+        [[AppModel sharedAppModel].playerNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+        
         [self cameraButtonTouchAction];
     }
     else
     {
 #warning when do we edit, populate view if editable
+//        captionTextView.text = DEFAULTTEXT;
+        
+        imageView.userInteractionEnabled = YES;
+        
+        NSError *error;
+      /*  [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
+        [[Logger sharedLogger] logError:error];
+        [[AVAudioSession sharedInstance] setActive: YES error: &error];
+        [[Logger sharedLogger] logError:error];*/
+        
+        mode = kInnovAudioRecorderNoAudio;
+        [self updateButtonsForCurrentMode];
     }
     
-    [[AppModel sharedAppModel].playerNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+    [self refreshViewFromModel];
     
-    [self refreshCategories];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -105,16 +137,10 @@
 #warning point where added to map may change
     [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
     self.note.dropped = YES;
-}
-
-- (IBAction)recordButtonPressed:(id)sender
-{
-  #warning unimplemented  
-}
-
-- (IBAction)deleteAudioButtonPressed:(id)sender
-{
-   #warning unimplemented 
+    
+    NSError *error;
+    [[AVAudioSession sharedInstance] setActive: NO error: &error];
+    [[Logger sharedLogger] logError:error];
 }
 
 - (IBAction)backButtonTouchAction: (id) sender
@@ -129,36 +155,24 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
--(BOOL)shouldAutorotate
-{
-    return YES;
-}
-
--(NSInteger)supportedInterfaceOrientations
-{
-    NSInteger mask = 0;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
-        mask |= UIInterfaceOrientationMaskLandscapeLeft;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
-        mask |= UIInterfaceOrientationMaskLandscapeRight;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
-        mask |= UIInterfaceOrientationMaskPortrait;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
-        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
-    return mask;
-}
-
 #pragma mark UITextView methods
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [captionTextView resignFirstResponder];
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    textView.textColor = [UIColor blackColor];
+    if([textView.text isEqualToString:DEFAULTTEXT]) textView.text = @"";
+}
+
+#pragma mark UIImageView methods
+
+-(void) asyncMediaImageTouched:(id)sender
+{
+    [self cameraButtonTouchAction];
 }
 
 -(void)cameraButtonTouchAction
@@ -266,12 +280,31 @@
 }
 */
 
-#pragma mark custom methods, logic
+#pragma mark Note Contents
 
 - (void)refreshViewFromModel
 {
     note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
     [self addCDUploadsToNote];
+    
+    for(int i = 0; i < [self.note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
+     /*   else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
+            if (soundPlayer == nil || ![[soundPlayer.url absoluteString] isEqualToString: noteContent.getMedia.url]) {
+				NSError *error;
+				soundPlayer =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:noteContent.getMedia.url] error: &error];
+                [[Logger sharedLogger] logError:error];
+				[soundPlayer prepareToPlay];
+				[soundPlayer setDelegate: self];
+			}
+            soundFileURL = [NSURL URLWithString:noteContent.getMedia.url];
+            mode = kInnovAudioRecorderAudio;
+            [self updateButtonsForCurrentMode];
+        } */
+#warning comment back in and test
+    }
 }
 
 -(void)addCDUploadsToNote
@@ -289,6 +322,215 @@
     NSLog(@"InnovNoteEditorVC: Added %d upload content(s) to note",[uploadContentsForNote count]);
 }
 
+#pragma mark Audio Methods
+
+- (NSString *)getUniqueId
+{
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    CFRelease(theUUID);
+    return (__bridge NSString *)string;
+}
+
+- (void)updateButtonsForCurrentMode{
+    
+	[deleteAudioButton setTitle: NSLocalizedString(@"DiscardKey", @"") forState: UIControlStateNormal];
+	[deleteAudioButton setTitle: NSLocalizedString(@"DiscardKey", @"") forState: UIControlStateHighlighted];
+    	
+    switch (mode) {
+		case kInnovAudioRecorderNoAudio:
+			[recordButton setTitle: NSLocalizedString(@"BeginRecordingKey", @"") forState: UIControlStateNormal];
+			[recordButton setTitle: NSLocalizedString(@"BeginRecordingKey", @"") forState: UIControlStateHighlighted];
+			deleteAudioButton.hidden = YES;
+			break;
+		case kInnovAudioRecorderRecording:
+			[recordButton setTitle: NSLocalizedString(@"StopRecordingKey", @"") forState: UIControlStateNormal];
+			[recordButton setTitle: NSLocalizedString(@"StopRecordingKey", @"") forState: UIControlStateHighlighted];
+			deleteAudioButton.hidden = YES;
+			break;
+		case kInnovAudioRecorderAudio:
+			[recordButton setTitle: NSLocalizedString(@"PlayKey", @"") forState: UIControlStateNormal];
+			[recordButton setTitle: NSLocalizedString(@"PlayKey", @"") forState: UIControlStateHighlighted];
+			deleteAudioButton.hidden = NO;
+			break;
+		case kInnovAudioRecorderPlaying:
+			[recordButton setTitle: NSLocalizedString(@"StopKey", @"") forState: UIControlStateNormal];
+			[recordButton setTitle: NSLocalizedString(@"StopKey", @"") forState: UIControlStateHighlighted];
+			deleteAudioButton.hidden = YES;
+			break;
+
+		default:
+			break;
+	}
+}
+
+- (IBAction)recordButtonPressed:(id)sender
+{
+	NSError *error;
+	
+	switch (mode) {
+		case kInnovAudioRecorderNoAudio:
+        {
+            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryRecord error: nil];
+            
+			NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+											[NSNumber numberWithInt:kAudioFormatAppleIMA4],     AVFormatIDKey,
+											[NSNumber numberWithInt:16000.0],                   AVSampleRateKey,
+											[NSNumber numberWithInt: 1],                        AVNumberOfChannelsKey,
+											[NSNumber numberWithInt: AVAudioQualityMin],        AVSampleRateConverterAudioQualityKey,
+											nil];
+
+			soundRecorder = [[AVAudioRecorder alloc] initWithURL: soundFileURL settings: recordSettings error: &error];
+			[[Logger sharedLogger] logError:error];
+            
+			soundRecorder.delegate = self;
+			//[soundRecorder setMeteringEnabled:YES];
+			[soundRecorder prepareToRecord];
+			
+			
+			BOOL audioHWAvailable = [[AVAudioSession sharedInstance] inputIsAvailable];
+			if (!audioHWAvailable) {
+				UIAlertView *cantRecordAlert =
+				[[UIAlertView alloc] initWithTitle: NSLocalizedString(@"NoAudioHardwareAvailableTitleKey", @"")
+										   message: NSLocalizedString(@"NoAudioHardwareAvailableMessageKey", @"")
+										  delegate: nil
+								 cancelButtonTitle: NSLocalizedString(@"OkKey",@"")
+								 otherButtonTitles:nil];
+				[cantRecordAlert show];
+				return;
+			}
+			
+			[soundRecorder record];
+
+			recordLengthCutoffTimer = [NSTimer scheduledTimerWithTimeInterval:30
+																	 target:self
+																   selector:@selector(recordButtonPressed:)
+																   userInfo:nil
+																	repeats:NO];
+			mode = kInnovAudioRecorderRecording;
+			[self updateButtonsForCurrentMode];
+        }
+        break;
+			
+		case kInnovAudioRecorderPlaying:
+        {
+			[soundPlayer stop];
+
+            mode = kInnovAudioRecorderAudio;
+			[self updateButtonsForCurrentMode];
+        }
+        break;
+			
+		case kInnovAudioRecorderAudio:
+        {
+            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
+			
+			[[AVAudioSession sharedInstance] setActive: YES error: nil];
+            
+			if (soundPlayer == nil){// || ![[soundPlayer.url absoluteString] isEqualToString: [soundFileURL absoluteString]]) {
+				soundPlayer =[[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error: &error];
+                [[Logger sharedLogger] logError:error];
+				[soundPlayer prepareToPlay];
+				[soundPlayer setDelegate: self];
+			}
+			
+			mode = kInnovAudioRecorderPlaying;
+			[self updateButtonsForCurrentMode];
+			
+			[soundPlayer play];
+        }
+        break;
+			
+		case kInnovAudioRecorderRecording:
+        {
+            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];	
+            [recordLengthCutoffTimer invalidate];
+			
+			[soundRecorder stop];
+			soundRecorder = nil;
+            
+            [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
+            
+			mode = kInnovAudioRecorderAudio;
+			[self updateButtonsForCurrentMode];
+        }
+        break;
+			
+		default:
+			break;
+	}
+	
+}
+
+
+- (IBAction)deleteAudioButtonPressed:(id)sender
+{
+    for(int i = 0; i < [note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypeAudio])
+        {
+            if([[noteContent getUploadState] isEqualToString:@"uploadStateDONE"])
+                [[AppServices sharedAppServices] deleteNoteContentWithContentId:[noteContent getContentId]];
+            else
+                [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.note.noteId andFileURL:[NSURL URLWithString:[[noteContent getMedia] url]]];
+            
+            [self.note.contents removeObjectAtIndex:i];
+        }
+    }
+    
+	soundPlayer = nil;
+	mode = kInnovAudioRecorderNoAudio;
+	[self updateButtonsForCurrentMode];
+}
+
+/*
+ - (void)updateMeter {
+ [self.soundRecorder updateMeters];
+ float levelInDb = [self.soundRecorder averagePowerForChannel:0];
+ levelInDb = levelInDb + 160;
+ 
+ //Level will always be between 0 and 160 now
+ //Usually it will sit around 100 in quiet so we need to correct
+ levelInDb = MAX(levelInDb - 100,0);
+ float levelInZeroToOne = levelInDb / 60;
+ 
+ NSLog(@"AudioRecorderLevel: %f, level in float:%f",levelInDb,levelInZeroToOne);
+ 
+ [self.meter updateLevel:levelInZeroToOne];
+ }
+ */
+
+#pragma mark Audio Recorder Delegate Metods
+
+- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag
+{
+	//[self.meterUpdateTimer invalidate];
+	//[self.meter updateLevel:0];
+	//self.meter.alpha = 0.0;
+	
+	mode = kInnovAudioRecorderAudio;
+	[self updateButtonsForCurrentMode];
+    
+}
+
+#pragma mark Audio Player Delegate Methods
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+{
+    soundPlayer = nil;
+#warning Necessary? /\
+    
+	mode = kInnovAudioRecorderAudio;
+	[self updateButtonsForCurrentMode];
+	
+}
+
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
+	[[Logger sharedLogger] logError:error];
+}
+
+
 #pragma mark Table view methods
 
 -(void)refreshCategories
@@ -298,6 +540,7 @@
             [gameTagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
     }
     [tagTableView reloadData];
+    
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -326,6 +569,7 @@
     if([self.note.tags count] > 0 && indexPath.row == ((Tag *)[self.note.tags objectAtIndex:0]).tagId) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
     
     return cell;
+    
 }
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -353,11 +597,11 @@
 
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 44;
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
@@ -385,6 +629,33 @@
             break;
     }
     return @"ERROR";
+}
+
+#pragma mark Autorotation, Dealloc, and Other Necessary Methods
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+-(NSInteger)supportedInterfaceOrientations
+{
+    NSInteger mask = 0;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
+        mask |= UIInterfaceOrientationMaskLandscapeLeft;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
+        mask |= UIInterfaceOrientationMaskLandscapeRight;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
+        mask |= UIInterfaceOrientationMaskPortrait;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
+        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
+    return mask;
 }
 
 - (void)dealloc

@@ -10,11 +10,17 @@
 
 @implementation CameraOverlayView
 
+@synthesize libraryButton;
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        libraryButton.layer.borderWidth = 1.0f;
+        libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
+        libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+        libraryButton.layer.cornerRadius = 15.0f;
     }
     return self;
 }

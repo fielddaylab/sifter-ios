@@ -8,13 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import <CoreAudio/CoreAudioTypes.h>
 
-#import "AsyncMediaImageView.h"
+#import "AsyncMediaTouchableImageView.h"
 #import "Note.h"
 
-@interface InnovNoteEditorViewController : UIViewController <AVAudioSessionDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AVAudioPlayerDelegate, UIActionSheetDelegate> {
+typedef enum {
+	kInnovAudioRecorderNoAudio,
+	kInnovAudioRecorderRecording,
+	kInnovAudioRecorderAudio,
+	kInnovAudioRecorderPlaying
+} InnovAudioRecorderModeType;
+
+@interface InnovNoteEditorViewController : UIViewController <AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
     
-    __weak IBOutlet AsyncMediaImageView *imageView;
+    __weak IBOutlet AsyncMediaTouchableImageView *imageView;
     __weak IBOutlet UITextView *captionTextView;
     __weak IBOutlet UIButton *recordButton;
     __weak IBOutlet UIButton *deleteAudioButton;
@@ -26,6 +34,15 @@
     
     BOOL cancelled;
     NSMutableArray *gameTagList;
+    
+    
+    //AudioMeter *meter;
+	AVAudioRecorder *soundRecorder;
+	AVAudioPlayer *soundPlayer;
+	NSURL *soundFileURL;
+	InnovAudioRecorderModeType mode;
+	NSTimer *recordLengthCutoffTimer;
+    
 }
 
 @property (nonatomic)                    Note *note;
