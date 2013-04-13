@@ -111,20 +111,21 @@
     else
     {
 #warning when do we edit, populate view if editable
-//        captionTextView.text = DEFAULTTEXT;
+        captionTextView.text = self.note.title;
         
         imageView.userInteractionEnabled = YES;
         
-        NSError *error;
-        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
-        [[Logger sharedLogger] logError:error];
-        [[AVAudioSession sharedInstance] setActive: YES error: &error];
-        [[Logger sharedLogger] logError:error];
-        
-        mode = kInnovAudioRecorderNoAudio;
-        [self updateButtonsForCurrentMode];
+        [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:((Tag *)[self.note.tags objectAtIndex:0]).tagId inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
     }
     
+    NSError *error;
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
+    [[Logger sharedLogger] logError:error];
+    [[AVAudioSession sharedInstance] setActive: YES error: &error];
+    [[Logger sharedLogger] logError:error];
+    
+    mode = kInnovAudioRecorderNoAudio;
+    [self updateButtonsForCurrentMode];
     audioData = nil;
     
     [self refreshViewFromModel];
