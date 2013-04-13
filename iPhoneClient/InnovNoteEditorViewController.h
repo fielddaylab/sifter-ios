@@ -12,6 +12,7 @@
 
 #import "AsyncMediaTouchableImageView.h"
 #import "Note.h"
+#import "ARISMoviePlayerViewController.h"
 
 typedef enum {
 	kInnovAudioRecorderNoAudio,
@@ -20,7 +21,7 @@ typedef enum {
 	kInnovAudioRecorderPlaying
 } InnovAudioRecorderModeType;
 
-@interface InnovNoteEditorViewController : UIViewController <AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
+@interface InnovNoteEditorViewController : UIViewController <AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
     
     __weak IBOutlet AsyncMediaTouchableImageView *imageView;
     __weak IBOutlet UITextView *captionTextView;
@@ -35,11 +36,13 @@ typedef enum {
     BOOL cancelled;
     NSMutableArray *gameTagList;
     
+    ARISMoviePlayerViewController *ARISMoviePlayer;
     
     //AudioMeter *meter;
 	AVAudioRecorder *soundRecorder;
 	AVAudioPlayer *soundPlayer;
 	NSURL *soundFileURL;
+    NSData *audioData;
 	InnovAudioRecorderModeType mode;
 	NSTimer *recordLengthCutoffTimer;
     

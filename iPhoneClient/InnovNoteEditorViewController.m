@@ -31,6 +31,7 @@
     if (self) {
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordButtonPressed:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
         
         self.title = @"New Note";
         
@@ -65,6 +66,15 @@
     soundFileURL = [[NSURL alloc] initFileURLWithPath: soundFilePath];
     
     [self refreshCategories];
+    
+    ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
+    ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
+    ARISMoviePlayer.moviePlayer.view.hidden = YES;
+    [self.view addSubview:ARISMoviePlayer.view];
+    ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
+    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -106,14 +116,16 @@
         imageView.userInteractionEnabled = YES;
         
         NSError *error;
-      /*  [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
+        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
         [[Logger sharedLogger] logError:error];
         [[AVAudioSession sharedInstance] setActive: YES error: &error];
-        [[Logger sharedLogger] logError:error];*/
+        [[Logger sharedLogger] logError:error];
         
         mode = kInnovAudioRecorderNoAudio;
         [self updateButtonsForCurrentMode];
     }
+    
+    audioData = nil;
     
     [self refreshViewFromModel];
     
@@ -291,19 +303,15 @@
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
         if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
-     /*   else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
-            if (soundPlayer == nil || ![[soundPlayer.url absoluteString] isEqualToString: noteContent.getMedia.url]) {
-				NSError *error;
-				soundPlayer =[[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:noteContent.getMedia.url] error: &error];
-                [[Logger sharedLogger] logError:error];
-				[soundPlayer prepareToPlay];
-				[soundPlayer setDelegate: self];
+        else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
+            if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: noteContent.getMedia.url]) {
+                [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:noteContent.getMedia.url]];
+                [ARISMoviePlayer.moviePlayer prepareToPlay];
 			}
-            soundFileURL = [NSURL URLWithString:noteContent.getMedia.url];
             mode = kInnovAudioRecorderAudio;
             [self updateButtonsForCurrentMode];
-        } */
-#warning comment back in and test
+        } 
+#warning test moviePlayer Audio
     }
 }
 
@@ -371,7 +379,6 @@
 	switch (mode) {
 		case kInnovAudioRecorderNoAudio:
         {
-            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryRecord error: nil];
             
 			NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
 											[NSNumber numberWithInt:kAudioFormatAppleIMA4],     AVFormatIDKey,
@@ -384,7 +391,7 @@
 			[[Logger sharedLogger] logError:error];
             
 			soundRecorder.delegate = self;
-			//[soundRecorder setMeteringEnabled:YES];
+			[soundRecorder setMeteringEnabled:YES];
 			[soundRecorder prepareToRecord];
 			
 			
@@ -406,7 +413,8 @@
 																	 target:self
 																   selector:@selector(recordButtonPressed:)
 																   userInfo:nil
-																	repeats:NO];
+																	repeats:NO]; 
+
 			mode = kInnovAudioRecorderRecording;
 			[self updateButtonsForCurrentMode];
         }
@@ -414,7 +422,7 @@
 			
 		case kInnovAudioRecorderPlaying:
         {
-			[soundPlayer stop];
+			[ARISMoviePlayer.moviePlayer stop];
 
             mode = kInnovAudioRecorderAudio;
 			[self updateButtonsForCurrentMode];
@@ -423,31 +431,33 @@
 			
 		case kInnovAudioRecorderAudio:
         {
-            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
-			
-			[[AVAudioSession sharedInstance] setActive: YES error: nil];
-            
-			if (soundPlayer == nil){// || ![[soundPlayer.url absoluteString] isEqualToString: [soundFileURL absoluteString]]) {
-				soundPlayer =[[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error: &error];
+         
+            if(audioData != nil){
+                if (soundPlayer == nil || soundPlayer.data != audioData) {
+				soundPlayer =[[AVAudioPlayer alloc] initWithData:audioData error: &error];
                 [[Logger sharedLogger] logError:error];
 				[soundPlayer prepareToPlay];
 				[soundPlayer setDelegate: self];
 			}
+                [soundPlayer play];
+            }
+            else {
+                [ARISMoviePlayer.moviePlayer play];
+            }
 			
 			mode = kInnovAudioRecorderPlaying;
 			[self updateButtonsForCurrentMode];
 			
-			[soundPlayer play];
         }
         break;
 			
 		case kInnovAudioRecorderRecording:
         {
-            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];	
             [recordLengthCutoffTimer invalidate];
 			
 			[soundRecorder stop];
 			soundRecorder = nil;
+            audioData = [NSData dataWithContentsOfURL:soundFileURL];
             
             [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
             
@@ -486,8 +496,8 @@
 
 /*
  - (void)updateMeter {
- [self.soundRecorder updateMeters];
- float levelInDb = [self.soundRecorder averagePowerForChannel:0];
+ [soundRecorder updateMeters];
+ float levelInDb = [soundRecorder averagePowerForChannel:0];
  levelInDb = levelInDb + 160;
  
  //Level will always be between 0 and 160 now
@@ -497,7 +507,7 @@
  
  NSLog(@"AudioRecorderLevel: %f, level in float:%f",levelInDb,levelInZeroToOne);
  
- [self.meter updateLevel:levelInZeroToOne];
+ self.meter updateLevel:levelInZeroToOne];
  }
  */
 
@@ -518,12 +528,8 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-    soundPlayer = nil;
-#warning Necessary? /\
-    
 	mode = kInnovAudioRecorderAudio;
 	[self updateButtonsForCurrentMode];
-	
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
@@ -547,10 +553,7 @@
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *tempCell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (![tempCell respondsToSelector:@selector(nameLabel)]){
-        //[tempCell release];
-        tempCell = nil;
-    }
+    if (![tempCell respondsToSelector:@selector(nameLabel)]) tempCell = nil;
     TagCell *cell = (TagCell *)tempCell;
     
     
