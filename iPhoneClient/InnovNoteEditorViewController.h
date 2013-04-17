@@ -28,12 +28,16 @@ typedef enum {
     __weak IBOutlet UIButton *recordButton;
     __weak IBOutlet UIButton *deleteAudioButton;
     __weak IBOutlet UITableView *tagTableView;
+    
+    UIBarButtonItem *cancelButton;
 
     Note *note;
     id __unsafe_unretained delegate;
-    BOOL isEditable;
+    BOOL isEditing;
     
+    BOOL newNote;
     BOOL cancelled;
+    BOOL hasAudioToUpload;
     NSMutableArray *gameTagList;
     
     ARISMoviePlayerViewController *ARISMoviePlayer;
@@ -42,7 +46,6 @@ typedef enum {
 	AVAudioRecorder *soundRecorder;
 	AVAudioPlayer *soundPlayer;
 	NSURL *soundFileURL;
-    NSData *audioData;
 	InnovAudioRecorderModeType mode;
 	NSTimer *recordLengthCutoffTimer;
     
@@ -50,7 +53,7 @@ typedef enum {
 
 @property (nonatomic)                    Note *note;
 @property (nonatomic, unsafe_unretained) id delegate;
-@property (readwrite)                    BOOL isEditable;
+@property (readwrite)                    BOOL isEditing;
 
 - (IBAction)recordButtonPressed:(id)sender;
 - (IBAction)deleteAudioButtonPressed:(id)sender;

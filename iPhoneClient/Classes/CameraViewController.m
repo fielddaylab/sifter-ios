@@ -81,7 +81,8 @@
     if(bringUpCamera){
         bringUpCamera = NO;
 
-    if(showVid) [self cameraButtonTouchAction];
+    if(showVid)
+        [self cameraButtonTouchAction];
     else
         [self libraryButtonTouchAction:self];
     }
@@ -91,25 +92,12 @@
 	NSLog(@"Camera Button Pressed");
     picker = [[UIImagePickerController alloc]init];
     picker.delegate = self;
-    picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:picker.sourceType];
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     picker.allowsEditing = NO;
 	picker.showsCameraControls = YES;
     picker.cameraOverlayView = overlay;
 	[self presentModalViewController:picker animated:NO];
 }
-        
-/*- (BOOL) isVideoCameraAvailable{
-       // UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        NSArray *sourceTypes = [UIImagePickerController availableMediaTypesForSourceType:self.imagePickerController.sourceType];
-        
-        if (![sourceTypes containsObject:(NSString *)kUTTypeMovie ]){
-            
-            return NO;
-        }
-        
-        return YES;
-    }*/
 
 - (IBAction)libraryButtonTouchAction:(id)sender {
 	NSLog(@"Library Button Pressed");
@@ -300,7 +288,8 @@
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
         [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];   
     }
-    [self.navigationController popToViewController:self.backView animated:NO];
+  //  [self.navigationController popToViewController:self.backView animated:NO];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark UINavigationControllerDelegate Protocol Methods

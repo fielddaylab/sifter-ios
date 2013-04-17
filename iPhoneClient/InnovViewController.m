@@ -98,15 +98,6 @@
     switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
     self.navigationItem.leftBarButtonItem = switchViewsBarButton;
     
-    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
-    self.navigationItem.rightBarButtonItem = settingsBarButton;
-    
-    tracking = NO;
-    
-	trackingButton.backgroundColor = [UIColor lightGrayColor];
-    trackingButton.layer.cornerRadius = 4.0f;
-    trackingButton.hidden = YES;
-    
     searchBarTop = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, 320.0, 44.0)];
     searchBarTop.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     searchBarTop.barStyle = UIBarStyleBlack;
@@ -115,6 +106,15 @@
     searchBarTop.delegate = self;
     [searchBarView addSubview:searchBarTop];
     self.navigationItem.titleView = searchBarView;
+    
+    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
+    self.navigationItem.rightBarButtonItem = settingsBarButton;
+    
+    tracking = NO;
+    
+	trackingButton.backgroundColor = [UIColor lightGrayColor];
+    trackingButton.layer.cornerRadius = 4.0f;
+    trackingButton.hidden = YES;
     
     [self refresh];
 }
@@ -145,6 +145,7 @@
     
   //  [self.navigationController setNavigationBarHidden:NO animated:NO];
 	
+  //  [self playerMoved];
     [self refreshViewFromModel];
 	[self refresh];
 	

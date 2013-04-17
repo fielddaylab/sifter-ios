@@ -23,7 +23,7 @@
 
 @implementation InnovNoteEditorViewController
 
-@synthesize note, delegate, isEditable;
+@synthesize note, delegate, isEditing;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,7 +46,7 @@
 {
     [super viewDidLoad];
     
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle: @"Cancel"
+    cancelButton = [[UIBarButtonItem alloc] initWithTitle: @"Cancel"
                                                                    style: UIBarButtonItemStyleDone
                                                                   target:self
                                                                   action:@selector(backButtonTouchAction:)];
@@ -81,41 +81,19 @@
 {
     [super viewWillAppear: animated];
     
-    if(note.noteId == 0)
-    {
-        note = [[Note alloc] init];
-        note.creatorId = [AppModel sharedAppModel].playerId;
-        note.username = [AppModel sharedAppModel].userName;
-        note.noteId = [[AppServices sharedAppServices] createNoteStartIncomplete];
-        note.showOnList = YES;
-        note.showOnMap  = YES;
-#warning should allows show on List and Map?
-        if(note.noteId == 0)
-        {
-            [self backButtonTouchAction:[[UIButton alloc] init]];
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:self.delegate cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
-            [alert show];
-        }
-        captionTextView.text = DEFAULTTEXT;
-        captionTextView.textColor = [UIColor lightGrayColor];
-        
-        imageView.userInteractionEnabled = NO;
-        
-        mode = kInnovAudioRecorderNoAudio;
-        [self updateButtonsForCurrentMode];
-        
-        [[AppModel sharedAppModel].playerNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
-        
-        [self cameraButtonTouchAction];
-    }
-    else
+    if(self.note.noteId != 0)
     {
 #warning when do we edit, populate view if editable
+        isEditing = YES;
+        newNote = NO;
+        
         captionTextView.text = self.note.title;
         
         imageView.userInteractionEnabled = YES;
         
         [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:((Tag *)[self.note.tags objectAtIndex:0]).tagId inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
+        
+        [self refreshViewFromModel]; 
     }
     
     NSError *error;
@@ -126,17 +104,52 @@
     
     mode = kInnovAudioRecorderNoAudio;
     [self updateButtonsForCurrentMode];
-    audioData = nil;
+    hasAudioToUpload = NO;
     
-    [self refreshViewFromModel];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
+    if(self.note.noteId == 0)
+    {
+        note = [[Note alloc] init];
+        note.creatorId = [AppModel sharedAppModel].playerId;
+        note.username = [AppModel sharedAppModel].userName;
+        note.noteId = [[AppServices sharedAppServices] createNoteStartIncomplete];
+        note.showOnList = YES;
+        note.showOnMap  = YES;
+        isEditing = NO;
+        newNote = YES;
+#warning should allows show on List and Map?
+        if(self.note.noteId == 0)
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:self.delegate cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
+            [alert show];
+            cancelled = YES;
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
+        captionTextView.text = DEFAULTTEXT;
+        captionTextView.textColor = [UIColor lightGrayColor];
+        
+        imageView.userInteractionEnabled = NO;
+        
+        [[AppModel sharedAppModel].playerNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+        
+        [self cameraButtonTouchAction];
+    }
+ 
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    if(!self.note || cancelled) return;
+#warning Called twice
+    
+    if(!self.note || newNote || cancelled) return;
 
     self.note.title = captionTextView.text;
     if(([note.title length] == 0)) note.title = @"";
@@ -144,6 +157,8 @@
     [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
     if([delegate isKindOfClass:[InnovViewController class]]) ((InnovViewController *)self.delegate).noteToAdd = self.note;
+    
+    if(hasAudioToUpload) [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
     
     [[AppModel sharedAppModel].playerNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
     
@@ -159,7 +174,7 @@
 - (IBAction)backButtonTouchAction: (id) sender
 {
     cancelled = ([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Cancel"]);
-    if(!isEditable && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
+    if(!isEditing && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
     {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.note.noteId];
         [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.note.noteId]];
@@ -190,19 +205,19 @@
 
 -(void)cameraButtonTouchAction
 {
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-    {
-        CameraViewController *cameraVC = [[CameraViewController alloc] initWithNibName:@"Camera" bundle:nil];
+  //  if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+   // {
+        CameraViewController *cameraVC = [[CameraViewController alloc] init];
         
-        if(isEditable) cameraVC.backView = self;
+        if(isEditing) cameraVC.backView = self;
         else cameraVC.backView = self.delegate;
         cameraVC.parentDelegate = self.delegate;
-        cameraVC.showVid = YES;
+        cameraVC.showVid = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
         cameraVC.editView = self;
         cameraVC.noteId = self.note.noteId;
         
-        [self.navigationController pushViewController:cameraVC animated:NO];
-    }
+        [self.navigationController pushViewController:cameraVC animated:YES];
+  //  }
 }
 
 /*
@@ -433,18 +448,20 @@
 		case kInnovAudioRecorderAudio:
         {
          
-            if(audioData != nil){
-                if (soundPlayer == nil || soundPlayer.data != audioData) {
-				soundPlayer =[[AVAudioPlayer alloc] initWithData:audioData error: &error];
-                [[Logger sharedLogger] logError:error];
-				[soundPlayer prepareToPlay];
-				[soundPlayer setDelegate: self];
-			}
+            if(hasAudioToUpload)
+            {
+                if (soundPlayer == nil)
+                {
+                    soundPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:&error];
+                    [[Logger sharedLogger] logError:error];
+                    [soundPlayer prepareToPlay];
+                    [soundPlayer setDelegate: self];
+                }
                 [soundPlayer play];
             }
-            else {
+            else 
                 [ARISMoviePlayer.moviePlayer play];
-            }
+            
 			
 			mode = kInnovAudioRecorderPlaying;
 			[self updateButtonsForCurrentMode];
@@ -458,9 +475,8 @@
 			
 			[soundRecorder stop];
 			soundRecorder = nil;
-            audioData = [NSData dataWithContentsOfURL:soundFileURL];
             
-            [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
+            hasAudioToUpload = YES;
             
 			mode = kInnovAudioRecorderAudio;
 			[self updateButtonsForCurrentMode];
@@ -476,6 +492,9 @@
 
 - (IBAction)deleteAudioButtonPressed:(id)sender
 {
+    if(hasAudioToUpload) hasAudioToUpload = NO;
+    else
+    {
     for(int i = 0; i < [note.contents count]; ++i)
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
@@ -488,6 +507,7 @@
             
             [self.note.contents removeObjectAtIndex:i];
         }
+    }
     }
     
 	soundPlayer = nil;
