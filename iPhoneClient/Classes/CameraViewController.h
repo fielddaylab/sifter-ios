@@ -16,20 +16,18 @@
 	//IBOutlet UIButton *libraryButton;
     IBOutlet UIButton *profileButton;
 
- //   UIImagePickerController *imagePickerController;
 	NSData *mediaData;
 	NSString *mediaFilename;
-    BOOL showVid;
+    BOOL showCamera;
     id backView, parentDelegate, editView;
     int noteId;
     BOOL bringUpCamera;
     UIImagePickerController *picker;
-    __weak IBOutlet CameraOverlayView *overlay;
+    IBOutlet CameraOverlayView *overlay;
 }
 
 @property (nonatomic) IBOutlet UIButton *cameraButton;
 @property (nonatomic) IBOutlet UIButton *profileButton;
-//@property (nonatomic, retain) UIImagePickerController *imagePickerController;
 @property (nonatomic) NSData *mediaData;
 @property (nonatomic) NSString *mediaFilename;
 @property (nonatomic) id backView;
@@ -37,7 +35,7 @@
 @property (nonatomic) id editView;
 @property(nonatomic)UIImagePickerController *picker;
 
-@property(readwrite,assign) BOOL showVid;
+@property(readwrite,assign) BOOL showCamera;
 @property(readwrite,assign) int noteId;
 
 

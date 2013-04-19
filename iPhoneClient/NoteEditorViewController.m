@@ -285,7 +285,7 @@
             cameraVC.backView = self;
         else cameraVC.backView = self.delegate;
         cameraVC.parentDelegate = self.delegate;
-        cameraVC.showVid = YES;
+        cameraVC.showCamera = YES;
         cameraVC.editView = self;
         cameraVC.noteId = self.note.noteId;
         
@@ -316,7 +316,7 @@
         cameraVC.backView = self;
     else cameraVC.backView = self.delegate;
     
-    cameraVC.showVid = NO;
+    cameraVC.showCamera = NO;
     cameraVC.parentDelegate = self.delegate;
     cameraVC.noteId = self.note.noteId;
     cameraVC.editView = self;

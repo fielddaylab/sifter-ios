@@ -31,7 +31,7 @@
 @synthesize cameraButton;
 @synthesize mediaData;
 @synthesize mediaFilename;
-@synthesize profileButton,parentDelegate,backView,showVid, noteId,editView,picker;
+@synthesize profileButton,parentDelegate,backView,showCamera, noteId,editView,picker;
 
 //Override init for passing title and icon to tab bar
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
@@ -46,8 +46,6 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-	
-	//self.imagePickerController = [[UIImagePickerController alloc] init];
 	
 	//[overlay.libraryButton setTitle: NSLocalizedString(@"CameralibraryButtonTitleKey",@"") forState: UIControlStateNormal];
 //	[overlay.libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
@@ -72,16 +70,16 @@
         self.profileButton.alpha = 0.6;
 	}
 	
-	//self.imagePickerController.delegate = self;
-	
 	NSLog(@"Camera Loaded");
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
     if(bringUpCamera){
         bringUpCamera = NO;
 
-    if(showVid)
+    if(showCamera)
         [self cameraButtonTouchAction];
     else
         [self libraryButtonTouchAction:self];
@@ -96,6 +94,17 @@
     picker.allowsEditing = NO;
 	picker.showsCameraControls = YES;
     picker.cameraOverlayView = overlay;
+    
+    if(overlay== nil) {
+        NSLog(@"HERE");
+    }
+
+    
+    if(overlay.libraryButton == nil) {
+        NSLog(@"HERE");
+    }
+    
+    
 	[self presentModalViewController:picker animated:NO];
 }
 
@@ -288,8 +297,8 @@
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
         [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];   
     }
-  //  [self.navigationController popToViewController:self.backView animated:NO];
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popToViewController:self.backView animated:YES];
+  //  [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark UINavigationControllerDelegate Protocol Methods
@@ -371,7 +380,7 @@
 
 
 - (void)viewDidUnload {
-    overlay = nil;
+     overlay = nil;
     [super viewDidUnload];
 }
 @end

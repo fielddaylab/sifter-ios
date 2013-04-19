@@ -11,7 +11,7 @@
 
 @interface CameraOverlayView : UIView {
     
-    __weak IBOutlet UIButton *libraryButon;
+  //  __weak IBOutlet UIButton *libraryButon;
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *libraryButton;

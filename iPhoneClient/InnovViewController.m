@@ -15,6 +15,10 @@
 #define INITIALSPAN 0.001
 #define WIDESPAN    0.025
 
+//For expanding view
+#define ANIMATION_TIME     0.6
+#define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
+
 @interface InnovViewController ()
 
 @end
@@ -34,10 +38,10 @@
         locationsToRemove = [[NSMutableArray alloc] initWithCapacity:10];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)
-            name:@"PlayerMoved"                                  object:nil];
+                                                     name:@"PlayerMoved"                                  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"           object:nil];
-   //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
+        //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
     }
     return self;
 }
@@ -86,6 +90,12 @@
     
 	[mapView setRegion:region animated:NO];
     
+    [mapContentView addSubview:notePopUp];
+    notePopUp.hidden = YES;
+    notePopUp.center = contentView.center;
+    notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+    notePopUp.layer.cornerRadius = 9.0f;
+    
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
     showTagsButton.layer.cornerRadius = 4.0f;
@@ -123,8 +133,8 @@
 {
     [super viewWillAppear:animated];
     
-   // [self.navigationController setNavigationBarHidden:YES animated:NO];
-   // [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    // [self.navigationController setNavigationBarHidden:YES animated:NO];
+    // [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     
     //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
     //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
@@ -143,9 +153,9 @@
     
 	[[AppServices sharedAppServices] updateServerMapViewed];
     
-  //  [self.navigationController setNavigationBarHidden:NO animated:NO];
+    //  [self.navigationController setNavigationBarHidden:NO animated:NO];
 	
-  //  [self playerMoved];
+    //  [self playerMoved];
     [self refreshViewFromModel];
 	[self refresh];
 	
@@ -167,25 +177,25 @@
 }
 
 /*
-- (IBAction) changeMapType:(id)sender
-{
-	ARISAppDelegate* appDelegate = (ARISAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[appDelegate playAudioAlert:@"ticktick" shouldVibrate:NO];
-	
-	switch (mapView.mapType)
-    {
-		case MKMapTypeStandard:
-			mapView.mapType=MKMapTypeSatellite;
-			break;
-		case MKMapTypeSatellite:
-			mapView.mapType=MKMapTypeHybrid;
-			break;
-		case MKMapTypeHybrid:
-			mapView.mapType=MKMapTypeStandard;
-			break;
-	}
-}
-*/
+ - (IBAction) changeMapType:(id)sender
+ {
+ ARISAppDelegate* appDelegate = (ARISAppDelegate *)[[UIApplication sharedApplication] delegate];
+ [appDelegate playAudioAlert:@"ticktick" shouldVibrate:NO];
+ 
+ switch (mapView.mapType)
+ {
+ case MKMapTypeStandard:
+ mapView.mapType=MKMapTypeSatellite;
+ break;
+ case MKMapTypeSatellite:
+ mapView.mapType=MKMapTypeHybrid;
+ break;
+ case MKMapTypeHybrid:
+ mapView.mapType=MKMapTypeStandard;
+ break;
+ }
+ }
+ */
 - (IBAction)trackingButtonPressed:(id)sender
 {
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
@@ -230,7 +240,7 @@
 	//Center the map on the player
 	MKCoordinateRegion region = mapView.region;
 	region.center = [AppModel sharedAppModel].playerLocation.coordinate;
-    #warning CHANGE TO CENTER OF MADISON
+#warning CHANGE TO CENTER OF MADISON
 	region.span = MKCoordinateSpanMake(INITIALSPAN, INITIALSPAN);
     
 	[mapView setRegion:region animated:YES];
@@ -300,7 +310,7 @@
             }
         }
     }
-     
+    
     [locationsToRemove removeAllObjects];
     
     //Add new locations second
@@ -345,32 +355,103 @@
 
 - (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view
 {
-	Location *location = ((Annotation*)view.annotation).location;
     if(view.annotation == aMapView.userLocation) return;
-    
-	NSMutableArray *buttonTitles = [NSMutableArray arrayWithCapacity:1];
-	int cancelButtonIndex = 0;
-	if (location.allowsQuickTravel)
-    {
-		[buttonTitles addObject: NSLocalizedString(@"GPSViewQuickTravelKey", @"")];
-		cancelButtonIndex = 1;
-	}
-	[buttonTitles addObject: NSLocalizedString(@"CancelKey", @"")];
-	
-    UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:location.name
-															delegate:self
-												   cancelButtonTitle:nil
-											  destructiveButtonTitle:nil
-												   otherButtonTitles:nil];
-	actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-	actionSheet.cancelButtonIndex = cancelButtonIndex;
-	
-	for (NSString *title in buttonTitles)
-		[actionSheet addButtonWithTitle:title];
-	
-	[actionSheet showInView:view];
+	Location *location = ((Annotation*)view.annotation).location;
+    [self showNotePopUpForLocation:location];
+    /*
+     NSMutableArray *buttonTitles = [NSMutableArray arrayWithCapacity:1];
+     int cancelButtonIndex = 0;
+     if (location.allowsQuickTravel)
+     {
+     [buttonTitles addObject: NSLocalizedString(@"GPSViewQuickTravelKey", @"")];
+     cancelButtonIndex = 1;
+     }
+     [buttonTitles addObject: NSLocalizedString(@"CancelKey", @"")];
+     
+     UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:location.name
+     delegate:self
+     cancelButtonTitle:nil
+     destructiveButtonTitle:nil
+     otherButtonTitles:nil];
+     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+     actionSheet.cancelButtonIndex = cancelButtonIndex;
+     
+     for (NSString *title in buttonTitles)
+     [actionSheet addButtonWithTitle:title];
+     
+     [actionSheet showInView:view];*/
 }
 
+- (void) showNotePopUpForLocation: (Location *) location {
+    
+    Note * note    = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:NO];
+    if(!note) note = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:YES];
+    if(note){
+        [self showNotePopUpForNote:note];
+    }
+    else{
+        NSLog(@"InnovViewController: ERROR: attempted to display nil note");
+        Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
+        [mapView deselectAnnotation:currentAnnotation animated:YES];
+        return;
+    }
+    
+}
+
+- (void) showNotePopUpForNote: (Note *) note {
+    
+    MKCoordinateRegion region = mapView.region;
+	region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+	[mapView setRegion:region animated:YES];
+    
+    notePopUp.note = note;
+    notePopUp.textLabel.text = note.title;
+    for(int i = 0; i < [note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [notePopUp.imageView loadImageFromMedia:[noteContent getMedia]];
+    }
+    
+    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
+    [mapView deselectAnnotation:currentAnnotation animated:YES];
+    notePopUp.hidden = NO;
+    notePopUp.userInteractionEnabled = NO;
+    [UIView beginAnimations:@"animationExpand" context:NULL];
+    [UIView setAnimationDuration:ANIMATION_TIME];
+    notePopUp.transform=CGAffineTransformMakeScale(1, 1);
+    [UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView commitAnimations];
+    
+}
+
+-(void)animationDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context{
+	if ([animationID isEqualToString:@"animationExpand"]) notePopUp.userInteractionEnabled=YES;
+    else if ([animationID isEqualToString:@"animationShrink"]) notePopUp.hidden = YES;
+}
+
+- (void) hideNotePopUp {
+    [UIView beginAnimations:@"animationShrink" context:NULL];
+    [UIView setAnimationDuration:ANIMATION_TIME];
+    notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+    [UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView commitAnimations];
+}
+
+- (IBAction) presentNote:(UITapGestureRecognizer *) sender {
+#warning change if other possible senders
+    Note * note = ((MapNotePopUp *)sender.view).note;
+    NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
+    dataVC.note = note;
+    dataVC.delegate = self;
+    [self.navigationController pushViewController:dataVC animated:YES];
+    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
+    [mapView deselectAnnotation:currentAnnotation animated:YES];
+}
+
+- (IBAction)test:(UITapGestureRecognizer *)sender {
+}
 
 - (void)mapView:(MKMapView *)mV didAddAnnotationViews:(NSArray *)views
 {
@@ -380,30 +461,6 @@
         CGRect endFrame = aView.frame;
         aView.frame = CGRectMake(aView.frame.origin.x, aView.frame.origin.y - 230.0, aView.frame.size.width, aView.frame.size.height);
         [UIView animateWithDuration:0.45 delay:0.0 options:UIViewAnimationCurveEaseIn animations:^{[aView setFrame: endFrame];} completion:^(BOOL finished) {}];
-    }
-}
-
-#pragma mark UIActionSheet Delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-	
-	if (buttonIndex == actionSheet.cancelButtonIndex)
-        [mapView deselectAnnotation:currentAnnotation animated:YES];
-	else
-    {
-         Note * note    = [[AppModel sharedAppModel] noteForNoteId:currentAnnotation.location.objectId playerListYesGameListNo:NO];
-         if(!note) note = [[AppModel sharedAppModel] noteForNoteId:currentAnnotation.location.objectId playerListYesGameListNo:YES];
-        if(note){
-         NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
-         dataVC.note = note;
-         dataVC.delegate = self;
-            [self.navigationController pushViewController:dataVC animated:YES];
-        [mapView deselectAnnotation:currentAnnotation animated:YES];
-        }
-        else{
-            NSLog(@"InnovViewController: ERROR: attempted to display nil note");
-        }
     }
 }
 
@@ -467,17 +524,18 @@
     [self.navigationController pushViewController:editorVC animated:YES];
 }
 
-#pragma mark UISearchBar Methods 
- 
+#pragma mark UISearchBar Methods
+
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	[searchBarTop resignFirstResponder];
+    if(!notePopUp.hidden) [self hideNotePopUp];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBarTop resignFirstResponder];
-    #warning THEN DO FUN THINGS!
+#warning THEN DO FUN THINGS!
 }
 
 #pragma mark TableView Delegate and Datasource Methods
@@ -492,6 +550,7 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    #warning unimplemented
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
 	if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     
@@ -500,19 +559,20 @@
 	return cell;
 }
 /*
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    //if(section==0)return  @"Group";
-    // else
-    //return NSLocalizedString(@"AttributesAttributesTitleKey", @"");
-}
-*/
+ -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+ //if(section==0)return  @"Group";
+ // else
+ //return NSLocalizedString(@"AttributesAttributesTitleKey", @"");
+ }
+ */
 // Customize the height of each row
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return 60;
+    #warning unimplemented
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+#warning unimplemented
 	
 }
 
@@ -549,10 +609,12 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    /*
     NSEnumerator *existingAnnotationsEnumerator = [[[mapView annotations] copy] objectEnumerator];
     NSObject <MKAnnotation> *annotation;
     while (annotation = [existingAnnotationsEnumerator nextObject])
         if(annotation != mapView.userLocation) [mapView removeAnnotation:annotation];
+     */
 }
 
 - (void)viewDidUnload {
@@ -563,6 +625,7 @@
     mapView = nil;
     trackingButton = nil;
     switchViewsBarButton = nil;
+    notePopUp = nil;
     [super viewDidUnload];
 }
 

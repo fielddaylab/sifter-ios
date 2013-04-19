@@ -391,6 +391,7 @@
 		DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD235FCB1700DCCB00795077 /* InnovViewController.xib */; };
 		DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C285016F3BF0D00CBC085 /* Logger.m */; };
 		DDBD616A1615127C00D492DB /* IconQuestsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DDBD61691615127C00D492DB /* IconQuestsButton.m */; };
+		DDC0E11E1721AF56007DBDAA /* MapNotePopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC0E11D1721AF56007DBDAA /* MapNotePopUp.m */; };
 		DDC495DC16407DE500D4C063 /* PopOverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC495DA16407DE500D4C063 /* PopOverViewController.m */; };
 		DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC495DB16407DE500D4C063 /* PopOverViewController.xib */; };
 		DDC4ABDC15F117C500D525BA /* RoundedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC4ABDB15F117C500D525BA /* RoundedTableViewCell.m */; };
@@ -1044,6 +1045,8 @@
 		DD3C285016F3BF0D00CBC085 /* Logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logger.m; sourceTree = "<group>"; };
 		DDBD61681615127C00D492DB /* IconQuestsButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconQuestsButton.h; sourceTree = "<group>"; };
 		DDBD61691615127C00D492DB /* IconQuestsButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconQuestsButton.m; sourceTree = "<group>"; };
+		DDC0E11C1721AF56007DBDAA /* MapNotePopUp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapNotePopUp.h; sourceTree = "<group>"; };
+		DDC0E11D1721AF56007DBDAA /* MapNotePopUp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapNotePopUp.m; sourceTree = "<group>"; };
 		DDC495D916407DE500D4C063 /* PopOverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopOverViewController.h; sourceTree = "<group>"; };
 		DDC495DA16407DE500D4C063 /* PopOverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopOverViewController.m; sourceTree = "<group>"; };
 		DDC495DB16407DE500D4C063 /* PopOverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopOverViewController.xib; sourceTree = "<group>"; };
@@ -2164,6 +2167,8 @@
 				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
 				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
 				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
+				DDC0E11C1721AF56007DBDAA /* MapNotePopUp.h */,
+				DDC0E11D1721AF56007DBDAA /* MapNotePopUp.m */,
 			);
 			name = InnovationViewControllers;
 			sourceTree = "<group>";
@@ -2673,6 +2678,7 @@
 				DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */,
 				DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */,
 				DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */,
+				DDC0E11E1721AF56007DBDAA /* MapNotePopUp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

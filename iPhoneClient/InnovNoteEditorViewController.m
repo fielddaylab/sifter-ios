@@ -83,7 +83,7 @@
     
     if(self.note.noteId != 0)
     {
-#warning when do we edit, populate view if editable
+#warning when do we edit, populate view if editable NEEDS IMAGE
         isEditing = YES;
         newNote = NO;
         
@@ -139,6 +139,7 @@
         [[AppModel sharedAppModel].playerNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
         
         [self cameraButtonTouchAction];
+        
     }
  
 }
@@ -212,11 +213,11 @@
         if(isEditing) cameraVC.backView = self;
         else cameraVC.backView = self.delegate;
         cameraVC.parentDelegate = self.delegate;
-        cameraVC.showVid = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+        cameraVC.showCamera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
         cameraVC.editView = self;
         cameraVC.noteId = self.note.noteId;
         
-        [self.navigationController pushViewController:cameraVC animated:YES];
+        [self.navigationController pushViewController:cameraVC animated:NO];
   //  }
 }
 

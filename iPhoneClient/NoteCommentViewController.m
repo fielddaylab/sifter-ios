@@ -133,7 +133,7 @@
     {
         CameraViewController *cameraVC = [[CameraViewController alloc] initWithNibName:@"Camera" bundle:nil];
         cameraVC.parentDelegate = self;
-        cameraVC.showVid = YES;
+        cameraVC.showCamera = YES;
         
         cameraVC.noteId = self.commentNote.noteId;
         cameraVC.backView = self;
@@ -165,7 +165,7 @@
     //cameraVC.delegate = self.delegate;
     cameraVC.parentDelegate = self;
     
-    cameraVC.showVid = NO;
+    cameraVC.showCamera = NO;
     cameraVC.noteId = self.commentNote.noteId;
     cameraVC.backView = self;
     

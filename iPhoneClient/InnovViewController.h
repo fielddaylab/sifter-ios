@@ -15,6 +15,7 @@
 #import "AnnotationView.h"
 #import "InnovNoteEditorViewController.h"
 #import "Note.h"
+#import "MapNotePopUp.h"
 
 @interface InnovViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, UIActionSheetDelegate, UISearchBarDelegate> {
     
@@ -42,6 +43,8 @@
     
     Note *noteToAdd;
     
+    IBOutlet MapNotePopUp *notePopUp;
+
     InnovNoteEditorViewController *editorVC;
 }
 
@@ -54,5 +57,6 @@
 - (IBAction)showTagsPressed:(id)sender;
 - (IBAction)cameraPressed:(id)sender;
 - (IBAction)trackingButtonPressed:(id)sender;
+- (IBAction)presentNote:(UITapGestureRecognizer *)sender;
 
 @end
