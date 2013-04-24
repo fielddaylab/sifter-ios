@@ -22,8 +22,8 @@
     id backView, parentDelegate, editView;
     int noteId;
     BOOL bringUpCamera;
-    UIImagePickerController *picker;
     IBOutlet CameraOverlayView *overlay;
+    UIImagePickerController *picker;
 }
 
 @property (nonatomic) IBOutlet UIButton *cameraButton;

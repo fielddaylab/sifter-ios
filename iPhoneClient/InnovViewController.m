@@ -521,7 +521,7 @@
     editorVC.delegate = self;
     lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
     
-    [self.navigationController pushViewController:editorVC animated:YES];
+    [self.navigationController pushViewController:editorVC animated:NO];
 }
 
 #pragma mark UISearchBar Methods

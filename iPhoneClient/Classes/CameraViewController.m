@@ -47,8 +47,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+    overlay.libraryButton.layer.borderWidth = 1.0f;
+    overlay.libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
+    overlay.libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+    overlay.libraryButton.layer.cornerRadius = 15.0f;
+    
 	//[overlay.libraryButton setTitle: NSLocalizedString(@"CameralibraryButtonTitleKey",@"") forState: UIControlStateNormal];
-//	[overlay.libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
+    //	[overlay.libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
 	
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateNormal];
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateHighlighted];	
@@ -94,16 +99,11 @@
     picker.allowsEditing = NO;
 	picker.showsCameraControls = YES;
     picker.cameraOverlayView = overlay;
-    
-    if(overlay== nil) {
-        NSLog(@"HERE");
-    }
-
-    
-    if(overlay.libraryButton == nil) {
-        NSLog(@"HERE");
-    }
-    
+    overlay.alpha = 0;
+    [UIView animateWithDuration:0.5 delay:1.0 options:UIViewAnimationCurveEaseIn animations:^
+    {
+        overlay.alpha = 1;
+    } completion:nil];
     
 	[self presentModalViewController:picker animated:NO];
 }
@@ -155,7 +155,7 @@
     
 	NSLog(@"CameraViewController: User Selected an Image or Video");
     [aPicker dismissModalViewControllerAnimated:NO];
-
+    
 	NSString* mediaType = [info objectForKey:UIImagePickerControllerMediaType];
 	if ([mediaType isEqualToString:@"public.image"]){
         
@@ -185,7 +185,7 @@
         NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
         NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
         if (self.mediaData != nil) [mediaData writeToURL:imageURL atomically:YES];
-        
+#warning REDUNDANT        
         //Image Meta Data
         NSMutableDictionary *newMetadata = [[NSMutableDictionary alloc] initWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
         CLLocation * location = [AppModel sharedAppModel].playerLocation;
@@ -208,53 +208,49 @@
         {
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
             [al writeImageDataToSavedPhotosAlbum:self.mediaData metadata:newMetadata completionBlock:^(NSURL *assetURL, NSError *error)
-            {
-                // once image is saved, get asset from assetURL
-                [al assetForURL:assetURL resultBlock:^(ALAsset *asset)
-                {
-                    if (!asset) return;
-                    
-                    // save image to temporary directory to be able to upload it
-                    ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
-                    UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
-                    NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
-                    imageData = [self dataWithEXIFUsingData:imageData];
-                    
-                    NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-                    NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-                    
-                    [imageData writeToURL:imageURL atomically:YES];
-                    
-                    //Do the upload
-                    [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                    if([self.editView isKindOfClass:[NoteEditorViewController class]])
-                        [self.editView refreshViewFromModel];
-
-                }
-                failureBlock:^(NSError *error)
-                {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                   [alert show];
-                    //Do the upload
-                    [[[AppModel sharedAppModel] uploadManager] uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                    if([self.editView isKindOfClass:[NoteEditorViewController class]])
-                     [self.editView refreshViewFromModel];
-                }
-                ];
-            }];
+             {
+                 // once image is saved, get asset from assetURL
+                 [al assetForURL:assetURL resultBlock:^(ALAsset *asset)
+                  {
+                      if (!asset) return;
+                      
+                      // save image to temporary directory to be able to upload it
+                      ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
+                      UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
+                      NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
+                      imageData = [self dataWithEXIFUsingData:imageData];
+#warning REDUNDANT
+                      NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+                      NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+                      
+                      [imageData writeToURL:imageURL atomically:YES];
+                      
+                      //Do the upload
+                      [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+                      if([self.editView isKindOfClass:[NoteEditorViewController class]])
+                          [self.editView refreshViewFromModel];
+                      
+                  }
+                    failureBlock:^(NSError *error)
+                  {
+                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                      [alert show];
+                      //Do the upload
+                      [[[AppModel sharedAppModel] uploadManager] uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+                      if([self.editView isKindOfClass:[NoteEditorViewController class]])
+                          [self.editView refreshViewFromModel];
+                  }
+                  ];
+             }];
         }
         else{
             
             NSData *data = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
-            UIImage *img = [[UIImage alloc] initWithData:data];
-            
-            NSData *imageData = UIImageJPEGRepresentation(img, 0.4);
-            imageData = [self dataWithEXIFUsingData:imageData];
             
             NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
             NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
             
-            [imageData writeToURL:imageURL atomically:YES];
+            [data writeToURL:imageURL atomically:YES];
             
             //Do the upload
             [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
@@ -267,20 +263,20 @@
 		NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
 		self.mediaData = [NSData dataWithContentsOfURL:videoURL];
 		self.mediaFilename = @"video.mp4";
-        if([self.parentDelegate isKindOfClass:[NoteCommentViewController class]]){ 
-                       [self.parentDelegate addedVideo];
-
+        if([self.parentDelegate isKindOfClass:[NoteCommentViewController class]]){
+            [self.parentDelegate addedVideo];
+            
         }
         if([self.editView isKindOfClass:[NoteEditorViewController class]]) {
             [self.editView setNoteValid:YES];
             [self.editView setNoteChanged:YES];
-                 }
+        }
         
-  [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeVideo withFileURL:videoURL];
+        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeVideo withFileURL:videoURL];
+        
+    }
     
-    }	
-    
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
@@ -295,19 +291,19 @@
     [aPicker dismissModalViewControllerAnimated:NO];
     if([backView isKindOfClass:[NotebookViewController class]] || [backView isKindOfClass:[InnovViewController class]]){
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
-        [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];   
+        [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];
     }
     [self.navigationController popToViewController:self.backView animated:YES];
-  //  [self.navigationController popToRootViewControllerAnimated:YES];
+    //  [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark UINavigationControllerDelegate Protocol Methods
-- (void)navigationController:(UINavigationController *)navigationController 
+- (void)navigationController:(UINavigationController *)navigationController
 	   didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
 	//nada
 }
 
-- (void)navigationController:(UINavigationController *)navigationController 
+- (void)navigationController:(UINavigationController *)navigationController
 	  willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
 	//nada
 }
@@ -315,23 +311,10 @@
 #pragma mark Memory Management
 - (void)didReceiveMemoryWarning {
     NSLog(@"CAMERA DID RECEIVE MEMORY WARNING!");
-    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
-    
-    // Release anything that's not essential, such as cached data
-    //[self.picker dismissModalViewControllerAnimated:NO];
-    //[self.navigationController popViewControllerAnimated:NO];
-
-    /*
-     Try to let go of the camera to save a crash
-    if(self.modalViewController.retainCount)
-    {
-        [self dismissModalViewControllerAnimated:NO];
-        [self.modalViewController release];
-    }
-    */
+    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superviewf
 }
 
-- (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData {	
+- (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData {
     NSMutableData* newJPEGData = [[NSMutableData alloc] init];
     NSMutableDictionary* exifDict = [[NSMutableDictionary alloc] init];
     NSMutableDictionary* locDict = [[NSMutableDictionary alloc] init];
@@ -380,7 +363,8 @@
 
 
 - (void)viewDidUnload {
-     overlay = nil;
+    overlay = nil;
+    overlay = nil;
     [super viewDidUnload];
 }
 @end

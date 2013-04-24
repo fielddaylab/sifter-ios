@@ -91,7 +91,7 @@
         
         imageView.userInteractionEnabled = YES;
         
-        [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:((Tag *)[self.note.tags objectAtIndex:0]).tagId inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
+        if([self.note.tags count] > 0) [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:((Tag *)[self.note.tags objectAtIndex:0]).tagId inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         
         [self refreshViewFromModel]; 
     }
