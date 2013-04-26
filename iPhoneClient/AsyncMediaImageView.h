@@ -25,6 +25,7 @@
     id <AsyncMediaImageViewDelegate> __unsafe_unretained delegate;
 	BOOL isLoading;
     BOOL loaded;
+    
 }
 
 @property (nonatomic, strong) NSURLConnection* connection;

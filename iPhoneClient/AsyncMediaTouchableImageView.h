@@ -13,6 +13,8 @@
 -(void) asyncMediaImageTouched:(id)sender;
 @end
 
-@interface AsyncMediaTouchableImageView : AsyncMediaImageView
+@interface AsyncMediaTouchableImageView : AsyncMediaImageView {
+    
+}
 
 @end

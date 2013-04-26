@@ -31,7 +31,7 @@
     if (self)
     {
         gameList = [[NSArray alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerFirstMoved)       name:@"PlayerMoved"     object:nil];
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerFirstMoved)       name:@"PlayerMoved"     object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearList)              name:@"LogoutRequested" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeLoadingIndicator) name:@"ConnectionLost"  object:nil];
     }

@@ -31,7 +31,7 @@
     if (self = [super initWithFrame:aFrame])
     {
         self.loaded = NO;
-        self.contentMode = UIViewContentModeScaleAspectFit;
+        self.contentMode = UIViewContentModeScaleAspectFill;
         self.clipsToBounds = YES;
         
         if(!media)
@@ -119,7 +119,7 @@
 {
     self.media = aMedia;
     
-    self.contentMode = UIViewContentModeScaleAspectFit;
+    self.contentMode = UIViewContentModeScaleAspectFill;
     
 	if(self.isLoading) return;
 
@@ -152,9 +152,10 @@
 	//put a spinner in the view
 	UIActivityIndicatorView *spinner = 
 	[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    spinner.color = [UIColor blackColor];
 	[spinner startAnimating];
 	
-	spinner.center = self.center;
+	spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 	[self addSubview:spinner];
 	
     //if (data!=nil) { [self.data release]; }

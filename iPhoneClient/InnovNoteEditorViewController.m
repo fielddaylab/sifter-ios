@@ -33,8 +33,6 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordButtonPressed:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
         
-        self.title = @"New Note";
-        
         gameTagList = [[NSMutableArray alloc]initWithCapacity:10];
     }
     return self;
@@ -83,7 +81,7 @@
     
     if(self.note.noteId != 0)
     {
-#warning when do we edit, populate view if editable NEEDS IMAGE
+#warning when do we edit
         isEditing = YES;
         newNote = NO;
         
@@ -92,6 +90,7 @@
         imageView.userInteractionEnabled = YES;
         
         if([self.note.tags count] > 0) [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:((Tag *)[self.note.tags objectAtIndex:0]).tagId inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
+        else [self tableView:tagTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
         
         [self refreshViewFromModel]; 
     }
@@ -115,6 +114,7 @@
     if(self.note.noteId == 0)
     {
         note = [[Note alloc] init];
+        note.title =  DEFAULTTEXT;
         note.creatorId = [AppModel sharedAppModel].playerId;
         note.username = [AppModel sharedAppModel].userName;
         note.noteId = [[AppServices sharedAppServices] createNoteStartIncomplete];
@@ -152,8 +152,8 @@
     
     if(!self.note || newNote || cancelled) return;
 
-    self.note.title = captionTextView.text;
-    if(([note.title length] == 0)) note.title = @"";
+    if([captionTextView.text isEqualToString:DEFAULTTEXT] || [captionTextView.text length] == 0) self.note.title = @"";
+    else self.note.title = captionTextView.text;
     [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:self.note.showOnMap publicToList:self.note.showOnList];
     [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
@@ -319,7 +319,10 @@
     for(int i = 0; i < [self.note.contents count]; ++i)
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
+            NSLog(@"Note content id: %d",noteContent.getContentId);
+            [imageView loadImageFromMedia:[noteContent getMedia]];
+        }
         else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
             if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: noteContent.getMedia.url]) {
                 [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:noteContent.getMedia.url]];
@@ -330,6 +333,8 @@
         } 
 #warning test moviePlayer Audio
     }
+    
+    [self refreshCategories];
 }
 
 -(void)addCDUploadsToNote
@@ -599,6 +604,8 @@
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //Not considered selected when auto set to first row, so clear first row
+    [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]].accessoryType = UITableViewCellAccessoryNone;
     
     NSIndexPath *oldIndex = [tableView indexPathForSelectedRow];
     [tableView cellForRowAtIndexPath:oldIndex].accessoryType = UITableViewCellAccessoryNone;
@@ -619,7 +626,8 @@
     tempTag.tagName = cell.nameLabel.text;
     [self.note.tags addObject:tempTag];
     [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:cell.nameLabel.text];
-
+    
+    self.title = tempTag.tagName;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

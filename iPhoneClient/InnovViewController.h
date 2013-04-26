@@ -26,6 +26,7 @@
     IBOutlet UIView *mapContentView;
     IBOutlet UIView *listContentView;
     IBOutlet MKMapView *mapView;
+    IBOutlet UITableView *tableView;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;

@@ -477,21 +477,34 @@
     
     if (mapContentView.superview == nil)
     {
-    	coming = mapContentView;
-    	going = listContentView;
-    	transition = UIViewAnimationTransitionFlipFromLeft;
+        coming = mapContentView;
+        going = listContentView;
+        transition = UIViewAnimationTransitionFlipFromLeft;
         newButtonTitle = @"List";
         newButtonImageName = @"noteicon.png";
     }
     else
     {
-    	coming = listContentView;
-    	going = mapContentView;
-    	transition = UIViewAnimationTransitionFlipFromRight;
+        coming = listContentView;
+        going = mapContentView;
+        transition = UIViewAnimationTransitionFlipFromRight;
         newButtonTitle = @"Map";
         newButtonImageName = @"103-map.png";
     }
-    
+ /* attempt to landscape
+    coming.frame = going.frame;
+    CGRect contentFrame = coming.frame;
+    contentFrame.origin.x = 0;
+    contentFrame.origin.y = 0;
+    if(coming == mapContentView){
+        mapView.frame = contentFrame;
+        [mapContentView setNeedsDisplay];
+    }
+    else{
+        tableView.frame = contentFrame;
+        [listContentView setNeedsDisplay];
+    }
+    */
     [UIView setAnimationTransition: transition forView:contentView cache:YES];
     [going removeFromSuperview];
     [contentView insertSubview: coming atIndex:0];
@@ -550,7 +563,7 @@
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    #warning unimplemented
+#warning unimplemented
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
 	if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     
@@ -568,7 +581,7 @@
 // Customize the height of each row
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	return 60;
-    #warning unimplemented
+#warning unimplemented
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -610,10 +623,10 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
     /*
-    NSEnumerator *existingAnnotationsEnumerator = [[[mapView annotations] copy] objectEnumerator];
-    NSObject <MKAnnotation> *annotation;
-    while (annotation = [existingAnnotationsEnumerator nextObject])
-        if(annotation != mapView.userLocation) [mapView removeAnnotation:annotation];
+     NSEnumerator *existingAnnotationsEnumerator = [[[mapView annotations] copy] objectEnumerator];
+     NSObject <MKAnnotation> *annotation;
+     while (annotation = [existingAnnotationsEnumerator nextObject])
+     if(annotation != mapView.userLocation) [mapView removeAnnotation:annotation];
      */
 }
 
@@ -626,6 +639,7 @@
     trackingButton = nil;
     switchViewsBarButton = nil;
     notePopUp = nil;
+    tableView = nil;
     [super viewDidUnload];
 }
 

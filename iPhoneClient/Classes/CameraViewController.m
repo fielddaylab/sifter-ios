@@ -135,8 +135,8 @@
 - (void)imagePickerController:(UIImagePickerController *)aPicker didFinishPickingMediaWithInfo:(NSDictionary  *)info
 {
     
-    if([backView isKindOfClass:[InnovNoteEditorViewController class]]){
-        Note *note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
+    if([self.backView isKindOfClass:[InnovNoteEditorViewController class]]){
+        Note *note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:self.noteId]];
         for(int i = 0; i < [note.contents count]; ++i)
         {
             NoteContent *noteContent = [note.contents objectAtIndex:i];
@@ -148,6 +148,7 @@
                     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.noteId andFileURL:[NSURL URLWithString:[[noteContent getMedia] url]]];
                 
                 [note.contents removeObjectAtIndex:i];
+                i--;
             }
         }
         
@@ -157,35 +158,13 @@
     [aPicker dismissModalViewControllerAnimated:NO];
     
 	NSString* mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-	if ([mediaType isEqualToString:@"public.image"]){
+	if ([mediaType isEqualToString:@"public.image"]) {
         
-        UIImage* image = [info objectForKey:UIImagePickerControllerOriginalImage];
-        
-        //Manipulate image to desired specs (quality, orientation, size, etc...)
-        image = [image fixOrientation];
-        image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFit bounds:image.size interpolationQuality:kCGInterpolationHigh];
-        if(image.size.height > image.size.width)
-        {
-            if(image.size.height > 856)
-                image = [image scaleToSize:CGSizeMake(image.size.width*(856/image.size.height), 856)];
-            if(image.size.width > 640)
-                image = [image scaleToSize:CGSizeMake(640, image.size.height*(640/image.size.width))];
-        }
-        else
-        {
-            if(image.size.width > 856)
-                image = [image scaleToSize:CGSizeMake(856, image.size.height*(856/image.size.width))];
-            if(image.size.height > 640)
-                image = [image scaleToSize:CGSizeMake(image.size.width*(640/image.size.height), 640)];
-        }
+        UIImage* image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
         
         //Image Data
-        self.mediaData = UIImageJPEGRepresentation(image, 0.4);
-        self.mediaFilename = [NSString stringWithFormat:@"%@image.jpg",[NSDate date]];
-        NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-        NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-        if (self.mediaData != nil) [mediaData writeToURL:imageURL atomically:YES];
-#warning REDUNDANT        
+        self.mediaData = UIImageJPEGRepresentation(image, 1.0);
+
         //Image Meta Data
         NSMutableDictionary *newMetadata = [[NSMutableDictionary alloc] initWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
         CLLocation * location = [AppModel sharedAppModel].playerLocation;
@@ -193,6 +172,9 @@
         NSString *gameName = [AppModel sharedAppModel].currentGame.name;
         NSString *descript = [[NSString alloc] initWithFormat: @"%@ %@: %@. %@: %@", NSLocalizedString(@"CameraImageTakenKey", @""), NSLocalizedString(@"CameraGameKey", @""), gameName, NSLocalizedString(@"CameraPlayerKey", @""), [[AppModel sharedAppModel] userName]];
         [newMetadata setDescription: descript];
+        
+        //Ignore since it's nonsense
+        [newMetadata setObject:@"X" forKey:@"Orientation"];
         
         //Handle Delegate
         if([self.parentDelegate isKindOfClass:[NoteCommentViewController class]])
@@ -212,22 +194,22 @@
                  // once image is saved, get asset from assetURL
                  [al assetForURL:assetURL resultBlock:^(ALAsset *asset)
                   {
-                      if (!asset) return;
-                      
+                      NSLog(@"%@", assetURL);
                       // save image to temporary directory to be able to upload it
                       ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
                       UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
-                      NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
-                      imageData = [self dataWithEXIFUsingData:imageData];
-#warning REDUNDANT
-                      NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-                      NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
                       
+                      
+                      NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
+                  //    imageData = [self dataWithEXIFUsingData:imageData];
+                      self.mediaFilename = [NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+                      NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: self.mediaFilename];
+                   //
                       [imageData writeToURL:imageURL atomically:YES];
                       
                       //Do the upload
                       [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                      if([self.editView isKindOfClass:[NoteEditorViewController class]])
+                      if([self.editView isKindOfClass:[NoteEditorViewController class]] || [self.editView isKindOfClass:[InnovNoteEditorViewController class]])
                           [self.editView refreshViewFromModel];
                       
                   }
@@ -236,8 +218,11 @@
                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                       [alert show];
                       //Do the upload
+                      NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+                      NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+                      if (self.mediaData != nil) [mediaData writeToURL:imageURL atomically:YES];
                       [[[AppModel sharedAppModel] uploadManager] uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                      if([self.editView isKindOfClass:[NoteEditorViewController class]])
+                      if([self.editView isKindOfClass:[NoteEditorViewController class]] || [self.editView isKindOfClass:[InnovNoteEditorViewController class]])
                           [self.editView refreshViewFromModel];
                   }
                   ];
@@ -246,15 +231,13 @@
         else{
             
             NSData *data = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
-            
             NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
             NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-            
             [data writeToURL:imageURL atomically:YES];
-            
+       
             //Do the upload
-            [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-            if([self.editView isKindOfClass:[NoteEditorViewController class]])
+            [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
+            if([self.editView isKindOfClass:[NoteEditorViewController class]] || [self.editView isKindOfClass:[InnovNoteEditorViewController class]])
                 [self.editView refreshViewFromModel];
         }
 	}
