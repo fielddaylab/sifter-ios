@@ -117,11 +117,18 @@
 
 - (void)loadImageFromMedia:(Media *) aMedia
 {
+    //put a spinner in the view
+	UIActivityIndicatorView *spinner =
+	[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    spinner.color = [UIColor blackColor];
+	[self addSubview:spinner];
+    
     self.media = aMedia;
     
     self.contentMode = UIViewContentModeScaleAspectFill;
     
-	if(self.isLoading) return;
+	if(self.isLoading || self.loaded) return;
 
     self.isLoading = YES;
 
@@ -149,14 +156,7 @@
 	//set up indicators
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 	
-	//put a spinner in the view
-	UIActivityIndicatorView *spinner = 
-	[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    spinner.color = [UIColor blackColor];
 	[spinner startAnimating];
-	
-	spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-	[self addSubview:spinner];
 	
     //if (data!=nil) { [self.data release]; }
 	NSLog(@"AsyncImageView: Loading Image at %@",self.media.url);

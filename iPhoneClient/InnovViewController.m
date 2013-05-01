@@ -54,7 +54,7 @@
 #warning unimplemented: change game and finalize settings
     
     Game *game = [[Game alloc] init];
-    game.gameId = 3377;
+    game.gameId = 3407;
     game.hasBeenPlayed            = YES;
     game.isLocational             = YES;
     game.showPlayerLocation       = YES;
@@ -139,6 +139,11 @@
     //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
     //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
     //   else                                                                                  mapView.mapType = MKMapTypeStandard;
+    
+    //Fixes missing status bar when cancelling picture pick from library
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     
     if(noteToAdd != nil){
 #warning unimplemented
@@ -491,11 +496,11 @@
         newButtonTitle = @"Map";
         newButtonImageName = @"103-map.png";
     }
- /* attempt to landscape
-    coming.frame = going.frame;
-    CGRect contentFrame = coming.frame;
+/*  attempt to landscape
+    CGRect contentFrame = contentView.frame;
     contentFrame.origin.x = 0;
     contentFrame.origin.y = 0;
+    coming.frame = contentFrame;
     if(coming == mapContentView){
         mapView.frame = contentFrame;
         [mapContentView setNeedsDisplay];
@@ -504,7 +509,8 @@
         tableView.frame = contentFrame;
         [listContentView setNeedsDisplay];
     }
-    */
+*/    
+    
     [UIView setAnimationTransition: transition forView:contentView cache:YES];
     [going removeFromSuperview];
     [contentView insertSubview: coming atIndex:0];

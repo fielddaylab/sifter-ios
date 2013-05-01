@@ -36,6 +36,10 @@ typedef enum {
     BOOL isEditing;
     
     BOOL newNote;
+    int originalTagId;
+    NSString  *originalTagName;
+    int selectedIndex;
+    NSString  *newTagName;
     BOOL cancelled;
     BOOL hasAudioToUpload;
     NSMutableArray *gameTagList;

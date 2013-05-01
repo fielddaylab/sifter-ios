@@ -194,7 +194,6 @@
                  // once image is saved, get asset from assetURL
                  [al assetForURL:assetURL resultBlock:^(ALAsset *asset)
                   {
-                      NSLog(@"%@", assetURL);
                       // save image to temporary directory to be able to upload it
                       ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
                       UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
