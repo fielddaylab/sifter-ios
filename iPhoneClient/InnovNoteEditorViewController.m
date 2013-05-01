@@ -155,21 +155,20 @@
     [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:self.note.showOnMap publicToList:self.note.showOnList];
     [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
-    if([delegate isKindOfClass:[InnovViewController class]]) ((InnovViewController *)self.delegate).noteToAdd = self.note;
-    
     if(mode == kInnovAudioRecorderRecording) [self recordButtonPressed:nil];
     if(hasAudioToUpload) [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
     
     
     if(![originalTagName isEqualToString:newTagName])
-    {
         [[AppServices sharedAppServices] deleteTagFromNote:self.note.noteId tagId:originalTagId];
-        [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
-    }
-    else if([originalTagName length] == 0)
-    {
-        [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
-    }
+    
+    [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
+    
+    Tag *tag = [[Tag alloc] init];
+    tag.tagName = newTagName;
+    [self.note.tags addObject:tag];
+    
+    if([delegate isKindOfClass:[InnovViewController class]]) ((InnovViewController *)self.delegate).noteToAdd = self.note;
     
     [[AppModel sharedAppModel].playerNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
     
@@ -181,6 +180,7 @@
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
     [[Logger sharedLogger] logError:error];
     
+    self.note = nil;
 }
 
 - (IBAction)backButtonTouchAction: (id) sender
