@@ -1529,8 +1529,10 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 	}
 	[AppModel sharedAppModel].gameTagList = tempTagsList;
     
-    NSLog(@"NSNotification: NewNoteListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
+  //  NSLog(@"NSNotification: NewNoteListReady");
+  //  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
+    NSLog(@"NSNotification: NewTagListReady");
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewTagListReady" object:nil]];
 }
 
 -(void)addTagToNote:(int)noteId tagName:(NSString *)tag

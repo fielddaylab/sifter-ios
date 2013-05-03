@@ -42,7 +42,7 @@ typedef enum {
     NSString  *newTagName;
     BOOL cancelled;
     BOOL hasAudioToUpload;
-    NSMutableArray *gameTagList;
+    NSMutableArray *tagList;
     
     ARISMoviePlayerViewController *ARISMoviePlayer;
     

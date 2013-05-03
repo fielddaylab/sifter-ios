@@ -31,9 +31,10 @@
     if (self) {
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCategories)    name:@"NewTagListReady"  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordButtonPressed:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
         
-        gameTagList = [[NSMutableArray alloc]initWithCapacity:10];
+        tagList = [[NSMutableArray alloc]initWithCapacity:10];
     }
     return self;
 }
@@ -92,7 +93,7 @@
         if([self.note.tags count] > 0){
             originalTagId = ((Tag *)[self.note.tags objectAtIndex:0]).tagId;
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
-            [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[gameTagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])] inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
+            [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[tagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])] inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else [self tableView:tagTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
         
@@ -272,8 +273,6 @@
         }
 #warning test moviePlayer Audio
     }
-    
-    [self refreshCategories];
 }
 
 -(void)addCDUploadsToNote
@@ -507,67 +506,14 @@
 
 -(void)refreshCategories
 {
-    [gameTagList removeAllObjects];
+    [tagList removeAllObjects];
     for(int i = 0; i < [[AppModel sharedAppModel].gameTagList count];i++){
-        [gameTagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
+        [tagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
+        
+        if([((Tag *)[tagList objectAtIndex:i]).tagName isEqualToString:newTagName])
+            [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
     }
     [tagTableView reloadData];
-    
-}
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *tempCell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (![tempCell respondsToSelector:@selector(nameLabel)]) tempCell = nil;
-    TagCell *cell = (TagCell *)tempCell;
-    
-    
-    if (cell == nil) {
-        // Create a temporary UIViewController to instantiate the custom cell.
-        UIViewController *temporaryController = [[UIViewController alloc] initWithNibName:@"TagCell" bundle:nil];
-        // Grab a pointer to the custom cell.
-        cell = (TagCell *)temporaryController.view;
-        // Release the temporary UIViewController.
-    }
-    
-    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    
-    if([gameTagList count] == 0) cell.nameLabel.text = @"No Categories in Application";
-    else cell.nameLabel.text = [[gameTagList objectAtIndex:indexPath.row] tagName];
-    
-    
-    if(indexPath.row == selectedIndex)
-        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-    
-    return cell;
-    
-}
-
--(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    //Not considered selected when auto set to first row, so clear first row
-    [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]].accessoryType = UITableViewCellAccessoryNone;
-    
-    NSIndexPath *oldIndex = [tableView indexPathForSelectedRow];
-    [tableView cellForRowAtIndexPath:oldIndex].accessoryType = UITableViewCellAccessoryNone;
-    return indexPath;
-    
-}
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    TagCell *cell = (TagCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    
-    newTagName = cell.nameLabel.text;
-    selectedIndex = indexPath.row;
-    
-    self.title = newTagName;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 44;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -578,8 +524,8 @@
 {
     switch (section) {
         case 0:
-            if(gameTagList.count > 0)
-                return [gameTagList count];
+            if(tagList.count > 0)
+                return [tagList count];
             else
                 return 1;
             break;
@@ -599,6 +545,56 @@
     }
     return @"ERROR";
 }
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 44;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *tempCell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (![tempCell respondsToSelector:@selector(nameLabel)]) tempCell = nil;
+    TagCell *cell = (TagCell *)tempCell;
+    
+    
+    if (cell == nil) {
+        // Create a temporary UIViewController to instantiate the custom cell.
+        UIViewController *temporaryController = [[UIViewController alloc] initWithNibName:@"TagCell" bundle:nil];
+        // Grab a pointer to the custom cell.
+        cell = (TagCell *)temporaryController.view;
+        // Release the temporary UIViewController.
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    }
+    
+    if([tagList count] == 0) cell.nameLabel.text = @"No Categories in Application";
+    else cell.nameLabel.text = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
+    
+    return cell;
+}
+
+-(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //Not considered selected when auto set to first row, so clear first row
+    [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]].accessoryType = UITableViewCellAccessoryNone;
+    
+    NSIndexPath *oldIndex = [tableView indexPathForSelectedRow];
+    [tableView cellForRowAtIndexPath:oldIndex].accessoryType = UITableViewCellAccessoryNone;
+    return indexPath;
+    
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    TagCell *cell = (TagCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    
+    newTagName = cell.nameLabel.text;
+    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+    
+    self.title = newTagName;
+}
+
 
 #pragma mark Autorotation, Dealloc, and Other Necessary Methods
 

@@ -13,11 +13,12 @@
 #import "Location.h"
 #import "Annotation.h"
 #import "AnnotationView.h"
+#import "InnovSelectedTagsViewController.h"
 #import "InnovNoteEditorViewController.h"
 #import "Note.h"
 #import "MapNotePopUp.h"
 
-@interface InnovViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, UIActionSheetDelegate, UISearchBarDelegate> {
+@interface InnovViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, InnovSelectedTagsDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -27,6 +28,9 @@
     IBOutlet UIView *listContentView;
     IBOutlet MKMapView *mapView;
     IBOutlet UITableView *tableView;
+    IBOutlet UIView *settingsView;
+    
+    BOOL hidingSettings;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;
@@ -45,7 +49,9 @@
     Note *noteToAdd;
     
     IBOutlet MapNotePopUp *notePopUp;
-
+    
+    InnovSelectedTagsViewController *selectedTagsVC;
+    
     InnovNoteEditorViewController *editorVC;
 }
 
@@ -59,5 +65,10 @@
 - (IBAction)cameraPressed:(id)sender;
 - (IBAction)trackingButtonPressed:(id)sender;
 - (IBAction)presentNote:(UITapGestureRecognizer *)sender;
+- (IBAction)createLinkPressed:(id)sender;
+- (IBAction)notificationsPressed:(id)sender;
+- (IBAction)autoPlayPressed:(id)sender;
+- (IBAction)aboutPressed:(id)sender;
+
 
 @end

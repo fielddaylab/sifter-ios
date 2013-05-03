@@ -94,7 +94,8 @@
         else if (annotation.kind == NearbyObjectNPC) self.iconView.image = [UIImage imageNamed:@"npc.png"];
         else if (annotation.kind == NearbyObjectPlayer) self.iconView.image = [UIImage imageNamed:@"player.png"];
         else if (annotation.kind == NearbyObjectWebPage) self.iconView.image = [UIImage imageNamed:@"page.png"];
-        else if (annotation.kind == NearbyObjectNote) self.iconView.image = [UIImage imageNamed:@"noteicon.png"];
+        else if (annotation.kind == NearbyObjectNote) self.iconView.image = [UIImage imageNamed:@"noteicon.png"]; //annotation.icon
+#warning FIX
         
         self.opaque = NO; 
     }

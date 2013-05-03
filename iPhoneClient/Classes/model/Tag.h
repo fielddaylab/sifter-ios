@@ -13,7 +13,7 @@
     BOOL playerCreated;
     int tagId;
 }
-@property(readwrite) int tagId;
-@property(nonatomic)NSString *tagName;
-@property(readwrite,assign)BOOL playerCreated;
+@property (readwrite)        int tagId;
+@property (nonatomic)        NSString *tagName;
+@property (readwrite,assign) BOOL playerCreated;
 @end

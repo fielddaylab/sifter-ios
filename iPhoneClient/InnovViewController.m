@@ -19,6 +19,8 @@
 #define ANIMATION_TIME     0.6
 #define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
 
+#define RIGHTSIDEMARGIN 20
+
 @interface InnovViewController ()
 
 @end
@@ -37,10 +39,9 @@
         locationsToAdd    = [[NSMutableArray alloc] initWithCapacity:10];
         locationsToRemove = [[NSMutableArray alloc] initWithCapacity:10];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)
-                                                     name:@"PlayerMoved"                                  object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"             object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"           object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                name:@"PlayerMoved"                             object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"        object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"      object:nil];
         //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
     }
     return self;
@@ -96,9 +97,27 @@
     notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     notePopUp.layer.cornerRadius = 9.0f;
     
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
     showTagsButton.layer.cornerRadius = 4.0f;
+    
+    selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
+    CGRect selectedTagsFrame = selectedTagsVC.view.frame;
+    selectedTagsFrame.origin.x = -self.view.frame.size.width/2;
+    selectedTagsFrame.origin.y = self.view.frame.size.height/2+12;
+    selectedTagsVC.view.frame = selectedTagsFrame;
+    [self addChildViewController:selectedTagsVC];
+    [selectedTagsVC didMoveToParentViewController:self];
+    [self.view addSubview:selectedTagsVC.view];
+    
+    CGRect settingsLocation = settingsView.frame;
+    settingsLocation.origin.x = self.view.frame.size.width - settingsView.frame.size.width/2;
+    settingsLocation.origin.y = -settingsView.frame.size.height/2;
+    settingsView.frame = settingsLocation;
+    [self.view addSubview:settingsView];
+    
+    settingsView.hidden = YES;
+    // settingsView.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+    
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
@@ -109,10 +128,10 @@
     self.navigationItem.leftBarButtonItem = switchViewsBarButton;
     
     searchBarTop = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, 320.0, 44.0)];
-    searchBarTop.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    searchBarTop.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     searchBarTop.barStyle = UIBarStyleBlack;
     UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, 44.0)];
-    searchBarView.autoresizingMask = 0;
+    searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     searchBarTop.delegate = self;
     [searchBarView addSubview:searchBarTop];
     self.navigationItem.titleView = searchBarView;
@@ -251,6 +270,8 @@
 	[mapView setRegion:region animated:YES];
 }
 
+#pragma mark LocationsModel Update Methods
+
 - (void) addLocationsToNewQueue:(NSNotification *)notification
 {
     //Quickly make sure we're not re-adding any info (let the 'newly' added ones take over)
@@ -294,6 +315,18 @@
     [self refreshViewFromModel];
 }
 
+#pragma mark Selected Content Delegate Methods
+
+- (void) didUpdateContentSelector
+{
+#warning not implemented
+}
+
+- (void) didUpdateSelectedTagList
+{
+    [self refreshViewFromModel];
+}
+
 - (void)refreshViewFromModel
 {
     if(!mapView) return;
@@ -325,6 +358,15 @@
         tmpLocation = (Location *)[locationsToAdd objectAtIndex:i];
         if (tmpLocation.hidden == YES || tmpLocation.kind != NearbyObjectNote) continue; //Would check if player and if players should be shown, but only adds notes anyway, also removed some items code
         
+        Note * note    = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:NO];
+        if(!note) note = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:YES];
+        
+        BOOL match = NO;
+        for(int j = 0; j < [selectedTagsVC.selectedTagList count]; ++j)
+            if(((Tag *)[note.tags objectAtIndex:0]).tagId == ((Tag *)[selectedTagsVC.selectedTagList objectAtIndex:j]).tagId) match = YES;
+        
+        if(!match) continue;
+        
         CLLocationCoordinate2D locationLatLong = tmpLocation.location.coordinate;
         
         Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
@@ -332,6 +374,11 @@
         annotation.title = tmpLocation.name;
         annotation.kind = tmpLocation.kind;
         annotation.iconMediaId = tmpLocation.iconMediaId;
+        
+        //UIImage *iconImage = [UIImage imageNamed:[NSString stringWithFormat:@"tag%d.png", ((Tag *)[note.tags objectAtIndex:0]).tagId]];
+        NSLog(@"Make image named tag%d.png", ((Tag *)[note.tags objectAtIndex:0]).tagId);
+        //annotation.icon = iconImage;
+#warning FIX
         
         [mapView addAnnotation:annotation];
     }
@@ -363,28 +410,6 @@
     if(view.annotation == aMapView.userLocation) return;
 	Location *location = ((Annotation*)view.annotation).location;
     [self showNotePopUpForLocation:location];
-    /*
-     NSMutableArray *buttonTitles = [NSMutableArray arrayWithCapacity:1];
-     int cancelButtonIndex = 0;
-     if (location.allowsQuickTravel)
-     {
-     [buttonTitles addObject: NSLocalizedString(@"GPSViewQuickTravelKey", @"")];
-     cancelButtonIndex = 1;
-     }
-     [buttonTitles addObject: NSLocalizedString(@"CancelKey", @"")];
-     
-     UIActionSheet *actionSheet = [[UIActionSheet alloc]initWithTitle:location.name
-     delegate:self
-     cancelButtonTitle:nil
-     destructiveButtonTitle:nil
-     otherButtonTitles:nil];
-     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-     actionSheet.cancelButtonIndex = cancelButtonIndex;
-     
-     for (NSString *title in buttonTitles)
-     [actionSheet addButtonWithTitle:title];
-     
-     [actionSheet showInView:view];*/
 }
 
 - (void) showNotePopUpForLocation: (Location *) location {
@@ -421,7 +446,7 @@
     [mapView deselectAnnotation:currentAnnotation animated:YES];
     notePopUp.hidden = NO;
     notePopUp.userInteractionEnabled = NO;
-    [UIView beginAnimations:@"animationExpand" context:NULL];
+    [UIView beginAnimations:@"animationExpandNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
     notePopUp.transform=CGAffineTransformMakeScale(1, 1);
     [UIView setAnimationDelegate:self];
@@ -431,12 +456,12 @@
 }
 
 -(void)animationDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context{
-	if ([animationID isEqualToString:@"animationExpand"]) notePopUp.userInteractionEnabled=YES;
-    else if ([animationID isEqualToString:@"animationShrink"]) notePopUp.hidden = YES;
+	if ([animationID isEqualToString:@"animationExpandNote"]) notePopUp.userInteractionEnabled=YES;
+    else if ([animationID isEqualToString:@"animationShrinkNote"]) notePopUp.hidden = YES;
 }
 
 - (void) hideNotePopUp {
-    [UIView beginAnimations:@"animationShrink" context:NULL];
+    [UIView beginAnimations:@"animationShrinkNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
     notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     [UIView setAnimationDelegate:self];
@@ -455,7 +480,16 @@
     [mapView deselectAnnotation:currentAnnotation animated:YES];
 }
 
-- (IBAction)test:(UITapGestureRecognizer *)sender {
+- (IBAction)createLinkPressed:(id)sender {
+}
+
+- (IBAction)notificationsPressed:(id)sender {
+}
+
+- (IBAction)autoPlayPressed:(id)sender {
+}
+
+- (IBAction)aboutPressed:(id)sender {
 }
 
 - (void)mapView:(MKMapView *)mV didAddAnnotationViews:(NSArray *)views
@@ -496,7 +530,7 @@
         newButtonTitle = @"Map";
         newButtonImageName = @"103-map.png";
     }
-/*  attempt to landscape
+    //  attempt to landscape
     CGRect contentFrame = contentView.frame;
     contentFrame.origin.x = 0;
     contentFrame.origin.y = 0;
@@ -509,7 +543,7 @@
         tableView.frame = contentFrame;
         [listContentView setNeedsDisplay];
     }
-*/    
+    
     
     [UIView setAnimationTransition: transition forView:contentView cache:YES];
     [going removeFromSuperview];
@@ -527,11 +561,57 @@
 - (void)settingsPressed
 {
 #warning unimplemented
+    if(settingsView.hidden || hidingSettings) [self showSettings];
+    else [self hideSettings];
+}
+
+- (void)showSettings
+{
+    hidingSettings = NO;
+    settingsView.hidden = NO;
+    settingsView.userInteractionEnabled = NO;
+    
+    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
+    [scale setToValue:[NSNumber numberWithFloat:1.0f]];
+    [scale setDuration:0.8f];
+    [scale setRemovedOnCompletion:NO];
+    [scale setFillMode:kCAFillModeForwards];
+    scale.delegate = self;
+    [settingsView.layer addAnimation:scale forKey:@"transform.scaleUp"];
+}
+
+- (void)hideSettings
+{
+    hidingSettings = YES;
+    
+    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
+    [scale setToValue:[NSNumber numberWithFloat:0.0f]];
+    [scale setDuration:0.8f];
+    [scale setRemovedOnCompletion:NO];
+    [scale setFillMode:kCAFillModeForwards];
+    scale.delegate = self;
+    [settingsView.layer addAnimation:scale forKey:@"transform.scaleDown"];
+    
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{
+    if(flag){
+        if (theAnimation == [[settingsView layer] animationForKey:@"transform.scaleUp"] && !hidingSettings)
+            settingsView.userInteractionEnabled = YES;
+        else if(theAnimation == [[settingsView layer] animationForKey:@"transform.scaleDown"] && hidingSettings)
+            settingsView.hidden = YES;
+    }
 }
 
 - (IBAction)showTagsPressed:(id)sender
 {
 #warning unimplemented
+    [selectedTagsVC toggleDisplay];
 }
 
 - (IBAction)cameraPressed:(id)sender {
@@ -549,6 +629,8 @@
 {
 	[searchBarTop resignFirstResponder];
     if(!notePopUp.hidden) [self hideNotePopUp];
+    if(!settingsView.hidden && !hidingSettings) [self hideSettings];
+    [selectedTagsVC hide];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -628,12 +710,6 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-    /*
-     NSEnumerator *existingAnnotationsEnumerator = [[[mapView annotations] copy] objectEnumerator];
-     NSObject <MKAnnotation> *annotation;
-     while (annotation = [existingAnnotationsEnumerator nextObject])
-     if(annotation != mapView.userLocation) [mapView removeAnnotation:annotation];
-     */
 }
 
 - (void)viewDidUnload {
@@ -646,6 +722,7 @@
     switchViewsBarButton = nil;
     notePopUp = nil;
     tableView = nil;
+    settingsView = nil;
     [super viewDidUnload];
 }
 

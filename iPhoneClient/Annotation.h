@@ -17,6 +17,7 @@
 	NSString *title;
 	NSString *subtitle;
 	int iconMediaId;
+    UIImage *icon;
 	nearbyObjectKind kind;
 	Location *location;
 }
@@ -25,6 +26,7 @@
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *subtitle;
 @property(readwrite, assign) int iconMediaId;
+@property (nonatomic) UIImage *icon;
 @property(readwrite, assign) nearbyObjectKind kind;
 @property (nonatomic) Location *location;
 
