@@ -31,6 +31,7 @@
     IBOutlet UIView *settingsView;
     
     BOOL hidingSettings;
+    BOOL hidingPopUp;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;

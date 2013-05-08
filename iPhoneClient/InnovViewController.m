@@ -220,18 +220,6 @@
  }
  }
  */
-- (IBAction)trackingButtonPressed:(id)sender
-{
-	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-	
-	tracking = YES;
-	trackingButton.backgroundColor = [UIColor blueColor];
-    
-	[[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
-	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
-    
-	[self refresh];
-}
 
 - (void) refresh
 {
@@ -397,12 +385,87 @@
 	appSetNextRegionChange = NO;
 }
 
+- (void)mapView:(MKMapView *)mV didAddAnnotationViews:(NSArray *)views
+{
+    for (AnnotationView *aView in views)
+    {
+        //Drop animation
+        CGRect endFrame = aView.frame;
+        aView.frame = CGRectMake(aView.frame.origin.x, aView.frame.origin.y - 230.0, aView.frame.size.width, aView.frame.size.height);
+        [UIView animateWithDuration:0.45 delay:0.0 options:UIViewAnimationCurveEaseIn animations:^{[aView setFrame: endFrame];} completion:^(BOOL finished) {}];
+    }
+}
+
 - (MKAnnotationView *)mapView:(MKMapView *)myMapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
 	if (annotation == mapView.userLocation)
         return nil;
     else
         return [[AnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:nil];
+}
+
+
+#pragma mark Buttons Pressed
+
+- (IBAction)trackingButtonPressed:(id)sender
+{
+	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
+	
+	tracking = YES;
+	trackingButton.backgroundColor = [UIColor blueColor];
+    
+	[[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
+	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
+    
+	[self refresh];
+}
+
+- (IBAction)showTagsPressed:(id)sender
+{
+    [selectedTagsVC toggleDisplay];
+}
+
+- (IBAction)cameraPressed:(id)sender {
+    
+    editorVC = [[InnovNoteEditorViewController alloc] init];
+    editorVC.delegate = self;
+    lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
+    
+    [self.navigationController pushViewController:editorVC animated:NO];
+}
+
+- (void)settingsPressed
+{
+    if(settingsView.hidden || hidingSettings) [self showSettings];
+    else [self hideSettings];
+}
+
+- (IBAction) presentNote:(UITapGestureRecognizer *) sender
+{
+#warning change if other possible senders
+    Note * note = ((MapNotePopUp *)sender.view).note;
+    NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
+    dataVC.note = note;
+    dataVC.delegate = self;
+    [self.navigationController pushViewController:dataVC animated:YES];
+    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
+    [mapView deselectAnnotation:currentAnnotation animated:YES];
+}
+
+- (IBAction)createLinkPressed:(id)sender {
+    #warning unimplemented
+}
+
+- (IBAction)notificationsPressed:(id)sender {
+    #warning unimplemented
+}
+
+- (IBAction)autoPlayPressed:(id)sender {
+    #warning unimplemented
+}
+
+- (IBAction)aboutPressed:(id)sender {
+    #warning unimplemented
 }
 
 - (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view
@@ -417,6 +480,7 @@
     Note * note    = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:NO];
     if(!note) note = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:YES];
     if(note){
+        //if(!notePopUp.hidden && !hidingPopUp) [self hideNotePopUp]; HAndled by touchesBegan
         [self showNotePopUpForNote:note];
     }
     else{
@@ -428,7 +492,66 @@
     
 }
 
+#pragma mark TouchesBegan Method
+
+- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	[searchBarTop resignFirstResponder];
+    if(!notePopUp.hidden && !hidingPopUp) 
+        [self hideNotePopUp];
+    if(!settingsView.hidden && !hidingSettings)
+        [self hideSettings];
+    [selectedTagsVC hide];
+}
+
+#pragma mark Animations
+
+- (void)showSettings
+{
+    hidingSettings = NO;
+    settingsView.hidden = NO;
+    settingsView.userInteractionEnabled = NO;
+    
+    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
+    [scale setToValue:[NSNumber numberWithFloat:1.0f]];
+    [scale setDuration:0.8f];
+    [scale setRemovedOnCompletion:NO];
+    [scale setFillMode:kCAFillModeForwards];
+    scale.delegate = self;
+    [settingsView.layer addAnimation:scale forKey:@"transform.scaleUp"];
+}
+
+- (void)hideSettings
+{
+    hidingSettings = YES;
+    
+    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
+    [scale setToValue:[NSNumber numberWithFloat:0.0f]];
+    [scale setDuration:0.8f];
+    [scale setRemovedOnCompletion:NO];
+    [scale setFillMode:kCAFillModeForwards];
+    scale.delegate = self;
+    [settingsView.layer addAnimation:scale forKey:@"transform.scaleDown"];
+    
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{
+    if(flag){
+        if (theAnimation == [[settingsView layer] animationForKey:@"transform.scaleUp"] && !hidingSettings)
+            settingsView.userInteractionEnabled = YES;
+        else if(theAnimation == [[settingsView layer] animationForKey:@"transform.scaleDown"] && hidingSettings)
+            settingsView.hidden = YES;
+    }
+}
+
 - (void) showNotePopUpForNote: (Note *) note {
+    
+    hidingPopUp = NO;
     
     MKCoordinateRegion region = mapView.region;
 	region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);
@@ -444,6 +567,7 @@
     
     Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
     [mapView deselectAnnotation:currentAnnotation animated:YES];
+    
     notePopUp.hidden = NO;
     notePopUp.userInteractionEnabled = NO;
     [UIView beginAnimations:@"animationExpandNote" context:NULL];
@@ -456,51 +580,23 @@
 }
 
 -(void)animationDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context{
-	if ([animationID isEqualToString:@"animationExpandNote"]) notePopUp.userInteractionEnabled=YES;
-    else if ([animationID isEqualToString:@"animationShrinkNote"]) notePopUp.hidden = YES;
+    if(finished)
+    {
+        if ([animationID isEqualToString:@"animationExpandNote"] && !hidingPopUp) notePopUp.userInteractionEnabled=YES;
+        else if ([animationID isEqualToString:@"animationShrinkNote"] && hidingPopUp) notePopUp.hidden = YES;
+    }
 }
 
 - (void) hideNotePopUp {
+    
+    hidingPopUp = YES;
+    
     [UIView beginAnimations:@"animationShrinkNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
     notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     [UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView commitAnimations];
-}
-
-- (IBAction) presentNote:(UITapGestureRecognizer *) sender {
-#warning change if other possible senders
-    Note * note = ((MapNotePopUp *)sender.view).note;
-    NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
-    dataVC.note = note;
-    dataVC.delegate = self;
-    [self.navigationController pushViewController:dataVC animated:YES];
-    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-    [mapView deselectAnnotation:currentAnnotation animated:YES];
-}
-
-- (IBAction)createLinkPressed:(id)sender {
-}
-
-- (IBAction)notificationsPressed:(id)sender {
-}
-
-- (IBAction)autoPlayPressed:(id)sender {
-}
-
-- (IBAction)aboutPressed:(id)sender {
-}
-
-- (void)mapView:(MKMapView *)mV didAddAnnotationViews:(NSArray *)views
-{
-    for (AnnotationView *aView in views)
-    {
-        //Drop animation
-        CGRect endFrame = aView.frame;
-        aView.frame = CGRectMake(aView.frame.origin.x, aView.frame.origin.y - 230.0, aView.frame.size.width, aView.frame.size.height);
-        [UIView animateWithDuration:0.45 delay:0.0 options:UIViewAnimationCurveEaseIn animations:^{[aView setFrame: endFrame];} completion:^(BOOL finished) {}];
-    }
 }
 
 - (void)switchViews {
@@ -558,87 +654,6 @@
     [UIView commitAnimations];
 }
 
-- (void)settingsPressed
-{
-#warning unimplemented
-    if(settingsView.hidden || hidingSettings) [self showSettings];
-    else [self hideSettings];
-}
-
-- (void)showSettings
-{
-    hidingSettings = NO;
-    settingsView.hidden = NO;
-    settingsView.userInteractionEnabled = NO;
-    
-    settingsView.layer.anchorPoint = CGPointMake(1, 0);
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setDuration:0.8f];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [settingsView.layer addAnimation:scale forKey:@"transform.scaleUp"];
-}
-
-- (void)hideSettings
-{
-    hidingSettings = YES;
-    
-    settingsView.layer.anchorPoint = CGPointMake(1, 0);
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setDuration:0.8f];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [settingsView.layer addAnimation:scale forKey:@"transform.scaleDown"];
-    
-}
-
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
-    if(flag){
-        if (theAnimation == [[settingsView layer] animationForKey:@"transform.scaleUp"] && !hidingSettings)
-            settingsView.userInteractionEnabled = YES;
-        else if(theAnimation == [[settingsView layer] animationForKey:@"transform.scaleDown"] && hidingSettings)
-            settingsView.hidden = YES;
-    }
-}
-
-- (IBAction)showTagsPressed:(id)sender
-{
-#warning unimplemented
-    [selectedTagsVC toggleDisplay];
-}
-
-- (IBAction)cameraPressed:(id)sender {
-    
-    editorVC = [[InnovNoteEditorViewController alloc] init];
-    editorVC.delegate = self;
-    lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
-    
-    [self.navigationController pushViewController:editorVC animated:NO];
-}
-
-#pragma mark UISearchBar Methods
-
-- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-	[searchBarTop resignFirstResponder];
-    if(!notePopUp.hidden) [self hideNotePopUp];
-    if(!settingsView.hidden && !hidingSettings) [self hideSettings];
-    [selectedTagsVC hide];
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    [searchBarTop resignFirstResponder];
-#warning THEN DO FUN THINGS!
-}
-
 #pragma mark TableView Delegate and Datasource Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -677,10 +692,7 @@
 	
 }
 
-- (void)dealloc
-{
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-}
+#pragma mark Autorotation
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -706,10 +718,17 @@
     return mask;
 }
 
+#pragma mark Free Memory
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidUnload {
