@@ -160,13 +160,16 @@
     //   else                                                                                  mapView.mapType = MKMapTypeStandard;
     
     //Fixes missing status bar when cancelling picture pick from library
+    if([UIApplication sharedApplication].statusBarHidden)
+    {
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [self.navigationController setNavigationBarHidden:NO animated:NO];
+    }
     
     if(noteToAdd != nil){
 #warning unimplemented
-        //hide new note
+        //show new note
     }
 }
 
@@ -440,10 +443,10 @@
     else [self hideSettings];
 }
 
-- (IBAction) presentNote:(UITapGestureRecognizer *) sender
+- (IBAction) presentNote:(id) sender
 {
 #warning change if other possible senders
-    Note * note = ((MapNotePopUp *)sender.view).note;
+    Note * note = ((MapNotePopUp *)((UIButton *)sender).superview).note;
     NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
     dataVC.note = note;
     dataVC.delegate = self;
@@ -480,7 +483,7 @@
     Note * note    = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:NO];
     if(!note) note = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:YES];
     if(note){
-        //if(!notePopUp.hidden && !hidingPopUp) [self hideNotePopUp]; HAndled by touchesBegan
+        //if(!notePopUp.hidden && !hidingPopUp) [self hideNotePopUp]; //HAndled by touchesBegan
         [self showNotePopUpForNote:note];
     }
     else{
@@ -497,7 +500,7 @@
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	[searchBarTop resignFirstResponder];
-    if(!notePopUp.hidden && !hidingPopUp) 
+    if(!notePopUp.hidden && !hidingPopUp)
         [self hideNotePopUp];
     if(!settingsView.hidden && !hidingSettings)
         [self hideSettings];

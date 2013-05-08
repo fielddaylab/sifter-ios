@@ -20,6 +20,8 @@
     return _sharedObject;
 }
 
+// Example: 1   UIKit                               0x00540c89 -[UIApplication _callInitializationDelegatesForURL:payload:suspended:] + 1163
+
 //Example indexes into array:
 //NSLog(@"Stack = %@", [array objectAtIndex:0]);
 //NSLog(@"Framework = %@", [array objectAtIndex:1]);
@@ -31,7 +33,6 @@
 - (void)logDebug:(NSString *) string {
 #if DEBUGMODE > 0
     NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    // Example: 1   UIKit                               0x00540c89 -[UIApplication _callInitializationDelegatesForURL:payload:suspended:] + 1163
     NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
     NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
     [array removeObject:@""];
@@ -46,7 +47,6 @@
     if(error != nil)
     {
     NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    // Example: 1   UIKit                               0x00540c89 -[UIApplication _callInitializationDelegatesForURL:payload:suspended:] + 1163
     NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
     NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
     [array removeObject:@""];

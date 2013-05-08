@@ -65,7 +65,7 @@
 - (IBAction)showTagsPressed:(id)sender;
 - (IBAction)cameraPressed:(id)sender;
 - (IBAction)trackingButtonPressed:(id)sender;
-- (IBAction)presentNote:(UITapGestureRecognizer *)sender;
+- (IBAction)presentNote:(id)sender;
 - (IBAction)createLinkPressed:(id)sender;
 - (IBAction)notificationsPressed:(id)sender;
 - (IBAction)autoPlayPressed:(id)sender;
