@@ -9,8 +9,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "InnovViewController.h"
 #import "Note.h"
-#import "NoteDetailsViewController.h"
-#import "NoteEditorViewController.h"
+#import "InnovNoteViewController.h"
+//#import "NoteDetailsViewController.h"
+//#import "NoteEditorViewController.h"
 
 #define INITIALSPAN 0.001
 #define WIDESPAN    0.025
@@ -447,10 +448,11 @@
 {
 #warning change if other possible senders
     Note * note = ((MapNotePopUp *)((UIButton *)sender).superview).note;
-    NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
-    dataVC.note = note;
-    dataVC.delegate = self;
-    [self.navigationController pushViewController:dataVC animated:YES];
+    //NoteDetailsViewController *noteVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
+    InnovNoteViewController *noteVC = [[InnovNoteViewController alloc] init];
+    noteVC.note = note;
+    noteVC.delegate = self;
+    [self.navigationController pushViewController:noteVC animated:YES];
     Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
     [mapView deselectAnnotation:currentAnnotation animated:YES];
 }

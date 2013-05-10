@@ -10,10 +10,16 @@
 #import <AVFoundation/AVFoundation.h>
 #import <CoreAudio/CoreAudioTypes.h>
 
-#import "AsyncMediaTouchableImageView.h"
 #import "Note.h"
+#import "AsyncMediaTouchableImageView.h"
 #import "ARISMoviePlayerViewController.h"
+/*
+@protocol InnovNoteViewDelegate
 
+@required
+- (void) shouldAlsoExit:(BOOL) shouldExit;
+@end
+*/
 typedef enum {
 	kInnovAudioRecorderNoAudio,
 	kInnovAudioRecorderRecording,
@@ -44,6 +50,7 @@ typedef enum {
     BOOL hasAudioToUpload;
     NSMutableArray *tagList;
     
+    BOOL shouldAutoplay;
     ARISMoviePlayerViewController *ARISMoviePlayer;
     
     //AudioMeter *meter;
@@ -56,8 +63,7 @@ typedef enum {
 }
 
 @property (nonatomic)                    Note *note;
-@property (nonatomic, unsafe_unretained) id delegate;
-@property (readwrite)                    BOOL isEditing;
+@property (nonatomic, unsafe_unretained) id delegate;               
 
 - (IBAction)recordButtonPressed:(id)sender;
 - (IBAction)deleteAudioButtonPressed:(id)sender;

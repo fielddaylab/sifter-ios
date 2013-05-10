@@ -23,7 +23,7 @@
 
 @implementation InnovNoteEditorViewController
 
-@synthesize note, delegate, isEditing;
+@synthesize note, delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -32,7 +32,7 @@
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCategories)    name:@"NewTagListReady"  object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordButtonPressed:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
         
         tagList = [[NSMutableArray alloc]initWithCapacity:10];
     }
@@ -72,6 +72,7 @@
     [self.view addSubview:ARISMoviePlayer.view];
     ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
+    ARISMoviePlayer.moviePlayer.shouldAutoplay = shouldAutoplay;
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     
 }
@@ -93,9 +94,11 @@
         if([self.note.tags count] > 0){
             originalTagId = ((Tag *)[self.note.tags objectAtIndex:0]).tagId;
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
+            self.title = originalTagName;
             [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[tagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])] inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else [self tableView:tagTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        
         
         NSError *error;
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
@@ -149,7 +152,8 @@
     
 #warning Called twice
     
-    if(!self.note || newNote || cancelled) return;
+    if(!self.note || newNote || cancelled)
+        return;
     
     if([captionTextView.text isEqualToString:DEFAULTTEXT] || [captionTextView.text length] == 0) self.note.title = @"";
     else self.note.title = captionTextView.text;
@@ -170,6 +174,7 @@
     [self.note.tags addObject:tag];
     
     if([delegate isKindOfClass:[InnovViewController class]]) ((InnovViewController *)self.delegate).noteToAdd = self.note;
+  //  if([delegate respondsToSelector:@selector(shouldAlsoExit:)]) [self.delegate shouldAlsoExit: YES];
     
     [[AppModel sharedAppModel].playerNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
     
@@ -302,6 +307,7 @@
 
 - (void)updateButtonsForCurrentMode{
     
+    deleteAudioButton.hidden = YES;
 	[deleteAudioButton setTitle: NSLocalizedString(@"DiscardKey", @"") forState: UIControlStateNormal];
 	[deleteAudioButton setTitle: NSLocalizedString(@"DiscardKey", @"") forState: UIControlStateHighlighted];
     
@@ -309,12 +315,10 @@
 		case kInnovAudioRecorderNoAudio:
 			[recordButton setTitle: NSLocalizedString(@"BeginRecordingKey", @"") forState: UIControlStateNormal];
 			[recordButton setTitle: NSLocalizedString(@"BeginRecordingKey", @"") forState: UIControlStateHighlighted];
-			deleteAudioButton.hidden = YES;
 			break;
 		case kInnovAudioRecorderRecording:
 			[recordButton setTitle: NSLocalizedString(@"StopRecordingKey", @"") forState: UIControlStateNormal];
 			[recordButton setTitle: NSLocalizedString(@"StopRecordingKey", @"") forState: UIControlStateHighlighted];
-			deleteAudioButton.hidden = YES;
 			break;
 		case kInnovAudioRecorderAudio:
 			[recordButton setTitle: NSLocalizedString(@"PlayKey", @"") forState: UIControlStateNormal];
@@ -324,9 +328,7 @@
 		case kInnovAudioRecorderPlaying:
 			[recordButton setTitle: NSLocalizedString(@"StopKey", @"") forState: UIControlStateNormal];
 			[recordButton setTitle: NSLocalizedString(@"StopKey", @"") forState: UIControlStateHighlighted];
-			deleteAudioButton.hidden = YES;
 			break;
-            
 		default:
 			break;
 	}
@@ -457,6 +459,16 @@
 	soundPlayer = nil;
 	mode = kInnovAudioRecorderNoAudio;
 	[self updateButtonsForCurrentMode];
+}
+
+#pragma mark MPMoviePlayerController notifications
+
+- (void)MPMoviePlayerPlaybackDidFinishNotification:(NSNotification *)notif
+{
+    if (mode == kInnovAudioRecorderPlaying)
+    {
+        [self recordButtonPressed:nil];
+    }
 }
 
 /*
