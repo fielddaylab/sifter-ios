@@ -1,0 +1,283 @@
+<html>
+<head>
+<title>Notebook</title>
+<link rel='stylesheet' type='text/css' href='css.css' />
+<link rel="stylesheet" type="text/css" href="https://google-developers.appspot.com/maps/documentation/javascript/examples/default.css" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script type="text/javascript" src="utils/json2.js"></script>
+<script type="text/javascript" src="utils/nbutils.js"></script>
+<script type="text/javascript" src="views.js"></script>
+<script type="text/javascript" src="model.js"></script>
+<script type="text/javascript" src="controller.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+<script type="text/javascript" src="utils/richmarker.js" ></script>
+<script type="text/javascript" src="utils/markerclusterer.js"></script>
+<script src="utils/masonry.min.js"></script>
+<script src="utils/recorder.js"></script>
+<script src="../js/jquery.infinitescroll.min.js"></script>
+<script type="text/javascript">
+
+
+window.addEventListener('load', pageLoad, false);
+
+
+$(function() { 
+    /* $('#main_view_left').masonry({
+    // options
+    itemSelector : '.note_item',
+    columnWidth : 240
+  });*/
+    
+});
+
+/*window.onload = function() {
+  var wall = new Masonry( document.getElementById('main_view_left'), {
+    columnWidth: 400
+  }); 
+};*/
+
+//Defining here to make available to everyone
+var model;
+var controller;
+
+var checkboxCheckedImage = new Image();
+checkboxCheckedImage.src = "./images/checkbox.png";
+var checkboxUncheckedImage = new Image();
+checkboxUncheckedImage.src = "./images/checkboxUnchecked.png";
+	
+function pageLoad()
+{
+    //Initialize stuff
+    console.log("loading page");
+    controller = new Controller();
+        console.log("controller built");
+    model = new Model();
+            console.log("model built");
+    var gameId;
+    var playerId;
+    if(gameId = parseInt(parseURLParams(document.URL).gameId))
+    {
+        playerId = parseInt(parseURLParams(document.URL).playerId);
+        model.gameId = gameId;
+		model.playerId = playerId;
+        startLoadGame(gameId, playerId);
+    }
+    else
+        document.getElementById('message').innerHTML = "<form>Game Id:<input type='text' id='game_id_form'/><input type='button' value='Submit' onClick='submitForm();'/></form>";
+
+    if (navigator.appName == 'Microsoft Internet Explorer') 
+        alert('You might need to install quicktime to properly view some media.\n(http://www.apple.com/quicktime/download)');
+		
+}
+
+function submitForm()
+{
+    var gameId;
+    if(gameId = document.getElementById('game_id_form').value)
+        loadGame(gameId);
+    else
+        alert("Please Enter a Valid Game ID");
+}
+
+function startLoadGame(gameId, playerId)
+{
+    document.getElementById('message').innerHTML = "&nbsp; <img height='12px' src='spinner.gif'></img> Waiting on Server...";
+    var bpRequestObject = new Object();
+    bpRequestObject.gameId = gameId;
+    bpRequestObject.items = false;//Don't get items
+    bpRequestObject.attributes = false;//Don't get attributes
+    if(playerId) bpRequestObject.playerArray = playerId;
+    callService("players.getPlayerBackpacksFromArray", finishLoadGame, '', JSON.stringify(bpRequestObject));
+}
+function finishLoadGame(responseText)
+{
+    responseData=JSON.parse(responseText);
+    if(responseData.returnCode == 1) //Error
+    {
+        document.getElementById('message').innerHTML = responseData.data;	
+        return;
+    }
+    
+    document.getElementById('message').innerHTML = "";
+    
+
+    model.gameJSONText = responseText;
+    model.gameData = responseData.data;
+
+    //Initialize a few views
+    /*model.views.contributorMapFilterSelector.appendChild(model.views.defaultContributorMapFilterSelectorCell);
+    model.views.contributorMapFilterSelector.appendChild(model.views.helperContributorMapFilterSelectorCell);
+    model.views.tagMapFilterSelector.appendChild(model.views.defaultTagMapFilterSelectorCell);
+    model.views.tagMapFilterSelector.appendChild(model.views.helperTagMapFilterSelectorCell);
+    model.views.contributorListFilterSelector.appendChild(model.views.defaultContributorListFilterSelectorCell);
+    model.views.contributorListFilterSelector.appendChild(model.views.helperContributorListFilterSelectorCell);
+    model.views.tagListFilterSelector.appendChild(model.views.defaultTagListFilterSelectorCell);
+    model.views.tagListFilterSelector.appendChild(model.views.helperTagListFilterSelectorCell);
+    model.views.noteListSelector.appendChild(model.views.defaultNoteListSelectorCell);*/
+
+    //  Simulate clicking of sort button then layout button to set initial state
+    //model.views.contributorSortButton.select();
+    //model.views.mapLayoutButton.select();
+    
+    controller.populateModel(model.gameData);
+
+    //  Set actual page visible
+    //document.getElementById('message').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    google.maps.event.trigger(model.views.gmap, 'resize'); // To fix google maps incorrect sizing bug
+    
+  refreshIntervalId = setInterval(function () { 
+  	 clearInterval(refreshIntervalId);
+  	var wall = new Masonry( document.getElementById('main_view_left'), {
+    // dynamically set column width to 1/5 the width of the container
+    columnWidth: function( containerWidth ) {
+      return containerWidth / 5;
+    }
+  });
+  }, 300);
+		
+
+}
+
+</script>
+</head>
+<body id='body'>
+<div id='message'></div>
+
+<div id='content'>
+    <!-- new main view -->
+    <div id='main_view' class='main_view'>
+        <div id='main_view_left' class='main_view_left'>
+         <div id='note_item' class='note_item'></div>
+         </div>
+        <div id='main_view_right' class='main_view_right'>
+            <div id='main_view_map' class='main_view_map'>map</div>
+            <div id='main_view_info' class='main_view_info'>info</div>
+        </div>
+    </div>
+    <div id='main_view_container' class='main_view_container'></div>
+    <div id='note_view_container' class='note_view_container'></div>
+    <div id='create_note_view_container' class='create_note_view_container'></div>
+    <div id='login_view_container' class='login_view_container'></div>
+    <div id='join_view_container' class='join_view_container'></div>
+    
+    
+
+    
+<!-- HTML CONSTRUCTIONS OF REUSABLE NODES -->
+<!-- These will never be seen. This is simply an area to construct nodes in raw html rather than dealing with doing so in javascript. From here, nodes can be accessed by their ID's, cloned, and renamed. -->
+<div id='constructs'>
+
+    
+    <div id='note_view_default' class='note_view'>
+        Click a note to display
+    </div>
+    
+    <!-- Create Note View -->
+    <div id='note_create_view_construct' class='note_create_view'>
+    	<div id='note_create_view_left_construct' class='note_create_view_left'>
+			<div id='note_create_view_image_construct' class='note_create_view_image'>Image:</div>
+			<div id='note_create_view_location_construct' class='note_create_view_location'>Location:</div>
+		</div>
+		<div id='note_create_view_right_construct' class='note_create_view_right'>
+			<div id='note_create_view_caption_construct' class='note_create_view_caption'>Caption:</div>
+			<div id='note_create_view_tagsaudio_construct' class='note_create_view_tagsaudio'>
+				<div id='note_create_view_tags_construct' class='note_create_view_tags'>Tags:</div>
+				<div id='note_create_view_audio_construct' class='note_create_view_audio'>Audio:</div>
+			</div>
+			<div id='note_create_view_submit_construct' class='note_create_view_submit'>Submit:</div>
+		</div>
+    </div>
+    
+    <div id='note_create_view_default' class='note_create_view'>
+    	<div id='note_create_view_left_construct' class='note_create_view_left'>
+			<div id='note_create_view_image_construct' class='note_create_view_image'>Image:</div>
+			<div id='note_create_view_location_construct' class='note_create_view_location'>Location:</div>
+		</div>
+		<div id='note_create_view_right_construct' class='note_create_view_right'>
+			<div id='note_create_view_caption_construct' class='note_create_view_caption'>Caption:</div>
+			<div id='note_create_view_tagsaudio_construct' class='note_create_view_tagsaudio'>
+				<div id='note_create_view_tags_construct' class='note_create_view_tags'>Tags:</div>
+				<div id='note_create_view_audio_construct' class='note_create_view_audio'>Audio:</div>
+			</div>
+			<div id='note_create_view_submit_construct' class='note_create_view_submit'>Submit:</div>
+		</div>
+    </div>
+    <!--<div id='note_create_view_default' class='note_create_view'>
+        Click a note to display
+    </div>-->
+
+
+	<!-- Login View -->
+    <div id='login_view_construct' class='login_view'>
+        <div id='login_view_top_construct' class='login_view_top'>Login</div>
+        <div id='login_view_bottom_construct' class='login_view_bottom'></div>
+    </div>
+    
+    <!-- Join View -->
+    <div id='join_view_construct' class='join_view'>
+        <div id='join_view_top_construct' class='join_view_top'>Login</div>
+        <div id='join_view_bottom_construct' class='join_view_bottom'></div>
+    </div>
+    
+    
+    <!-- Old Note View -->
+    <!--<div id='note_view_construct' class='note_view'>
+        <div id='note_view_header_construct' class='note_view_header'>
+            <div id='note_view_title_construct' class='note_view_title'>Title</div>
+            <div id='note_view_counts_construct' class='note_view_counts'>n Likes, n Comments</div>
+            <div id='note_view_created_construct' class='note_view_created'>Created: </div>
+            <div id='note_view_owner_construct' class='note_view_owner'>Owner</div>
+        </div>
+        <div id='note_view_tags_construct' class='note_view_tags'></div>
+        <div id='note_view_content_box_construct' class='note_view_content_box'></div>
+        <div id='note_view_comment_label_construct' class='note_view_comment_label'>Comments:</div>
+        <div id='note_view_comment_box_construct' class='note_view_comment_box'></div>
+    </div>-->
+    
+    <!-- Note View -->
+    <div id='note_view_construct' class='note_view'>
+        <div id='note_view_left_construct' class='note_view_left'></div>
+        <div id='note_view_right_construct' class='note_view_right'>
+            <div id='note_view_info_construct' class='note_view_info'></div>
+            <div id='note_view_comments_construct' class='note_view_comments'></div>
+            <div id='note_view_input_construct' class='note_view_input'></div>
+        </div>
+    </div>
+    
+    
+    <div id='note_view_close_button' class='note_view_close_button cell_button'>X</div>
+    <div id='create_note_view_close_button' class='create_note_view_close_button cell_button'>X</div>
+    <div id='login_view_close_button' class='login_view_close_button cell_button'>X</div>
+    <div id='join_view_close_button' class='join_view_close_button cell_button'>X</div>
+    <!-- Note Content Cell -->
+    <div id='note_content_cell_construct' class='note_content_cell'></div>
+    <!-- Note Comment Cell -->
+    <div id='note_comment_cell_construct' class='note_comment_cell'>
+        <div id='note_comment_cell_header_construct' class='note_comment_cell_header note_view_owner'></div>
+    </div>
+    
+    <!-- Note Comment Cell -->
+    <div id='note_comment_cell_construct' class='note_comment_cell'>
+        <div id='note_comment_cell_header_construct' class='note_comment_cell_header note_view_owner'></div>
+    </div>
+
+
+</div>
+
+    
+  
+ 
+</body>
+</html>
+
+<script>
+
+
+
+
+    
+</script>
