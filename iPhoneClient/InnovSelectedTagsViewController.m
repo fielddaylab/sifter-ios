@@ -9,7 +9,6 @@
 #import "InnovSelectedTagsViewController.h"
 
 #import "AppModel.h"
-#import "Tag.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -24,7 +23,7 @@
 
 @implementation InnovSelectedTagsViewController
 
-@synthesize selectedContent, selectedTagList;
+@synthesize selectedContent, selectedTagList, delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -112,9 +111,8 @@
     [tagList removeAllObjects];
     [selectedTagList removeAllObjects];
     for(int i = 0; i < [[AppModel sharedAppModel].gameTagList count]; ++i)
-    {
         [tagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
-    }
+    
     if([selectedTagList count] == 0) [selectedTagList addObject:[tagList objectAtIndex:0]];
     
     [tagTableView reloadData];
@@ -173,14 +171,14 @@
     {
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
         [selectedTagList removeObject:((Tag *)[tagList objectAtIndex:indexPath.row])];
+        [delegate removeTag:((Tag *)[tagList objectAtIndex:indexPath.row])];
     }
     else
     {
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
         [selectedTagList addObject:((Tag *)[tagList objectAtIndex:indexPath.row])];
+        [delegate addTag:((Tag *)[tagList objectAtIndex:indexPath.row])];
     }
-    
-    [delegate didUpdateSelectedTagList];
 }
 
 - (void)didReceiveMemoryWarning

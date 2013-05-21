@@ -256,7 +256,7 @@
 
 - (void)MPMoviePlayerPlaybackDidFinishNotification:(NSNotification *)notif
 {
-    if (mode == kInnovAudioRecorderPlaying)
+    if (mode == kInnovAudioPlayerPlaying)
     {
         [self playButtonPressed:nil];
     }

@@ -18,7 +18,9 @@
 #import "Note.h"
 #import "MapNotePopUp.h"
 
-@interface InnovViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, InnovSelectedTagsDelegate> {
+@class TMQuiltView;
+
+@interface InnovViewController : UIViewController < MKMapViewDelegate, UISearchBarDelegate, InnovSelectedTagsDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -27,7 +29,7 @@
     IBOutlet UIView *mapContentView;
     IBOutlet UIView *listContentView;
     IBOutlet MKMapView *mapView;
-    IBOutlet UITableView *tableView;
+    UITableView *tableView;
     IBOutlet UIView *settingsView;
     
     BOOL hidingSettings;
@@ -44,15 +46,17 @@
     CLLocation *lastLocation;
     BOOL appSetNextRegionChange;
     NSTimer *refreshTimer;
+
     NSMutableArray *locationsToAdd;
     NSMutableArray *locationsToRemove;
+    
+    NSMutableArray *availableTags;
+    NSMutableDictionary   *tagNotesDictionary;
     
     Note *noteToAdd;
     
     IBOutlet MapNotePopUp *notePopUp;
-    
     InnovSelectedTagsViewController *selectedTagsVC;
-    
     InnovNoteEditorViewController *editorVC;
 }
 

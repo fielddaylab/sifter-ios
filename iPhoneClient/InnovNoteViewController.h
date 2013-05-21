@@ -13,12 +13,7 @@
 #import "InnovNoteEditorViewController.h"
 #import "AsyncMediaTouchableImageView.h"
 #import "ARISMoviePlayerViewController.h"
-
-typedef enum {
-	kInnovAudioPlayerNoAudio,
-	kInnovAudioPlayerAudio,
-	kInnovAudioPlayerPlaying
-} InnovAudioViewerModeType;
+#import "InnovAudioEnums.h"
 
 @interface InnovNoteViewController : UIViewController <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> //, InnovNoteViewDelegate
 {

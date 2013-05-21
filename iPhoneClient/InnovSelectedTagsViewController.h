@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "InnovChildViewControllerProtocol.h"
 
+#import "Tag.h"
+
 @protocol InnovSelectedTagsDelegate
 
 @required
 - (void) didUpdateContentSelector;
-- (void) didUpdateSelectedTagList;
-
+- (void) addTag:    (Tag *) tag;
+- (void) removeTag: (Tag *) tag;
 @end
 
 typedef enum {
@@ -29,14 +31,13 @@ typedef enum {
     __unsafe_unretained IBOutlet UISegmentedControl *contentSelectorSegCntrl;
     __unsafe_unretained IBOutlet UITableView *tagTableView;
     
-    id<InnovSelectedTagsDelegate> delegate;
-    
     BOOL hiding;
     NSMutableArray *tagList;
 }
 
 @property(nonatomic) ContentSelector selectedContent;
 @property(nonatomic) NSMutableArray *selectedTagList;
+@property(nonatomic) id<InnovSelectedTagsDelegate> delegate;
 
 - (IBAction)contentSelectorChangedValue:(UISegmentedControl *)sender;
 

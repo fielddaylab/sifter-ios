@@ -10,8 +10,9 @@
 #import "InnovViewController.h"
 #import "Note.h"
 #import "InnovNoteViewController.h"
-//#import "NoteDetailsViewController.h"
-//#import "NoteEditorViewController.h"
+
+#import "TMQuiltView.h"
+#import "TMQuiltViewCell.h"
 
 #define INITIALSPAN 0.001
 #define WIDESPAN    0.025
@@ -22,7 +23,7 @@
 
 #define RIGHTSIDEMARGIN 20
 
-@interface InnovViewController ()
+@interface InnovViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate>
 
 @end
 
@@ -37,12 +38,19 @@
         // Custom initialization
         tracking = YES;
         
-        locationsToAdd    = [[NSMutableArray alloc] initWithCapacity:10];
-        locationsToRemove = [[NSMutableArray alloc] initWithCapacity:10];
+        locationsToAdd     = [[NSMutableArray alloc] initWithCapacity:10];
+        locationsToRemove  = [[NSMutableArray alloc] initWithCapacity:10];
+        
+        availableTags      = [[NSMutableArray alloc] initWithCapacity:10];
+        tagNotesDictionary = [[NSMutableDictionary alloc] init];
 		
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                name:@"PlayerMoved"                             object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                        name:@"PlayerMoved"                             object:nil];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"        object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"      object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel)               name:@"NewNoteListReady"       object:nil];
+        
         //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
     }
     return self;
@@ -101,6 +109,7 @@
     showTagsButton.layer.cornerRadius = 4.0f;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
+    selectedTagsVC.delegate = self;
     CGRect selectedTagsFrame = selectedTagsVC.view.frame;
     selectedTagsFrame.origin.x = -self.view.frame.size.width/2;
     selectedTagsFrame.origin.y = self.view.frame.size.height/2+12;
@@ -163,15 +172,11 @@
     //Fixes missing status bar when cancelling picture pick from library
     if([UIApplication sharedApplication].statusBarHidden)
     {
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     
-    if(noteToAdd != nil){
-#warning unimplemented
-        //show new note
-    }
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -191,14 +196,13 @@
 	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
     
     if(noteToAdd != nil){
-#warning unimplemented
-        [self animateInNewNote];
+        [self animateInNote:noteToAdd];
         noteToAdd = nil;
     }
     
 }
 
-- (void) animateInNewNote {
+- (void) animateInNote: (Note *) note {
 #warning unimplemented
     //Switch to mapview
     //Animate in note
@@ -262,6 +266,60 @@
 	[mapView setRegion:region animated:YES];
 }
 
+#pragma mark Selected Content Delegate Methods
+
+- (void) didUpdateContentSelector
+{
+#warning not implemented
+}
+
+- (void) addTag: (Tag *) tag
+{
+    for(int i = 0; i < [[tagNotesDictionary objectForKey:tag.tagName] count]; i++)
+    {
+        Note *note = [[tagNotesDictionary objectForKey:tag.tagName] objectAtIndex:i];
+        if(note.showOnMap)
+        {
+            CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+            Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
+            annotation.location = note.location;
+            annotation.title = note.title;
+            annotation.kind = NearbyObjectNote;
+            annotation.iconMediaId = -tag.tagId;
+#warning this needs to be implemented in AnnotationView.m
+            
+            [mapView addAnnotation:annotation];
+        }
+    }
+    
+    [availableTags addObject:tag];
+    
+    [tableView reloadData];
+}
+
+- (void) removeTag: (Tag *) tag
+{
+    NSObject<MKAnnotation> *tmpMKAnnotation;
+    Annotation *tmpAnnotation;
+    for (int i = 0; i < [[mapView annotations] count]; i++)
+    {
+        if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
+           !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
+        for(int j = 0; j < [locationsToRemove count]; j++)
+        {
+            if(tmpAnnotation.iconMediaId == -tag.tagId)
+            {
+                [mapView removeAnnotation:tmpAnnotation];
+                i--;
+            }
+        }
+    }
+    
+    [availableTags removeObject:tag];
+    
+    [tableView reloadData];
+}
+
 #pragma mark LocationsModel Update Methods
 
 - (void) addLocationsToNewQueue:(NSNotification *)notification
@@ -272,7 +330,8 @@
     {
         for(int j = 0; j < [locationsToAdd count]; j++)
         {
-            if([((Location *)[newLocations objectAtIndex:i]) compareTo:((Location *)[locationsToAdd objectAtIndex:j])])
+            if([((Location *)[newLocations objectAtIndex:i]) compareTo:((Location *)[locationsToAdd objectAtIndex:j])]
+               || ((Location *)[newLocations objectAtIndex:i]).kind != NearbyObjectNote)
                 [locationsToAdd removeObjectAtIndex:j];
         }
     }
@@ -307,74 +366,84 @@
     [self refreshViewFromModel];
 }
 
-#pragma mark Selected Content Delegate Methods
-
-- (void) didUpdateContentSelector
-{
-#warning not implemented
-}
-
-- (void) didUpdateSelectedTagList
-{
-    [self refreshViewFromModel];
-}
-
 - (void)refreshViewFromModel
 {
     if(!mapView) return;
     
     //Remove old locations first
-    
+    Location *tmpLocation;
+    Note     *note;
+    Tag      *noteTag;
     NSObject<MKAnnotation> *tmpMKAnnotation;
     Annotation *tmpAnnotation;
-    for (int i = 0; i < [[mapView annotations] count]; i++)
+    for (int i = 0; i < [locationsToRemove count]; i++)
     {
-        if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
-           !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
-        for(int j = 0; j < [locationsToRemove count]; j++)
+        tmpLocation = (Location *)[locationsToRemove objectAtIndex:i];
+        
+        note           = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:NO];
+        if(!note) note = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:YES];
+        
+        if(note)
         {
-            if([tmpAnnotation.location compareTo:((Location *)[locationsToRemove objectAtIndex:j])])
+            noteTag = [note.tags objectAtIndex:0];
+            
+            [[tagNotesDictionary objectForKey:noteTag.tagName] removeObject:note];
+            
+            for (int j = 0; j < [[mapView annotations] count]; ++j)
             {
-                [mapView removeAnnotation:tmpAnnotation];
-                i--;
+                if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
+                   !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
+                
+                if(tmpAnnotation.location.locationId == ((Location *)[locationsToRemove objectAtIndex:j]).locationId)
+                {
+                    [mapView removeAnnotation:tmpAnnotation];
+                    --j;
+                }
             }
+            
+            [locationsToRemove removeObject:tmpLocation];
+            --i;
         }
+        
     }
     
-    [locationsToRemove removeAllObjects];
-    
     //Add new locations second
-    Location *tmpLocation;
     for (int i = 0; i < [locationsToAdd count]; i++)
     {
         tmpLocation = (Location *)[locationsToAdd objectAtIndex:i];
-        if (tmpLocation.hidden == YES || tmpLocation.kind != NearbyObjectNote) continue; //Would check if player and if players should be shown, but only adds notes anyway, also removed some items code
         
-        Note * note    = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:NO];
+        //Would check if player and if players should be shown, but only adds notes anyway, also removed some items code
+        
+        note    = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:NO];
         if(!note) note = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:YES];
         
-        BOOL match = NO;
-        for(int j = 0; j < [selectedTagsVC.selectedTagList count]; ++j)
-            if(((Tag *)[note.tags objectAtIndex:0]).tagId == ((Tag *)[selectedTagsVC.selectedTagList objectAtIndex:j]).tagId) match = YES;
+        if(note)
+        {
+            note.location  = tmpLocation;
+            
+            noteTag = [note.tags objectAtIndex:0];
+            
+            if(![tagNotesDictionary objectForKey:noteTag.tagName]) [tagNotesDictionary setObject:[[NSMutableArray alloc] init] forKey:noteTag.tagName];
+            [[tagNotesDictionary objectForKey:noteTag.tagName] addObject:note];
+            
+            if([availableTags containsObject:noteTag])
+            {
+                CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+                Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
+                annotation.location = note.location;
+                annotation.title = note.name;
+                annotation.kind = NearbyObjectNote;
+                annotation.iconMediaId = -noteTag.tagId;
+#warning this needs to be implemented in AnnotationView.m
+                
+                [mapView addAnnotation:annotation];
+            }
+            
+            [locationsToAdd removeObject:tmpLocation];
+            --i;
+        }
         
-        if(!match) continue;
-        
-        CLLocationCoordinate2D locationLatLong = tmpLocation.location.coordinate;
-        
-        Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-        annotation.location = tmpLocation;
-        annotation.title = tmpLocation.name;
-        annotation.kind = tmpLocation.kind;
-        annotation.iconMediaId = tmpLocation.iconMediaId;
-        
-        //UIImage *iconImage = [UIImage imageNamed:[NSString stringWithFormat:@"tag%d.png", ((Tag *)[note.tags objectAtIndex:0]).tagId]];
-        NSLog(@"Make image named tag%d.png", ((Tag *)[note.tags objectAtIndex:0]).tagId);
-        //annotation.icon = iconImage;
-#warning FIX
-        
-        [mapView addAnnotation:annotation];
     }
-    [locationsToAdd removeAllObjects];
 }
 
 #pragma mark MKMapViewDelegate
@@ -458,19 +527,19 @@
 }
 
 - (IBAction)createLinkPressed:(id)sender {
-    #warning unimplemented
+#warning unimplemented
 }
 
 - (IBAction)notificationsPressed:(id)sender {
-    #warning unimplemented
+#warning unimplemented
 }
 
 - (IBAction)autoPlayPressed:(id)sender {
-    #warning unimplemented
+#warning unimplemented
 }
 
 - (IBAction)aboutPressed:(id)sender {
-    #warning unimplemented
+#warning unimplemented
 }
 
 - (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view
@@ -645,7 +714,6 @@
         [listContentView setNeedsDisplay];
     }
     
-    
     [UIView setAnimationTransition: transition forView:contentView cache:YES];
     [going removeFromSuperview];
     [contentView insertSubview: coming atIndex:0];
@@ -661,38 +729,63 @@
 
 #pragma mark TableView Delegate and Datasource Methods
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)atableView {
+    return [availableTags count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 10;
+- (NSInteger)tableView:(UITableView *)atableView numberOfRowsInSection:(NSInteger)section {
+	return [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:section]).tagName] count];
 }
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)atableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 #warning unimplemented
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-	if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+
+    // UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    // if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+     
+    // cell.textLabel.text = @"ROW";
+     
+	//InnovTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+	//if(cell == nil) cell = [[InnovTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"Row: %d", indexPath.row];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InnovTableViewCell"];
+    if (cell == nil) {
+        // Load the top-level objects from the custom cell XIB.
+        NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"InnovTableViewCell" owner:self options:nil];
+        // Grab a pointer to the first object (presumably the custom cell, as that's all the XIB should contain).
+        
+        //cell = [topLevelObjects objectAtIndex:0];
+    }
+    
+   // ((InnovTableViewCell*)cell).note = [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:indexPath.section]).tagName] objectAtIndex:indexPath.row];
+ //   [((InnovTableViewCell*)cell) updateCell];
+
     
 	return cell;
 }
-/*
- -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
- //if(section==0)return  @"Group";
- // else
- //return NSLocalizedString(@"AttributesAttributesTitleKey", @"");
+
+ -(NSString *)tableView:(UITableView *)atableView titleForHeaderInSection:(NSInteger)section{
+     return ((Tag *)[availableTags objectAtIndex:section]).tagName;
  }
- */
-// Customize the height of each row
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 60;
+/*
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *headerView = [[[UIView alloc] initWithFrame:CGRectMake(0,0, 320, 44)] autorelease];
+    UILabel *label = [[[UILabel alloc] initWithFrame:headerView.frame] autorelease];
+    label.textColor = [UIColor redColor];
+    label.text = [NSString stringWithFormat:@"Section %i", section];
+    
+    [headerView addSubview:label];
+    return headerView;
+}
+*/
+
+-(CGFloat)tableView:(UITableView *)atableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return 500;// [[UIScreen mainScreen] applicationFrame].size.height - self.navigationController.navigationBar.frame.size.height;
 #warning unimplemented
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)atableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 #warning unimplemented
 	
 }

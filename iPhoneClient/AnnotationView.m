@@ -85,17 +85,23 @@
         self.iconView.userInteractionEnabled = NO;
         
         //Only load the icon media if it is > 0, otherwise, lets load a default
-        if (annotation.iconMediaId != 0) {
+        if (annotation.iconMediaId > 0) {
             Media *iconMedia = [[AppModel sharedAppModel] mediaForMediaId:annotation.iconMediaId];
             [self.iconView loadImageFromMedia:iconMedia];
         }
+#warning recomment in and fix numbers
+ /*       else if (annotation.iconMediaId < 0)
+        {
+            if(annotation.iconMediaId == -1) ...
+            else if(annotation.iconMediaId == -2) ...
+            else self.iconView.image = [UIImage imageNamed:@"noteicon.png"];
+        } */
         else if (annotation.kind == NearbyObjectItem) self.iconView.image = [UIImage imageNamed:@"item.png"];
         else if (annotation.kind == NearbyObjectNode) self.iconView.image = [UIImage imageNamed:@"page.png"];
         else if (annotation.kind == NearbyObjectNPC) self.iconView.image = [UIImage imageNamed:@"npc.png"];
         else if (annotation.kind == NearbyObjectPlayer) self.iconView.image = [UIImage imageNamed:@"player.png"];
         else if (annotation.kind == NearbyObjectWebPage) self.iconView.image = [UIImage imageNamed:@"page.png"];
         else if (annotation.kind == NearbyObjectNote) self.iconView.image = [UIImage imageNamed:@"noteicon.png"]; //annotation.icon
-#warning FIX
         
         self.opaque = NO; 
     }

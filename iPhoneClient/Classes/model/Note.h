@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "NearbyObjectProtocol.h"
+#import "Location.h"
+
 extern NSString *const kNoteContentTypeAudio;
 extern NSString *const kNoteContentTypeVideo;
 extern NSString *const kNoteContentTypePhoto;
@@ -67,6 +69,8 @@ extern NSString *const kNoteContentTypeText;
 @property(readwrite, assign) int parentRating;
 @property(readwrite, assign) nearbyObjectKind kind;
 @property(nonatomic, unsafe_unretained) id delegate;
+
+@property(nonatomic) Location *location;
 
 -(BOOL)isUploading;
 @end
