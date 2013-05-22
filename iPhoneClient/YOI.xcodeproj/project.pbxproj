@@ -386,6 +386,8 @@
 		DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */; };
 		DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */; };
 		DB1A8AEA174D55B10052DDC6 /* MapNotePopUp.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE9174D55B10052DDC6 /* MapNotePopUp.xib */; };
+		DB1A8AF3174D84D80052DDC6 /* InnovMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1A8AF1174D84D70052DDC6 /* InnovMapViewController.m */; };
+		DB1A8AF4174D84D80052DDC6 /* InnovMapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AF2174D84D70052DDC6 /* InnovMapViewController.xib */; };
 		DB4C160E15A7B418005EF91B /* GamePickerPopularViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB4C161015A7B418005EF91B /* GamePickerPopularViewController.xib */; };
 		DB4C161315A7B4AF005EF91B /* NoteEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB4C161515A7B4AF005EF91B /* NoteEditorViewController.xib */; };
 		DB6742C815AB96EA009964CD /* InventoryTradeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB6742CA15AB96EA009964CD /* InventoryTradeViewController.m */; };
@@ -1041,6 +1043,11 @@
 		DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovSettingsView.m; sourceTree = "<group>"; };
 		DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovSettingsView.xib; sourceTree = "<group>"; };
 		DB1A8AE9174D55B10052DDC6 /* MapNotePopUp.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapNotePopUp.xib; sourceTree = "<group>"; };
+		DB1A8AEE174D82590052DDC6 /* InnovNoteModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InnovNoteModel.h; sourceTree = "<group>"; };
+		DB1A8AEF174D82590052DDC6 /* InnovNoteModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InnovNoteModel.m; sourceTree = "<group>"; };
+		DB1A8AF0174D84D70052DDC6 /* InnovMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovMapViewController.h; sourceTree = "<group>"; };
+		DB1A8AF1174D84D70052DDC6 /* InnovMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovMapViewController.m; sourceTree = "<group>"; };
+		DB1A8AF2174D84D70052DDC6 /* InnovMapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovMapViewController.xib; sourceTree = "<group>"; };
 		DB4C160F15A7B418005EF91B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
 		DB4C161115A7B42A005EF91B /* es */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = es; path = es.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
 		DB4C161215A7B42D005EF91B /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
@@ -1073,7 +1080,7 @@
 		DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMPhotoQuiltViewCell.h; sourceTree = "<group>"; };
 		DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMPhotoQuiltViewCell.m; sourceTree = "<group>"; };
 		DBFCAE33173441C60060715F /* InnovSelectedTagsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovSelectedTagsViewController.xib; sourceTree = "<group>"; };
-		DBFCAE39173460CA0060715F /* InnovChildViewControllerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovChildViewControllerProtocol.h; sourceTree = "<group>"; };
+		DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovDisplayProtocol.h; sourceTree = "<group>"; };
 		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
 		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
 		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
@@ -2210,6 +2217,8 @@
 		DD5C6AA71700D6FE00717031 /* InnovationViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				DB1A8AEE174D82590052DDC6 /* InnovNoteModel.h */,
+				DB1A8AEF174D82590052DDC6 /* InnovNoteModel.m */,
 				DB1A8ADA174D34420052DDC6 /* InnovNavController.h */,
 				DB1A8ADB174D34420052DDC6 /* InnovNavController.m */,
 				DB1A8AE8174D55570052DDC6 /* Views */,
@@ -2229,13 +2238,16 @@
 				DB00697817347403009A4A17 /* InnovSelectedTagsViewController.h */,
 				DB00697917347403009A4A17 /* InnovSelectedTagsViewController.m */,
 				DBFCAE33173441C60060715F /* InnovSelectedTagsViewController.xib */,
-				DBFCAE39173460CA0060715F /* InnovChildViewControllerProtocol.h */,
+				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DBEDC70F174BC8AB004C8966 /* TMQuiltView.h */,
 				DBEDC710174BC8AB004C8966 /* TMQuiltView.m */,
 				DBEDC711174BC8AB004C8966 /* TMQuiltViewCell.h */,
 				DBEDC712174BC8AB004C8966 /* TMQuiltViewCell.m */,
 				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
 				DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */,
+				DB1A8AF0174D84D70052DDC6 /* InnovMapViewController.h */,
+				DB1A8AF1174D84D70052DDC6 /* InnovMapViewController.m */,
+				DB1A8AF2174D84D70052DDC6 /* InnovMapViewController.xib */,
 			);
 			name = InnovationViewControllers;
 			sourceTree = "<group>";
@@ -2530,6 +2542,7 @@
 				DB7848D6173D8DA0008A845F /* InnovCommentViewController.xib in Resources */,
 				DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */,
 				DB1A8AEA174D55B10052DDC6 /* MapNotePopUp.xib in Resources */,
+				DB1A8AF4174D84D80052DDC6 /* InnovMapViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2759,6 +2772,7 @@
 				DBEDC718174BD02B004C8966 /* TMPhotoQuiltViewCell.m in Sources */,
 				DB1A8ADD174D34430052DDC6 /* InnovNavController.m in Sources */,
 				DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */,
+				DB1A8AF3174D84D80052DDC6 /* InnovMapViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

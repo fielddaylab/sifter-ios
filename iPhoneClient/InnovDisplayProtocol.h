@@ -1,5 +1,5 @@
 //
-//  InnovChildViewControllerProtocol.h
+//  InnovDisplayProtocol.h
 //  YOI
 //
 //  Created by Jacob James Hanshaw on 5/3/13.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol InnovChildViewControllerProtocol <NSObject>
+@protocol InnovDisplayProtocol <NSObject>
 
 @required
 - (void) show;

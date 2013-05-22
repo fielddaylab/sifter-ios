@@ -8,7 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InnovSettingsView : UIView
+#import "InnovDisplayProtocol.h"
+
+@protocol InnovSettingsViewDelegate <NSObject>
+
+@required
+- (void) showProfile;
+- (void) link;
+- (void) showAbout;
+
+@end
+
+@interface InnovSettingsView : UIView <InnovDisplayProtocol>
 {
     __weak IBOutlet UIButton *profileButton;
     __weak IBOutlet UIButton *createLinkButton;
@@ -19,9 +30,6 @@
 
 }
 
-- (IBAction)profileButtonPressed:           (id)sender;
-- (IBAction)createLinkButtonPressed:        (id)sender;
-- (IBAction)notificationsButtonPressed:     (id)sender;
-- (IBAction)aboutButtonPressed:             (id)sender;
+@property(nonatomic, weak) id<InnovSettingsViewDelegate> delegate;
 
 @end

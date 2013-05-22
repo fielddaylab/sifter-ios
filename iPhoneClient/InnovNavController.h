@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "InnovSettingsView.h"
 
 @class InnovSettingsView;
 
-@interface InnovNavController : UINavigationController <UISearchBarDelegate>
+@interface InnovNavController : UINavigationController <UISearchBarDelegate, InnovSettingsViewDelegate>
 {
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;

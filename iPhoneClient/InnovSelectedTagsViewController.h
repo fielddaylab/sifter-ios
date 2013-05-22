@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "InnovChildViewControllerProtocol.h"
+#import "InnovDisplayProtocol.h"
 
 #import "Tag.h"
 
@@ -25,7 +25,7 @@ typedef enum {
     kRecent
 } ContentSelector;
 
-@interface InnovSelectedTagsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, InnovChildViewControllerProtocol>
+@interface InnovSelectedTagsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, InnovDisplayProtocol>
 {
     
     __unsafe_unretained IBOutlet UISegmentedControl *contentSelectorSegCntrl;

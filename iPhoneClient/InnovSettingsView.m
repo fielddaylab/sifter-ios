@@ -10,7 +10,11 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#define ANIMATION_DURATION 0.5
+
 @implementation InnovSettingsView
+
+@synthesize delegate;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -24,70 +28,80 @@
     }
     return self;
 }
-/*
+
 #pragma mark Animations
 
-- (void)showSettings
+- (void)show
 {
     hiding = NO;
     self.hidden = NO;
     self.userInteractionEnabled = NO;
     
-    self.layer.anchorPoint = CGPointMake(1, 0);
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
     [scale setToValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setDuration:0.8f];
+    [scale setDuration:ANIMATION_DURATION];
     [scale setRemovedOnCompletion:NO];
     [scale setFillMode:kCAFillModeForwards];
     scale.delegate = self;
     [self.layer addAnimation:scale forKey:@"transform.scaleUp"];
 }
 
-- (void)hideSettings
+- (void)hide
 {
-    hidingSettings = YES;
-    
-    self.layer.anchorPoint = CGPointMake(1, 0);
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setDuration:0.8f];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [settingsView.layer addAnimation:scale forKey:@"transform.scaleDown"];
+    if(!self.hidden && !hiding)
+    {
+        hiding = YES;
+        self.userInteractionEnabled = NO;
+        
+        CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+        [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
+        [scale setToValue:[NSNumber numberWithFloat:0.0f]];
+        [scale setDuration:ANIMATION_DURATION];
+        [scale setRemovedOnCompletion:NO];
+        [scale setFillMode:kCAFillModeForwards];
+        scale.delegate = self;
+        [self.layer addAnimation:scale forKey:@"transform.scaleDown"];
+    }
     
 }
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
 {
     if(flag){
-        if (theAnimation == [[settingsView layer] animationForKey:@"transform.scaleUp"] && !hidingSettings)
-            settingsView.userInteractionEnabled = YES;
-        else if(theAnimation == [[settingsView layer] animationForKey:@"transform.scaleDown"] && hidingSettings)
-            settingsView.hidden = YES;
+        if (theAnimation == [[self layer] animationForKey:@"transform.scaleUp"] && !hiding)
+        {
+            self.userInteractionEnabled = YES;
+        }
+        else if(theAnimation == [[self layer] animationForKey:@"transform.scaleDown"] && hiding)
+        {
+            self.hidden = YES;
+            [self removeFromSuperview];
+        }
     }
 }
-*/
+
 - (IBAction)profileButtonPressed:(id)sender
 {
-    #warning unimplemented
+    [delegate showProfile];
+#warning unimplemented
 }
 
 - (IBAction)createLinkButtonPressed:(id)sender
 {
-    #warning unimplemented
+    [delegate link];
+#warning unimplemented
 }
 
 - (IBAction)notificationsButtonPressed:(id)sender
 {
-    #warning unimplemented
+#warning unimplemented
 }
 
 - (IBAction)aboutButtonPressed:(id)sender
 {
-    #warning unimplemented
+    [delegate showAbout];
+#warning unimplemented
 }
 
 /*

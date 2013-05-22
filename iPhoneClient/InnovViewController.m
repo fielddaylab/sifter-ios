@@ -105,11 +105,40 @@
     
     notePopUp.hidden = YES;
     notePopUp.center = contentView.center;
-    notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+ //   notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     notePopUp.layer.cornerRadius = 9.0f;
     [mapContentView addSubview:notePopUp];
     
     showTagsButton.layer.cornerRadius = 4.0f;
+    
+    switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    switchButton.frame = CGRectMake(0, 0, 30, 30);
+    [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateNormal];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateHighlighted];
+    switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
+    self.navigationItem.leftBarButtonItem = switchViewsBarButton;
+    
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height)];
+    searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    searchBar.barStyle = UIBarStyleBlack;
+    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, self.navigationController.navigationBar.frame.size.height)];
+    searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    searchBar.delegate = self;
+    [searchBarView addSubview:searchBar];
+    self.navigationItem.titleView = searchBarView;
+    
+    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
+    self.navigationItem.rightBarButtonItem = settingsBarButton;
+    
+    settingsView = [[InnovSettingsView alloc] init];
+    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+    CGRect settingsLocation = settingsView.frame;
+    settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
+    settingsLocation.origin.y = 0;
+    settingsView.frame = settingsLocation;
+    
+    settingsView.hidden = YES;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     selectedTagsVC.delegate = self;
@@ -121,37 +150,8 @@
     [selectedTagsVC didMoveToParentViewController:self];
     [self.view addSubview:selectedTagsVC.view];
     
-    settingsView.layer.anchorPoint = CGPointMake(1, 0);
-    CGRect settingsLocation = settingsView.frame;
-    settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
-    settingsLocation.origin.y = 0;//-settingsView.frame.size.height/2;
-    settingsView.frame = settingsLocation;
-    [self.view addSubview:settingsView];
-    
-    settingsView.hidden = YES;
-    // settingsView.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
-    
+#warning is this necessary?
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    switchButton.frame = CGRectMake(0, 0, 30, 30);
-    [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateNormal];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateHighlighted];
-    switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
-    self.navigationItem.leftBarButtonItem = switchViewsBarButton;
-    
-    searchBarTop = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, 320.0, 44.0)];
-    searchBarTop.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    searchBarTop.barStyle = UIBarStyleBlack;
-    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, 44.0)];
-    searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    searchBarTop.delegate = self;
-    [searchBarView addSubview:searchBarTop];
-    self.navigationItem.titleView = searchBarView;
-    
-    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
-    self.navigationItem.rightBarButtonItem = settingsBarButton;
     
     tracking = NO;
     
@@ -536,8 +536,30 @@
 
 - (void)settingsPressed
 {
-    if(settingsView.hidden || hidingSettings) [self showSettings];
-    else [self hideSettings];
+    if(![self.view.subviews containsObject:settingsView])
+    {
+        [self.view addSubview:settingsView];
+        [settingsView show];
+    }
+    else
+    {
+        [settingsView hide];
+    }
+}
+
+- (void) showProfile
+{
+#warning unimplemented
+}
+
+- (void) link
+{
+#warning unimplemented
+}
+
+- (void) showAbout
+{
+#warning unimplemented
 }
 
 - (IBAction) presentNote:(id) sender
@@ -553,22 +575,6 @@
     [self.navigationController pushViewController:noteVC animated:YES];
     Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
     [mapView deselectAnnotation:currentAnnotation animated:YES];
-}
-
-- (IBAction)createLinkPressed:(id)sender {
-#warning unimplemented
-}
-
-- (IBAction)notificationsPressed:(id)sender {
-#warning unimplemented
-}
-
-- (IBAction)autoPlayPressed:(id)sender {
-#warning unimplemented
-}
-
-- (IBAction)aboutPressed:(id)sender {
-#warning unimplemented
 }
 
 - (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view
@@ -599,58 +605,16 @@
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[searchBarTop resignFirstResponder];
     if(!notePopUp.hidden && !hidingPopUp)
         [self hideNotePopUp];
-    if(!settingsView.hidden && !hidingSettings)
-        [self hideSettings];
+    
+    [searchBar resignFirstResponder];
+    [settingsView hide];
+    
     [selectedTagsVC hide];
 }
 
 #pragma mark Animations
-
-- (void)showSettings
-{
-    hidingSettings = NO;
-    settingsView.hidden = NO;
-    settingsView.userInteractionEnabled = NO;
-    
- //   settingsView.layer.anchorPoint = CGPointMake(1, 0);
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setDuration:0.8f];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [settingsView.layer addAnimation:scale forKey:@"transform.scaleUp"];
-}
-
-- (void)hideSettings
-{
-    hidingSettings = YES;
-    
-   // settingsView.layer.anchorPoint = CGPointMake(1, 0);
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setDuration:0.8f];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [settingsView.layer addAnimation:scale forKey:@"transform.scaleDown"];
-    
-}
-
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
-    if(flag){
-        if (theAnimation == [[settingsView layer] animationForKey:@"transform.scaleUp"] && !hidingSettings)
-            settingsView.userInteractionEnabled = YES;
-        else if(theAnimation == [[settingsView layer] animationForKey:@"transform.scaleDown"] && hidingSettings)
-            settingsView.hidden = YES;
-    }
-}
 
 - (void) showNotePopUpForNote: (Note *) note {
     

@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
-#import <UIKit/UIActionSheet.h>
 #import "AppModel.h"
 #import "Location.h"
 #import "Annotation.h"
@@ -17,10 +16,11 @@
 #import "InnovNoteEditorViewController.h"
 #import "Note.h"
 #import "MapNotePopUp.h"
+#import "InnovSettingsView.h"
 
 @class TMQuiltView;
 
-@interface InnovViewController : UIViewController < MKMapViewDelegate, UISearchBarDelegate, InnovSelectedTagsDelegate> {
+@interface InnovViewController : UIViewController < MKMapViewDelegate, UISearchBarDelegate, InnovSelectedTagsDelegate, InnovSettingsViewDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -30,15 +30,8 @@
     IBOutlet UIView *listContentView;
     IBOutlet MKMapView *mapView;
     TMQuiltView *quiltView;
-    IBOutlet UIView *settingsView;
     
-    BOOL hidingSettings;
     BOOL hidingPopUp;
-    
-    UIButton *switchButton;
-    UIBarButtonItem *switchViewsBarButton;
-    UIBarButtonItem *settingsBarButton;
-    UISearchBar *searchBarTop;
     
     BOOL tracking;
     BOOL isLocal;
@@ -46,6 +39,13 @@
     CLLocation *lastLocation;
     BOOL appSetNextRegionChange;
     NSTimer *refreshTimer;
+    
+    UIButton *switchButton;
+    UIBarButtonItem *switchViewsBarButton;
+    UISearchBar *searchBar;
+    UIBarButtonItem *settingsBarButton;
+    
+    InnovSettingsView *settingsView;
 
     NSMutableArray *locationsToAdd;
     NSMutableArray *locationsToRemove;
@@ -68,15 +68,5 @@
 @property (nonatomic) Note *noteToAdd;
 
 - (void)switchViews;
-- (void)settingsPressed;
-- (IBAction)showTagsPressed:(id)sender;
-- (IBAction)cameraPressed:(id)sender;
-- (IBAction)trackingButtonPressed:(id)sender;
-- (IBAction)presentNote:(id)sender;
-- (IBAction)createLinkPressed:(id)sender;
-- (IBAction)notificationsPressed:(id)sender;
-- (IBAction)autoPlayPressed:(id)sender;
-- (IBAction)aboutPressed:(id)sender;
-
 
 @end
