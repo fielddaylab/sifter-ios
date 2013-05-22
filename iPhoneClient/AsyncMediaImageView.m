@@ -117,6 +117,7 @@
 
 - (void)loadImageFromMedia:(Media *) aMedia
 {
+    
     //put a spinner in the view
 	UIActivityIndicatorView *spinner =
 	[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -124,7 +125,11 @@
     spinner.color = [UIColor blackColor];
 	[self addSubview:spinner];
     
-    self.media = aMedia;
+    if(aMedia != self.media)
+    {
+        self.media = aMedia;
+        self.loaded = NO;
+    }
     
     self.contentMode = UIViewContentModeScaleAspectFill;
     

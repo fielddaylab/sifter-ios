@@ -109,11 +109,13 @@
 -(void)refreshCategories
 {
     [tagList removeAllObjects];
-    [selectedTagList removeAllObjects];
     for(int i = 0; i < [[AppModel sharedAppModel].gameTagList count]; ++i)
         [tagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
     
-    if([selectedTagList count] == 0) [selectedTagList addObject:[tagList objectAtIndex:0]];
+    if([selectedTagList count] == 0 && [[AppModel sharedAppModel].gameTagList count] > 0){
+        [selectedTagList addObject:[tagList objectAtIndex:0]];
+        [delegate addTag:[tagList objectAtIndex:0]];
+    }
     
     [tagTableView reloadData];
 }

@@ -37,7 +37,7 @@ typedef enum {
 
 @property(nonatomic) ContentSelector selectedContent;
 @property(nonatomic) NSMutableArray *selectedTagList;
-@property(nonatomic) id<InnovSelectedTagsDelegate> delegate;
+@property(nonatomic, weak) id<InnovSelectedTagsDelegate> delegate;
 
 - (IBAction)contentSelectorChangedValue:(UISegmentedControl *)sender;
 

@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AsyncMediaImageView.h"
-#import "Note.h"
+
+@class Note, Media, AsyncMediaImageView;
 
 @interface MapNotePopUp : UIView {
     __weak IBOutlet AsyncMediaImageView *imageView;
@@ -22,7 +22,7 @@
 
 @property (nonatomic) Note *note;
 
-- (id)initWithFrame:(CGRect)frame;
-- (id)initWithFrame:(CGRect)frame Media:(Media *) media andText:(NSString*) text;
+- (id)init;
+- (id)initWithMedia:(Media *) media andText:(NSString*) text;
 
 @end

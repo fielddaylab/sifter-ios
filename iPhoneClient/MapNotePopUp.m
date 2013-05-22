@@ -10,27 +10,42 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#import "Note.h"
+#import "AsyncMediaImageView.h"
+
 @implementation MapNotePopUp
 
 @synthesize imageView, textLabel, note;
 
-- (id)initWithFrame:(CGRect)frame
+- (id)init
 {
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self) {
         // Initialization code
+        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"MapNotePopUp" owner:self options:nil];
+        MapNotePopUp *view = [xibArray objectAtIndex:0];
+        self.frame = view.bounds;
+        [self addSubview:view];
+        
+        self.layer.cornerRadius= 9.0f;
     }
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame Media:(Media *) media andText:(NSString*) text
+- (id)initWithMedia:(Media *) media andText:(NSString*) text
 {
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self) {
         // Initialization code
+        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"MapNotePopUp" owner:self options:nil];
+        MapNotePopUp *view = [xibArray objectAtIndex:0];
+        self.frame = view.bounds;
+        [self addSubview:view];
+        
+        self.layer.cornerRadius= 9.0f;
+        
         [imageView loadImageFromMedia:media];
         [textLabel setText:text];
-        
     }
     return self;
 }

@@ -51,6 +51,7 @@ typedef enum {
     NSMutableArray *tagList;
     
     BOOL shouldAutoplay;
+    
     ARISMoviePlayerViewController *ARISMoviePlayer;
     
     //AudioMeter *meter;

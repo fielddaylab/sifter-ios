@@ -29,7 +29,7 @@
     IBOutlet UIView *mapContentView;
     IBOutlet UIView *listContentView;
     IBOutlet MKMapView *mapView;
-    UITableView *tableView;
+    TMQuiltView *quiltView;
     IBOutlet UIView *settingsView;
     
     BOOL hidingSettings;
@@ -52,6 +52,9 @@
     
     NSMutableArray *availableTags;
     NSMutableDictionary   *tagNotesDictionary;
+    
+    NSMutableArray *images;
+    NSMutableArray *text;
     
     Note *noteToAdd;
     

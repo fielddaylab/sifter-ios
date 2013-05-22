@@ -7,10 +7,14 @@
 //
 
 #import "InnovNoteViewController.h"
+
+
 #import "AppModel.h"
 #import "AppServices.h"
 #import "Tag.h"
 #import "Logger.h"
+
+#import "NoteCommentViewController.h"
 
 #define ANIMATION_TIME     0.6
 
@@ -160,6 +164,17 @@
 
 - (IBAction)commentButtonPressed:(id)sender
 {
+    
+    NoteCommentViewController *noteCommentVC = [[NoteCommentViewController alloc]initWithNibName:@"NoteCommentViewController" bundle:nil];
+    noteCommentVC.parentNote = self.note;
+    noteCommentVC.delegate = self;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:.5];
+    
+    [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft
+                           forView:self.navigationController.view cache:YES];
+    [self.navigationController pushViewController:noteCommentVC animated:NO];
+    [UIView commitAnimations];
     #warning unimplemented
 }
 

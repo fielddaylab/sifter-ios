@@ -12,7 +12,7 @@
 #import "InnovNoteViewController.h"
 
 #import "TMQuiltView.h"
-#import "TMQuiltViewCell.h"
+#import "TMPhotoQuiltViewCell.h"
 
 #define INITIALSPAN 0.001
 #define WIDESPAN    0.025
@@ -43,7 +43,10 @@
         
         availableTags      = [[NSMutableArray alloc] initWithCapacity:10];
         tagNotesDictionary = [[NSMutableDictionary alloc] init];
-		
+        
+        images             = [[NSMutableArray alloc] initWithCapacity:20];
+        text               = [[NSMutableArray alloc] initWithCapacity:20];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                        name:@"PlayerMoved"                             object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"        object:nil];
@@ -64,7 +67,7 @@
 #warning unimplemented: change game and finalize settings
     
     Game *game = [[Game alloc] init];
-    game.gameId = 3407;
+    game.gameId                   = 3411;
     game.hasBeenPlayed            = YES;
     game.isLocational             = YES;
     game.showPlayerLocation       = YES;
@@ -100,11 +103,11 @@
     
 	[mapView setRegion:region animated:NO];
     
-    [mapContentView addSubview:notePopUp];
     notePopUp.hidden = YES;
     notePopUp.center = contentView.center;
     notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     notePopUp.layer.cornerRadius = 9.0f;
+    [mapContentView addSubview:notePopUp];
     
     showTagsButton.layer.cornerRadius = 4.0f;
     
@@ -118,9 +121,10 @@
     [selectedTagsVC didMoveToParentViewController:self];
     [self.view addSubview:selectedTagsVC.view];
     
+    settingsView.layer.anchorPoint = CGPointMake(1, 0);
     CGRect settingsLocation = settingsView.frame;
-    settingsLocation.origin.x = self.view.frame.size.width - settingsView.frame.size.width/2;
-    settingsLocation.origin.y = -settingsView.frame.size.height/2;
+    settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
+    settingsLocation.origin.y = 0;//-settingsView.frame.size.height/2;
     settingsView.frame = settingsLocation;
     [self.view addSubview:settingsView];
     
@@ -155,15 +159,26 @@
     trackingButton.layer.cornerRadius = 4.0f;
     trackingButton.hidden = YES;
     
+   /* CGRect quiltViewFrame = listContentView.frame;
+    quiltViewFrame.origin.x = 0;
+    quiltViewFrame.origin.y = 0;
+    quiltView = [[TMQuiltView alloc] initWithFrame:quiltViewFrame];
+    quiltView.bounces = NO;
+    quiltView.delegate = self;
+    quiltView.dataSource = self;
+    quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    [listContentView addSubview:quiltView]; */
+    
+    quiltView = nil;
+    
+    //[quiltView reloadData];
+    
     [self refresh];
 }
 
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    // [self.navigationController setNavigationBarHidden:YES animated:NO];
-    // [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     
     //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
     //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
@@ -185,8 +200,6 @@
     [super viewDidAppear:animated];
     
 	[[AppServices sharedAppServices] updateServerMapViewed];
-    
-    //  [self.navigationController setNavigationBarHidden:NO animated:NO];
 	
     //  [self playerMoved];
     [self refreshViewFromModel];
@@ -258,9 +271,9 @@
 	appSetNextRegionChange = YES;
 	
 	//Center the map on the player
+    #warning CHANGE TO CENTER OF MADISON
 	MKCoordinateRegion region = mapView.region;
 	region.center = [AppModel sharedAppModel].playerLocation.coordinate;
-#warning CHANGE TO CENTER OF MADISON
 	region.span = MKCoordinateSpanMake(INITIALSPAN, INITIALSPAN);
     
 	[mapView setRegion:region animated:YES];
@@ -275,10 +288,14 @@
 
 - (void) addTag: (Tag *) tag
 {
+    [availableTags addObject:tag];
+    
+    if(![tagNotesDictionary objectForKey:tag.tagName]) [tagNotesDictionary setObject:[[NSMutableArray alloc] init] forKey:tag.tagName];
+    
     for(int i = 0; i < [[tagNotesDictionary objectForKey:tag.tagName] count]; i++)
     {
         Note *note = [[tagNotesDictionary objectForKey:tag.tagName] objectAtIndex:i];
-        if(note.showOnMap)
+        if(note && note.showOnMap)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
@@ -292,32 +309,30 @@
         }
     }
     
-    [availableTags addObject:tag];
-    
-    [tableView reloadData];
+    //[self refreshImagesAndText];
+    //[quiltView reloadData];
 }
 
 - (void) removeTag: (Tag *) tag
 {
+    [availableTags removeObject:tag];
+    
     NSObject<MKAnnotation> *tmpMKAnnotation;
     Annotation *tmpAnnotation;
     for (int i = 0; i < [[mapView annotations] count]; i++)
     {
         if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
            !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
-        for(int j = 0; j < [locationsToRemove count]; j++)
+        
+        if(tmpAnnotation.iconMediaId == -tag.tagId)
         {
-            if(tmpAnnotation.iconMediaId == -tag.tagId)
-            {
-                [mapView removeAnnotation:tmpAnnotation];
-                i--;
-            }
+            [mapView removeAnnotation:tmpAnnotation];
+            i--;
         }
     }
     
-    [availableTags removeObject:tag];
-    
-    [tableView reloadData];
+    //[self refreshImagesAndText];
+    //[quiltView reloadData];
 }
 
 #pragma mark LocationsModel Update Methods
@@ -391,16 +406,15 @@
             
             for (int j = 0; j < [[mapView annotations] count]; ++j)
             {
-                if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
+                if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:j]) == mapView.userLocation ||
                    !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
-                
-                if(tmpAnnotation.location.locationId == ((Location *)[locationsToRemove objectAtIndex:j]).locationId)
+
+                if([tmpAnnotation.location compareTo: ((Location *)[locationsToRemove objectAtIndex:i])])
                 {
                     [mapView removeAnnotation:tmpAnnotation];
                     --j;
                 }
             }
-            
             [locationsToRemove removeObject:tmpLocation];
             --i;
         }
@@ -425,13 +439,22 @@
             
             if(![tagNotesDictionary objectForKey:noteTag.tagName]) [tagNotesDictionary setObject:[[NSMutableArray alloc] init] forKey:noteTag.tagName];
             [[tagNotesDictionary objectForKey:noteTag.tagName] addObject:note];
+
+            BOOL match = NO;
+            for(int j = 0; j < [availableTags count]; ++j)
+            {
+                if(((Tag *) [availableTags objectAtIndex:j]).tagId == noteTag.tagId) {
+                    match = YES;
+                    break;
+                }
+            }
             
-            if([availableTags containsObject:noteTag])
+            if(match)
             {
                 CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
                 Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
                 annotation.location = note.location;
-                annotation.title = note.name;
+                annotation.title = note.title;
                 annotation.kind = NearbyObjectNote;
                 annotation.iconMediaId = -noteTag.tagId;
 #warning this needs to be implemented in AnnotationView.m
@@ -444,6 +467,10 @@
         }
         
     }
+    
+    [self refreshImagesAndText];
+    [quiltView reloadData];
+    
 }
 
 #pragma mark MKMapViewDelegate
@@ -516,7 +543,9 @@
 - (IBAction) presentNote:(id) sender
 {
 #warning change if other possible senders
-    Note * note = ((MapNotePopUp *)((UIButton *)sender).superview).note;
+    Note * note;
+    if([sender isKindOfClass:[UIButton class]]) note = ((MapNotePopUp *)((UIButton *)sender).superview).note;
+    else note = sender;
     //NoteDetailsViewController *noteVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
     InnovNoteViewController *noteVC = [[InnovNoteViewController alloc] init];
     noteVC.note = note;
@@ -586,7 +615,7 @@
     settingsView.hidden = NO;
     settingsView.userInteractionEnabled = NO;
     
-    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+ //   settingsView.layer.anchorPoint = CGPointMake(1, 0);
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
     [scale setToValue:[NSNumber numberWithFloat:1.0f]];
@@ -601,7 +630,7 @@
 {
     hidingSettings = YES;
     
-    settingsView.layer.anchorPoint = CGPointMake(1, 0);
+   // settingsView.layer.anchorPoint = CGPointMake(1, 0);
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
     [scale setToValue:[NSNumber numberWithFloat:0.0f]];
@@ -710,7 +739,7 @@
         [mapContentView setNeedsDisplay];
     }
     else{
-        tableView.frame = contentFrame;
+        quiltView.frame = contentFrame;
         [listContentView setNeedsDisplay];
     }
     
@@ -727,69 +756,164 @@
     [UIView commitAnimations];
 }
 
-#pragma mark TableView Delegate and Datasource Methods
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)atableView {
-    return [availableTags count];
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [quiltView reloadData];
 }
-
-- (NSInteger)tableView:(UITableView *)atableView numberOfRowsInSection:(NSInteger)section {
-	return [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:section]).tagName] count];
-}
-
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)atableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-#warning unimplemented
-
-    // UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    // if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-     
-    // cell.textLabel.text = @"ROW";
-     
-	//InnovTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-	//if(cell == nil) cell = [[InnovTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InnovTableViewCell"];
-    if (cell == nil) {
-        // Load the top-level objects from the custom cell XIB.
-        NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"InnovTableViewCell" owner:self options:nil];
-        // Grab a pointer to the first object (presumably the custom cell, as that's all the XIB should contain).
-        
-        //cell = [topLevelObjects objectAtIndex:0];
-    }
-    
-   // ((InnovTableViewCell*)cell).note = [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:indexPath.section]).tagName] objectAtIndex:indexPath.row];
- //   [((InnovTableViewCell*)cell) updateCell];
-
-    
-	return cell;
-}
-
- -(NSString *)tableView:(UITableView *)atableView titleForHeaderInSection:(NSInteger)section{
-     return ((Tag *)[availableTags objectAtIndex:section]).tagName;
- }
 /*
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *headerView = [[[UIView alloc] initWithFrame:CGRectMake(0,0, 320, 44)] autorelease];
-    UILabel *label = [[[UILabel alloc] initWithFrame:headerView.frame] autorelease];
-    label.textColor = [UIColor redColor];
-    label.text = [NSString stringWithFormat:@"Section %i", section];
+ #pragma mark - TMQuiltViewDataSource
+ 
+ - (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)quiltView {
+ int cellCount = [availableTags count];
+ for(int i = 0; i < [availableTags count]; ++i)
+ cellCount+= [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count];
+ 
+ return cellCount;
+ }
+ */
+#pragma mark - QuiltViewControllerDataSource
+
+- (void) refreshImagesAndText
+{
+    [images removeAllObjects];
+    [text   removeAllObjects];
+    for(int i = 0; i < [availableTags count]; ++i)
+    {
+#warning re-add or do something else to designate tag
+        //   [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@_header.png", ((Tag *)[availableTags objectAtIndex:i]).tagName]]];
+        //   [text   addObject:@""];
+        for(int j = 0; j < [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count]; ++j)
+        {
+            Note * note = [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] objectAtIndex:j];
+            
+            NoteContent *noteContent;
+            for(int k = 0; k < [note.contents count]; ++k)
+            {
+                noteContent = [note.contents objectAtIndex:k];
+                if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) break;
+            }
+            
+            NSString *number = [NSString stringWithFormat:@"%d", j];
+            
+            [images addObject:noteContent];
+            if(note.title) [text   addObject:note.title];
+            else           [text   addObject: number];
+        }
+    }
+}
+
+- (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)TMQuiltView {
+    return 0; //[images count];
+}
+
+- (TMQuiltViewCell *)quiltView:(TMQuiltView *)aQuiltView cellAtIndexPath:(NSIndexPath *)indexPath {
+    TMPhotoQuiltViewCell *cell = (TMPhotoQuiltViewCell *)[aQuiltView dequeueReusableCellWithReuseIdentifier:@"PhotoCell"];
+    if (!cell) {
+        cell = [[TMPhotoQuiltViewCell alloc] initWithReuseIdentifier:@"PhotoCell"];
+    }
+    if([[images objectAtIndex:indexPath.row] isKindOfClass:[UIImage class]]) [cell.photoView setImage:[images objectAtIndex:indexPath.row]];
+    else [cell.photoView loadImageFromMedia:[[images objectAtIndex:indexPath.row] getMedia]];
     
-    [headerView addSubview:label];
-    return headerView;
+ //   if(![[text objectAtIndex:indexPath.row] isEqualToString:@""])
+        cell.titleLabel.text = [text objectAtIndex:indexPath.row];
+    
+    return cell;
 }
-*/
+#pragma mark - TMQuiltViewDelegate
 
--(CGFloat)tableView:(UITableView *)atableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 500;// [[UIScreen mainScreen] applicationFrame].size.height - self.navigationController.navigationBar.frame.size.height;
-#warning unimplemented
+- (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView {
+    
+    
+    if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
+        || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
+        return 3;
+    } else {
+        return 2;
+    }
 }
 
-- (void)tableView:(UITableView *)atableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-#warning unimplemented
-	
+- (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
+    //   return ((TMPhotoQuiltViewCell *)[self quiltView:quiltView cellAtIndexPath:indexPath]).photoView.frame.size.height / [self quiltViewNumberOfColumns:aQuiltView];
+    return 320/[self quiltViewNumberOfColumns:aQuiltView];
 }
 
+- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    int index = indexPath.row;
+    for(int i = 0; i < [availableTags count]; ++i)
+    {
+        if([[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count] <= index) index -= [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count];
+        else
+        {
+            [self presentNote:[[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] objectAtIndex:index]];
+            return;
+        }
+        
+    }
+}
+/*
+ #pragma mark TableView Delegate and Datasource Methods
+ 
+ - (NSInteger)numberOfSectionsInTableView:(UITableView *)atableView {
+ return [availableTags count];
+ }
+ 
+ - (NSInteger)tableView:(UITableView *)atableView numberOfRowsInSection:(NSInteger)section {
+ return [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:section]).tagName] count];
+ }
+ 
+ // Customize the appearance of table view cells.
+ - (UITableViewCell *)tableView:(UITableView *)atableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+ #warning unimplemented
+ 
+ // UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+ // if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+ 
+ // cell.textLabel.text = @"ROW";
+ 
+ //InnovTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+ //if(cell == nil) cell = [[InnovTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+ 
+ UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InnovTableViewCell"];
+ if (cell == nil) {
+ // Load the top-level objects from the custom cell XIB.
+ NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"InnovTableViewCell" owner:self options:nil];
+ // Grab a pointer to the first object (presumably the custom cell, as that's all the XIB should contain).
+ 
+ //cell = [topLevelObjects objectAtIndex:0];
+ }
+ 
+ // ((InnovTableViewCell*)cell).note = [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:indexPath.section]).tagName] objectAtIndex:indexPath.row];
+ //   [((InnovTableViewCell*)cell) updateCell];
+ 
+ 
+ return cell;
+ }
+ 
+ -(NSString *)tableView:(UITableView *)atableView titleForHeaderInSection:(NSInteger)section{
+ return ((Tag *)[availableTags objectAtIndex:section]).tagName;
+ }
+ 
+ - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+ UIView *headerView = [[[UIView alloc] initWithFrame:CGRectMake(0,0, 320, 44)] autorelease];
+ UILabel *label = [[[UILabel alloc] initWithFrame:headerView.frame] autorelease];
+ label.textColor = [UIColor redColor];
+ label.text = [NSString stringWithFormat:@"Section %i", section];
+ 
+ [headerView addSubview:label];
+ return headerView;
+ }
+ 
+ 
+ -(CGFloat)tableView:(UITableView *)atableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+ return 500;// [[UIScreen mainScreen] applicationFrame].size.height - self.navigationController.navigationBar.frame.size.height;
+ #warning unimplemented
+ }
+ 
+ - (void)tableView:(UITableView *)atableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+ #warning unimplemented
+ 
+ }
+ */
 #pragma mark Autorotation
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -838,7 +962,7 @@
     trackingButton = nil;
     switchViewsBarButton = nil;
     notePopUp = nil;
-    tableView = nil;
+    quiltView = nil;
     settingsView = nil;
     [super viewDidUnload];
 }
