@@ -11,11 +11,15 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "Note.h"
+#import "NoteContent.h"
 #import "AsyncMediaImageView.h"
+
+#define ANIMATION_TIME     0.5
+#define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
 
 @implementation MapNotePopUp
 
-@synthesize imageView, textLabel, note;
+@synthesize note, delegate;
 
 - (id)init
 {
@@ -26,8 +30,9 @@
         MapNotePopUp *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
         [self addSubview:view];
-        
+#warning check if corner radius works and transform is necessary
         self.layer.cornerRadius= 9.0f;
+        self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     }
     return self;
 }
@@ -41,8 +46,9 @@
         MapNotePopUp *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
         [self addSubview:view];
-        
+#warning check if corner radius works and transform is necessary
         self.layer.cornerRadius= 9.0f;
+        self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
         
         [imageView loadImageFromMedia:media];
         [textLabel setText:text];
@@ -50,13 +56,69 @@
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
+#pragma mark Animations
+
+- (void) show
 {
-    // Drawing code
+    hiding = NO;
+    
+    textLabel.text = self.note.title;
+    for(int i = 0; i < [self.note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
+    }
+    
+    self.hidden = NO;
+    self.userInteractionEnabled = NO;
+    [UIView beginAnimations:@"animationExpandNote" context:NULL];
+    [UIView setAnimationDuration:ANIMATION_TIME];
+    self.transform=CGAffineTransformMakeScale(1, 1);
+    [UIView setAnimationDelegate:self];
+	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+	[UIView commitAnimations];
+    
 }
-*/
+
+- (void) hide
+{
+    if(!self.hidden && !hiding)
+    {
+        hiding = YES;
+        self.userInteractionEnabled = NO;
+        [UIView beginAnimations:@"animationShrinkNote" context:NULL];
+        [UIView setAnimationDuration:ANIMATION_TIME];
+        self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+        [UIView setAnimationDelegate:self];
+        [UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+        [UIView commitAnimations];
+    }
+}
+
+-(void)animationDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context{
+    if(finished)
+    {
+        if ([animationID isEqualToString:@"animationExpandNote"] && !hiding) self.userInteractionEnabled=YES;
+        else if ([animationID isEqualToString:@"animationShrinkNote"] && hiding)
+        {
+            self.hidden = YES;
+            [self removeFromSuperview];
+        }
+    }
+}
+
+- (IBAction)notePopUpPressed:(id)sender
+{
+    [delegate presentNote:self.note];
+}
+
+/*
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end
