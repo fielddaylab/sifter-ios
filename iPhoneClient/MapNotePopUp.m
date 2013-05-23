@@ -13,9 +13,19 @@
 #import "Note.h"
 #import "NoteContent.h"
 #import "AsyncMediaImageView.h"
+#import "InnovPresentNoteDelegate.h"
 
 #define ANIMATION_TIME     0.5
 #define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
+
+@interface MapNotePopUp ()
+{
+    BOOL hiding;
+    __weak IBOutlet AsyncMediaImageView *imageView;
+    __weak IBOutlet UILabel *textLabel;
+}
+
+@end
 
 @implementation MapNotePopUp
 

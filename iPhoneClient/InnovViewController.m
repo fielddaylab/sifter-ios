@@ -15,11 +15,9 @@
 #import "Note.h"
 #import "Location.h"
 
-#import "InnovPresentNoteProtocol.h"
+#import "InnovPresentNoteDelegate.h"
 #import "InnovSettingsView.h"
 #import "InnovMapViewController.h"
-#import "TMQuiltView.h"
-#import "TMPhotoQuiltViewCell.h"
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 #import "InnovSelectedTagsViewController.h"
@@ -27,13 +25,38 @@
 #define RIGHT_SIDE_MARGIN 20
 #define SWITCH_VIEWS_ANIMATION_DURATION 1.25
 
-@interface InnovViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate, InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteProtocol>
+@interface InnovViewController () <InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovStopTrackingProtocol,UISearchBarDelegate> {
+    
+    __weak IBOutlet UIButton *showTagsButton;
+    __weak IBOutlet UIButton *trackingButton;
+    
+    IBOutlet UIView *contentView;
+    
+    NSTimer *refreshTimer;
+    
+    UIButton *switchButton;
+    UIBarButtonItem *switchViewsBarButton;
+    UISearchBar *searchBar;
+    UIBarButtonItem *settingsBarButton;
+    
+    InnovSettingsView *settingsView;
+    InnovMapViewController *mapVC;
+    InnovSelectedTagsViewController *selectedTagsVC;
+    
+    NSMutableArray *locationsToAdd;
+    NSMutableArray *locationsToRemove;
+    
+    NSMutableArray *availableTags;
+    NSMutableDictionary   *tagNotesDictionary;
+    
+    Note *noteToAdd;
+}
 
 @end
 
 @implementation InnovViewController
 
-@synthesize lastLocation, noteToAdd;
+@synthesize noteToAdd;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,11 +69,6 @@
         
         availableTags      = [[NSMutableArray alloc] initWithCapacity:10];
         tagNotesDictionary = [[NSMutableDictionary alloc] init];
-        
-        images             = [[NSMutableArray alloc] initWithCapacity:20];
-        text               = [[NSMutableArray alloc] initWithCapacity:20];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                name:@"PlayerMoved"                             object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"        object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"      object:nil];
@@ -86,6 +104,7 @@
     game.authors                  = @"Jacob Hanshaw";
     game.mapType                  = @"STREET";
     [game getReadyToPlay];
+#warning get rid of this and only use note model
     [AppModel sharedAppModel].currentGame = game;
     [AppModel sharedAppModel].playerId = 7;
     [AppModel sharedAppModel].loggedIn = YES;
@@ -143,21 +162,7 @@
     
 	trackingButton.backgroundColor = [UIColor lightGrayColor];
     trackingButton.layer.cornerRadius = 4.0f;
-    trackingButton.hidden = YES;
-    
-    /* CGRect quiltViewFrame = listContentView.frame;
-     quiltViewFrame.origin.x = 0;
-     quiltViewFrame.origin.y = 0;
-     quiltView = [[TMQuiltView alloc] initWithFrame:quiltViewFrame];
-     quiltView.bounces = NO;
-     quiltView.delegate = self;
-     quiltView.dataSource = self;
-     quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-     [listContentView addSubview:quiltView]; */
-    
-    quiltView = nil;
-    
-    //[quiltView reloadData];
+    trackingButton.hidden = NO;
     
     [self refresh];
 }
@@ -180,6 +185,11 @@
     
 }
 
+- (void) prepareToAddNote: (Note *) note
+{
+    noteToAdd = note;
+}
+
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -190,10 +200,8 @@
 	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
 	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
     
-    if(noteToAdd != nil){
+    if(noteToAdd != nil)
         [self animateInNote:noteToAdd];
-        noteToAdd = nil;
-    }
     
 }
 
@@ -201,6 +209,7 @@
 #warning unimplemented
     //Switch to mapview or animate in both
     //Animate in note
+    noteToAdd = nil;
 }
 
 - (void) refresh
@@ -212,7 +221,7 @@
     
     [mapVC updatePlayerLocation];
 }
-
+/*
 #pragma mark Selected Content Delegate Methods
 
 - (void) didUpdateContentSelector
@@ -268,7 +277,7 @@
     //[self refreshImagesAndText];
     //[quiltView reloadData];
 }
-
+*/
 #pragma mark LocationsModel Update Methods
 
 - (void) addLocationsToNewQueue:(NSNotification *)notification
@@ -317,6 +326,7 @@
 
 - (void)refreshViewFromModel
 {
+    /*
     //Remove old locations first
     Location *tmpLocation;
     Note     *note;
@@ -399,10 +409,7 @@
         }
         
     }
-    
-    [self refreshImagesAndText];
-    [quiltView reloadData];
-    
+    */
 }
 
 #pragma mark Buttons Pressed
@@ -439,7 +446,6 @@
     
     InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
     editorVC.delegate = self;
-    lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
     
     [self.navigationController pushViewController:editorVC animated:NO];
 }
@@ -451,6 +457,13 @@
 	trackingButton.backgroundColor = [UIColor blueColor];
     
     [mapVC toggleTracking];
+    
+    NSLog(@"Count of player notes: %d Count of game notes: %d", [[AppModel sharedAppModel].playerNoteList count], [[AppModel sharedAppModel].gameNoteList count]);
+}
+
+- (void) stoppedTracking
+{
+    trackingButton.backgroundColor = [UIColor lightGrayColor];
 }
 
 #pragma mark settings delegate methods
@@ -505,14 +518,16 @@
     if (![self.view.subviews containsObject:mapVC.view])
     {
         coming = mapVC;
-        going = listContentView;
+        going = mapVC;
+#warning FIX going should be LIST
         transition = UIViewAnimationTransitionFlipFromLeft;
         newButtonTitle = @"List";
         newButtonImageName = @"noteicon.png";
     }
     else
     {
-        coming = listContentView;
+        coming = mapVC;
+#warning FIX going should be LIST
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
         newButtonTitle = @"Map";
@@ -544,164 +559,6 @@
     [UIView commitAnimations];
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    [quiltView reloadData];
-}
-/*
- #pragma mark - TMQuiltViewDataSource
- 
- - (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)quiltView {
- int cellCount = [availableTags count];
- for(int i = 0; i < [availableTags count]; ++i)
- cellCount+= [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count];
- 
- return cellCount;
- }
- */
-#pragma mark - QuiltViewControllerDataSource
-
-- (void) refreshImagesAndText
-{
-    [images removeAllObjects];
-    [text   removeAllObjects];
-    for(int i = 0; i < [availableTags count]; ++i)
-    {
-#warning re-add or do something else to designate tag
-        //   [images addObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@_header.png", ((Tag *)[availableTags objectAtIndex:i]).tagName]]];
-        //   [text   addObject:@""];
-        for(int j = 0; j < [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count]; ++j)
-        {
-            Note * note = [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] objectAtIndex:j];
-            
-            NoteContent *noteContent;
-            for(int k = 0; k < [note.contents count]; ++k)
-            {
-                noteContent = [note.contents objectAtIndex:k];
-                if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) break;
-            }
-            
-            NSString *number = [NSString stringWithFormat:@"%d", j];
-            
-            [images addObject:noteContent];
-            if(note.title) [text   addObject:note.title];
-            else           [text   addObject: number];
-        }
-    }
-}
-
-- (NSInteger)quiltViewNumberOfCells:(TMQuiltView *)TMQuiltView {
-    return 0; //[images count];
-}
-
-- (TMQuiltViewCell *)quiltView:(TMQuiltView *)aQuiltView cellAtIndexPath:(NSIndexPath *)indexPath {
-    TMPhotoQuiltViewCell *cell = (TMPhotoQuiltViewCell *)[aQuiltView dequeueReusableCellWithReuseIdentifier:@"PhotoCell"];
-    if (!cell) {
-        cell = [[TMPhotoQuiltViewCell alloc] initWithReuseIdentifier:@"PhotoCell"];
-    }
-    if([[images objectAtIndex:indexPath.row] isKindOfClass:[UIImage class]]) [cell.photoView setImage:[images objectAtIndex:indexPath.row]];
-    else [cell.photoView loadImageFromMedia:[[images objectAtIndex:indexPath.row] getMedia]];
-    
-    //   if(![[text objectAtIndex:indexPath.row] isEqualToString:@""])
-    cell.titleLabel.text = [text objectAtIndex:indexPath.row];
-    
-    return cell;
-}
-#pragma mark - TMQuiltViewDelegate
-
-- (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView {
-    
-    
-    if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
-        || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
-        return 3;
-    } else {
-        return 2;
-    }
-}
-
-- (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    //   return ((TMPhotoQuiltViewCell *)[self quiltView:quiltView cellAtIndexPath:indexPath]).photoView.frame.size.height / [self quiltViewNumberOfColumns:aQuiltView];
-    return 320/[self quiltViewNumberOfColumns:aQuiltView];
-}
-
-- (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath
-{
-    int index = indexPath.row;
-    for(int i = 0; i < [availableTags count]; ++i)
-    {
-        if([[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count] <= index) index -= [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] count];
-        else
-        {
-            [self presentNote:[[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:i]).tagName] objectAtIndex:index]];
-            return;
-        }
-        
-    }
-}
-/*
- #pragma mark TableView Delegate and Datasource Methods
- 
- - (NSInteger)numberOfSectionsInTableView:(UITableView *)atableView {
- return [availableTags count];
- }
- 
- - (NSInteger)tableView:(UITableView *)atableView numberOfRowsInSection:(NSInteger)section {
- return [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:section]).tagName] count];
- }
- 
- // Customize the appearance of table view cells.
- - (UITableViewCell *)tableView:(UITableView *)atableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
- #warning unimplemented
- 
- // UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
- // if(cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
- 
- // cell.textLabel.text = @"ROW";
- 
- //InnovTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
- //if(cell == nil) cell = [[InnovTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
- 
- UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InnovTableViewCell"];
- if (cell == nil) {
- // Load the top-level objects from the custom cell XIB.
- NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"InnovTableViewCell" owner:self options:nil];
- // Grab a pointer to the first object (presumably the custom cell, as that's all the XIB should contain).
- 
- //cell = [topLevelObjects objectAtIndex:0];
- }
- 
- // ((InnovTableViewCell*)cell).note = [[tagNotesDictionary objectForKey:((Tag *)[availableTags objectAtIndex:indexPath.section]).tagName] objectAtIndex:indexPath.row];
- //   [((InnovTableViewCell*)cell) updateCell];
- 
- 
- return cell;
- }
- 
- -(NSString *)tableView:(UITableView *)atableView titleForHeaderInSection:(NSInteger)section{
- return ((Tag *)[availableTags objectAtIndex:section]).tagName;
- }
- 
- - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
- UIView *headerView = [[[UIView alloc] initWithFrame:CGRectMake(0,0, 320, 44)] autorelease];
- UILabel *label = [[[UILabel alloc] initWithFrame:headerView.frame] autorelease];
- label.textColor = [UIColor redColor];
- label.text = [NSString stringWithFormat:@"Section %i", section];
- 
- [headerView addSubview:label];
- return headerView;
- }
- 
- 
- -(CGFloat)tableView:(UITableView *)atableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
- return 500;// [[UIScreen mainScreen] applicationFrame].size.height - self.navigationController.navigationBar.frame.size.height;
- #warning unimplemented
- }
- 
- - (void)tableView:(UITableView *)atableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
- #warning unimplemented
- 
- }
- */
 #pragma mark Autorotation
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -746,7 +603,6 @@
     showTagsButton = nil;
     trackingButton = nil;
     switchViewsBarButton = nil;
-    quiltView = nil;
     settingsView = nil;
     [super viewDidUnload];
 }

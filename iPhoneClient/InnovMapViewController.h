@@ -8,24 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
-#import "InnovPresentNoteProtocol.h"
 
-@class  MapNotePopUp;
+@protocol InnovPresentNoteDelegate;
 
-@interface InnovMapViewController : UIViewController <MKMapViewDelegate, InnovPresentNoteProtocol>
+@protocol InnovStopTrackingProtocol <NSObject>
+@required
+-(void) stoppedTracking;
+@end
 
-{
-    IBOutlet MKMapView *mapView;
-    MapNotePopUp *notePopUp;
-    
-    BOOL isLocal;
-    BOOL tracking;
-    BOOL appSetNextRegionChange;
-    
-    CLLocation *madisonCenter;
-}
+@interface InnovMapViewController : UIViewController
 
-@property(nonatomic, weak) id<InnovPresentNoteProtocol> delegate;
+@property(nonatomic, weak) id<InnovPresentNoteDelegate, InnovStopTrackingProtocol> delegate;
 
 - (void) toggleTracking;
 - (void) updatePlayerLocation;

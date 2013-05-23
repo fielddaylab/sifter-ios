@@ -70,7 +70,6 @@ extern NSString *const kNoteContentTypeText;
 @property(readwrite, assign) nearbyObjectKind kind;
 @property(nonatomic, unsafe_unretained) id delegate;
 
-@property(nonatomic) Location *location;
-
 -(BOOL)isUploading;
+-(BOOL)compareTo: (Note *) note;
 @end

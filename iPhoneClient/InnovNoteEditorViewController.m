@@ -6,18 +6,59 @@
 //
 //
 
-#import "InnovNoteEditorViewController.h"
+#import <AVFoundation/AVFoundation.h>
+#import <CoreAudio/CoreAudioTypes.h>
+
 #import "AppModel.h"
 #import "AppServices.h"
-#import "InnovViewController.h"
-#import "CameraViewController.h"
+#import "Note.h"
 #import "Tag.h"
 #import "TagCell.h"
+
+#import "AsyncMediaTouchableImageView.h"
+#import "ARISMoviePlayerViewController.h"
+#import "InnovViewController.h"
+#import "InnovNoteEditorViewController.h"
+#import "CameraViewController.h"
+
 #import "Logger.h"
 
 #define DEFAULTTEXT @"Write a caption..."
 
-@interface InnovNoteEditorViewController ()
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
+    
+    __weak IBOutlet AsyncMediaTouchableImageView *imageView;
+    __weak IBOutlet UITextView *captionTextView;
+    __weak IBOutlet UIButton *recordButton;
+    __weak IBOutlet UIButton *deleteAudioButton;
+    __weak IBOutlet UITableView *tagTableView;
+    
+    UIBarButtonItem *cancelButton;
+    
+    Note *note;
+    BOOL isEditing;
+    
+    BOOL newNote;
+    int originalTagId;
+    NSString  *originalTagName;
+    int selectedIndex;
+    NSString  *newTagName;
+    BOOL cancelled;
+    BOOL hasAudioToUpload;
+    NSMutableArray *tagList;
+    
+    BOOL shouldAutoplay;
+    
+    ARISMoviePlayerViewController *ARISMoviePlayer;
+    
+    //AudioMeter *meter;
+	AVAudioRecorder *soundRecorder;
+	AVAudioPlayer *soundPlayer;
+	NSURL *soundFileURL;
+	InnovAudioRecorderModeType mode;
+	NSTimer *recordLengthCutoffTimer;
+    
+}
 
 @end
 
@@ -158,11 +199,9 @@
     if([captionTextView.text isEqualToString:DEFAULTTEXT] || [captionTextView.text length] == 0) self.note.title = @"";
     else self.note.title = captionTextView.text;
     [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:self.note.showOnMap publicToList:self.note.showOnList];
-    [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
     if(mode == kInnovAudioRecorderRecording) [self recordButtonPressed:nil];
     if(hasAudioToUpload) [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
-    
     
     if(![originalTagName isEqualToString:newTagName])
         [[AppServices sharedAppServices] deleteTagFromNote:self.note.noteId tagId:originalTagId];
@@ -173,7 +212,8 @@
     tag.tagName = newTagName;
     [self.note.tags addObject:tag];
     
-    if([delegate isKindOfClass:[InnovViewController class]]) ((InnovViewController *)self.delegate).noteToAdd = self.note;
+    [self.delegate prepareToDisplayNote: self.note];
+#warning make delegate method
   //  if([delegate respondsToSelector:@selector(shouldAlsoExit:)]) [self.delegate shouldAlsoExit: YES];
     
     [[AppModel sharedAppModel].playerNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
@@ -181,6 +221,7 @@
 #warning point where added to map may change
     [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
     self.note.dropped = YES;
+    [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];

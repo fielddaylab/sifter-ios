@@ -41,13 +41,12 @@
 
 - (void) display{
 	NSLog(@"WebPage: Display Self Requested");
-
+    
         //open up note viewer
         NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
         dataVC.note = self;
         dataVC.delegate = self;
     [[RootViewController sharedRootViewController] displayNearbyObjectView:dataVC];
-
 }
 
 -(BOOL)isUploading{
@@ -59,13 +58,34 @@
     return  NO;
 }
 
-
-- (NSString *) name {
-    return self.name;
-}
-
 - (int)	iconMediaId {
     return 71; 
+}
+
+- (BOOL)compareTo:(Note *)other
+{
+    return  self.noteId         == other.noteId &&
+            self.creatorId      == other.creatorId &&
+            self.comments       == other.comments &&
+            self.contents       == other.contents &&
+            self.tags           == other.tags &&
+            self.numRatings     == other.numRatings &&
+            self.shared         == other.shared &&
+            self.dropped        == other.dropped &&
+            self.showOnMap      == other.showOnMap &&
+            self.showOnList     == other.showOnList &&
+            self.userLiked      == other.userLiked &&
+            self.parentNoteId   == other.parentNoteId &&
+            self.parentRating   == other.parentRating &&
+            self.kind           == other.kind &&
+            self.iconMediaId    == other.iconMediaId &&
+            self.latitude       == other.latitude &&
+            self.longitude      == other.longitude &&
+            [self.title         isEqualToString:other.title] &&
+            [self.text          isEqualToString:other.text] &&
+            [self.username      isEqualToString:other.username] &&
+            [self.displayname   isEqualToString:other.displayname] &&
+            [self.tagName       isEqualToString:other.tagName];
 }
 
 @end

@@ -1928,6 +1928,8 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 -(void)parseGameNoteListFromJSON: (JSONResult *)jsonResult
 {
 	NSArray *noteListArray = (NSArray *)jsonResult.data;
+    NSLog(@"NSNotification: ReceivedNoteList");
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
     NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc]init];
     
 	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
@@ -1938,12 +1940,12 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 	}
     
 	[AppModel sharedAppModel].gameNoteList = tempNoteList;
+    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
+    
     NSLog(@"NSNotification: NewNoteListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil]];
     NSLog(@"NSNotification: GameNoteListRefreshed");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"GameNoteListRefreshed" object:nil]];
-    NSLog(@"NSNotification: ReceivedNoteList");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"GameNoteListRefreshed" object:nil userInfo:notes]];
     //^ This is ridiculous. Each notification is a paraphrasing of the last. <3 Phil
     
     currentlyFetchingGameNoteList = NO;
@@ -1965,10 +1967,13 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 		[tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
 	}
     
-    
 	[AppModel sharedAppModel].playerNoteList = tempNoteList;
+    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
+    
     NSLog(@"NSNotification: NewNoteListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
+    NSLog(@"NSNotification: PlayerNoteListRefreshed");
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"PlayerNoteListRefreshed" object:nil userInfo:notes]];
     currentlyFetchingPlayerNoteList = NO;
 }
 

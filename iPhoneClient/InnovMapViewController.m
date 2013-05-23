@@ -14,6 +14,7 @@
 
 #import "Annotation.h"
 #import "AnnotationView.h"
+#import "InnovPresentNoteDelegate.h"
 #import "MapNotePopUp.h"
 
 #warning update defined numbers
@@ -27,7 +28,23 @@
 #define MADISON_LONG -89.41
 #define MAX_DISTANCE 20000
 
-@implementation InnovMapViewController
+@interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
+
+{
+    IBOutlet MKMapView *mapView;
+    MapNotePopUp *notePopUp;
+    
+    BOOL isLocal;
+    BOOL tracking;
+    BOOL appSetNextRegionChange;
+    
+    CLLocation *madisonCenter;
+    
+    NSMutableArray *notes;
+}
+@end
+
+@implementation InnovMapViewController 
 
 @synthesize delegate;
 
@@ -36,6 +53,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         tracking = NO;
+        notes    = [[NSMutableArray alloc] initWithCapacity:20];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
 #warning need to listen for new notes messages
@@ -95,6 +113,7 @@
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
     
     tracking = !tracking;
+    if(!tracking) [delegate stoppedTracking];
     [self updatePlayerLocation];
 }
 
@@ -132,7 +151,7 @@
 {
     CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
     Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-    annotation.location = note.location;
+   // annotation.location = note.location;
     annotation.title = note.title;
     annotation.kind = NearbyObjectNote;
     annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
@@ -144,7 +163,11 @@
 #pragma mark MKMapViewDelegate
 - (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
 {
-	if (!appSetNextRegionChange) tracking = NO;
+	if (!appSetNextRegionChange)
+    {
+        tracking = NO;
+        [delegate stoppedTracking];
+    }
 	appSetNextRegionChange = NO;
 }
 
@@ -216,6 +239,11 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

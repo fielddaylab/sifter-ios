@@ -75,8 +75,8 @@
     [UIView setAnimationTransition: transition forView:switchViewsBarButton.customView cache:YES];
     [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateNormal];
     [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateHighlighted];
-    [UIView commitAnimations]; */
-     [((InnovViewController *)[self.navigationController.viewControllers objectAtIndex:0]) switchViews];
+    [UIView commitAnimations]; 
+     [((InnovViewController *)[self.navigationController.viewControllers objectAtIndex:0]) switchViews]; */
 }
 
 - (void)settingsPressed

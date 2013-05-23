@@ -9,8 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface InnovNoteModel : NSObject
-{
-    
-}
+
+@property(nonatomic) NSArray *availableNotes;
 
 @end

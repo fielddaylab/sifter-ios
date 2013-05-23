@@ -25,20 +25,8 @@ typedef enum {
     kRecent
 } ContentSelector;
 
-@interface InnovSelectedTagsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, InnovDisplayProtocol>
-{
-    
-    __unsafe_unretained IBOutlet UISegmentedControl *contentSelectorSegCntrl;
-    __unsafe_unretained IBOutlet UITableView *tagTableView;
-    
-    BOOL hiding;
-    NSMutableArray *tagList;
-}
+@interface InnovSelectedTagsViewController : UIViewController <InnovDisplayProtocol>
 
-@property(nonatomic) ContentSelector selectedContent;
-@property(nonatomic) NSMutableArray *selectedTagList;
 @property(nonatomic, weak) id<InnovSelectedTagsDelegate> delegate;
-
-- (IBAction)contentSelectorChangedValue:(UISegmentedControl *)sender;
 
 @end

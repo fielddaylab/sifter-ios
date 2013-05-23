@@ -1,5 +1,5 @@
 //
-//  PresentNoteProtocol.h
+//  PresentNoteDelegate.h
 //  YOI
 //
 //  Created by Jacob James Hanshaw on 5/22/13.
@@ -10,7 +10,7 @@
 
 @class Note;
 
-@protocol InnovPresentNoteProtocol <NSObject>
+@protocol InnovPresentNoteDelegate <NSObject>
 
 @required
 -(void) presentNote: (Note *) note;

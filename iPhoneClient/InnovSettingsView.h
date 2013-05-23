@@ -11,7 +11,6 @@
 #import "InnovDisplayProtocol.h"
 
 @protocol InnovSettingsViewDelegate <NSObject>
-
 @required
 - (void) showProfile;
 - (void) link;
@@ -20,15 +19,6 @@
 @end
 
 @interface InnovSettingsView : UIView <InnovDisplayProtocol>
-{
-    __weak IBOutlet UIButton *profileButton;
-    __weak IBOutlet UIButton *createLinkButton;
-    __weak IBOutlet UIButton *notificationsButton;
-    __weak IBOutlet UIButton *aboutButton;
-    
-    BOOL hiding;
-
-}
 
 @property(nonatomic, weak) id<InnovSettingsViewDelegate> delegate;
 

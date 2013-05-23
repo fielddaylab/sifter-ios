@@ -394,8 +394,6 @@
 		DB72A2C215A7AFA600A04B4C /* Quests.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB72A2C415A7AFA600A04B4C /* Quests.xib */; };
 		DB72A2C715A7B0C700A04B4C /* GamePickerNearbyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB72A2C915A7B0C700A04B4C /* GamePickerNearbyViewController.xib */; };
 		DB72A2CC15A7B1A200A04B4C /* NotebookViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB72A2CE15A7B1A200A04B4C /* NotebookViewController.xib */; };
-		DB7848D5173D8DA0008A845F /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB7848D3173D8DA0008A845F /* InnovCommentViewController.m */; };
-		DB7848D6173D8DA0008A845F /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB7848D4173D8DA0008A845F /* InnovCommentViewController.xib */; };
 		DB7EEF7C15AB40C2009369D4 /* InventoryTradeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB7EEF7A15AB40C2009369D4 /* InventoryTradeViewController.xib */; };
 		DBBCE9E115937704006994F9 /* DefaultPCImage.png in Resources */ = {isa = PBXBuildFile; fileRef = DBBCE9E015937704006994F9 /* DefaultPCImage.png */; };
 		DBC3441315ADEED200FA902F /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBC3441115ADEED200FA902F /* RootViewController.m */; };
@@ -1050,7 +1048,7 @@
 		DB1A8AF0174D84D70052DDC6 /* InnovMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovMapViewController.h; sourceTree = "<group>"; };
 		DB1A8AF1174D84D70052DDC6 /* InnovMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovMapViewController.m; sourceTree = "<group>"; };
 		DB1A8AF2174D84D70052DDC6 /* InnovMapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovMapViewController.xib; sourceTree = "<group>"; };
-		DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPresentNoteProtocol.h; sourceTree = "<group>"; };
+		DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPresentNoteDelegate.h; sourceTree = "<group>"; };
 		DB4C160F15A7B418005EF91B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
 		DB4C161115A7B42A005EF91B /* es */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = es; path = es.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
 		DB4C161215A7B42D005EF91B /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
@@ -1067,9 +1065,6 @@
 		DB72A2CD15A7B1A200A04B4C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/NotebookViewController.xib; sourceTree = "<group>"; };
 		DB72A2CF15A7B1AB00A04B4C /* es */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = es; path = es.lproj/NotebookViewController.xib; sourceTree = "<group>"; };
 		DB72A2D015A7B1AE00A04B4C /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/NotebookViewController.xib; sourceTree = "<group>"; };
-		DB7848D2173D8DA0008A845F /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
-		DB7848D3173D8DA0008A845F /* InnovCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovCommentViewController.m; sourceTree = "<group>"; };
-		DB7848D4173D8DA0008A845F /* InnovCommentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovCommentViewController.xib; sourceTree = "<group>"; };
 		DB7EEF7815AB40C2009369D4 /* InventoryTradeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InventoryTradeViewController.h; path = Classes/InventoryTradeViewController.h; sourceTree = "<group>"; };
 		DB7EEF7A15AB40C2009369D4 /* InventoryTradeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InventoryTradeViewController.xib; path = Classes/InventoryTradeViewController.xib; sourceTree = "<group>"; };
 		DBBCE9E015937704006994F9 /* DefaultPCImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DefaultPCImage.png; sourceTree = "<group>"; };
@@ -2235,16 +2230,13 @@
 				DB02C62C173AE6FD00A31D55 /* InnovNoteViewController.h */,
 				DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */,
 				DB02C62E173AE6FD00A31D55 /* InnovNoteViewController.xib */,
-				DB7848D2173D8DA0008A845F /* InnovCommentViewController.h */,
-				DB7848D3173D8DA0008A845F /* InnovCommentViewController.m */,
-				DB7848D4173D8DA0008A845F /* InnovCommentViewController.xib */,
 				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
 				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
 				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
 				DB00697817347403009A4A17 /* InnovSelectedTagsViewController.h */,
 				DB00697917347403009A4A17 /* InnovSelectedTagsViewController.m */,
 				DBFCAE33173441C60060715F /* InnovSelectedTagsViewController.xib */,
-				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteProtocol.h */,
+				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteDelegate.h */,
 				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DBEDC70F174BC8AB004C8966 /* TMQuiltView.h */,
 				DBEDC710174BC8AB004C8966 /* TMQuiltView.m */,
@@ -2549,7 +2541,6 @@
 				DDCF4113171A4F3D00F839FC /* FacebookSDKResources.bundle in Resources */,
 				DDCF4115171A4F4800F839FC /* FBUserSettingsViewResources.bundle in Resources */,
 				DB02C630173AE6FD00A31D55 /* InnovNoteViewController.xib in Resources */,
-				DB7848D6173D8DA0008A845F /* InnovCommentViewController.xib in Resources */,
 				DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */,
 				DB1A8AEA174D55B10052DDC6 /* MapNotePopUp.xib in Resources */,
 				DB1A8AF4174D84D80052DDC6 /* InnovMapViewController.xib in Resources */,
@@ -2777,7 +2768,6 @@
 				DDC0E11E1721AF56007DBDAA /* MapNotePopUp.m in Sources */,
 				DB00697A17347403009A4A17 /* InnovSelectedTagsViewController.m in Sources */,
 				DB02C62F173AE6FD00A31D55 /* InnovNoteViewController.m in Sources */,
-				DB7848D5173D8DA0008A845F /* InnovCommentViewController.m in Sources */,
 				DBEDC713174BC8AC004C8966 /* TMQuiltView.m in Sources */,
 				DBEDC714174BC8AC004C8966 /* TMQuiltViewCell.m in Sources */,
 				DBEDC718174BD02B004C8966 /* TMPhotoQuiltViewCell.m in Sources */,

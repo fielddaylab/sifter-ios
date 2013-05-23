@@ -7,23 +7,32 @@
 //
 
 #import "InnovSelectedTagsViewController.h"
-
-#import "AppModel.h"
-
 #import <QuartzCore/QuartzCore.h>
+#import "AppModel.h"
 
 #define IMAGEHEIGHT 35
 #define IMAGEWIDTH 35
 #define SPACING 20
 
 
-@interface InnovSelectedTagsViewController ()
+@interface InnovSelectedTagsViewController ()<UITableViewDataSource, UITableViewDelegate>
+{
+    __weak IBOutlet UISegmentedControl *contentSelectorSegCntrl;
+    __weak IBOutlet UITableView *tagTableView;
+    
+    BOOL hiding;
+    NSMutableArray *tagList;
+    
+#warning Likely unnecessaru
+    ContentSelector selectedContent;
+    NSMutableArray *selectedTagList;
+}
 
 @end
 
 @implementation InnovSelectedTagsViewController
 
-@synthesize selectedContent, selectedTagList, delegate;
+@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -119,7 +128,8 @@
     
     if([selectedTagList count] == 0 && [[AppModel sharedAppModel].gameTagList count] > 0){
         [selectedTagList addObject:[tagList objectAtIndex:0]];
-        [delegate addTag:[tagList objectAtIndex:0]];
+#warning recomment in
+//        [delegate addTag:[tagList objectAtIndex:0]];
     }
     
     [tagTableView reloadData];

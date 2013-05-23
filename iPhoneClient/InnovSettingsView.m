@@ -7,10 +7,20 @@
 //
 
 #import "InnovSettingsView.h"
-
 #import <QuartzCore/QuartzCore.h>
 
 #define ANIMATION_DURATION 0.5
+
+@interface InnovSettingsView()
+{
+    __weak IBOutlet UIButton *profileButton;
+    __weak IBOutlet UIButton *createLinkButton;
+    __weak IBOutlet UIButton *notificationsButton;
+    __weak IBOutlet UIButton *aboutButton;
+    
+    BOOL hiding;
+}
+@end
 
 @implementation InnovSettingsView
 
