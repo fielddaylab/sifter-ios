@@ -7,20 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "InnovDisplayProtocol.h"
+#import "InnovPresentNoteProtocol.h"
 
 @class Note, Media, AsyncMediaImageView;
 
-@interface MapNotePopUp : UIView {
+@interface MapNotePopUp : UIView <InnovDisplayProtocol> {
     __weak IBOutlet AsyncMediaImageView *imageView;
     __weak IBOutlet UILabel *textLabel;
     
     Note *note;
+    BOOL hiding;
 }
 
-@property (weak, nonatomic) IBOutlet AsyncMediaImageView *imageView;
-@property (weak, nonatomic) IBOutlet UILabel *textLabel;
-
-@property (nonatomic) Note *note;
+@property (nonatomic)       Note *note;
+@property (nonatomic, weak) id<InnovPresentNoteProtocol> delegate;
 
 - (id)init;
 - (id)initWithMedia:(Media *) media andText:(NSString*) text;

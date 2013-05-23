@@ -93,7 +93,12 @@
         if (theAnimation == [[self.view layer] animationForKey:@"transform.scaleUp"] && !hiding)
             self.view.userInteractionEnabled = YES;
         else if(theAnimation == [[self.view layer] animationForKey:@"transform.scaleDown"] && hiding)
+        {
             self.view.hidden = YES;
+            [self willMoveToParentViewController:nil];
+            [self.view removeFromSuperview];
+            [self removeFromParentViewController];
+        }
     }
 }
 

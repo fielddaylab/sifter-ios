@@ -6,37 +6,40 @@
 //
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "InnovViewController.h"
-#import "Note.h"
-#import "InnovNoteViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
+#import "AppModel.h"
+#import "AppServices.h"
+
+#import "Note.h"
+#import "Location.h"
+
+#import "InnovPresentNoteProtocol.h"
+#import "InnovSettingsView.h"
+#import "InnovMapViewController.h"
 #import "TMQuiltView.h"
 #import "TMPhotoQuiltViewCell.h"
+#import "InnovNoteViewController.h"
+#import "InnovNoteEditorViewController.h"
+#import "InnovSelectedTagsViewController.h"
 
-#define INITIALSPAN 0.001
-#define WIDESPAN    0.025
+#define RIGHT_SIDE_MARGIN 20
+#define SWITCH_VIEWS_ANIMATION_DURATION 1.25
 
-//For expanding view
-#define ANIMATION_TIME     0.6
-#define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
-
-#define RIGHTSIDEMARGIN 20
-
-@interface InnovViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate>
+@interface InnovViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate, InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteProtocol>
 
 @end
 
 @implementation InnovViewController
 
-@synthesize isLocal, lastLocation, noteToAdd;
+@synthesize lastLocation, noteToAdd;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        tracking = YES;
         
         locationsToAdd     = [[NSMutableArray alloc] initWithCapacity:10];
         locationsToRemove  = [[NSMutableArray alloc] initWithCapacity:10];
@@ -47,12 +50,12 @@
         images             = [[NSMutableArray alloc] initWithCapacity:20];
         text               = [[NSMutableArray alloc] initWithCapacity:20];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                        name:@"PlayerMoved"                             object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMoved)                name:@"PlayerMoved"                             object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"        object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"      object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel)               name:@"NewNoteListReady"       object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel)       name:@"NewNoteListReady"       object:nil];
         
         //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
     }
@@ -90,26 +93,12 @@
     
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
     
-    [contentView addSubview:mapContentView];
-    [mapView setDelegate:self];
-    
-#warning update madison's center
-    madisonCenter = [[CLLocation alloc] initWithLatitude:43.07 longitude:-89.41];
-    
-    //Center on Madison
-	MKCoordinateRegion region = mapView.region;
-	region.center = madisonCenter.coordinate;
-	region.span = MKCoordinateSpanMake(WIDESPAN, WIDESPAN);
-    
-	[mapView setRegion:region animated:NO];
-    
-    notePopUp.hidden = YES;
-    notePopUp.center = contentView.center;
- //   notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
-    notePopUp.layer.cornerRadius = 9.0f;
-    [mapContentView addSubview:notePopUp];
-    
-    showTagsButton.layer.cornerRadius = 4.0f;
+    mapVC = [[InnovMapViewController alloc] init];
+    mapVC.delegate = self;
+    [self addChildViewController:mapVC];
+    mapVC.view.frame = contentView.frame;
+    [contentView addSubview:mapVC.view];
+    [mapVC didMoveToParentViewController:self];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
@@ -146,28 +135,25 @@
     selectedTagsFrame.origin.x = -self.view.frame.size.width/2;
     selectedTagsFrame.origin.y = self.view.frame.size.height/2+12;
     selectedTagsVC.view.frame = selectedTagsFrame;
-    [self addChildViewController:selectedTagsVC];
-    [selectedTagsVC didMoveToParentViewController:self];
-    [self.view addSubview:selectedTagsVC.view];
+    
+    showTagsButton.layer.cornerRadius = 4.0f;
     
 #warning is this necessary?
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    tracking = NO;
     
 	trackingButton.backgroundColor = [UIColor lightGrayColor];
     trackingButton.layer.cornerRadius = 4.0f;
     trackingButton.hidden = YES;
     
-   /* CGRect quiltViewFrame = listContentView.frame;
-    quiltViewFrame.origin.x = 0;
-    quiltViewFrame.origin.y = 0;
-    quiltView = [[TMQuiltView alloc] initWithFrame:quiltViewFrame];
-    quiltView.bounces = NO;
-    quiltView.delegate = self;
-    quiltView.dataSource = self;
-    quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [listContentView addSubview:quiltView]; */
+    /* CGRect quiltViewFrame = listContentView.frame;
+     quiltViewFrame.origin.x = 0;
+     quiltViewFrame.origin.y = 0;
+     quiltView = [[TMQuiltView alloc] initWithFrame:quiltViewFrame];
+     quiltView.bounces = NO;
+     quiltView.delegate = self;
+     quiltView.dataSource = self;
+     quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+     [listContentView addSubview:quiltView]; */
     
     quiltView = nil;
     
@@ -196,17 +182,13 @@
 
 - (void) viewDidAppear:(BOOL)animated
 {
-    
     [super viewDidAppear:animated];
-    
-	[[AppServices sharedAppServices] updateServerMapViewed];
 	
-    //  [self playerMoved];
     [self refreshViewFromModel];
 	[self refresh];
 	
 	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
-	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
+	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
     
     if(noteToAdd != nil){
         [self animateInNote:noteToAdd];
@@ -217,66 +199,18 @@
 
 - (void) animateInNote: (Note *) note {
 #warning unimplemented
-    //Switch to mapview
+    //Switch to mapview or animate in both
     //Animate in note
 }
 
-/*
- - (IBAction) changeMapType:(id)sender
- {
- ARISAppDelegate* appDelegate = (ARISAppDelegate *)[[UIApplication sharedApplication] delegate];
- [appDelegate playAudioAlert:@"ticktick" shouldVibrate:NO];
- 
- switch (mapView.mapType)
- {
- case MKMapTypeStandard:
- mapView.mapType=MKMapTypeSatellite;
- break;
- case MKMapTypeSatellite:
- mapView.mapType=MKMapTypeHybrid;
- break;
- case MKMapTypeHybrid:
- mapView.mapType=MKMapTypeStandard;
- break;
- }
- }
- */
-
 - (void) refresh
 {
-    if (mapView)
-    {
-        [[AppServices sharedAppServices] fetchPlayerLocationList];
-        [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
-        [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
-        [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously: YES];
-        
-        if (tracking) [self zoomAndCenterMap];
-    }
-}
-
-- (void) playerMoved
-{
-    CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
+    [[AppServices sharedAppServices] fetchPlayerLocationList];
+    [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
+    [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously: YES];
     
-#warning update distance magic number
-    isLocal = distance <= 20000;
-    trackingButton.hidden = !isLocal;
-    [mapView setShowsUserLocation:isLocal];
-    if (mapView && tracking) [self zoomAndCenterMap];
-}
-
-- (void) zoomAndCenterMap
-{
-	appSetNextRegionChange = YES;
-	
-	//Center the map on the player
-    #warning CHANGE TO CENTER OF MADISON
-	MKCoordinateRegion region = mapView.region;
-	region.center = [AppModel sharedAppModel].playerLocation.coordinate;
-	region.span = MKCoordinateSpanMake(INITIALSPAN, INITIALSPAN);
-    
-	[mapView setRegion:region animated:YES];
+    [mapVC updatePlayerLocation];
 }
 
 #pragma mark Selected Content Delegate Methods
@@ -383,8 +317,6 @@
 
 - (void)refreshViewFromModel
 {
-    if(!mapView) return;
-    
     //Remove old locations first
     Location *tmpLocation;
     Note     *note;
@@ -408,7 +340,7 @@
             {
                 if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:j]) == mapView.userLocation ||
                    !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
-
+                
                 if([tmpAnnotation.location compareTo: ((Location *)[locationsToRemove objectAtIndex:i])])
                 {
                     [mapView removeAnnotation:tmpAnnotation];
@@ -439,7 +371,7 @@
             
             if(![tagNotesDictionary objectForKey:noteTag.tagName]) [tagNotesDictionary setObject:[[NSMutableArray alloc] init] forKey:noteTag.tagName];
             [[tagNotesDictionary objectForKey:noteTag.tagName] addObject:note];
-
+            
             BOOL match = NO;
             for(int j = 0; j < [availableTags count]; ++j)
             {
@@ -473,66 +405,7 @@
     
 }
 
-#pragma mark MKMapViewDelegate
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
-{
-	if (!appSetNextRegionChange)
-    {
-		tracking = NO;
-		trackingButton.backgroundColor = [UIColor lightGrayColor];
-	}
-	
-	appSetNextRegionChange = NO;
-}
-
-- (void)mapView:(MKMapView *)mV didAddAnnotationViews:(NSArray *)views
-{
-    for (AnnotationView *aView in views)
-    {
-        //Drop animation
-        CGRect endFrame = aView.frame;
-        aView.frame = CGRectMake(aView.frame.origin.x, aView.frame.origin.y - 230.0, aView.frame.size.width, aView.frame.size.height);
-        [UIView animateWithDuration:0.45 delay:0.0 options:UIViewAnimationCurveEaseIn animations:^{[aView setFrame: endFrame];} completion:^(BOOL finished) {}];
-    }
-}
-
-- (MKAnnotationView *)mapView:(MKMapView *)myMapView viewForAnnotation:(id <MKAnnotation>)annotation
-{
-	if (annotation == mapView.userLocation)
-        return nil;
-    else
-        return [[AnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:nil];
-}
-
-
 #pragma mark Buttons Pressed
-
-- (IBAction)trackingButtonPressed:(id)sender
-{
-	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-	
-	tracking = YES;
-	trackingButton.backgroundColor = [UIColor blueColor];
-    
-	[[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
-	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
-    
-	[self refresh];
-}
-
-- (IBAction)showTagsPressed:(id)sender
-{
-    [selectedTagsVC toggleDisplay];
-}
-
-- (IBAction)cameraPressed:(id)sender {
-    
-    editorVC = [[InnovNoteEditorViewController alloc] init];
-    editorVC.delegate = self;
-    lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
-    
-    [self.navigationController pushViewController:editorVC animated:NO];
-}
 
 - (void)settingsPressed
 {
@@ -546,6 +419,41 @@
         [settingsView hide];
     }
 }
+
+- (IBAction)showTagsPressed:(id)sender
+{
+    if(![self.view.subviews containsObject:selectedTagsVC.view])
+    {
+        [self addChildViewController:selectedTagsVC];
+        [self.view addSubview:selectedTagsVC.view];
+        [selectedTagsVC didMoveToParentViewController:self];
+        [selectedTagsVC show];
+    }
+    else
+    {
+        [selectedTagsVC hide];
+    }
+}
+
+- (IBAction)cameraPressed:(id)sender {
+    
+    InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
+    editorVC.delegate = self;
+    lastLocation = [[CLLocation alloc] initWithLatitude:mapView.region.center.latitude longitude:mapView.region.center.longitude];
+    
+    [self.navigationController pushViewController:editorVC animated:NO];
+}
+
+- (IBAction)trackingButtonPressed:(id)sender
+{
+	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
+	
+	trackingButton.backgroundColor = [UIColor blueColor];
+    
+    [mapVC toggleTracking];
+}
+
+#pragma mark settings delegate methods
 
 - (void) showProfile
 {
@@ -562,124 +470,41 @@
 #warning unimplemented
 }
 
-- (IBAction) presentNote:(id) sender
+#pragma mark present note delegate method
+
+- (void) presentNote:(Note *) note
 {
-#warning change if other possible senders
-    Note * note;
-    if([sender isKindOfClass:[UIButton class]]) note = ((MapNotePopUp *)((UIButton *)sender).superview).note;
-    else note = sender;
-    //NoteDetailsViewController *noteVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
     InnovNoteViewController *noteVC = [[InnovNoteViewController alloc] init];
     noteVC.note = note;
     noteVC.delegate = self;
     [self.navigationController pushViewController:noteVC animated:YES];
-    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-    [mapView deselectAnnotation:currentAnnotation animated:YES];
-}
-
-- (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view
-{
-    if(view.annotation == aMapView.userLocation) return;
-	Location *location = ((Annotation*)view.annotation).location;
-    [self showNotePopUpForLocation:location];
-}
-
-- (void) showNotePopUpForLocation: (Location *) location {
-    
-    Note * note    = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:NO];
-    if(!note) note = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:YES];
-    if(note){
-        //if(!notePopUp.hidden && !hidingPopUp) [self hideNotePopUp]; //HAndled by touchesBegan
-        [self showNotePopUpForNote:note];
-    }
-    else{
-        NSLog(@"InnovViewController: ERROR: attempted to display nil note");
-        Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-        [mapView deselectAnnotation:currentAnnotation animated:YES];
-        return;
-    }
-    
 }
 
 #pragma mark TouchesBegan Method
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if(!notePopUp.hidden && !hidingPopUp)
-        [self hideNotePopUp];
-    
     [searchBar resignFirstResponder];
     [settingsView hide];
-    
     [selectedTagsVC hide];
 }
 
-#pragma mark Animations
-
-- (void) showNotePopUpForNote: (Note *) note {
-    
-    hidingPopUp = NO;
-    
-    MKCoordinateRegion region = mapView.region;
-	region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);
-	[mapView setRegion:region animated:YES];
-    
-    notePopUp.note = note;
-    notePopUp.textLabel.text = note.title;
-    for(int i = 0; i < [note.contents count]; ++i)
-    {
-        NoteContent *noteContent = [note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [notePopUp.imageView loadImageFromMedia:[noteContent getMedia]];
-    }
-    
-    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-    [mapView deselectAnnotation:currentAnnotation animated:YES];
-    
-    notePopUp.hidden = NO;
-    notePopUp.userInteractionEnabled = NO;
-    [UIView beginAnimations:@"animationExpandNote" context:NULL];
-    [UIView setAnimationDuration:ANIMATION_TIME];
-    notePopUp.transform=CGAffineTransformMakeScale(1, 1);
-    [UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView commitAnimations];
-    
-}
-
--(void)animationDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context{
-    if(finished)
-    {
-        if ([animationID isEqualToString:@"animationExpandNote"] && !hidingPopUp) notePopUp.userInteractionEnabled=YES;
-        else if ([animationID isEqualToString:@"animationShrinkNote"] && hidingPopUp) notePopUp.hidden = YES;
-    }
-}
-
-- (void) hideNotePopUp {
-    
-    hidingPopUp = YES;
-    
-    [UIView beginAnimations:@"animationShrinkNote" context:NULL];
-    [UIView setAnimationDuration:ANIMATION_TIME];
-    notePopUp.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
-    [UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-	[UIView commitAnimations];
-}
-
 - (void)switchViews {
-    [UIView beginAnimations:@"View Flip" context:nil];
-    [UIView setAnimationDuration:1.25];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     
-    UIView *coming = nil;
-    UIView *going = nil;
+    UIViewController *coming = nil;
+    UIViewController *going = nil;
     NSString *newButtonTitle;
     NSString *newButtonImageName;
     UIViewAnimationTransition transition;
     
-    if (mapContentView.superview == nil)
+    CGRect contentFrame = contentView.frame;
+    contentFrame.origin.x = 0;
+    contentFrame.origin.y = 0;
+    coming.view.frame = contentFrame;
+    
+    if (![self.view.subviews containsObject:mapVC.view])
     {
-        coming = mapContentView;
+        coming = mapVC;
         going = listContentView;
         transition = UIViewAnimationTransitionFlipFromLeft;
         newButtonTitle = @"List";
@@ -688,31 +513,30 @@
     else
     {
         coming = listContentView;
-        going = mapContentView;
+        going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
         newButtonTitle = @"Map";
         newButtonImageName = @"103-map.png";
     }
-    //  attempt to landscape
-    CGRect contentFrame = contentView.frame;
-    contentFrame.origin.x = 0;
-    contentFrame.origin.y = 0;
-    coming.frame = contentFrame;
-    if(coming == mapContentView){
-        mapView.frame = contentFrame;
-        [mapContentView setNeedsDisplay];
-    }
-    else{
-        quiltView.frame = contentFrame;
-        [listContentView setNeedsDisplay];
-    }
     
+    [UIView beginAnimations:@"View Flip" context:nil];
+    [UIView setAnimationDuration:SWITCH_VIEWS_ANIMATION_DURATION];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationTransition: transition forView:contentView cache:YES];
-    [going removeFromSuperview];
-    [contentView insertSubview: coming atIndex:0];
+    
+    [going willMoveToParentViewController:nil];
+    [going.view removeFromSuperview];
+    [going removeFromParentViewController];
+    
+    [self addChildViewController:coming];
+    coming.view.frame = contentFrame; //setNeedsDisplay?
+    [contentView addSubview:coming.view];
+    [coming didMoveToParentViewController:self];
+    
     [UIView commitAnimations];
+    
     [UIView beginAnimations:@"Button Flip" context:nil];
-    [UIView setAnimationDuration:1.25];
+    [UIView setAnimationDuration:SWITCH_VIEWS_ANIMATION_DURATION];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationTransition: transition forView:switchViewsBarButton.customView cache:YES];
     [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateNormal];
@@ -777,8 +601,8 @@
     if([[images objectAtIndex:indexPath.row] isKindOfClass:[UIImage class]]) [cell.photoView setImage:[images objectAtIndex:indexPath.row]];
     else [cell.photoView loadImageFromMedia:[[images objectAtIndex:indexPath.row] getMedia]];
     
- //   if(![[text objectAtIndex:indexPath.row] isEqualToString:@""])
-        cell.titleLabel.text = [text objectAtIndex:indexPath.row];
+    //   if(![[text objectAtIndex:indexPath.row] isEqualToString:@""])
+    cell.titleLabel.text = [text objectAtIndex:indexPath.row];
     
     return cell;
 }
@@ -918,14 +742,10 @@
 }
 
 - (void)viewDidUnload {
-    mapContentView = nil;
-    listContentView = nil;
     contentView = nil;
     showTagsButton = nil;
-    mapView = nil;
     trackingButton = nil;
     switchViewsBarButton = nil;
-    notePopUp = nil;
     quiltView = nil;
     settingsView = nil;
     [super viewDidUnload];

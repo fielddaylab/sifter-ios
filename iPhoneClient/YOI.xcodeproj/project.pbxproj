@@ -402,6 +402,8 @@
 		DBEDC713174BC8AC004C8966 /* TMQuiltView.m in Sources */ = {isa = PBXBuildFile; fileRef = DBEDC710174BC8AB004C8966 /* TMQuiltView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DBEDC714174BC8AC004C8966 /* TMQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DBEDC712174BC8AB004C8966 /* TMQuiltViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DBEDC718174BD02B004C8966 /* TMPhotoQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		DBFE825F174E758600E4496B /* InnovListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBFE825D174E758500E4496B /* InnovListViewController.m */; };
+		DBFE8260174E758600E4496B /* InnovListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBFE825E174E758600E4496B /* InnovListViewController.xib */; };
 		DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD235FCA1700DCCB00795077 /* InnovViewController.m */; };
 		DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD235FCB1700DCCB00795077 /* InnovViewController.xib */; };
 		DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C285016F3BF0D00CBC085 /* Logger.m */; };
@@ -1048,6 +1050,7 @@
 		DB1A8AF0174D84D70052DDC6 /* InnovMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovMapViewController.h; sourceTree = "<group>"; };
 		DB1A8AF1174D84D70052DDC6 /* InnovMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovMapViewController.m; sourceTree = "<group>"; };
 		DB1A8AF2174D84D70052DDC6 /* InnovMapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovMapViewController.xib; sourceTree = "<group>"; };
+		DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPresentNoteProtocol.h; sourceTree = "<group>"; };
 		DB4C160F15A7B418005EF91B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
 		DB4C161115A7B42A005EF91B /* es */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = es; path = es.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
 		DB4C161215A7B42D005EF91B /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = fr; path = fr.lproj/GamePickerPopularViewController.xib; sourceTree = "<group>"; };
@@ -1081,6 +1084,9 @@
 		DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMPhotoQuiltViewCell.m; sourceTree = "<group>"; };
 		DBFCAE33173441C60060715F /* InnovSelectedTagsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovSelectedTagsViewController.xib; sourceTree = "<group>"; };
 		DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovDisplayProtocol.h; sourceTree = "<group>"; };
+		DBFE825C174E758500E4496B /* InnovListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovListViewController.h; sourceTree = "<group>"; };
+		DBFE825D174E758500E4496B /* InnovListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovListViewController.m; sourceTree = "<group>"; };
+		DBFE825E174E758600E4496B /* InnovListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovListViewController.xib; sourceTree = "<group>"; };
 		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
 		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
 		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
@@ -2238,6 +2244,7 @@
 				DB00697817347403009A4A17 /* InnovSelectedTagsViewController.h */,
 				DB00697917347403009A4A17 /* InnovSelectedTagsViewController.m */,
 				DBFCAE33173441C60060715F /* InnovSelectedTagsViewController.xib */,
+				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteProtocol.h */,
 				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DBEDC70F174BC8AB004C8966 /* TMQuiltView.h */,
 				DBEDC710174BC8AB004C8966 /* TMQuiltView.m */,
@@ -2248,6 +2255,9 @@
 				DB1A8AF0174D84D70052DDC6 /* InnovMapViewController.h */,
 				DB1A8AF1174D84D70052DDC6 /* InnovMapViewController.m */,
 				DB1A8AF2174D84D70052DDC6 /* InnovMapViewController.xib */,
+				DBFE825C174E758500E4496B /* InnovListViewController.h */,
+				DBFE825D174E758500E4496B /* InnovListViewController.m */,
+				DBFE825E174E758600E4496B /* InnovListViewController.xib */,
 			);
 			name = InnovationViewControllers;
 			sourceTree = "<group>";
@@ -2543,6 +2553,7 @@
 				DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */,
 				DB1A8AEA174D55B10052DDC6 /* MapNotePopUp.xib in Resources */,
 				DB1A8AF4174D84D80052DDC6 /* InnovMapViewController.xib in Resources */,
+				DBFE8260174E758600E4496B /* InnovListViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2773,6 +2784,7 @@
 				DB1A8ADD174D34430052DDC6 /* InnovNavController.m in Sources */,
 				DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */,
 				DB1A8AF3174D84D80052DDC6 /* InnovMapViewController.m in Sources */,
+				DBFE825F174E758600E4496B /* InnovListViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
