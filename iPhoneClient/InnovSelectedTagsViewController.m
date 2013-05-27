@@ -9,6 +9,8 @@
 #import "InnovSelectedTagsViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppModel.h"
+#import "Tag.h"
+#import "Logger.h"
 
 #define IMAGEHEIGHT 35
 #define IMAGEWIDTH 35
@@ -22,10 +24,9 @@
     
     BOOL hiding;
     NSMutableArray *tagList;
-    
-#warning Likely unnecessaru
-    ContentSelector selectedContent;
     NSMutableArray *selectedTagList;
+    
+    ContentSelector selectedContent;
 }
 
 @end
@@ -43,9 +44,8 @@
         
         self.view.hidden = YES;
         
-        tagList = [[NSMutableArray alloc] initWithCapacity:10];
+        tagList =         [[NSMutableArray alloc] initWithCapacity:10];
         selectedTagList = [[NSMutableArray alloc] initWithCapacity:10];
-        selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
     }
     return self;
 }
@@ -53,7 +53,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+
+    selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
+    [delegate updateContentSelector:selectedContent];
 }
 
 # pragma  mark Display Methods
@@ -113,9 +115,10 @@
 
 #pragma mark UISegmentedController delegate
 
-- (IBAction)contentSelectorChangedValue:(UISegmentedControl *)sender {
+- (IBAction)contentSelectorChangedValue:(UISegmentedControl *)sender
+{
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
-    [delegate didUpdateContentSelector];
+    [delegate updateContentSelector:selectedContent];
 }
 
 #pragma mark TableView DataSource and Delegate Methods
@@ -128,8 +131,7 @@
     
     if([selectedTagList count] == 0 && [[AppModel sharedAppModel].gameTagList count] > 0){
         [selectedTagList addObject:[tagList objectAtIndex:0]];
-#warning recomment in
-//        [delegate addTag:[tagList objectAtIndex:0]];
+        [delegate addTag:[tagList objectAtIndex:0]];
     }
     
     [tagTableView reloadData];

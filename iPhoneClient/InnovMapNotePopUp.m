@@ -6,7 +6,7 @@
 //
 //
 
-#import "MapNotePopUp.h"
+#import "InnovMapNotePopUp.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -18,16 +18,15 @@
 #define ANIMATION_TIME     0.5
 #define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
 
-@interface MapNotePopUp ()
+@interface InnovMapNotePopUp ()
 {
     BOOL hiding;
-    __weak IBOutlet AsyncMediaImageView *imageView;
-    __weak IBOutlet UILabel *textLabel;
+
 }
 
 @end
 
-@implementation MapNotePopUp
+@implementation InnovMapNotePopUp
 
 @synthesize note, delegate;
 
@@ -36,11 +35,12 @@
     self = [super init];
     if (self) {
         // Initialization code
-        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"MapNotePopUp" owner:self options:nil];
-        MapNotePopUp *view = [xibArray objectAtIndex:0];
+        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"InnovMapNotePopUp" owner:self options:nil];
+        InnovMapNotePopUp *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
         [self addSubview:view];
 #warning check if corner radius works and transform is necessary
+        self.layer.masksToBounds = YES;
         self.layer.cornerRadius= 9.0f;
         self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
     }
@@ -52,11 +52,12 @@
     self = [super init];
     if (self) {
         // Initialization code
-        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"MapNotePopUp" owner:self options:nil];
-        MapNotePopUp *view = [xibArray objectAtIndex:0];
+        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"InnovMapNotePopUp" owner:self options:nil];
+        InnovMapNotePopUp *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
         [self addSubview:view];
 #warning check if corner radius works and transform is necessary
+        self.layer.masksToBounds = YES;
         self.layer.cornerRadius= 9.0f;
         self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
         

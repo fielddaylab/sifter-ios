@@ -41,7 +41,7 @@
 #endif
 }
 
-- (void)logError:(NSError *)error
+- (void)logError:(NSError *) error
 {
 #if DEBUGMODE > 0
     if(error != nil)
@@ -56,5 +56,16 @@
 #endif
 }
 
+- (void)logNotification:(NSNotification *) notification
+{
+#if DEBUGMODE > 0
+        NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+        NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+        NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+        [array removeObject:@""];
+        
+        NSLog(@"%@: %@ NSNotification: %@", [array objectAtIndex:3], [array objectAtIndex:4], notification.name);
+#endif
+}
 
 @end

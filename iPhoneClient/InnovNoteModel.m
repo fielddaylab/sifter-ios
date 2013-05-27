@@ -8,12 +8,17 @@
 
 #import "InnovNoteModel.h"
 
+#import "Logger.h"
 #import "Note.h"
+#import "Tag.h"
 
 @interface InnovNoteModel()
 {
-    NSMutableArray *allLocations;
+    NSArray *allNotes;
+    NSMutableArray *availableTags;
+    NSMutableArray *searchTerms;
 }
+
 @end
 
 @implementation InnovNoteModel
@@ -26,76 +31,136 @@
     if(self)
     {
         [self clearData];
+        availableNotes  = [[NSMutableArray alloc] initWithCapacity:20];
+        availableTags   = [[NSMutableArray alloc] initWithCapacity:8];
+        searchTerms     = [[NSMutableArray alloc] initWithCapacity:8];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestGameNotesReceived:)   name:@"GameNoteListRefreshed"   object:nil];
-     // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestPlayerNotesReceived:) name:@"PlayerNoteListRefreshed" object:nil];
+        // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestPlayerNotesReceived:) name:@"PlayerNoteListRefreshed" object:nil];
 #warning only receives game note list
     }
     return self;
 }
 
--(void)clearData
+-(void) clearData
 {
     [self updateNotes:[[NSArray alloc] init]];
 }
 
--(void)latestGameNotesReceived:(NSNotification *)notification
+-(void) latestGameNotesReceived:(NSNotification *)notification
 {
-    [self updateNotes:[notification.userInfo objectForKey:@"notes"]];
+    allNotes = [notification.userInfo objectForKey:@"notes"];
+    [self updateNotes:allNotes];
 }
 
--(void)updateNotes:(NSArray *)notes
+-(void) updateNotes:(NSArray *)notes
 {
     NSMutableArray *newlyAvailableNotes   = [[NSMutableArray alloc] initWithCapacity:20];
     NSMutableArray *newlyUnavailableNotes = [[NSMutableArray alloc] initWithCapacity:20];
+    NSMutableArray *availableNotesMutable = [[NSMutableArray alloc] initWithArray:   availableNotes];
     
     //Gained Notes
     for(Note *newNote in notes)
     {
         BOOL match = NO;
-        for (Note *existingNote in self.availableNotes)
+        
+        for (Note *existingNote in availableNotes)
         {
             if ([newNote compareTo: existingNote])
                 match = YES;
         }
         
-        if(!match) //New Location
+        if(!match && [self noteShouldBeAvailable:newNote]) //Newly Available Note
             [newlyAvailableNotes addObject:newNote];
     }
     
     //Lost Notes
-    for (Note *existingLocation in self.currentLocations)
+    for (Note *existingNote in availableNotes)
     {
         BOOL match = NO;
-        for (Location *newLocation in locations)
+        for (Note *newNote in notes)
         {
-            if ([newLocation compareTo: existingLocation])
+            if ([newNote compareTo: existingNote])
                 match = YES;
         }
         
-        if(!match) //Lost location
-            [newlyUnavailableLocations addObject:existingLocation];
+        if((!match && [self noteShouldBeAvailable:existingNote]) || ![self noteShouldBeAvailable:existingNote]) //Lost Note
+            [newlyUnavailableNotes addObject: existingNote];
     }
     
-    self.currentLocations = locations;
+    [availableNotesMutable addObjectsFromArray:  newlyAvailableNotes];
+    [availableNotesMutable removeObjectsInArray: newlyUnavailableNotes];
+    availableNotes = [availableNotesMutable copy];
     
-    if([newlyAvailableLocations count] > 0)
+    if([newlyAvailableNotes count] > 0 || [newlyUnavailableNotes count] > 0)
     {
-        NSDictionary *lDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                               newlyAvailableLocations,@"newlyAvailableLocations",
-                               locations,@"allLocations",
+        NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                               availableNotes,@"availableNotes",
                                nil];
-        NSLog(@"NSNotification: NewlyAvailableLocationsAvailable");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewlyAvailableLocationsAvailable" object:self userInfo:lDict]];
+        NSNotification *notif  = [NSNotification notificationWithName:@"NotesAvailableChanged" object:self userInfo:nDict];
+        [[Logger sharedLogger] logNotification: notif];
+        [[NSNotificationCenter defaultCenter] postNotification:notif];
+        
+        if([newlyAvailableNotes count] > 0)
+        {
+            NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                   newlyAvailableNotes,@"newlyAvailableNotes",
+                                   nil];
+            NSNotification *notif  = [NSNotification notificationWithName:@"NewlyAvailableNotesAvailable"  object:self userInfo:nDict];
+            [[Logger sharedLogger] logNotification: notif];
+            [[NSNotificationCenter defaultCenter] postNotification: notif];
+        }
+        if([newlyUnavailableNotes count] > 0)
+        {
+            NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                   newlyUnavailableNotes,@"newlyUnavailableNotes",
+                                   nil];
+            NSNotification *notif  = [NSNotification notificationWithName:@"NewlyUnavailableNotesAvailable" object:self userInfo:nDict];
+            [[Logger sharedLogger] logNotification: notif];
+            [[NSNotificationCenter defaultCenter] postNotification: notif];
+        }
+        
     }
-    if([newlyUnavailableLocations count] > 0)
+}
+
+-(BOOL) noteShouldBeAvailable: (Note *) note
+{
+    BOOL match;
+    for(Tag *tag in availableTags)
     {
-        NSDictionary *lDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                               newlyUnavailableLocations,@"newlyUnavailableLocations",
-                               locations,@"allLocations",
-                               nil];
-        NSLog(@"NSNotification: NewlyUnavailableLocationsAvailable");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewlyUnavailableLocationsAvailable" object:self userInfo:lDict]];
+        if([note.tags count] > 0)
+            if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId) match = YES;
     }
+    
+    if(!match) return NO;
+    
+    for(NSString *searchTerm in searchTerms)
+        if([note.title rangeOfString:searchTerm].location == NSNotFound) return NO;
+    
+    return YES;
+}
+
+-(void) addTag: (Tag *) tag
+{
+    [availableTags addObject: tag];
+    [self updateNotes:allNotes];
+}
+
+-(void) removeTag: (Tag *) tag
+{
+    [availableTags removeObject: tag];
+    [self updateNotes:allNotes];
+}
+
+-(void) addSearchTerm: (NSString *) term
+{
+    if([term length] > 0) [searchTerms addObject: term];
+    [self updateNotes:allNotes];
+}
+
+-(void) removeSearchTerm: (NSString *) term
+{
+    [searchTerms removeObject: term];
+    [self updateNotes:allNotes];
 }
 
 -(void)dealloc

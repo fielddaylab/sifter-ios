@@ -17,5 +17,6 @@
 + (Logger *)sharedLogger;
 - (void)logDebug:(NSString *) string;
 - (void)logError:(NSError *) error;
+- (void)logNotification:(NSNotification *) notification;
 
 @end

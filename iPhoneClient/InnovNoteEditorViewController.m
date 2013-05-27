@@ -251,6 +251,8 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [super touchesBegan:touches withEvent:event];
+    
     [captionTextView resignFirstResponder];
 }
 
@@ -300,7 +302,8 @@
 
 - (void)refreshViewFromModel
 {
-    note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
+#warning was playernotelist
+    note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
     [self addCDUploadsToNote];
     
     for(int i = 0; i < [self.note.contents count]; ++i)

@@ -11,9 +11,13 @@
 
 @protocol InnovPresentNoteDelegate;
 
-@class Note, Media;
+@class Note, Media, AsyncMediaImageView;
 
-@interface MapNotePopUp : UIView <InnovDisplayProtocol>
+@interface InnovMapNotePopUp : UIView <InnovDisplayProtocol>
+{
+    __weak IBOutlet AsyncMediaImageView *imageView;
+    __weak IBOutlet UILabel *textLabel;
+}
 
 @property (nonatomic)       Note *note;
 @property (nonatomic, weak) id<InnovPresentNoteDelegate> delegate;

@@ -9,21 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "InnovDisplayProtocol.h"
 
-#import "Tag.h"
-
-@protocol InnovSelectedTagsDelegate
-
-@required
-- (void) didUpdateContentSelector;
-- (void) addTag:    (Tag *) tag;
-- (void) removeTag: (Tag *) tag;
-@end
+@class Tag;
 
 typedef enum {
 	kTop,
     kPopular,
     kRecent
 } ContentSelector;
+
+@protocol InnovSelectedTagsDelegate <NSObject>
+@required
+- (void) updateContentSelector: (ContentSelector) selector;
+- (void) addTag:    (Tag *) tag;
+- (void) removeTag: (Tag *) tag;
+
+@end
 
 @interface InnovSelectedTagsViewController : UIViewController <InnovDisplayProtocol>
 

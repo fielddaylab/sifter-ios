@@ -15,7 +15,7 @@
 #import "Annotation.h"
 #import "AnnotationView.h"
 #import "InnovPresentNoteDelegate.h"
-#import "MapNotePopUp.h"
+#import "InnovMapNotePopUp.h"
 
 #warning update defined numbers
 
@@ -32,7 +32,7 @@
 
 {
     IBOutlet MKMapView *mapView;
-    MapNotePopUp *notePopUp;
+    InnovMapNotePopUp *notePopUp;
     
     BOOL isLocal;
     BOOL tracking;
@@ -44,7 +44,7 @@
 }
 @end
 
-@implementation InnovMapViewController 
+@implementation InnovMapViewController
 
 @synthesize delegate;
 
@@ -56,6 +56,9 @@
         notes    = [[NSMutableArray alloc] initWithCapacity:20];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
 #warning need to listen for new notes messages
     }
     return self;
@@ -71,7 +74,7 @@
 	isLocal = NO;
     [self zoomAndCenterMapAnimated:NO];
     
-    notePopUp = [[MapNotePopUp alloc] init];
+    notePopUp = [[InnovMapNotePopUp alloc] init];
     notePopUp.hidden   = YES;
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
@@ -80,6 +83,9 @@
 - (void)viewDidAppear:(BOOL)animated
 {
 #warning neccessary?
+    //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
+    //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
+    //   else                                                                                  mapView.mapType = MKMapTypeStandard;
     //  [self playerMoved];
     [[AppServices sharedAppServices] updateServerMapViewed];
 }
@@ -147,17 +153,44 @@
 
 #pragma mark update from model
 
-- (void) addAnnotationOfNote: (Note *) note
+- (void) addAnnotationsForNotes:(NSNotification *)notification
 {
-    CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
-    Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-   // annotation.location = note.location;
-    annotation.title = note.title;
-    annotation.kind = NearbyObjectNote;
-    annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
-#warning this needs to be implemented in AnnotationView.m
+    NSArray *newNotes = (NSArray *)[notification.userInfo objectForKey:@"newlyAvailableNotes"];
     
-    [mapView addAnnotation:annotation];
+    for(Note *note in newNotes)
+    {
+        CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+        Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
+        annotation.note = note;
+        annotation.title = note.title;
+        annotation.kind = NearbyObjectNote;
+        annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+#warning this needs to be implemented in AnnotationView.m
+        
+        [mapView addAnnotation:annotation];
+    }
+}
+
+- (void) removeAnnotationsForNotes:(NSNotification *)notification
+{
+    NSArray *removeNotes = (NSArray *)[notification.userInfo objectForKey:@"newlyUnavailableNotes"];
+    
+    for(Note *note in removeNotes)
+    {
+        NSObject<MKAnnotation> *tmpMKAnnotation;
+        Annotation *tmpAnnotation;
+        for (int i = 0; i < [[mapView annotations] count]; i++)
+        {
+            if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
+               !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
+            
+            if([tmpAnnotation.note compareTo:note])
+            {
+                [mapView removeAnnotation:tmpAnnotation];
+                break;
+            }
+        }
+    }
 }
 
 #pragma mark MKMapViewDelegate
@@ -189,45 +222,38 @@
     else
         return [[AnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:nil];
 }
+
 - (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view
 {
     if(view.annotation == aMapView.userLocation) return;
-	Location *location = ((Annotation*)view.annotation).location;
-    [self showNotePopUpForLocation:location];
+	Note *note = ((Annotation*)view.annotation).note;
+    [self showNotePopUpForNote:note];
 }
 
 #pragma mark Present Pop Up
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [super touchesBegan:touches withEvent:event];
+    
     [notePopUp hide];
 }
 
-- (void) showNotePopUpForLocation: (Location *) location
+- (void) showNotePopUpForNote: (Note *) note
 {
-    Note * note    = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:NO];
-    if(!note) note = [[AppModel sharedAppModel] noteForNoteId:location.objectId playerListYesGameListNo:YES];
-    if(note){
-        //Note: will always be hidden by touches began
-        
-        MKCoordinateRegion region = mapView.region;
-        region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);
-        [mapView setRegion:region animated:YES];
-        
-        Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-        [mapView deselectAnnotation:currentAnnotation animated:YES];
-        
-        notePopUp.note = note;
-        [self.view addSubview:notePopUp];
-        [notePopUp show];
-    }
-    else{
-        [[Logger sharedLogger] logDebug:@"Attempted to show nil note"];
-        Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-        [mapView deselectAnnotation:currentAnnotation animated:YES];
-        return;
-    }
+    //Note: will always be hidden by touches began
     
+    MKCoordinateRegion region = mapView.region;
+    region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+    [mapView setRegion:region animated:YES];
+    
+    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
+    [mapView deselectAnnotation:currentAnnotation animated:YES];
+    
+    notePopUp.note = note;
+    notePopUp.center = mapView.center;
+    [self.view addSubview:notePopUp];
+    [notePopUp show];
 }
 
 - (void) presentNote:(Note *)note

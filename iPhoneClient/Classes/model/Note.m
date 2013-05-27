@@ -64,11 +64,8 @@
 
 - (BOOL)compareTo:(Note *)other
 {
-    return  self.noteId         == other.noteId &&
+    return  self.noteId         == other.noteId;/* &&
             self.creatorId      == other.creatorId &&
-            self.comments       == other.comments &&
-            self.contents       == other.contents &&
-            self.tags           == other.tags &&
             self.numRatings     == other.numRatings &&
             self.shared         == other.shared &&
             self.dropped        == other.dropped &&
@@ -85,7 +82,7 @@
             [self.text          isEqualToString:other.text] &&
             [self.username      isEqualToString:other.username] &&
             [self.displayname   isEqualToString:other.displayname] &&
-            [self.tagName       isEqualToString:other.tagName];
+            [self.tagName       isEqualToString:other.tagName]; */
 }
 
 @end

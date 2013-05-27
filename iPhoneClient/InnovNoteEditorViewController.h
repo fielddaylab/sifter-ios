@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 
 
-@protocol InnovNoteViewDelegate
+@protocol InnovNoteEditorViewDelegate
 
-@required
+@optional
 - (void) prepareToDisplayNote: (Note *) noteToAdd;
 //- (void) shouldAlsoExit:(BOOL) shouldExit;
 @end
@@ -28,6 +28,6 @@ typedef enum {
 @interface InnovNoteEditorViewController : UIViewController
 
 @property (nonatomic)                   Note *note;
-@property (nonatomic, weak)             id<InnovNoteViewDelegate> delegate;
+@property (nonatomic, weak)             id<InnovNoteEditorViewDelegate> delegate;
 
 @end

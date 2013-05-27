@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 
 #import "Note.h"
@@ -25,7 +26,7 @@
 #define RIGHT_SIDE_MARGIN 20
 #define SWITCH_VIEWS_ANIMATION_DURATION 1.25
 
-@interface InnovViewController () <InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovStopTrackingProtocol,UISearchBarDelegate> {
+@interface InnovViewController () <InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, InnovStopTrackingProtocol, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -43,13 +44,11 @@
     InnovMapViewController *mapVC;
     InnovSelectedTagsViewController *selectedTagsVC;
     
-    NSMutableArray *locationsToAdd;
-    NSMutableArray *locationsToRemove;
-    
-    NSMutableArray *availableTags;
-    NSMutableDictionary   *tagNotesDictionary;
+    InnovNoteModel *noteModel;
     
     Note *noteToAdd;
+    NSString *currentSearchTerm;
+    ContentSelector currentSearchAlgorithm;
 }
 
 @end
@@ -62,20 +61,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
-        
-        locationsToAdd     = [[NSMutableArray alloc] initWithCapacity:10];
-        locationsToRemove  = [[NSMutableArray alloc] initWithCapacity:10];
-        
-        availableTags      = [[NSMutableArray alloc] initWithCapacity:10];
-        tagNotesDictionary = [[NSMutableDictionary alloc] init];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToNewQueue:)    name:@"NewlyAvailableLocationsAvailable"        object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addLocationsToRemoveQueue:) name:@"NewlyUnavailableLocationsAvailable"      object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel)       name:@"NewNoteListReady"       object:nil];
-        
-        //     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incrementBadge)             name:@"NewlyChangedLocationsGameNotificationSent"    object:nil];
+        noteModel = [[InnovNoteModel alloc] init];
     }
     return self;
 }
@@ -115,7 +101,10 @@
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
     [self addChildViewController:mapVC];
-    mapVC.view.frame = contentView.frame;
+    CGRect mapVCFrame = contentView.frame;
+    mapVCFrame.origin.x = 0;
+    mapVCFrame.origin.y = 0;
+    mapVC.view.frame = mapVCFrame;
     [contentView addSubview:mapVC.view];
     [mapVC didMoveToParentViewController:self];
     
@@ -171,10 +160,6 @@
 {
     [super viewWillAppear:animated];
     
-    //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
-    //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
-    //   else                                                                                  mapView.mapType = MKMapTypeStandard;
-    
     //Fixes missing status bar when cancelling picture pick from library
     if([UIApplication sharedApplication].statusBarHidden)
     {
@@ -185,16 +170,10 @@
     
 }
 
-- (void) prepareToAddNote: (Note *) note
-{
-    noteToAdd = note;
-}
-
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-	
-    [self refreshViewFromModel];
+
 	[self refresh];
 	
 	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
@@ -202,7 +181,13 @@
     
     if(noteToAdd != nil)
         [self animateInNote:noteToAdd];
-    
+}
+
+#pragma mark Display New Note
+
+- (void) prepareToDisplayNote: (Note *) note
+{
+    noteToAdd = note;
 }
 
 - (void) animateInNote: (Note *) note {
@@ -212,204 +197,64 @@
     noteToAdd = nil;
 }
 
+#pragma mark Refresh
+
 - (void) refresh
 {
-    [[AppServices sharedAppServices] fetchPlayerLocationList];
-    [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
-    [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+    [self fetchNoteList];
     [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously: YES];
     
     [mapVC updatePlayerLocation];
 }
-/*
+
 #pragma mark Selected Content Delegate Methods
 
-- (void) didUpdateContentSelector
+- (void) updateContentSelector:(ContentSelector)selector
 {
-#warning not implemented
+    [noteModel clearData];
+    currentSearchAlgorithm = selector;
+    [self fetchNoteList];
+}
+
+- (void) fetchNoteList
+{
+#warning Player Note List needs to be decided
+    //  [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
+#warning implement proper searchers
+    switch (currentSearchAlgorithm)
+    {
+        case kTop:
+        case kPopular:
+        case kRecent:
+        default:
+            [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+            break;
+    }
 }
 
 - (void) addTag: (Tag *) tag
 {
-    [availableTags addObject:tag];
-    
-    if(![tagNotesDictionary objectForKey:tag.tagName]) [tagNotesDictionary setObject:[[NSMutableArray alloc] init] forKey:tag.tagName];
-    
-    for(int i = 0; i < [[tagNotesDictionary objectForKey:tag.tagName] count]; i++)
-    {
-        Note *note = [[tagNotesDictionary objectForKey:tag.tagName] objectAtIndex:i];
-        if(note && note.showOnMap)
-        {
-            CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
-            Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-            annotation.location = note.location;
-            annotation.title = note.title;
-            annotation.kind = NearbyObjectNote;
-            annotation.iconMediaId = -tag.tagId;
-#warning this needs to be implemented in AnnotationView.m
-            
-            [mapView addAnnotation:annotation];
-        }
-    }
-    
-    //[self refreshImagesAndText];
-    //[quiltView reloadData];
+    [noteModel addTag:tag];
 }
 
 - (void) removeTag: (Tag *) tag
 {
-    [availableTags removeObject:tag];
-    
-    NSObject<MKAnnotation> *tmpMKAnnotation;
-    Annotation *tmpAnnotation;
-    for (int i = 0; i < [[mapView annotations] count]; i++)
-    {
-        if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
-           !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
-        
-        if(tmpAnnotation.iconMediaId == -tag.tagId)
-        {
-            [mapView removeAnnotation:tmpAnnotation];
-            i--;
-        }
-    }
-    
-    //[self refreshImagesAndText];
-    //[quiltView reloadData];
-}
-*/
-#pragma mark LocationsModel Update Methods
-
-- (void) addLocationsToNewQueue:(NSNotification *)notification
-{
-    //Quickly make sure we're not re-adding any info (let the 'newly' added ones take over)
-    NSArray *newLocations = (NSArray *)[notification.userInfo objectForKey:@"newlyAvailableLocations"];
-    for(int i = 0; i < [newLocations count]; i++)
-    {
-        for(int j = 0; j < [locationsToAdd count]; j++)
-        {
-            if([((Location *)[newLocations objectAtIndex:i]) compareTo:((Location *)[locationsToAdd objectAtIndex:j])]
-               || ((Location *)[newLocations objectAtIndex:i]).kind != NearbyObjectNote)
-                [locationsToAdd removeObjectAtIndex:j];
-        }
-    }
-    [locationsToAdd addObjectsFromArray:newLocations];
-    
-    [self refreshViewFromModel];
+    [noteModel removeTag:tag];
 }
 
-- (void) addLocationsToRemoveQueue:(NSNotification *)notification
+#pragma mark Search Bar Delegate Methods
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    //Quickly make sure we're not re-adding any info (let the 'newly' added ones take over)
-    NSArray *lostLocations = (NSArray *)[notification.userInfo objectForKey:@"newlyUnavailableLocations"];
-    for(int i = 0; i < [lostLocations count]; i++)
-    {
-        for(int j = 0; j < [locationsToRemove count]; j++)
-        {
-            if([((Location *)[lostLocations objectAtIndex:i]) compareTo: ((Location *)[locationsToRemove objectAtIndex:j])])
-                [locationsToRemove removeObjectAtIndex:j];
-        }
-    }
-    [locationsToRemove addObjectsFromArray:lostLocations];
-    
-    //If told to remove something that is in queue to add, remove takes precedence
-    for(int i = 0; i < [locationsToRemove count]; i++)
-    {
-        for(int j = 0; j < [locationsToAdd count]; j++)
-        {
-            if([((Location *)[locationsToRemove objectAtIndex:i]) compareTo: ((Location *)[locationsToAdd objectAtIndex:j])])
-                [locationsToAdd removeObjectAtIndex:j];
-        }
-    }
-    [self refreshViewFromModel];
+#warning should be case sensitive?
+    [noteModel removeSearchTerm:currentSearchTerm];
+    currentSearchTerm = searchText;
+    [noteModel addSearchTerm:currentSearchTerm];
 }
 
-- (void)refreshViewFromModel
+- (void)searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
 {
-    /*
-    //Remove old locations first
-    Location *tmpLocation;
-    Note     *note;
-    Tag      *noteTag;
-    NSObject<MKAnnotation> *tmpMKAnnotation;
-    Annotation *tmpAnnotation;
-    for (int i = 0; i < [locationsToRemove count]; i++)
-    {
-        tmpLocation = (Location *)[locationsToRemove objectAtIndex:i];
-        
-        note           = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:NO];
-        if(!note) note = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:YES];
-        
-        if(note)
-        {
-            noteTag = [note.tags objectAtIndex:0];
-            
-            [[tagNotesDictionary objectForKey:noteTag.tagName] removeObject:note];
-            
-            for (int j = 0; j < [[mapView annotations] count]; ++j)
-            {
-                if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:j]) == mapView.userLocation ||
-                   !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
-                
-                if([tmpAnnotation.location compareTo: ((Location *)[locationsToRemove objectAtIndex:i])])
-                {
-                    [mapView removeAnnotation:tmpAnnotation];
-                    --j;
-                }
-            }
-            [locationsToRemove removeObject:tmpLocation];
-            --i;
-        }
-        
-    }
-    
-    //Add new locations second
-    for (int i = 0; i < [locationsToAdd count]; i++)
-    {
-        tmpLocation = (Location *)[locationsToAdd objectAtIndex:i];
-        
-        //Would check if player and if players should be shown, but only adds notes anyway, also removed some items code
-        
-        note    = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:NO];
-        if(!note) note = [[AppModel sharedAppModel] noteForNoteId:tmpLocation.objectId playerListYesGameListNo:YES];
-        
-        if(note)
-        {
-            note.location  = tmpLocation;
-            
-            noteTag = [note.tags objectAtIndex:0];
-            
-            if(![tagNotesDictionary objectForKey:noteTag.tagName]) [tagNotesDictionary setObject:[[NSMutableArray alloc] init] forKey:noteTag.tagName];
-            [[tagNotesDictionary objectForKey:noteTag.tagName] addObject:note];
-            
-            BOOL match = NO;
-            for(int j = 0; j < [availableTags count]; ++j)
-            {
-                if(((Tag *) [availableTags objectAtIndex:j]).tagId == noteTag.tagId) {
-                    match = YES;
-                    break;
-                }
-            }
-            
-            if(match)
-            {
-                CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
-                Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-                annotation.location = note.location;
-                annotation.title = note.title;
-                annotation.kind = NearbyObjectNote;
-                annotation.iconMediaId = -noteTag.tagId;
-#warning this needs to be implemented in AnnotationView.m
-                
-                [mapView addAnnotation:annotation];
-            }
-            
-            [locationsToAdd removeObject:tmpLocation];
-            --i;
-        }
-        
-    }
-    */
+    [aSearchBar resignFirstResponder];
 }
 
 #pragma mark Buttons Pressed
@@ -466,7 +311,7 @@
     trackingButton.backgroundColor = [UIColor lightGrayColor];
 }
 
-#pragma mark settings delegate methods
+#pragma mark Settings Delegate Methods
 
 - (void) showProfile
 {
@@ -483,7 +328,7 @@
 #warning unimplemented
 }
 
-#pragma mark present note delegate method
+#pragma mark Present Note Delegate Method
 
 - (void) presentNote:(Note *) note
 {
@@ -497,10 +342,14 @@
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [super touchesBegan:touches withEvent:event];
+    
     [searchBar resignFirstResponder];
     [settingsView hide];
     [selectedTagsVC hide];
 }
+
+#pragma mark Switch Views
 
 - (void)switchViews {
     

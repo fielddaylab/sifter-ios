@@ -1931,16 +1931,19 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
     NSLog(@"NSNotification: ReceivedNoteList");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
     NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc]init];
+#warning Should only do one of these
+    NSMutableArray*noteList = [[NSMutableArray alloc] init];
     
 	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
 	NSDictionary *dict;
 	while ((dict = [enumerator nextObject])) {
         Note *tmpNote = [self parseNoteFromDictionary:dict];
         [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
+        [noteList addObject:tmpNote];
 	}
     
 	[AppModel sharedAppModel].gameNoteList = tempNoteList;
-    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
+    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:noteList,@"notes", nil];
     
     NSLog(@"NSNotification: NewNoteListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil]];

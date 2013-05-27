@@ -12,6 +12,8 @@
 #import "NearbyObjectProtocol.h"
 #import "Location.h"
 
+@class Note;
+
 @interface Annotation : NSObject <MKAnnotation> {
 	CLLocationCoordinate2D coordinate;
 	NSString *title;
@@ -19,7 +21,8 @@
 	int iconMediaId;
     UIImage *icon;
 	nearbyObjectKind kind;
-	Location *location;
+	Note *note;
+    Location *location;
 }
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
@@ -28,8 +31,8 @@
 @property(readwrite, assign) int iconMediaId;
 @property (nonatomic) UIImage *icon;
 @property(readwrite, assign) nearbyObjectKind kind;
+@property (nonatomic) Note *note;
 @property (nonatomic) Location *location;
-
 
 - (id)initWithCoordinate:(CLLocationCoordinate2D) coordinate;
 

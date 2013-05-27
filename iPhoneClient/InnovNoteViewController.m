@@ -7,18 +7,42 @@
 //
 
 #import "InnovNoteViewController.h"
-
+#import <CoreAudio/CoreAudioTypes.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
+#import "InnovAudioEnums.h"
+#import "Note.h"
 #import "Tag.h"
 #import "Logger.h"
 
+#import "AsyncMediaTouchableImageView.h"
+#import "InnovNoteEditorViewController.h"
+#import "ARISMoviePlayerViewController.h"
 #import "NoteCommentViewController.h"
 
 #define ANIMATION_TIME     0.6
 
-@interface InnovNoteViewController ()
+@interface InnovNoteViewController ()<UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, InnovNoteEditorViewDelegate>
+{
+    
+    __weak IBOutlet AsyncMediaTouchableImageView *imageView;
+    __weak IBOutlet UITextView *captionTextView;
+    __weak IBOutlet UIButton *playButton;
+    __weak IBOutlet UITableView *commentTableView;
+    
+    Note *note;
+    UIBarButtonItem *editButton;
+    //UIBarButtonItem *cancelButton;
+    id __unsafe_unretained delegate;
+    
+    CGRect originalImageViewFrame;
+    
+	InnovAudioViewerModeType mode;
+    BOOL shouldAutoPlay;
+    ARISMoviePlayerViewController *ARISMoviePlayer;
+    
+}
 
 @end
 
@@ -187,7 +211,8 @@
 
 - (void)refreshViewFromModel
 {
-    note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
+    #warning was playernotelist
+    self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
     [self addCDUploadsToNote];
     
     for(int i = 0; i < [self.note.contents count]; ++i)

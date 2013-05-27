@@ -8,8 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class Tag;
+
 @interface InnovNoteModel : NSObject
 
 @property(nonatomic) NSArray *availableNotes;
+
+-(void) clearData;
+
+-(void) addTag: (Tag *) tag;
+-(void) removeTag: (Tag *) tag;
+-(void) addSearchTerm: (NSString *) term;
+-(void) removeSearchTerm: (NSString *) term;
 
 @end
