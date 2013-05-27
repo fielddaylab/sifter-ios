@@ -11,14 +11,14 @@
 
 @protocol InnovPresentNoteDelegate;
 
-@protocol InnovStopTrackingProtocol <NSObject>
+@protocol InnovMapViewDelegate <NSObject>
 @required
 -(void) stoppedTracking;
 @end
 
 @interface InnovMapViewController : UIViewController
 
-@property(nonatomic, weak) id<InnovPresentNoteDelegate, InnovStopTrackingProtocol> delegate;
+@property(nonatomic, weak) id<InnovMapViewDelegate, InnovPresentNoteDelegate> delegate;
 
 - (void) toggleTracking;
 - (void) updatePlayerLocation;

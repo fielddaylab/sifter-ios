@@ -28,6 +28,8 @@
 #define MADISON_LONG -89.41
 #define MAX_DISTANCE 20000
 
+#define MAX_NOTES_COUNT    50
+
 @interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
 
 {
@@ -40,7 +42,8 @@
     
     CLLocation *madisonCenter;
     
-    NSMutableArray *notes;
+    int shownNotesCount;
+    NSMutableArray *unshownNotesQueue;
 }
 @end
 
@@ -53,7 +56,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         tracking = NO;
-        notes    = [[NSMutableArray alloc] initWithCapacity:20];
+        unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
         
@@ -155,19 +158,46 @@
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
 {
+    
+    for(Note *note in unshownNotesQueue)
+    {
+        if(shownNotesCount < MAX_NOTES_COUNT)
+        {
+            CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+            Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
+            annotation.note = note;
+            annotation.title = note.title;
+            annotation.kind = NearbyObjectNote;
+            annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+#warning this needs to be implemented in AnnotationView.m
+            
+            [mapView addAnnotation:annotation];
+            ++shownNotesCount;
+        }
+        else break;
+    }
+    
     NSArray *newNotes = (NSArray *)[notification.userInfo objectForKey:@"newlyAvailableNotes"];
     
     for(Note *note in newNotes)
     {
-        CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
-        Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-        annotation.note = note;
-        annotation.title = note.title;
-        annotation.kind = NearbyObjectNote;
-        annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+        if(shownNotesCount < MAX_NOTES_COUNT)
+        {
+            CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+            Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
+            annotation.note = note;
+            annotation.title = note.title;
+            annotation.kind = NearbyObjectNote;
+            annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
 #warning this needs to be implemented in AnnotationView.m
-        
-        [mapView addAnnotation:annotation];
+            
+            ++shownNotesCount;
+            [mapView addAnnotation:annotation];
+        }
+        else
+        {
+            [unshownNotesQueue addObject:note];
+        }
     }
 }
 
@@ -177,6 +207,7 @@
     
     for(Note *note in removeNotes)
     {
+        BOOL found;
         NSObject<MKAnnotation> *tmpMKAnnotation;
         Annotation *tmpAnnotation;
         for (int i = 0; i < [[mapView annotations] count]; i++)
@@ -186,10 +217,13 @@
             
             if([tmpAnnotation.note compareTo:note])
             {
+                found = YES;
+                --shownNotesCount;
                 [mapView removeAnnotation:tmpAnnotation];
                 break;
             }
         }
+        if(!found) [unshownNotesQueue removeObject:note];
     }
 }
 

@@ -19,6 +19,7 @@
 #import "InnovPresentNoteDelegate.h"
 #import "InnovSettingsView.h"
 #import "InnovMapViewController.h"
+#import "InnovListViewController.h"
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 #import "InnovSelectedTagsViewController.h"
@@ -26,7 +27,7 @@
 #define RIGHT_SIDE_MARGIN 20
 #define SWITCH_VIEWS_ANIMATION_DURATION 1.25
 
-@interface InnovViewController () <InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, InnovStopTrackingProtocol, UISearchBarDelegate> {
+@interface InnovViewController () <InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, InnovMapViewDelegate, InnovListViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -41,7 +42,8 @@
     UIBarButtonItem *settingsBarButton;
     
     InnovSettingsView *settingsView;
-    InnovMapViewController *mapVC;
+    InnovMapViewController  *mapVC;
+    InnovListViewController *listVC;
     InnovSelectedTagsViewController *selectedTagsVC;
     
     InnovNoteModel *noteModel;
@@ -108,6 +110,9 @@
     [contentView addSubview:mapVC.view];
     [mapVC didMoveToParentViewController:self];
     
+    listVC = [[InnovListViewController alloc] init];
+    listVC.delegate = self;
+    
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
     [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
@@ -119,7 +124,7 @@
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height)];
     searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     searchBar.barStyle = UIBarStyleBlack;
-    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 310.0, self.navigationController.navigationBar.frame.size.height)];
+    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.navigationController.navigationBar.frame.size.width-10, self.navigationController.navigationBar.frame.size.height)];
     searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     searchBar.delegate = self;
     [searchBarView addSubview:searchBar];
@@ -146,12 +151,11 @@
     
     showTagsButton.layer.cornerRadius = 4.0f;
     
-#warning is this necessary?
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
 	trackingButton.backgroundColor = [UIColor lightGrayColor];
     trackingButton.layer.cornerRadius = 4.0f;
     trackingButton.hidden = NO;
+    
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
     [self refresh];
 }
@@ -201,7 +205,7 @@
 
 - (void) refresh
 {
-    [self fetchNoteList];
+    [self fetchMoreNotes];
     [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously: YES];
     
     [mapVC updatePlayerLocation];
@@ -213,14 +217,15 @@
 {
     [noteModel clearData];
     currentSearchAlgorithm = selector;
-    [self fetchNoteList];
+    [self fetchMoreNotes];
 }
 
-- (void) fetchNoteList
+- (void) fetchMoreNotes
 {
 #warning Player Note List needs to be decided
     //  [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
 #warning implement proper searchers
+#warning fetch more notes each time
     switch (currentSearchAlgorithm)
     {
         case kTop:
@@ -364,19 +369,17 @@
     contentFrame.origin.y = 0;
     coming.view.frame = contentFrame;
     
-    if (![self.view.subviews containsObject:mapVC.view])
+    if (![contentView.subviews containsObject:mapVC.view])
     {
         coming = mapVC;
-        going = mapVC;
-#warning FIX going should be LIST
+        going = listVC;
         transition = UIViewAnimationTransitionFlipFromLeft;
         newButtonTitle = @"List";
         newButtonImageName = @"noteicon.png";
     }
     else
     {
-        coming = mapVC;
-#warning FIX going should be LIST
+        coming = listVC;
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
         newButtonTitle = @"Map";
