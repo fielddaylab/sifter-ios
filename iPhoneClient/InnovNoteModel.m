@@ -34,7 +34,7 @@
         availableNotes  = [[NSMutableArray alloc] initWithCapacity:20];
         availableTags   = [[NSMutableArray alloc] initWithCapacity:8];
         searchTerms     = [[NSMutableArray alloc] initWithCapacity:8];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestGameNotesReceived:)   name:@"GameNoteListRefreshed"   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestGameNotesReceived:)      name:@"GameNoteListRefreshed"   object:nil];
         // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestPlayerNotesReceived:) name:@"PlayerNoteListRefreshed" object:nil];
 #warning only receives game note list
     }

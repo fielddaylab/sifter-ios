@@ -1930,19 +1930,20 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 	NSArray *noteListArray = (NSArray *)jsonResult.data;
     NSLog(@"NSNotification: ReceivedNoteList");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
-    NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc]init];
+    //NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
+    if(![AppModel sharedAppModel].gameNoteList) [AppModel sharedAppModel].gameNoteList = [[NSMutableDictionary alloc] init];
 #warning Should only do one of these
-    NSMutableArray*noteList = [[NSMutableArray alloc] init];
+    NSMutableArray *noteList = [[NSMutableArray alloc] init];
     
 	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
 	NSDictionary *dict;
 	while ((dict = [enumerator nextObject])) {
         Note *tmpNote = [self parseNoteFromDictionary:dict];
-        [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
+        [[AppModel sharedAppModel].gameNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
         [noteList addObject:tmpNote];
 	}
     
-	[AppModel sharedAppModel].gameNoteList = tempNoteList;
+	//[AppModel sharedAppModel].gameNoteList = tempNoteList;
     NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:noteList,@"notes", nil];
     
     NSLog(@"NSNotification: NewNoteListReady");
@@ -1956,27 +1957,29 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 
 -(void)parsePlayerNoteListFromJSON:(JSONResult *)jsonResult
 {
-    NSLog(@"Parsing Player Note List");
-    
 	NSArray *noteListArray = (NSArray *)jsonResult.data;
     NSLog(@"NSNotification: ReceivedNoteList");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList" object:nil]];
-	NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
+	//NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
+    if(![AppModel sharedAppModel].playerNoteList) [AppModel sharedAppModel].playerNoteList = [[NSMutableDictionary alloc] init];
+    NSMutableArray*noteList = [[NSMutableArray alloc] init];
+    
 	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
 	NSDictionary *dict;
 	while ((dict = [enumerator nextObject])) {
 		Note *tmpNote = [self parseNoteFromDictionary:dict];
-		
-		[tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
+		[[AppModel sharedAppModel].playerNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
+        [noteList addObject:tmpNote];
 	}
     
-	[AppModel sharedAppModel].playerNoteList = tempNoteList;
-    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
+//	[AppModel sharedAppModel].playerNoteList = tempNoteList;
+    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:noteList,@"notes", nil];
     
     NSLog(@"NSNotification: NewNoteListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
     NSLog(@"NSNotification: PlayerNoteListRefreshed");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"PlayerNoteListRefreshed" object:nil userInfo:notes]];
+    
     currentlyFetchingPlayerNoteList = NO;
 }
 

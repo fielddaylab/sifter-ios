@@ -23,7 +23,7 @@
 
 #import "Logger.h"
 
-#define DEFAULTTEXT @"Write a caption..."
+#define DEFAULT_TEXT @"Write a caption..."
 
 @interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
     
@@ -36,16 +36,19 @@
     UIBarButtonItem *cancelButton;
     
     Note *note;
-    BOOL isEditing;
     
     BOOL newNote;
+    BOOL isEditing;
+    BOOL cameraHasBeenPresented;
+    
     int originalTagId;
     NSString  *originalTagName;
     int selectedIndex;
     NSString  *newTagName;
+    NSMutableArray *tagList;
+    
     BOOL cancelled;
     BOOL hasAudioToUpload;
-    NSMutableArray *tagList;
     
     BOOL shouldAutoplay;
     
@@ -115,7 +118,6 @@
     [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
     ARISMoviePlayer.moviePlayer.shouldAutoplay = shouldAutoplay;
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -126,9 +128,9 @@
     {
 #warning when do we edit
         isEditing = YES;
-        newNote = NO;
         
-        captionTextView.text = self.note.title;
+        if([note.title rangeOfString:@"#" options:NSBackwardsSearch].location != NSNotFound) captionTextView.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+         else captionTextView.text = note.title;
         
         imageView.userInteractionEnabled = YES;
         
@@ -153,11 +155,10 @@
         
         [self refreshViewFromModel];
     }
-    
-    else
+    else if(!cameraHasBeenPresented)
     {
         self.note = [[Note alloc] init];
-        self.note.title =  DEFAULTTEXT;
+        self.note.title =  DEFAULT_TEXT;
         self.note.creatorId = [AppModel sharedAppModel].playerId;
         self.note.username = [AppModel sharedAppModel].userName;
         self.note.noteId = [[AppServices sharedAppServices] createNoteStartIncomplete];
@@ -175,12 +176,12 @@
             [self.navigationController popViewControllerAnimated:YES];
             return;
         }
-        captionTextView.text = DEFAULTTEXT;
+        captionTextView.text = DEFAULT_TEXT;
         captionTextView.textColor = [UIColor lightGrayColor];
         
         imageView.userInteractionEnabled = NO;
         
-        [[AppModel sharedAppModel].playerNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+        [[AppModel sharedAppModel].gameNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
         
         [self cameraButtonTouchAction];
     }
@@ -193,11 +194,11 @@
     
 #warning Called twice
     
-    if(!self.note || newNote || cancelled)
+    if(!self.note || cancelled || (newNote && !isEditing))
         return;
     
-    if([captionTextView.text isEqualToString:DEFAULTTEXT] || [captionTextView.text length] == 0) self.note.title = @"";
-    else self.note.title = captionTextView.text;
+    if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.title = [NSString stringWithFormat:@"#%@", [AppModel sharedAppModel].userName];
+    else self.note.title = [NSString stringWithFormat:@"%@ #%@", captionTextView.text, [AppModel sharedAppModel].userName];
     [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:self.note.showOnMap publicToList:self.note.showOnList];
     
     if(mode == kInnovAudioRecorderRecording) [self recordButtonPressed:nil];
@@ -216,7 +217,7 @@
 #warning make delegate method
   //  if([delegate respondsToSelector:@selector(shouldAlsoExit:)]) [self.delegate shouldAlsoExit: YES];
     
-    [[AppModel sharedAppModel].playerNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
+    [[AppModel sharedAppModel].gameNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
     
 #warning point where added to map may change
     [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
@@ -233,10 +234,10 @@
 - (IBAction)backButtonTouchAction: (id) sender
 {
     cancelled = ([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Cancel"]);
-    if(!isEditing && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
+    if((!isEditing || newNote) && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
     {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.note.noteId];
-        [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.note.noteId]];
+        [[AppModel sharedAppModel].gameNoteList removeObjectForKey:[NSNumber numberWithInt:self.note.noteId]];
         
     }
     
@@ -259,7 +260,17 @@
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
     textView.textColor = [UIColor blackColor];
-    if([textView.text isEqualToString:DEFAULTTEXT]) textView.text = @"";
+    if([textView.text isEqualToString:DEFAULT_TEXT]) textView.text = @"";
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    
+    if([text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+    
+    return YES;
 }
 
 #pragma mark UIImageView methods
@@ -279,6 +290,8 @@
     cameraVC.showCamera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     cameraVC.editView = self;
     cameraVC.noteId = self.note.noteId;
+    
+    cameraHasBeenPresented = YES;
     
     [self.navigationController pushViewController:cameraVC animated:NO];
 }
@@ -302,8 +315,10 @@
 
 - (void)refreshViewFromModel
 {
+    
 #warning was playernotelist
-    note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:note.noteId]];
+    self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
+  //  if(!self.note) self.note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
     [self addCDUploadsToNote];
     
     for(int i = 0; i < [self.note.contents count]; ++i)
@@ -625,6 +640,8 @@
     
     if([tagList count] == 0) cell.nameLabel.text = @"No Categories in Application";
     else cell.nameLabel.text = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
+    
+    if([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
     
     return cell;
 }

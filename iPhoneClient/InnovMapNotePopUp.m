@@ -73,7 +73,7 @@
 {
     hiding = NO;
     
-    textLabel.text = self.note.title;
+    textLabel.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
     for(int i = 0; i < [self.note.contents count]; ++i)
     {
         NoteContent *noteContent = [note.contents objectAtIndex:i];

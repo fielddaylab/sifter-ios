@@ -135,8 +135,8 @@
 - (void)imagePickerController:(UIImagePickerController *)aPicker didFinishPickingMediaWithInfo:(NSDictionary  *)info
 {
     
-    if([self.backView isKindOfClass:[InnovNoteEditorViewController class]]){
-        Note *note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:self.noteId]];
+    if([self.editView isKindOfClass:[InnovNoteEditorViewController class]]){
+        Note *note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.noteId]];
         for(int i = 0; i < [note.contents count]; ++i)
         {
             NoteContent *noteContent = [note.contents objectAtIndex:i];
@@ -273,7 +273,7 @@
     [aPicker dismissModalViewControllerAnimated:NO];
     if([backView isKindOfClass:[NotebookViewController class]] || [backView isKindOfClass:[InnovViewController class]]){
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
-        [[AppModel sharedAppModel].playerNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];
+        [[AppModel sharedAppModel].gameNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];
     }
     [self.navigationController popToViewController:self.backView animated:YES];
     //  [self.navigationController popToRootViewControllerAnimated:YES];
@@ -345,7 +345,6 @@
 
 
 - (void)viewDidUnload {
-    overlay = nil;
     overlay = nil;
     [super viewDidUnload];
 }

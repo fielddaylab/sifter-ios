@@ -59,7 +59,7 @@ static NSString * const CELL_ID = @"Cell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#warning HANDLE TOUCHES BEGAN
+#warning doesn't handle touches began
 
 - (void)viewDidLoad
 {
@@ -139,10 +139,12 @@ static NSString * const CELL_ID = @"Cell";
         }
     }
     
-    if([note.title isEqualToString:@""]) cell.titleLabel.hidden = YES;
+    NSString *titleWithoutUsername = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+    
+    if([titleWithoutUsername isEqualToString:@""] || [titleWithoutUsername isEqualToString:@" "]) cell.titleLabel.hidden = YES;
     else {
         cell.titleLabel.hidden = YES;
-        cell.titleLabel.text = note.title;
+        cell.titleLabel.text = titleWithoutUsername;
     }
     
     return cell;

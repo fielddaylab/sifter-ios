@@ -95,6 +95,7 @@
 #warning get rid of this and only use note model
     [AppModel sharedAppModel].currentGame = game;
     [AppModel sharedAppModel].playerId = 7;
+    [AppModel sharedAppModel].userName = @"Anonymous";
     [AppModel sharedAppModel].loggedIn = YES;
 #warning Make initially not logged in
     
@@ -206,7 +207,7 @@
 - (void) refresh
 {
     [self fetchMoreNotes];
-    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously: YES];
+    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
     
     [mapVC updatePlayerLocation];
 }
