@@ -1,3 +1,4 @@
+
 //
 //  InnovViewController.m
 //  ARIS
@@ -24,15 +25,15 @@
 #import "InnovNoteEditorViewController.h"
 #import "InnovSelectedTagsViewController.h"
 
-#define RIGHT_SIDE_MARGIN 20
+#define GAME_ID                         3411
 #define SWITCH_VIEWS_ANIMATION_DURATION 1.25
 
-@interface InnovViewController () <InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, InnovMapViewDelegate, InnovListViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
     
-    IBOutlet UIView *contentView;
+    __weak IBOutlet UIView *contentView;
     
     NSTimer *refreshTimer;
     
@@ -41,9 +42,9 @@
     UISearchBar *searchBar;
     UIBarButtonItem *settingsBarButton;
     
-    InnovSettingsView *settingsView;
     InnovMapViewController  *mapVC;
     InnovListViewController *listVC;
+    InnovSettingsView *settingsView;
     InnovSelectedTagsViewController *selectedTagsVC;
     
     InnovNoteModel *noteModel;
@@ -57,8 +58,6 @@
 
 @implementation InnovViewController
 
-@synthesize noteToAdd;
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -71,12 +70,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
 #warning unimplemented: change game and finalize settings
     
     Game *game = [[Game alloc] init];
-    game.gameId                   = 3411;
+    game.gameId                   = GAME_ID;
     game.hasBeenPlayed            = YES;
     game.isLocational             = YES;
     game.showPlayerLocation       = YES;
@@ -99,6 +97,7 @@
     [AppModel sharedAppModel].loggedIn = YES;
 #warning Make initially not logged in
     
+#warning find out why this is necessary
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
     
     mapVC = [[InnovMapViewController alloc] init];
@@ -140,7 +139,6 @@
     settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
     settingsLocation.origin.y = 0;
     settingsView.frame = settingsLocation;
-    
     settingsView.hidden = YES;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
@@ -195,10 +193,11 @@
     noteToAdd = note;
 }
 
-- (void) animateInNote: (Note *) note {
-#warning unimplemented
-    //Switch to mapview or animate in both
-    //Animate in note
+- (void) animateInNote: (Note *) note
+{
+#warning could be different
+    if (![contentView.subviews containsObject:mapVC.view]) [self switchViews];
+    [mapVC showNotePopUpForNote:note];
     noteToAdd = nil;
 }
 
@@ -254,8 +253,23 @@
 {
 #warning should be case sensitive?
     [noteModel removeSearchTerm:currentSearchTerm];
-    currentSearchTerm = searchText;
+    currentSearchTerm = searchText.lowercaseString;
     [noteModel addSearchTerm:currentSearchTerm];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
+    UITextField *searchField = nil;
+    for (UIView *subview in searchBar.subviews) {
+        if ([subview isKindOfClass:[UITextField class]]) {
+            searchField = (UITextField *)subview;
+            break;
+        }
+    }
+    
+    if (searchField) {
+        searchField.enablesReturnKeyAutomatically = NO;
+    }
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
@@ -273,9 +287,7 @@
         [settingsView show];
     }
     else
-    {
         [settingsView hide];
-    }
 }
 
 - (IBAction)showTagsPressed:(id)sender
@@ -288,13 +300,11 @@
         [selectedTagsVC show];
     }
     else
-    {
         [selectedTagsVC hide];
-    }
 }
 
-- (IBAction)cameraPressed:(id)sender {
-    
+- (IBAction)cameraPressed:(id)sender
+{
     InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
     editorVC.delegate = self;
     
@@ -304,12 +314,8 @@
 - (IBAction)trackingButtonPressed:(id)sender
 {
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-	
 	trackingButton.backgroundColor = [UIColor blueColor];
-    
     [mapVC toggleTracking];
-    
-    NSLog(@"Count of player notes: %d Count of game notes: %d", [[AppModel sharedAppModel].playerNoteList count], [[AppModel sharedAppModel].gameNoteList count]);
 }
 
 - (void) stoppedTracking

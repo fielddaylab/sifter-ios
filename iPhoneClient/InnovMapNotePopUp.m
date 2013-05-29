@@ -43,6 +43,8 @@
         self.layer.masksToBounds = YES;
         self.layer.cornerRadius= 9.0f;
         self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+        
+         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
     }
     return self;
 }
@@ -65,6 +67,18 @@
         [textLabel setText:text];
     }
     return self;
+}
+
+- (void) refreshViewFromModel
+{
+    self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
+    
+    textLabel.text = [note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+    for(int i = 0; i < [self.note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
+    }
 }
 
 #pragma mark Animations

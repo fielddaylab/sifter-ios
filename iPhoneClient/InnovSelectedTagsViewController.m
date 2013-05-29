@@ -53,7 +53,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
     [delegate updateContentSelector:selectedContent];
 }
@@ -85,17 +85,20 @@
 
 - (void) hide
 {
-    hiding = YES;
-    
-    self.view.layer.anchorPoint = CGPointMake(0, 1);
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setDuration:0.8f];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [self.view.layer addAnimation:scale forKey:@"transform.scaleDown"];
+    if(!self.view.hidden && !hiding)
+    {
+        hiding = YES;
+        
+        self.view.layer.anchorPoint = CGPointMake(0, 1);
+        CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+        [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
+        [scale setToValue:[NSNumber numberWithFloat:0.0f]];
+        [scale setDuration:0.8f];
+        [scale setRemovedOnCompletion:NO];
+        [scale setFillMode:kCAFillModeForwards];
+        scale.delegate = self;
+        [self.view.layer addAnimation:scale forKey:@"transform.scaleDown"];
+    }
 }
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag

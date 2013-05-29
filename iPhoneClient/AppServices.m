@@ -1065,11 +1065,12 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 
 - (void)updateServerWithPlayerLocation
 {
-	if (![AppModel sharedAppModel].loggedIn)
+#warning necessary?
+ /*	if (![AppModel sharedAppModel].loggedIn)
     {
         NSLog(@"Skipping Request: player not logged in");
 		return;
-	}
+	} */
 	
 	if (currentlyUpdatingServerWithPlayerLocation) {
         NSLog(@"Skipping Request: already updating player location");

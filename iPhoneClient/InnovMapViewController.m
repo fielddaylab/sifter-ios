@@ -275,7 +275,8 @@
 
 - (void) showNotePopUpForNote: (Note *) note
 {
-    //Note: will always be hidden by touches began
+    //Note: will always be hidden by touches began except when re-displayed from editor
+    if(!notePopUp.hidden) [notePopUp hide];
     
     MKCoordinateRegion region = mapView.region;
     region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);

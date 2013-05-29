@@ -46,7 +46,7 @@
 		[requestParameters appendString:@"/"];
         // replace special characters
         argument = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes( kCFAllocatorDefault,
-                                                                                         (__bridge_retained CFStringRef)argument,
+                                                                                         (__bridge  CFStringRef)argument,
                                                                                          NULL,
                                                                                          (CFStringRef)@"!*'();:@&=+$,?%#",
                                                                                          kCFStringEncodingUTF8 );
@@ -130,7 +130,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
     //end the UI indicator
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    [[RootViewController sharedRootViewController] removeNetworkAlert];	
+  //  [[RootViewController sharedRootViewController] removeNetworkAlert];
     
     //throw out the connection
     self.connection=nil;

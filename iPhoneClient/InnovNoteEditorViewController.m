@@ -25,7 +25,7 @@
 
 #define DEFAULT_TEXT @"Write a caption..."
 
-@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
     
     __weak IBOutlet AsyncMediaTouchableImageView *imageView;
     __weak IBOutlet UITextView *captionTextView;
@@ -130,7 +130,9 @@
         isEditing = YES;
         
         if([note.title rangeOfString:@"#" options:NSBackwardsSearch].location != NSNotFound) captionTextView.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-         else captionTextView.text = note.title;
+        else captionTextView.text = note.title;
+        
+        if([note.title length] > 0) captionTextView.textColor = [UIColor blackColor];
         
         imageView.userInteractionEnabled = YES;
         
@@ -138,10 +140,27 @@
             originalTagId = ((Tag *)[self.note.tags objectAtIndex:0]).tagId;
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
             self.title = originalTagName;
+            int index = [tagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])];
+            if(index == NSNotFound)
+            {
+                for(int i = 0; i < [tagList count]; ++i)
+                {
+                    if(((Tag *)[tagList objectAtIndex:i]).tagId == ((Tag *)[self.note.tags objectAtIndex:0]).tagId)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+            }
             [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[tagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])] inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
-        else [self tableView:tagTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        else
+        {
+            originalTagName = @"";
+            [self tableView:tagTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        }
         
+        newTagName = @"";
         
         NSError *error;
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
@@ -166,14 +185,14 @@
         self.note.showOnMap  = YES;
         isEditing = NO;
         newNote = YES;
-        originalTagName = nil;
+        originalTagName = @"";
 #warning should allows show on List and Map?
         if(self.note.noteId == 0)
         {
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:self.delegate cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
             [alert show];
             cancelled = YES;
-            [self.navigationController popViewControllerAnimated:YES];
+            [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
             return;
         }
         captionTextView.text = DEFAULT_TEXT;
@@ -181,7 +200,7 @@
         
         imageView.userInteractionEnabled = NO;
         
-        [[AppModel sharedAppModel].gameNoteList setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+        [[AppModel sharedAppModel].gameNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
         
         [self cameraButtonTouchAction];
     }
@@ -204,30 +223,39 @@
     if(mode == kInnovAudioRecorderRecording) [self recordButtonPressed:nil];
     if(hasAudioToUpload) [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
     
-    if(![originalTagName isEqualToString:newTagName])
+    if([newTagName length] > 0 && ![originalTagName isEqualToString:newTagName])
+    {
         [[AppServices sharedAppServices] deleteTagFromNote:self.note.noteId tagId:originalTagId];
+        [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
+        
+        Tag *tag = [[Tag alloc] init];
+        tag.tagName = newTagName;
+        [self.note.tags addObject:tag];
+    }
     
-    [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
-    
-    Tag *tag = [[Tag alloc] init];
-    tag.tagName = newTagName;
-    [self.note.tags addObject:tag];
-    
-    [self.delegate prepareToDisplayNote: self.note];
 #warning make delegate method
-  //  if([delegate respondsToSelector:@selector(shouldAlsoExit:)]) [self.delegate shouldAlsoExit: YES];
-    
-    [[AppModel sharedAppModel].gameNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
+    //  if([delegate respondsToSelector:@selector(shouldAlsoExit:)]) [self.delegate shouldAlsoExit: YES];
     
 #warning point where added to map may change
-    [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
-    self.note.dropped = YES;
-    [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
+    if(!self.note.dropped)
+    {
+        self.note.dropped = YES;
+        [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
+        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
+        
+        self.note.latitude  = [AppModel sharedAppModel].playerLocation.coordinate.latitude;
+        self.note.longitude = [AppModel sharedAppModel].playerLocation.coordinate.longitude;
+    }
+    
+    [[AppModel sharedAppModel].gameNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
     
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
     [[Logger sharedLogger] logError:error];
     
+    [self.delegate prepareToDisplayNote: self.note];
+    
+    newNote = NO;
     self.note = nil;
 }
 
@@ -245,7 +273,7 @@
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
     [[Logger sharedLogger] logError:error];
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
 }
 
 #pragma mark UITextView methods
@@ -318,7 +346,7 @@
     
 #warning was playernotelist
     self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
-  //  if(!self.note) self.note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
+    //  if(!self.note) self.note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
     [self addCDUploadsToNote];
     
     for(int i = 0; i < [self.note.contents count]; ++i)
@@ -361,7 +389,7 @@
     CFUUIDRef theUUID = CFUUIDCreate(NULL);
     CFStringRef string = CFUUIDCreateString(NULL, theUUID);
     CFRelease(theUUID);
-    return (__bridge NSString *)string;
+    return (__bridge_transfer NSString *)string;
 }
 
 - (void)updateButtonsForCurrentMode{
@@ -641,7 +669,7 @@
     if([tagList count] == 0) cell.nameLabel.text = @"No Categories in Application";
     else cell.nameLabel.text = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
     
-    if([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+    if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
     
     return cell;
 }

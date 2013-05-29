@@ -25,9 +25,15 @@ int steps = 0;
 #pragma mark -
 #pragma mark Application State
 
+void uncaughtExceptionHandler(NSException *exception) {
+    
+    NSLog(@"Call Stack: %@", exception.callStackSymbols);
+}
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application
-{    
+{
+    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     

@@ -16,6 +16,8 @@
 -(void) stoppedTracking;
 @end
 
+@class Note;
+
 @interface InnovMapViewController : UIViewController
 
 @property(nonatomic, weak) id<InnovMapViewDelegate, InnovPresentNoteDelegate> delegate;
@@ -23,5 +25,6 @@
 - (void) toggleTracking;
 - (void) updatePlayerLocation;
 - (void) zoomAndCenterMapAnimated:(BOOL) animated;
+- (void) showNotePopUpForNote: (Note *) note;
 
 @end

@@ -310,7 +310,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     InnovNoteEditorViewController *editVC = [[InnovNoteEditorViewController alloc] init];
     editVC.note = self.note;
-    editVC.delegate = self;
+    editVC.delegate = self.delegate;
     [self.navigationController pushViewController:editVC animated:YES];
 }
 
