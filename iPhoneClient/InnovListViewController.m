@@ -14,8 +14,8 @@
 #import "TMQuiltView.h"
 #import "TMPhotoQuiltViewCell.h"
 
-#define MAIN_IMAGE_HEIGHT 320
-#define MAIN_IMAGE_WIDTH  320
+#define MAIN_IMAGE_HEIGHT 160
+#define MAIN_IMAGE_WIDTH  160
 /*
  #define ICON_WIDTH          76
  #define ICON_HEIGHT         90
@@ -202,9 +202,9 @@ static NSString * const CELL_ID = @"Cell";
     
     if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
         || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)
-        return 2;
+        return 3;
     
-    return 1;
+    return 2;
     
 }
 
