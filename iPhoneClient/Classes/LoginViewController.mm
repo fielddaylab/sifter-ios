@@ -94,8 +94,8 @@
         if([terms count] > 1)
         {
             int gameId = 0;
-            bool create;
-            bool museumMode;
+            bool create = NO;
+            bool museumMode = NO;
             
             if([terms count] > 0) create = [[terms objectAtIndex:0] boolValue];
             if(create)

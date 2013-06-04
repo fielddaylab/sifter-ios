@@ -12,10 +12,8 @@
 
 @protocol InnovSettingsViewDelegate <NSObject>
 @required
-- (void) showProfile;
-- (void) link;
 - (void) showAbout;
-
+- (void) toggleLogIn;
 @end
 
 @interface InnovSettingsView : UIView <InnovDisplayProtocol>

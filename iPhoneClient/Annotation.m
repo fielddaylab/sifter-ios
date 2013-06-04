@@ -14,7 +14,9 @@
 @synthesize coordinate, title, subtitle, iconMediaId, kind, note, location, icon;
 
 -(id)initWithCoordinate:(CLLocationCoordinate2D) c{
-	if (self == [super init]) {
+    self = [super init];
+	if (self)
+    {
 		coordinate=c;
 	}
 	NSLog(@"Item annotation created");

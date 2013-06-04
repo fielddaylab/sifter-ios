@@ -18,11 +18,14 @@
 #import "Location.h"
 
 #import "InnovPresentNoteDelegate.h"
-#import "InnovSettingsView.h"
+
 #import "InnovMapViewController.h"
 #import "InnovListViewController.h"
+
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
+
+#import "InnovSettingsView.h"
 #import "InnovSelectedTagsViewController.h"
 
 #define GAME_ID                         3411
@@ -112,6 +115,9 @@
     
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
+     [self addChildViewController:listVC];
+    listVC.view.frame = mapVCFrame;
+#warning Possibly add  [self addChildViewController:listVC];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
@@ -257,19 +263,18 @@
     [noteModel addSearchTerm:currentSearchTerm];
 }
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
 {
     UITextField *searchField = nil;
-    for (UIView *subview in searchBar.subviews) {
+    for (UIView *subview in aSearchBar.subviews) {
         if ([subview isKindOfClass:[UITextField class]]) {
             searchField = (UITextField *)subview;
             break;
         }
     }
     
-    if (searchField) {
+    if (searchField)
         searchField.enablesReturnKeyAutomatically = NO;
-    }
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
@@ -325,17 +330,12 @@
 
 #pragma mark Settings Delegate Methods
 
-- (void) showProfile
-{
-#warning unimplemented
-}
-
-- (void) link
-{
-#warning unimplemented
-}
-
 - (void) showAbout
+{
+#warning unimplemented
+}
+
+- (void) toggleLogIn
 {
 #warning unimplemented
 }
@@ -367,21 +367,21 @@
     
     UIViewController *coming = nil;
     UIViewController *going = nil;
-    NSString *newButtonTitle;
+ //   NSString *newButtonTitle;
     NSString *newButtonImageName;
     UIViewAnimationTransition transition;
     
     CGRect contentFrame = contentView.frame;
     contentFrame.origin.x = 0;
     contentFrame.origin.y = 0;
-    coming.view.frame = contentFrame;
+   // coming.view.frame = contentFrame;
     
     if (![contentView.subviews containsObject:mapVC.view])
     {
         coming = mapVC;
         going = listVC;
         transition = UIViewAnimationTransitionFlipFromLeft;
-        newButtonTitle = @"List";
+  //      newButtonTitle = @"List";
         newButtonImageName = @"noteicon.png";
     }
     else
@@ -389,7 +389,7 @@
         coming = listVC;
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
-        newButtonTitle = @"Map";
+  //      newButtonTitle = @"Map";
         newButtonImageName = @"103-map.png";
     }
     
@@ -402,7 +402,7 @@
     [going.view removeFromSuperview];
     [going removeFromParentViewController];
     
-    [self addChildViewController:coming];
+  //  [self addChildViewController:coming];
     coming.view.frame = contentFrame; //setNeedsDisplay?
     [contentView addSubview:coming.view];
     [coming didMoveToParentViewController:self];

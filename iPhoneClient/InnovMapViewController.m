@@ -207,7 +207,7 @@
     
     for(Note *note in removeNotes)
     {
-        BOOL found;
+        BOOL found = NO;
         NSObject<MKAnnotation> *tmpMKAnnotation;
         Annotation *tmpAnnotation;
         for (int i = 0; i < [[mapView annotations] count]; i++)

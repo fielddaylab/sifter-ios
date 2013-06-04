@@ -13,11 +13,9 @@
 
 @interface InnovSettingsView()
 {
-    __weak IBOutlet UIButton *profileButton;
-    __weak IBOutlet UIButton *createLinkButton;
     __weak IBOutlet UIButton *notificationsButton;
     __weak IBOutlet UIButton *aboutButton;
-    
+    __weak IBOutlet UIButton *logInOutButton;
     BOOL hiding;
 }
 @end
@@ -91,18 +89,6 @@
     }
 }
 
-- (IBAction)profileButtonPressed:(id)sender
-{
-    [delegate showProfile];
-#warning unimplemented
-}
-
-- (IBAction)createLinkButtonPressed:(id)sender
-{
-    [delegate link];
-#warning unimplemented
-}
-
 - (IBAction)notificationsButtonPressed:(id)sender
 {
 #warning unimplemented
@@ -111,6 +97,11 @@
 - (IBAction)aboutButtonPressed:(id)sender
 {
     [delegate showAbout];
+#warning unimplemented
+}
+- (IBAction)logInOutButtonPressed:(id)sender
+{
+    [delegate toggleLogIn];
 #warning unimplemented
 }
 

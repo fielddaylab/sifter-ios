@@ -124,19 +124,25 @@
 {
     [super viewWillAppear: animated];
     
+    originalTagName = @"";
+    newTagName = @"";
+    
     if(self.note.noteId != 0)
     {
 #warning when do we edit
         isEditing = YES;
         
-        if([note.title rangeOfString:@"#" options:NSBackwardsSearch].location != NSNotFound) captionTextView.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        if([note.title rangeOfString:@"#" options:NSBackwardsSearch].location != NSNotFound)
+            captionTextView.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
         else captionTextView.text = note.title;
         
-        if([note.title length] > 0) captionTextView.textColor = [UIColor blackColor];
+        if([note.title length] > 0 && ![note.title isEqualToString:DEFAULT_TEXT])
+            captionTextView.textColor = [UIColor blackColor];
         
         imageView.userInteractionEnabled = YES;
         
-        if([self.note.tags count] > 0){
+        if([self.note.tags count] > 0)
+        {
             originalTagId = ((Tag *)[self.note.tags objectAtIndex:0]).tagId;
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
             self.title = originalTagName;
@@ -152,15 +158,10 @@
                     }
                 }
             }
-            [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[tagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])] inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
+            [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else
-        {
-            originalTagName = @"";
             [self tableView:tagTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        }
-        
-        newTagName = @"";
         
         NSError *error;
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
@@ -185,7 +186,6 @@
         self.note.showOnMap  = YES;
         isEditing = NO;
         newNote = YES;
-        originalTagName = @"";
 #warning should allows show on List and Map?
         if(self.note.noteId == 0)
         {

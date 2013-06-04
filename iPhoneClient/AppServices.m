@@ -891,7 +891,7 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 	
 	[alert show];
     
-    NSNumber *nId = [[NSNumber alloc]initWithInt:5];
+    NSNumber *nId = [[NSNumber alloc]init];
     nId = [self validObjectForKey:@"noteId" inDictionary:[uploader userInfo]];
 	//if (description == NULL) description = @"filename";
     

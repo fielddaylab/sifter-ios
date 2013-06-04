@@ -123,8 +123,8 @@
 }
 
 -(BOOL) noteShouldBeAvailable: (Note *) note
-{
-    BOOL match;
+{    
+    BOOL match = NO;
     for(Tag *tag in availableTags)
     {
         if([note.tags count] > 0)

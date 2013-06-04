@@ -10,6 +10,14 @@
 #import "AppModel.h"
 #import "AppServices.h"
 #import "UIImage+Scale.h"
+
+@interface AsyncMediaImageView()
+{
+    UIActivityIndicatorView *spinner;
+}
+
+@end
+
 @implementation AsyncMediaImageView
 
 @synthesize connection;
@@ -72,7 +80,8 @@
                 [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
                 
                 //put a spinner in the view
-                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                spinner.hidesWhenStopped = YES;
                 [spinner startAnimating];
                 
                 spinner.center = self.center;
@@ -108,8 +117,7 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 	
     //clear out the spinner
-    while ([[self subviews] count] > 0)
-		[[[self subviews] lastObject] removeFromSuperview];
+    [spinner stopAnimating];
     
     self.loaded = YES;
     self.isLoading = NO;
@@ -117,23 +125,33 @@
 
 - (void)loadImageFromMedia:(Media *) aMedia
 {
-    
     //put a spinner in the view
-	UIActivityIndicatorView *spinner =
-	[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    if(!spinner)
+    {
+        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner.hidesWhenStopped = YES;
+        spinner.color = [UIColor whiteColor];
+        [self addSubview:spinner];
+    }
+    
     spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    spinner.color = [UIColor blackColor];
-	[self addSubview:spinner];
+    
+    [spinner startAnimating];
     
     if(aMedia != self.media)
-    {
-        self.media = aMedia;
         self.loaded = NO;
-    }
+    
+    self.media = aMedia;
     
     self.contentMode = UIViewContentModeScaleAspectFill;
     
-	if(self.isLoading || self.loaded) return;
+    if(self.loaded)
+    {
+        [spinner stopAnimating];
+        return;
+    }
+    
+    if(self.isLoading) return;
 
     self.isLoading = YES;
 
@@ -143,6 +161,7 @@
         [self updateViewWithNewImage:[UIImage imageWithData:self.media.image]];
         self.loaded = YES;
         self.isLoading = NO;
+        [spinner stopAnimating];
 		return;
 	}
 
@@ -161,9 +180,6 @@
 	//set up indicators
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 	
-	[spinner startAnimating];
-	
-    //if (data!=nil) { [self.data release]; }
 	NSLog(@"AsyncImageView: Loading Image at %@",self.media.url);
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString: self.media.url]
 											 cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -179,9 +195,8 @@
 }
 
 - (void)connection:(NSURLConnection *)theConnection didReceiveData:(NSData *)incrementalData {
-    if (self.data==nil) {
+    if (!self.data)
 		data = [[NSMutableData alloc] initWithCapacity:2048];
-    }
     [self.data appendData:incrementalData];
 }
 
@@ -190,9 +205,7 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 	
     //clear out the spinner
-    while ([[self subviews] count] > 0) {
-		[[[self subviews] lastObject] removeFromSuperview];
-    }
+    [spinner stopAnimating];
     
 	//throw out the connection
     if(self.connection!=nil)
@@ -200,8 +213,6 @@
 	
 	//turn the data into an image
 	UIImage* image = [UIImage imageWithData:data];
-	
-
 	
 	//Save the image in the media
     if(image)
@@ -218,12 +229,16 @@
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ImageReady" object:nil]];
 }
 
+- (void)connection:(NSURLConnection *) theConnection didFailWithError:(NSError *)error
+{
+    [self retryLoadingMyMedia];
+}
+
 - (void) updateViewWithNewImage:(UIImage*)image
 {
-    self.alpha = 1.0;
     if(image)
     {
-        [self setImage:image];
+        self.image = image;
         if (self.delegate && [self.delegate respondsToSelector:@selector(imageFinishedLoading)])
             [delegate imageFinishedLoading];
     }
@@ -236,7 +251,19 @@
     
     [self setNeedsLayout];
     [self setNeedsDisplay];
-	[self.superview setNeedsLayout];
+    [self.superview setNeedsLayout];
+}
+
+- (void) reset
+{
+    self.image = nil;
+    self.data  = nil;
+    self.media = nil;
+    self.loaded = NO;
+    self.isLoading = NO;
+    [spinner stopAnimating];
+    [connection cancel];
+    self.connection=nil;
 }
 
 - (void)dealloc

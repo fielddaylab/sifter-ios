@@ -13,6 +13,9 @@
 
 #import "TMQuiltView.h"
 #import "TMPhotoQuiltViewCell.h"
+
+#define MAIN_IMAGE_HEIGHT 320
+#define MAIN_IMAGE_WIDTH  320
 /*
  #define ICON_WIDTH          76
  #define ICON_HEIGHT         90
@@ -114,6 +117,7 @@ static NSString * const CELL_ID = @"Cell";
 - (void) updateNoteList: (NSNotification *) notification
 {
     notes = (NSArray *)[notification.userInfo objectForKey:@"availableNotes"];
+    [quiltView reloadData];
 }
 
 #pragma mark - TMQuiltViewDataSource
@@ -125,28 +129,70 @@ static NSString * const CELL_ID = @"Cell";
 
 - (TMQuiltViewCell *)quiltView:(TMQuiltView *)aQuiltView cellAtIndexPath:(NSIndexPath *)indexPath {
     
-    TMPhotoQuiltViewCell *cell = (TMPhotoQuiltViewCell *)[aQuiltView dequeueReusableCellWithReuseIdentifier:CELL_ID];
+    TMPhotoQuiltViewCell *cell;// = (TMPhotoQuiltViewCell *)[aQuiltView dequeueReusableCellWithReuseIdentifier:CELL_ID];
     if (!cell)
+    {
         cell = [[TMPhotoQuiltViewCell alloc] initWithReuseIdentifier:CELL_ID];
+        CGRect frame = cell.frame;
+        frame.size.width = MAIN_IMAGE_WIDTH;
+        frame.size.height = MAIN_IMAGE_HEIGHT;
+        cell.frame = frame;
+    }
+    
+    if(cell.photoView)
+    {
+        [cell.photoView removeFromSuperview];
+        cell.photoView = nil;
+    }
+    
+    /*
+    if (indexPath.row == 0) [cell.photoView setImage: [UIImage imageNamed:@"item.png"]];
+    else if (indexPath.row == 1)  [cell.photoView setImage: [UIImage imageNamed:@"camera.png"]];
+    else if (indexPath.row == 2)  [cell.photoView setImage: [UIImage imageNamed:@"npc.png"]];
+    else if (indexPath.row == 3)  [cell.photoView setImage: [UIImage imageNamed:@"player.png"]];
+    else if (indexPath.row == 4)  [cell.photoView setImage:[UIImage imageNamed:@"play_button.png"]];
+    else if (indexPath.row == 5)  [cell.photoView setImage:[UIImage imageNamed:@"noteicon.png"]];
+    else if (indexPath.row == 6)  [cell.photoView setImage:[UIImage imageNamed:@"star-halfselected.png"]];
+    else if (indexPath.row == 7)  [cell.photoView setImage:[UIImage imageNamed:@"star-highlighted.png"]];
+    else if (indexPath.row == 8)  [cell.photoView setImage:[UIImage imageNamed:@"star-hot.png"]];
+    else if (indexPath.row == 9)  [cell.photoView setImage:[UIImage imageNamed:@"star-highlighted.png"]];
+    else if (indexPath.row == 10)  [cell.photoView setImage:[UIImage imageNamed:@"star-selected.png"]];
+    else if (indexPath.row == 11)  [cell.photoView setImage:[UIImage imageNamed:@"star-hot.png"]];
+    else [cell.photoView setImage:[UIImage imageNamed:@"play_button.png"]];
+    */
+    
     
     Note *note = [notes objectAtIndex:indexPath.row];
     
     for(NoteContent *noteContent in note.contents)
     {
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
-            [cell.photoView loadImageFromMedia:[noteContent getMedia]];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
+        {
+         //   [cell.photoView reset];
+            CGRect frame = cell.frame;
+            frame.origin.x = 0;
+            frame.origin.y = 0;
+            cell.photoView = [[AsyncMediaImageView alloc] initWithFrame:frame andMedia:[noteContent getMedia]];
+
+          //  cell.photoView.frame = frame;
+            cell.photoView.contentMode = UIViewContentModeScaleAspectFill;
+            cell.photoView.clipsToBounds = YES;
+            [cell addSubview:cell.photoView];
+            
+       //     [cell.photoView loadImageFromMedia:[noteContent getMedia]];
+
             break;
         }
     }
-    
+    /*
     NSString *titleWithoutUsername = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
     
     if([titleWithoutUsername isEqualToString:@""] || [titleWithoutUsername isEqualToString:@" "]) cell.titleLabel.hidden = YES;
     else {
-        cell.titleLabel.hidden = YES;
+        cell.titleLabel.hidden = NO;
         cell.titleLabel.text = titleWithoutUsername;
     }
-    
+    */
     return cell;
 }
 #pragma mark - TMQuiltViewDelegate
@@ -155,16 +201,19 @@ static NSString * const CELL_ID = @"Cell";
     
     
     if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
-        || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
-        return 3;
-    } else {
+        || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)
         return 2;
-    }
+    
+    return 1;
+    
 }
 
 - (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     //   return ((TMPhotoQuiltViewCell *)[self quiltView:quiltView cellAtIndexPath:indexPath]).photoView.frame.size.height / [self quiltViewNumberOfColumns:aQuiltView];
-    return 320/[self quiltViewNumberOfColumns:aQuiltView];
+#warning recomment in below
+    
+  //  return 320/[self quiltViewNumberOfColumns:aQuiltView];
+    return MAIN_IMAGE_HEIGHT;
 }
 
 - (void)quiltView:(TMQuiltView *)quiltView didSelectCellAtIndexPath:(NSIndexPath *)indexPath

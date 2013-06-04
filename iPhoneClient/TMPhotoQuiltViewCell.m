@@ -22,7 +22,7 @@
 
 #import "AsyncMediaImageView.h"
 
-const CGFloat kTMPhotoQuiltViewMargin = 5;
+const CGFloat kTMPhotoQuiltViewMargin = 0;
 
 @implementation TMPhotoQuiltViewCell
 
@@ -40,7 +40,7 @@ const CGFloat kTMPhotoQuiltViewMargin = 5;
 {
     self = [super initWithReuseIdentifier:reuseIdentifier];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor blackColor];
     }
     return self;
 }
@@ -65,7 +65,7 @@ const CGFloat kTMPhotoQuiltViewMargin = 5;
     }
     return _titleLabel;
 }
-    
+
 - (void)layoutSubviews {
     self.photoView.frame = CGRectInset(self.bounds, kTMPhotoQuiltViewMargin, kTMPhotoQuiltViewMargin);
     self.titleLabel.frame = CGRectMake(kTMPhotoQuiltViewMargin, self.bounds.size.height - 20 - kTMPhotoQuiltViewMargin,

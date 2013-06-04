@@ -21,7 +21,7 @@
 #import "TMQuiltViewCell.h"
 
 const NSInteger kTMQuiltViewDefaultColumns = 2;
-const CGFloat kTMQuiltViewDefaultMargin = 10.0f;
+const CGFloat kTMQuiltViewDefaultMargin = 0.0f;
 const CGFloat kTMQuiltViewDefaultCellHeight = 50.0f;
 
 NSString *const kDefaultReusableIdentifier = @"kTMQuiltViewDefaultReusableIdentifier";
@@ -184,7 +184,7 @@ NSString *const kDefaultReusableIdentifier = @"kTMQuiltViewDefaultReusableIdenti
 
 - (NSMutableDictionary **)indexPathToViewByColumn {
     if (!_indexPathToViewByColumn) {
-        _indexPathToViewByColumn = malloc(sizeof(NSMutableSet*) * _numberOfColumms);
+        _indexPathToViewByColumn = malloc(sizeof(NSMutableDictionary*) * _numberOfColumms);
         for (int i = 0; i < _numberOfColumms; i++) {
             _indexPathToViewByColumn[i] = [[NSMutableDictionary alloc] init];
         }
