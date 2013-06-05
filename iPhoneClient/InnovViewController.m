@@ -344,6 +344,8 @@
 
 - (void) presentNote:(Note *) note
 {
+    [searchBar resignFirstResponder];
+    
     InnovNoteViewController *noteVC = [[InnovNoteViewController alloc] init];
     noteVC.note = note;
     noteVC.delegate = self;
