@@ -17,18 +17,24 @@
 #import "Logger.h"
 
 #import "DAKeyboardControl.h"
-#import "AsyncMediaTouchableImageView.h"
+#import "AsyncMediaImageView.h"
 #import "InnovNoteEditorViewController.h"
 #import "ARISMoviePlayerViewController.h"
 #import "NoteCommentViewController.h"
 
 #define ANIMATION_TIME      0.5
 
-#define IMAGE_X_MARGIN      20
-#define IMAGE_Y_MARGIN      20
+#define IMAGE_X_MARGIN      0
+#define IMAGE_Y_MARGIN      0
 
 #define BUTTON_WIDTH        36
 #define BUTTON_HEIGHT       36
+
+#define COMMENT_BAR_HEIGHT          40
+#define COMMENT_BAR_CONTENT_HEIGHT  30
+#define COMMENT_BAR_X_MARGIN        10
+#define COMMENT_BAR_Y_MARGIN        6
+#define COMMENT_BAR_BUTTON_WIDTH    58
 
 #define DEFAULT_TEXT        @"Add a comment..."
 #define DEFAULT_TEXT_SIZE   14
@@ -39,14 +45,14 @@
 static NSString * const NOTE_CELL_ID    = @"NoteCell";
 static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
-@interface InnovNoteViewController ()<UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, InnovNoteEditorViewDelegate>
+@interface InnovNoteViewController ()<UITextViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaImageViewDelegate, InnovNoteEditorViewDelegate>
 {
     __weak IBOutlet UITableView *noteTableView;
-    __weak IBOutlet UIView *addCommentView;
-    __weak IBOutlet UITextView *addCommentTextView;
-    __weak IBOutlet UIButton *addCommentButton;
+    UIToolbar   *addCommentBar;
+    UITextField *addCommentTextField;
+    UIButton    *addCommentButton;
     
-    AsyncMediaTouchableImageView *imageView;
+    AsyncMediaImageView *imageView;
     UILabel  *usernameLabel;
     UIButton *flagButton;
     UIButton *playButton;
@@ -80,8 +86,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [addCommentTextView addObserver:self forKeyPath:@"contentSize" options:(NSKeyValueObservingOptionNew) context:nil];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
@@ -118,7 +122,38 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 #warning never changed; Could do messages and update from model
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     
-    self.view.keyboardTriggerOffset = addCommentView.bounds.size.height;
+    addCommentBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
+                                                                self.view.bounds.size.height - COMMENT_BAR_HEIGHT,
+                                                                self.view.bounds.size.width,
+                                                                COMMENT_BAR_HEIGHT)];
+    addCommentBar.barStyle = UIBarStyleBlackOpaque;
+    addCommentBar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+    [self.view addSubview:addCommentBar];
+    
+    addCommentTextField =    [[UITextField alloc] initWithFrame:CGRectMake(COMMENT_BAR_X_MARGIN,
+                                                                           COMMENT_BAR_Y_MARGIN,
+                                                                           addCommentBar.bounds.size.width - (2 * COMMENT_BAR_X_MARGIN)  - (COMMENT_BAR_BUTTON_WIDTH + COMMENT_BAR_X_MARGIN),
+                                                                           COMMENT_BAR_CONTENT_HEIGHT)];
+    addCommentTextField.delegate            = self;
+    addCommentTextField.returnKeyType       = UIReturnKeySend;
+    addCommentTextField.borderStyle         = UITextBorderStyleRoundedRect;
+    addCommentTextField.clearButtonMode     = UITextFieldViewModeWhileEditing;
+    addCommentTextField.autoresizingMask    = UIViewAutoresizingFlexibleWidth;
+    [addCommentBar addSubview:addCommentTextField];
+    
+    addCommentButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    addCommentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    addCommentButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12];
+    [addCommentButton addTarget:self action:@selector(addCommentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [addCommentButton setTitle:@"Comment" forState:UIControlStateNormal];
+    [addCommentButton setTitle:@"Comment" forState:UIControlStateHighlighted];
+    addCommentButton.frame = CGRectMake(addCommentBar.bounds.size.width - (COMMENT_BAR_BUTTON_WIDTH + COMMENT_BAR_X_MARGIN),
+                                  COMMENT_BAR_Y_MARGIN,
+                                  COMMENT_BAR_BUTTON_WIDTH,
+                                  COMMENT_BAR_CONTENT_HEIGHT);
+    [addCommentBar addSubview:addCommentButton];
+    
+    self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
     
     [self.view addKeyboardPanningWithActionHandler:^(CGRect keyboardFrameInView) {
         /*
@@ -128,18 +163,18 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
          [self.view removeKeyboardControl];
          */
         
-        CGRect addCommentViewFrame = addCommentView.frame;
-        addCommentViewFrame.origin.y = keyboardFrameInView.origin.y - addCommentViewFrame.size.height;
-        addCommentView.frame = addCommentViewFrame;
+        CGRect addCommentBarFrame = addCommentBar.frame;
+        addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
+        addCommentBar.frame = addCommentBarFrame;
         
         CGRect tableViewFrame = noteTableView.frame;
-        tableViewFrame.size.height = addCommentViewFrame.origin.y;
+        tableViewFrame.size.height = addCommentBarFrame.origin.y;
         noteTableView.frame = tableViewFrame;
-        
-        [self prepareNoteComment];
+
+        [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }];
     
-    imageView = [[AsyncMediaTouchableImageView alloc] init];
+    imageView = [[AsyncMediaImageView alloc] init];
     imageView.frame = CGRectMake(IMAGE_X_MARGIN, IMAGE_Y_MARGIN, self.view.frame.size.width - 2 * IMAGE_X_MARGIN, self.view.frame.size.width - 2 * IMAGE_X_MARGIN);
     imageView.delegate = self;
     
@@ -147,7 +182,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     usernameLabel.backgroundColor = [UIColor blackColor];
     usernameLabel.textColor       = [UIColor whiteColor];
     
-    flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width,            IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    playButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width,            IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    playButton.backgroundColor = [UIColor blackColor];
+    [playButton setTitle:@"PL" forState:UIControlStateNormal];
+    [playButton setTitle:@"PL" forState:UIControlStateHighlighted];
+	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
     flagButton.backgroundColor = [UIColor blackColor];
     //   [flagButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     //   [flagButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
@@ -155,13 +196,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    playButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
-    playButton.backgroundColor = [UIColor blackColor];
-    [playButton setTitle:@"PL" forState:UIControlStateNormal];
-    [playButton setTitle:@"PL" forState:UIControlStateHighlighted];
-	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
     likeButton.backgroundColor = [UIColor blackColor];
     [likeButton setTitle:@"L" forState:UIControlStateNormal];
     [likeButton setTitle:@"L" forState:UIControlStateHighlighted];
@@ -176,6 +211,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT, self.view.frame.size.width, BUTTON_HEIGHT)];
     captionTextView.delegate = self;
     captionTextView.userInteractionEnabled = NO;
+    captionTextView.font = [UIFont fontWithName:@"Helvetica" size:DEFAULT_TEXT_SIZE];
 }
 
 - (void)viewDidUnload {
@@ -183,8 +219,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     captionTextView = nil;
     playButton = nil;
     noteTableView = nil;
-    addCommentView = nil;
-    addCommentTextView = nil;
+    addCommentBar = nil;
+    addCommentTextField = nil;
     addCommentButton = nil;
     
     [self.view removeKeyboardControl];
@@ -198,8 +234,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     captionTextView.text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
     
-    addCommentTextView.text = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
+    addCommentTextField.text = DEFAULT_TEXT;
+    addCommentTextField.textColor = [UIColor lightGrayColor];
     
     imageView.userInteractionEnabled = YES;
     originalImageViewFrame = imageView.frame;
@@ -232,81 +268,23 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 #warning may want to do something to pass note down the line
 }
 
-#pragma mark UITextView methods
+#pragma mark UITextField methods
 
-#warning CHECK IF AUTO ENABLE RETURN WORKED
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [super touchesBegan:touches withEvent:event];
-    
-    [captionTextView resignFirstResponder];
-}
-
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-    textView.textColor = [UIColor blackColor];
-    if([textView.text isEqualToString:DEFAULT_TEXT]) textView.text = @"";
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    UITextView *textView = object;
-    if (([textView bounds].size.height - [textView contentSize].height) > 0)
-    {
-        CGFloat topCorrect = ([textView bounds].size.height - [textView contentSize].height * [textView zoomScale])/2.0;
-        topCorrect = ( topCorrect < 0.0 ? 0.0 : topCorrect );
-        textView.contentOffset = (CGPoint){.x = 0, .y = -topCorrect};
-    }
-}
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-    if([text isEqualToString:@"\n"]) {
-        [textView resignFirstResponder];
-        return NO;
-    }
-    
+    [self addCommentButtonPressed:nil];
     return YES;
 }
 
-#pragma mark UIImageView methods
-
--(void) asyncMediaImageTouched:(id)sender
+- (void) textFieldDidBeginEditing:(UITextField *)textField
 {
-    [self toggleImageFullScreen];
-}
-
-
--(void) toggleImageFullScreen
-{
-    if(![self framesAreEqual:self.view.frame and:imageView.frame])
-    {
-        [UIView beginAnimations:@"imageViewExpand" context:NULL];
-        [UIView setAnimationDuration:ANIMATION_TIME];
-        imageView.frame = self.view.frame;
-        [UIView commitAnimations];
-    }
-    else
-    {
-        [UIView beginAnimations:@"imageViewShrunk" context:NULL];
-        [UIView setAnimationDuration:ANIMATION_TIME];
-        imageView.frame = originalImageViewFrame;
-        [UIView commitAnimations];
-    }
-}
-
--(BOOL) framesAreEqual: (CGRect) frameA and: (CGRect) frameB
-{
-    return (frameA.origin.x == frameB.origin.x &&
-            frameA.origin.y == frameB.origin.y &&
-            frameA.size.width == frameB.size.width &&
-            frameA.size.height == frameB.size.height);
+    textField.textColor = [UIColor blackColor];
+    if([textField.text isEqualToString:DEFAULT_TEXT]) textField.text = @"";
 }
 
 #pragma mark Button methods
 
-- (IBAction)editButtonTouchAction: (id) sender
+- (void)editButtonTouchAction: (id) sender
 {
     InnovNoteEditorViewController *editVC = [[InnovNoteEditorViewController alloc] init];
     editVC.note = self.note;
@@ -319,20 +297,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 #warning unimplemented
 }
 
-- (void) prepareNoteComment
-{
+- (void) addCommentButtonPressed:(id)sender {
+    [addCommentTextField resignFirstResponder];
     
-}
-
-- (IBAction)commentButtonPressed:(id)sender {
-    [addCommentTextView resignFirstResponder];
-    
-    if([addCommentTextView.text length] > 0 && ![addCommentTextView.text isEqualToString:DEFAULT_TEXT])
+    if([addCommentTextField.text length] > 0 && ![addCommentTextField.text isEqualToString:DEFAULT_TEXT])
     {
         Note *commentNote = [[Note alloc] init];
         commentNote.noteId = [[AppServices sharedAppServices]addCommentToNoteWithId:self.note.noteId andTitle:@""];
         
-        commentNote.title = addCommentTextView.text;
+        commentNote.title = addCommentTextField.text;
         commentNote.parentNoteId = self.note.noteId;
         commentNote.creatorId = [AppModel sharedAppModel].playerId;
         commentNote.username = [AppModel sharedAppModel].userName;
@@ -342,8 +315,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         [self.note.comments insertObject:commentNote atIndex:0];
         [[AppModel sharedAppModel].gameNoteList   setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
         
-        addCommentTextView.text = @"";
+        addCommentTextField.text = @"";
     }
+    
+    [noteTableView reloadData];
+    [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (void)likeButtonPressed:(id)sender
@@ -423,13 +399,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)updateButtonsForCurrentMode{
     
-    playButton.hidden = NO;
+    playButton.userInteractionEnabled = YES;
     
 #warning use new titles
     
     switch (mode) {
 		case kInnovAudioPlayerNoAudio:
-			playButton.hidden = YES;
+             playButton.userInteractionEnabled = NO;
+             [playButton setTitle: @"" forState: UIControlStateNormal];
+			[playButton setTitle: @"" forState: UIControlStateHighlighted];
 			break;
 		case kInnovAudioPlayerAudio:
 			[playButton setTitle: @"PL" forState: UIControlStateNormal];
@@ -533,6 +511,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         if(!cell)
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         
         if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
@@ -542,13 +521,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         }
         else
         {
-#warning check whether first index is newest or oldest
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.textAlignment = NSTextAlignmentLeft;
-            if(expanded || indexPath.row < EXPAND_INDEX)
-                cell.textLabel.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title; //[note.comments objectAtIndex:indexPath.row-1];
+            if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
+                cell.textLabel.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
             else
-                cell.textLabel.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;//[note.comments objectAtIndex:[note.comments count]-1-(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)];
+                cell.textLabel.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
         }
     }
     
@@ -557,6 +534,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [addCommentTextField resignFirstResponder];
+    
     if(!expanded && indexPath.row == 3)
     {
         expanded = YES;
