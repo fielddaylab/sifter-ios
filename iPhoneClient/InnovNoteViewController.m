@@ -33,7 +33,7 @@
 
 #define COMMENT_BAR_HEIGHT          46
 #define COMMENT_BAR_HEIGHT_MAX      80
-#define COMMENT_BAR_CONTENT_HEIGHT  30
+#define COMMENT_BAR_CONTENT_HEIGHT  34
 #define COMMENT_BAR_X_MARGIN        10
 #define COMMENT_BAR_Y_MARGIN        6
 #define COMMENT_BAR_BUTTON_WIDTH    58
@@ -43,6 +43,7 @@
 #define DEFAULT_TEXTVIEW_MARGIN     8
 
 #define EXPAND_INDEX                 3
+#define EXPAND_TEXT                  @".   .   ."
 #define DEFAULT_MAX_VISIBLE_COMMENTS 5
 
 static NSString * const NOTE_CELL_ID    = @"NoteCell";
@@ -51,9 +52,10 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 @interface InnovNoteViewController ()<UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaImageViewDelegate, InnovNoteEditorViewDelegate>
 {
     __weak IBOutlet UITableView *noteTableView;
-    UIToolbar   *addCommentBar;
-    UITextView  *addCommentTextView;
-    UIButton    *addCommentButton;
+    
+    UIToolbar       *addCommentBar;
+    UITextView      *addCommentTextView;
+    UIBarButtonItem *addCommentButton;
     
     AsyncMediaImageView *imageView;
     UILabel  *usernameLabel;
@@ -143,17 +145,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     addCommentTextView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [addCommentBar addSubview:addCommentTextView];
     
-    addCommentButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    addCommentButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    addCommentButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12];
-    [addCommentButton addTarget:self action:@selector(addCommentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [addCommentButton setTitle:@"Comment" forState:UIControlStateNormal];
-    [addCommentButton setTitle:@"Comment" forState:UIControlStateHighlighted];
-    addCommentButton.frame = CGRectMake(addCommentBar.bounds.size.width - (COMMENT_BAR_BUTTON_WIDTH + COMMENT_BAR_X_MARGIN),
-                                        COMMENT_BAR_Y_MARGIN,
-                                        COMMENT_BAR_BUTTON_WIDTH,
-                                        COMMENT_BAR_CONTENT_HEIGHT);
-    [addCommentBar addSubview:addCommentButton];
+    addCommentButton = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStyleDone target:self action:@selector(addCommentButtonPressed:)];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    [addCommentBar setItems:[NSArray arrayWithObjects:flex, addCommentButton, nil]];
     
     self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
     
@@ -200,9 +194,14 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
     likeButton.backgroundColor = [UIColor blackColor];
-    [likeButton setTitle:@"L" forState:UIControlStateNormal];
-    [likeButton setTitle:@"L" forState:UIControlStateHighlighted];
+    [likeButton setImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
+    [likeButton setImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [likeButton setSelected:self.note.userLiked];
+    likeButton.titleLabel.center = likeButton.center;
+    likeButton.imageView.center = likeButton.center;
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
     
     shareButton = [[UIButton alloc] initWithFrame:CGRectMake(likeButton.frame.origin.x + BUTTON_WIDTH,  IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
@@ -244,7 +243,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     if([self.note.tags count] > 0)
         self.title = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
-    else self.title = @"Note";
+    else
+        self.title = @"Note";
     
     if (self.note.creatorId == [AppModel sharedAppModel].playerId)
         self.navigationItem.rightBarButtonItem = editButton;
@@ -269,6 +269,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void) textViewDidChange:(UITextView *)textView
 {
     [self adjustCommentBarToFitText];
+    [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
 
@@ -310,7 +311,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         Note *commentNote = [[Note alloc] init];
         commentNote.noteId = [[AppServices sharedAppServices]addCommentToNoteWithId:self.note.noteId andTitle:@""];
         
-        commentNote.title = addCommentTextView.text;
+        commentNote.title = [NSString stringWithFormat:@"%@ -%@", addCommentTextView.text, [AppModel sharedAppModel].userName];
         commentNote.parentNoteId = self.note.noteId;
         commentNote.creatorId = [AppModel sharedAppModel].playerId;
         commentNote.username = [AppModel sharedAppModel].userName;
@@ -358,7 +359,20 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)likeButtonPressed:(id)sender
 {
-#warning unimplemented
+    [likeButton setSelected:!likeButton.selected];
+    self.note.userLiked = likeButton.selected;
+    if(self.note.userLiked)
+    {
+        [[AppServices sharedAppServices]likeNote:self.note.noteId];
+        self.note.numRatings++;
+    }
+    else
+    {
+        [[AppServices sharedAppServices]unLikeNote:self.note.noteId];
+        self.note.numRatings--;
+    }
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
 }
 
 - (void)shareButtonPressed:(id)sender
@@ -497,6 +511,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         NSString *text;
         if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
             text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
+        else if(!expanded && indexPath.row == EXPAND_INDEX)
+            text      = EXPAND_TEXT;
         else
             text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
         
@@ -545,7 +561,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
         {
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
-            cell.textLabel.text          = @".   .   .";
+            cell.textLabel.text          = EXPAND_TEXT;
         }
         else
         {
