@@ -210,7 +210,7 @@
     
 	//throw out the connection
     if(self.connection!=nil)
-    self.connection=nil;
+        self.connection=nil;
 	
 	//turn the data into an image
 	UIImage* image = [UIImage imageWithData:data];
@@ -252,7 +252,7 @@
 {
     super.image = [self resizeImage:image newSize:self.frame.size];
     
-  //  [self setNeedsLayout];
+    [self setNeedsLayout];
   //  [self setNeedsDisplay];
   //  [self.superview setNeedsLayout];
 }
