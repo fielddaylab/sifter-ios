@@ -137,29 +137,16 @@ static NSString * const CELL_ID = @"Cell";
         frame.size.width = MAIN_IMAGE_WIDTH;
         frame.size.height = MAIN_IMAGE_HEIGHT;
         cell.frame = frame;
+
+        frame.origin.x = 0;
+        frame.origin.y = 0;
+        cell.photoView = [[AsyncMediaImageView alloc] init];
+        cell.photoView.frame = frame;
+        cell.photoView.clipsToBounds = YES;
+        cell.photoView.dontUseImage  = YES;
+        cell.photoView.contentMode = UIViewContentModeScaleAspectFill;
+        [cell addSubview:cell.photoView];
     }
-    
-    if(cell.photoView)
-    {
-        [cell.photoView removeFromSuperview];
-        cell.photoView = nil;
-    }
-    
-    /*
-    if (indexPath.row == 0) [cell.photoView setImage: [UIImage imageNamed:@"item.png"]];
-    else if (indexPath.row == 1)  [cell.photoView setImage: [UIImage imageNamed:@"camera.png"]];
-    else if (indexPath.row == 2)  [cell.photoView setImage: [UIImage imageNamed:@"npc.png"]];
-    else if (indexPath.row == 3)  [cell.photoView setImage: [UIImage imageNamed:@"player.png"]];
-    else if (indexPath.row == 4)  [cell.photoView setImage:[UIImage imageNamed:@"play_button.png"]];
-    else if (indexPath.row == 5)  [cell.photoView setImage:[UIImage imageNamed:@"noteicon.png"]];
-    else if (indexPath.row == 6)  [cell.photoView setImage:[UIImage imageNamed:@"star-halfselected.png"]];
-    else if (indexPath.row == 7)  [cell.photoView setImage:[UIImage imageNamed:@"star-highlighted.png"]];
-    else if (indexPath.row == 8)  [cell.photoView setImage:[UIImage imageNamed:@"star-hot.png"]];
-    else if (indexPath.row == 9)  [cell.photoView setImage:[UIImage imageNamed:@"star-highlighted.png"]];
-    else if (indexPath.row == 10)  [cell.photoView setImage:[UIImage imageNamed:@"star-selected.png"]];
-    else if (indexPath.row == 11)  [cell.photoView setImage:[UIImage imageNamed:@"star-hot.png"]];
-    else [cell.photoView setImage:[UIImage imageNamed:@"play_button.png"]];
-    */
     
     
     Note *note = [notes objectAtIndex:indexPath.row];
@@ -168,23 +155,13 @@ static NSString * const CELL_ID = @"Cell";
     {
         if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
         {
-         //   [cell.photoView reset];
-            CGRect frame = cell.frame;
-            frame.origin.x = 0;
-            frame.origin.y = 0;
-            cell.photoView = [[AsyncMediaImageView alloc] initWithFrame:frame andMedia:[noteContent getMedia]];
-
-          //  cell.photoView.frame = frame;
-            cell.photoView.contentMode = UIViewContentModeScaleAspectFill;
-            cell.photoView.clipsToBounds = YES;
-            [cell addSubview:cell.photoView];
-            
-       //     [cell.photoView loadImageFromMedia:[noteContent getMedia]];
+           [cell.photoView reset];
+           [cell.photoView loadImageFromMedia:[noteContent getMedia]];
 
             break;
         }
     }
-    /*
+    
     NSString *titleWithoutUsername = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
     
     if([titleWithoutUsername isEqualToString:@""] || [titleWithoutUsername isEqualToString:@" "]) cell.titleLabel.hidden = YES;
@@ -192,7 +169,7 @@ static NSString * const CELL_ID = @"Cell";
         cell.titleLabel.hidden = NO;
         cell.titleLabel.text = titleWithoutUsername;
     }
-    */
+    
     return cell;
 }
 #pragma mark - TMQuiltViewDelegate

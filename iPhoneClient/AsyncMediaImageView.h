@@ -18,13 +18,13 @@
 
 
 @interface AsyncMediaImageView : UIImageView {
-	NSURLConnection* connection; //keep a reference to the connection so we can cancel download in dealloc
-	NSMutableData* data; //keep reference to the data so we can collect it as it downloads
-	Media *media; //keep a refrence so we can update the media with the data after it is loaded
-    ARISMoviePlayerViewController *mMoviePlayer; //In case we need to load a frame of a movie
-    id <AsyncMediaImageViewDelegate> __unsafe_unretained delegate;
-	BOOL isLoading;
-    BOOL loaded;
+//	NSURLConnection* connection; //keep a reference to the connection so we can cancel download in dealloc
+//	NSMutableData* data; //keep reference to the data so we can collect it as it downloads
+//	Media *media; //keep a refrence so we can update the media with the data after it is loaded
+//    ARISMoviePlayerViewController *mMoviePlayer; //In case we need to load a frame of a movie
+//    id <AsyncMediaImageViewDelegate> __unsafe_unretained delegate;
+//	BOOL isLoading;
+ //   BOOL loaded;
     
 }
 
@@ -36,6 +36,7 @@
 
 @property(readwrite,assign)BOOL isLoading;
 @property(readwrite,assign)BOOL loaded;
+@property(readwrite,assign)BOOL dontUseImage;
 
 - (id)initWithFrame:(CGRect)aFrame andMedia:(Media *)aMedia;     
 - (id)initWithFrame:(CGRect)aFrame andMediaId:(int)mediaId;     

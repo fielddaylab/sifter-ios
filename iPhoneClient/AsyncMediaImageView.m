@@ -26,6 +26,7 @@
 @synthesize mMoviePlayer;
 @synthesize isLoading;
 @synthesize loaded;
+@synthesize dontUseImage;
 @synthesize delegate;
 
 -(id)initWithFrame:(CGRect)aFrame andMedia:(Media *)aMedia
@@ -156,7 +157,7 @@
     self.isLoading = YES;
 
 	//check if the media already as the image, if so, just grab it
-	if (self.media.image)
+	if (self.media.image && !dontUseImage)
     {
         [self updateViewWithNewImage:[UIImage imageWithData:self.media.image]];
         self.loaded = YES;
@@ -247,12 +248,13 @@
     self.loaded = YES;
 }
 
-- (void) setImage:(UIImage*)image {
+- (void) setImage:(UIImage*)image
+{
     super.image = [self resizeImage:image newSize:self.frame.size];
     
-    [self setNeedsLayout];
-    [self setNeedsDisplay];
-    [self.superview setNeedsLayout];
+  //  [self setNeedsLayout];
+  //  [self setNeedsDisplay];
+  //  [self.superview setNeedsLayout];
 }
 
 - (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize {
