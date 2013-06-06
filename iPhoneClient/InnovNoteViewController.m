@@ -101,6 +101,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    CGRect frame = [UIScreen mainScreen].applicationFrame;
+    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
+    self.view.frame = frame;
     
     /*  cancelButton = [[UIBarButtonItem alloc] initWithTitle: @"Back"
      style: UIBarButtonItemStyleDone

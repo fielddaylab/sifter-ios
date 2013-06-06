@@ -73,7 +73,6 @@
     self.view.hidden = NO;
     self.view.userInteractionEnabled = NO;
     
-    self.view.layer.anchorPoint = CGPointMake(0, 1);
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
     [scale setToValue:[NSNumber numberWithFloat:1.0f]];
@@ -90,7 +89,6 @@
     {
         hiding = YES;
         
-        self.view.layer.anchorPoint = CGPointMake(0, 1);
         CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
         [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
         [scale setToValue:[NSNumber numberWithFloat:0.0f]];

@@ -75,6 +75,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    CGRect frame = [UIScreen mainScreen].applicationFrame;
+    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
+    self.view.frame = frame;
     
 #warning unimplemented: change game and finalize settings
     
@@ -152,9 +155,10 @@
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     selectedTagsVC.delegate = self;
+    selectedTagsVC.view.layer.anchorPoint = CGPointMake(0, 1);
     CGRect selectedTagsFrame = selectedTagsVC.view.frame;
-    selectedTagsFrame.origin.x = -self.view.frame.size.width/2;
-    selectedTagsFrame.origin.y = self.view.frame.size.height/2+12;
+    selectedTagsFrame.origin.x = 0;
+    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
     selectedTagsVC.view.frame = selectedTagsFrame;
     
     showTagsButton.layer.cornerRadius = 4.0f;

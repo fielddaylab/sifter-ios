@@ -415,6 +415,7 @@
 		DBEDC718174BD02B004C8966 /* TMPhotoQuiltViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DBFE825F174E758600E4496B /* InnovListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBFE825D174E758500E4496B /* InnovListViewController.m */; };
 		DBFE8260174E758600E4496B /* InnovListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBFE825E174E758600E4496B /* InnovListViewController.xib */; };
+		DBFEDCD41760EEC9009C080A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBFEDCD31760EEC9009C080A /* Default-568h@2x.png */; };
 		DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD235FCA1700DCCB00795077 /* InnovViewController.m */; };
 		DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD235FCB1700DCCB00795077 /* InnovViewController.xib */; };
 		DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C285016F3BF0D00CBC085 /* Logger.m */; };
@@ -1107,6 +1108,7 @@
 		DBFE825C174E758500E4496B /* InnovListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovListViewController.h; sourceTree = "<group>"; };
 		DBFE825D174E758500E4496B /* InnovListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovListViewController.m; sourceTree = "<group>"; };
 		DBFE825E174E758600E4496B /* InnovListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovListViewController.xib; sourceTree = "<group>"; };
+		DBFEDCD31760EEC9009C080A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
 		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
 		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
@@ -1398,6 +1400,7 @@
 			children = (
 				AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */,
 				AA1E2D4D1652CC6000219535 /* libicucore.dylib */,
+				DBFEDCD31760EEC9009C080A /* Default-568h@2x.png */,
 				3A69944A1625F6610015B48A /* newBanner.png */,
 				ABAFBAC9145A0B8D0044491C /* GPX Locations */,
 				AB1CA8AA13C7CC9000131F81 /* Frameworks and Dependancies */,
@@ -2634,6 +2637,7 @@
 				AB8552C9176099D60027F1F5 /* listModeIcon@2x.png in Resources */,
 				AB8552CC17609A990027F1F5 /* settingsIcon.png in Resources */,
 				AB8552CD17609A990027F1F5 /* settingsIcon@2x.png in Resources */,
+				DBFEDCD41760EEC9009C080A /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
