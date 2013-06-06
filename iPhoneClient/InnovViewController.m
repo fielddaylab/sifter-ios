@@ -164,7 +164,6 @@
     showTagsButton.layer.cornerRadius = 4.0f;
     
 	trackingButton.selected = YES;
-
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     

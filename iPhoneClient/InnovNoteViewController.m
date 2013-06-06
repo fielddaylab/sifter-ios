@@ -74,7 +74,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     BOOL expanded;
 	InnovAudioViewerModeType mode;
-    BOOL shouldAutoPlay;
     ARISMoviePlayerViewController *ARISMoviePlayer;
     
 }
@@ -91,6 +90,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     if (self) {
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
     return self;
@@ -105,19 +105,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     frame.size.height -= self.navigationController.navigationBar.frame.size.height;
     self.view.frame = frame;
     
-    /*  cancelButton = [[UIBarButtonItem alloc] initWithTitle: @"Back"
-     style: UIBarButtonItemStyleDone
-     target:self
-     action:@selector(backButtonTouchAction:)];
-     self.navigationItem.leftBarButtonItem = cancelButton; */
-    
     editButton = [[UIBarButtonItem alloc] initWithTitle: @"Edit"
                                                   style: UIBarButtonItemStyleDone
                                                  target:self
                                                  action:@selector(editButtonTouchAction:)];
     self.navigationItem.rightBarButtonItem = editButton;
-    
-    // [self refreshComments];
     
     ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
     ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
@@ -125,7 +117,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self.view addSubview:ARISMoviePlayer.view];
     ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
-    ARISMoviePlayer.moviePlayer.shouldAutoplay = shouldAutoPlay;
+    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
 #warning never changed; Could do messages and update from model
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     
@@ -477,7 +469,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 		case kInnovAudioPlayerNoAudio:
             playButton.userInteractionEnabled = NO;
             [playButton setTitle: @"" forState: UIControlStateNormal];
-			[playButton setTitle: @"" forState: UIControlStateHighlighted];
+            [playButton setTitle: @"" forState: UIControlStateHighlighted];
 			break;
 		case kInnovAudioPlayerAudio:
 			[playButton setTitle: @"PL" forState: UIControlStateNormal];
@@ -493,6 +485,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 }
 
 #pragma mark MPMoviePlayerController notifications
+
+- (void)MPMoviePlayerPlaybackStateDidChange:(NSNotification *)notification
+{
+    if (ARISMoviePlayer.moviePlayer.playbackState == MPMoviePlaybackStatePlaying)
+    {
+        mode = kInnovAudioPlayerPlaying;
+        [self updateButtonsForCurrentMode];
+    }
+}
 
 - (void)MPMoviePlayerPlaybackDidFinishNotification:(NSNotification *)notif
 {
@@ -608,7 +609,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     {
         addCommentTextView.text = DEFAULT_TEXT;
         addCommentTextView.textColor = [UIColor lightGrayColor];
-        
         [self adjustCommentBarToFitText];
     }
     
@@ -619,32 +619,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     }
 }
 
-#pragma mark Autorotation, Dealloc, and Other Necessary Methods
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
--(BOOL)shouldAutorotate
-{
-    return YES;
-}
-
--(NSInteger)supportedInterfaceOrientations
-{
-    NSInteger mask = 0;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
-        mask |= UIInterfaceOrientationMaskLandscapeLeft;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
-        mask |= UIInterfaceOrientationMaskLandscapeRight;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
-        mask |= UIInterfaceOrientationMaskPortrait;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
-        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
-    return mask;
-}
+#pragma mark Remove Mem
 
 - (void)dealloc
 {

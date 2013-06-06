@@ -8,10 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-#import "InventoryModel.h"
-#import "AttributesModel.h"
-#import "QuestsModel.h"
-#import "LocationsModel.h"
+
 #import "Media.h"
 #import "AsyncMediaImageView.h"
 
@@ -19,11 +16,6 @@
 @interface Game : NSObject
 {
 	int gameId;
-
-    InventoryModel  *inventoryModel;
-    AttributesModel *attributesModel;
-    QuestsModel     *questsModel;
-    LocationsModel  *locationsModel;
     
     NSString *mapType;
 
@@ -60,11 +52,6 @@
 }
 
 @property (readwrite, assign) int gameId;
-
-@property (nonatomic, strong) InventoryModel *inventoryModel;
-@property (nonatomic, strong) AttributesModel *attributesModel;
-@property (nonatomic, strong) QuestsModel *questsModel;
-@property (nonatomic, strong) LocationsModel *locationsModel;
 
 @property (nonatomic, strong) NSString *mapType;
 

@@ -58,7 +58,7 @@
         tracking = NO;
         unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation)       name:@"PlayerMoved" object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];

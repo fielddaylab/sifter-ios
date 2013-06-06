@@ -47,14 +47,6 @@
 	return self;
 }
 
-- (void) getReadyToPlay
-{
-    self.inventoryModel  = [[InventoryModel  alloc] init];
-    self.attributesModel = [[AttributesModel alloc] init];
-    self.questsModel     = [[QuestsModel     alloc] init];
-    self.locationsModel  = [[LocationsModel  alloc] init];
-}
-
 - (NSComparisonResult)compareDistanceFromPlayer:(Game*)otherGame{
 	if      (self.distanceFromPlayer < otherGame.distanceFromPlayer) return NSOrderedAscending;
 	else if (self.distanceFromPlayer > otherGame.distanceFromPlayer) return NSOrderedDescending;
