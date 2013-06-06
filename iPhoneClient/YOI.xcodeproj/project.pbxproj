@@ -1399,9 +1399,7 @@
 			isa = PBXGroup;
 			children = (
 				AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */,
-				AA1E2D4D1652CC6000219535 /* libicucore.dylib */,
 				DBFEDCD31760EEC9009C080A /* Default-568h@2x.png */,
-				3A69944A1625F6610015B48A /* newBanner.png */,
 				ABAFBAC9145A0B8D0044491C /* GPX Locations */,
 				AB1CA8AA13C7CC9000131F81 /* Frameworks and Dependancies */,
 				AB0A5BA3120365420065CE68 /* Localizable.strings */,
@@ -1902,6 +1900,7 @@
 		AB1CA8AA13C7CC9000131F81 /* Frameworks and Dependancies */ = {
 			isa = PBXGroup;
 			children = (
+				AA1E2D4D1652CC6000219535 /* libicucore.dylib */,
 				AA39E32016C4370D005A4E06 /* libPusher-combined.a */,
 				3A29205B152CB83B00B91231 /* NSMutableDictionary+ImageMetadata.h */,
 				3A29205C152CB83B00B91231 /* NSMutableDictionary+ImageMetadata.m */,
@@ -2303,15 +2302,23 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		DBFEDCDA176102E9009C080A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DB0773C7174FE10C002D71ED /* InnovNoteModel.h */,
+				DB0773C6174FE10C002D71ED /* InnovNoteModel.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		DD5C6AA71700D6FE00717031 /* InnovationViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				AB1EF609175FDE180073DBF4 /* icons */,
-				DB0773C7174FE10C002D71ED /* InnovNoteModel.h */,
-				DB0773C6174FE10C002D71ED /* InnovNoteModel.m */,
+				DB0743951754FE060068A1DB /* Extern Libraries */,
+				DBFEDCDA176102E9009C080A /* Models */,
+				3A69944A1625F6610015B48A /* newBanner.png */,
 				DB0743971754FE680068A1DB /* Header Files */,
 				DB1A8AE8174D55570052DDC6 /* Views */,
-				DB0743951754FE060068A1DB /* Extern Libraries */,
 				DD235FC91700DCCB00795077 /* InnovViewController.h */,
 				DD235FCA1700DCCB00795077 /* InnovViewController.m */,
 				DD235FCB1700DCCB00795077 /* InnovViewController.xib */,
@@ -2330,6 +2337,7 @@
 				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
 				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
 				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
+				AB1EF609175FDE180073DBF4 /* icons */,
 			);
 			name = InnovationViewControllers;
 			sourceTree = "<group>";

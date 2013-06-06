@@ -14,6 +14,8 @@
 #import "TMQuiltView.h"
 #import "TMPhotoQuiltViewCell.h"
 
+#define NUM_COLUMNS 2
+
 #define CELL_HEIGHT 160
 #define CELL_WIDTH  160
 
@@ -91,20 +93,14 @@ static NSString * const CELL_ID = @"Cell";
         frame.size.width = CELL_WIDTH;
         frame.size.height = CELL_HEIGHT;
         cell.frame = frame;
-
+        
         frame.origin.x = 0;
         frame.origin.y = 0;
-        cell.photoView = [[AsyncMediaImageView alloc] init];
-        cell.photoView.frame = frame;
-        cell.photoView.clipsToBounds = YES;
-        cell.photoView.dontUseImage  = YES;
-        cell.photoView.contentMode = UIViewContentModeScaleAspectFill;
-        [cell addSubview:cell.photoView];
-        
         cell.xMargin = CELL_X_MARGIN;
         cell.yMargin = CELL_Y_MARGIN;
+        cell.photoView.frame = frame;
+        cell.photoView.dontUseImage  = YES;
     }
-    
     
     Note *note = [notes objectAtIndex:indexPath.row];
     
@@ -112,37 +108,29 @@ static NSString * const CELL_ID = @"Cell";
     {
         if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
         {
-           [cell.photoView reset];
-           [cell.photoView loadImageFromMedia:[noteContent getMedia]];
-
+            [cell.photoView reset];
+            [cell.photoView loadImageFromMedia:[noteContent getMedia]];
             break;
         }
     }
-    /*
-    NSString *titleWithoutUsername = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
     
-    if([titleWithoutUsername isEqualToString:@""] || [titleWithoutUsername isEqualToString:@" "]) cell.titleLabel.hidden = YES;
-    else {
-        cell.titleLabel.hidden = NO;
-        cell.titleLabel.text = titleWithoutUsername;
-    }
-    */
     return cell;
 }
 #pragma mark - TMQuiltViewDelegate
 
-- (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView {
-    if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
-        || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)
-        return 3;
+- (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView
+{
+#warning Landscape?
+   // if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
+   //     || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)
+   //     return 3;
     
-    return 2;
-    
+    return NUM_COLUMNS;
 }
 
 - (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
     //   return ((TMPhotoQuiltViewCell *)[self quiltView:quiltView cellAtIndexPath:indexPath]).photoView.frame.size.height / [self quiltViewNumberOfColumns:aQuiltView];
-
+    
     return CELL_HEIGHT;
 }
 
@@ -159,7 +147,6 @@ static NSString * const CELL_ID = @"Cell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    
 }
 
 @end

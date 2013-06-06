@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "InnovNoteViewController.m"
-         timestampString = "392232344.852937"
+         timestampString = "392234497.94472"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "419"
-         endingLineNumber = "419"
+         startingLineNumber = "421"
+         endingLineNumber = "421"
          landmarkName = "-refreshViewFromModel"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "InnovNoteViewController.m"
-         timestampString = "392232344.852937"
+         timestampString = "392234497.94472"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "469"
-         endingLineNumber = "469"
+         startingLineNumber = "471"
+         endingLineNumber = "471"
          landmarkName = "-updateButtonsForCurrentMode"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,11 +34,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "InnovNoteViewController.m"
-         timestampString = "392232344.852937"
+         timestampString = "392234497.94472"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "490"
-         endingLineNumber = "490"
+         startingLineNumber = "492"
+         endingLineNumber = "492"
          landmarkName = "-updateButtonsForCurrentMode"
          landmarkType = "5">
       </FileBreakpoint>
@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "InnovNoteViewController.m"
-         timestampString = "392232344.852937"
+         timestampString = "392234497.94472"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "497"
-         endingLineNumber = "497"
+         startingLineNumber = "499"
+         endingLineNumber = "499"
          landmarkName = "-MPMoviePlayerPlaybackDidFinishNotification:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "InnovNoteViewController.m"
-         timestampString = "392232344.852937"
+         timestampString = "392234497.94472"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "500"
-         endingLineNumber = "500"
+         startingLineNumber = "502"
+         endingLineNumber = "502"
          landmarkName = "-MPMoviePlayerPlaybackDidFinishNotification:"
          landmarkType = "5">
       </FileBreakpoint>

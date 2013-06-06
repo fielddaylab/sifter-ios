@@ -42,6 +42,14 @@
     [newAccountButton setTitle:NSLocalizedString(@"CreateAccountKey",@"") forState:UIControlStateNormal];
 }
 
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [usernameField resignFirstResponder];
+    [passwordField resignFirstResponder];
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if (textField == usernameField)

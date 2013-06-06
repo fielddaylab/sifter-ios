@@ -160,16 +160,18 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
          when you are done with the view controller by calling:
          [self.view removeKeyboardControl];
          */
-        
-        CGRect addCommentBarFrame = addCommentBar.frame;
-        addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
-        addCommentBar.frame = addCommentBarFrame;
-        
-        CGRect tableViewFrame = noteTableView.frame;
-        tableViewFrame.size.height = addCommentBarFrame.origin.y;
-        noteTableView.frame = tableViewFrame;
-        
-        [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if (self.isViewLoaded && self.view.window)
+        {
+            CGRect addCommentBarFrame = addCommentBar.frame;
+            addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
+            addCommentBar.frame = addCommentBarFrame;
+            
+            CGRect tableViewFrame = noteTableView.frame;
+            tableViewFrame.size.height = addCommentBarFrame.origin.y;
+            noteTableView.frame = tableViewFrame;
+            
+            [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     }];
     
     imageView = [[AsyncMediaImageView alloc] init];
