@@ -27,5 +27,7 @@
 
 @property (nonatomic, retain) AsyncMediaImageView *photoView;
 @property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic)         CGFloat xMargin;
+@property (nonatomic)         CGFloat yMargin;
 
 @end

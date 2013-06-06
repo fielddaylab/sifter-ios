@@ -22,12 +22,11 @@
 
 #import "AsyncMediaImageView.h"
 
-const CGFloat kTMPhotoQuiltViewMargin = 0;
-
 @implementation TMPhotoQuiltViewCell
 
 @synthesize photoView = _photoView;
 @synthesize titleLabel = _titleLabel;
+@synthesize xMargin, yMargin;
 
 - (void)dealloc {
     [_photoView release], _photoView = nil;
@@ -67,9 +66,8 @@ const CGFloat kTMPhotoQuiltViewMargin = 0;
 }
 
 - (void)layoutSubviews {
-    self.photoView.frame = CGRectInset(self.bounds, kTMPhotoQuiltViewMargin, kTMPhotoQuiltViewMargin);
-    self.titleLabel.frame = CGRectMake(kTMPhotoQuiltViewMargin, self.bounds.size.height - 20 - kTMPhotoQuiltViewMargin,
-                                       self.bounds.size.width - 2 * kTMPhotoQuiltViewMargin, 20);
+    self.photoView.frame = CGRectInset(self.bounds, xMargin, yMargin);
+  //  self.titleLabel.frame = CGRectMake(kTMPhotoQuiltViewMargin, self.bounds.size.height - 20 - kTMPhotoQuiltViewMargin, self.bounds.size.width - 2 * kTMPhotoQuiltViewMargin, 20);
 }
 
 @end
