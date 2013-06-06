@@ -11,7 +11,7 @@
 
 #import "AppModel.h"
 
-#define ANIMATION_DURATION 0.5
+#define ANIMATION_DURATION 0.15
 
 @interface InnovSettingsView()
 {
