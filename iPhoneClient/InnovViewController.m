@@ -122,8 +122,8 @@
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
     [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateNormal];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"noteicon.png"] forState:UIControlStateHighlighted];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"listModeIcon.png"] forState:UIControlStateNormal];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"listModeIcon.png"] forState:UIControlStateHighlighted];
     switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
     self.navigationItem.leftBarButtonItem = switchViewsBarButton;
     
@@ -136,7 +136,7 @@
     [searchBarView addSubview:searchBar];
     self.navigationItem.titleView = searchBarView;
     
-    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"14-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
+    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingsIcon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
     settingsView = [[InnovSettingsView alloc] init];
@@ -156,9 +156,8 @@
     
     showTagsButton.layer.cornerRadius = 4.0f;
     
-	trackingButton.backgroundColor = [UIColor lightGrayColor];
-    trackingButton.layer.cornerRadius = 4.0f;
-    trackingButton.hidden = NO;
+	trackingButton.selected = YES;
+
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
@@ -319,13 +318,12 @@
 - (IBAction)trackingButtonPressed:(id)sender
 {
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-	trackingButton.backgroundColor = [UIColor blueColor];
     [mapVC toggleTracking];
 }
 
 - (void) stoppedTracking
 {
-    trackingButton.backgroundColor = [UIColor lightGrayColor];
+    trackingButton.selected = NO;
 }
 
 #pragma mark Settings Delegate Methods
@@ -384,7 +382,7 @@
         going = listVC;
         transition = UIViewAnimationTransitionFlipFromLeft;
   //      newButtonTitle = @"List";
-        newButtonImageName = @"noteicon.png";
+        newButtonImageName = @"listModeIcon.png";
     }
     else
     {
@@ -392,7 +390,7 @@
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
   //      newButtonTitle = @"Map";
-        newButtonImageName = @"103-map.png";
+        newButtonImageName = @"mapModeIcon.png";
     }
     
     [UIView beginAnimations:@"View Flip" context:nil];
