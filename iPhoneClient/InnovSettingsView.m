@@ -9,6 +9,8 @@
 #import "InnovSettingsView.h"
 #import <QuartzCore/QuartzCore.h>
 
+#import "AppModel.h"
+
 #define ANIMATION_DURATION 0.5
 
 @interface InnovSettingsView()
@@ -33,6 +35,10 @@
         InnovSettingsView *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
         [self addSubview:view];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLogInOutButtonTitle) name:@"NewLoginResponseReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performLogout:)            name:@"PassChangeRequested"   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performLogout:)            name:@"LogoutRequested"       object:nil];
     }
     return self;
 }
@@ -101,8 +107,44 @@
 }
 - (IBAction)logInOutButtonPressed:(id)sender
 {
-    [delegate toggleLogIn];
-#warning unimplemented
+    if(![AppModel sharedAppModel].loggedIn)
+    {
+        [delegate presentLogIn];
+    }
+    else
+    {
+        [self performLogout:nil];
+        [self updateLogInOutButtonTitle];
+    }
+}
+
+- (void)updateLogInOutButtonTitle
+{
+    if([AppModel sharedAppModel].loggedIn)
+    {
+        [logInOutButton setTitle:@"Log Out" forState:UIControlStateNormal];
+        [logInOutButton setTitle:@"Log Out" forState:UIControlStateHighlighted];
+    }
+    else
+    {
+        [logInOutButton setTitle:@"Log In" forState:UIControlStateNormal];
+        [logInOutButton setTitle:@"Log In" forState:UIControlStateHighlighted];
+    }
+}
+
+- (void)performLogout:(NSNotification *)notification
+{
+    [AppModel sharedAppModel].loggedIn       = NO;
+    [AppModel sharedAppModel].playerId       = 0;
+    [AppModel sharedAppModel].playerMediaId  = -1;
+    [AppModel sharedAppModel].userName       = @"";
+    [AppModel sharedAppModel].displayName    = @"";
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger: [AppModel sharedAppModel].playerId        forKey:@"playerId"];
+    [defaults setInteger: [AppModel sharedAppModel].playerMediaId   forKey:@"playerMediaId"];
+    [defaults setObject:  [AppModel sharedAppModel].userName        forKey:@"userName"];
+    [defaults setObject:  [AppModel sharedAppModel].displayName     forKey:@"displayName"];
 }
 
 /*

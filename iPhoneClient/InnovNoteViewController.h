@@ -8,11 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol InnovNoteViewDelegate <NSObject>
+@required
+- (void)presentLogIn;
+@end
+
 @class Note;
 
 @interface InnovNoteViewController : UIViewController 
 
 @property (nonatomic)                    Note *note;
-@property (nonatomic, unsafe_unretained) id delegate;
+@property (nonatomic, weak) id<InnovNoteViewDelegate> delegate;
 
 @end
