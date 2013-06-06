@@ -25,12 +25,11 @@
 @implementation TMPhotoQuiltViewCell
 
 @synthesize photoView = _photoView;
-@synthesize titleLabel = _titleLabel;
+@synthesize categoryIconView = _categoryIconView;
 @synthesize xMargin, yMargin;
 
 - (void)dealloc {
     [_photoView release], _photoView = nil;
-    [_titleLabel release], _titleLabel = nil;
     
     [super dealloc];
 }
@@ -56,9 +55,22 @@
     return _photoView;
 }
 
+- (UIImageView *)categoryIconView
+{
+    if (!_categoryIconView)
+    {
+        _categoryIconView = [[UIImageView alloc] init];
+        _categoryIconView.contentMode = UIViewContentModeScaleAspectFit;
+        _categoryIconView.clipsToBounds = YES;
+        [self addSubview:_categoryIconView];
+    }
+    return _categoryIconView;
+}
+
 - (void)layoutSubviews
 {
     self.photoView.frame = CGRectInset(self.bounds, xMargin, yMargin);
+    self.categoryIconView.frame = CGRectMake(xMargin, yMargin, 80, 80);
 }
 
 @end

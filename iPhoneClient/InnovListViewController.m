@@ -110,6 +110,7 @@ static NSString * const CELL_ID = @"Cell";
         {
             [cell.photoView reset];
             [cell.photoView loadImageFromMedia:[noteContent getMedia]];
+            [cell.categoryIconView setImage:[UIImage imageNamed:@"newBanner.png"]];
             break;
         }
     }

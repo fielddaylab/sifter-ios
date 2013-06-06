@@ -26,7 +26,7 @@
 @interface TMPhotoQuiltViewCell : TMQuiltViewCell
 
 @property (nonatomic, retain) AsyncMediaImageView *photoView;
-@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, retain) UIImageView         *categoryIconView;
 @property (nonatomic)         CGFloat xMargin;
 @property (nonatomic)         CGFloat yMargin;
 
