@@ -18,6 +18,7 @@
 }
 
 -(void) viewDidDisappear:(BOOL)animated{
+    /*
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UIApplication* application = [UIApplication sharedApplication];
     if (application.statusBarOrientation != UIInterfaceOrientationPortrait){
@@ -28,7 +29,7 @@
         NSLog(@"NSNotification: MovieForcedRotationToPortrait");
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"MovieForcedRotationToPortrait" object:nil]];
     } 
-    [RootViewController sharedRootViewController].nearbyObjectNavigationController.view.frame = [RootViewController sharedRootViewController].gamePlayTabBarController.view.bounds;
+    [RootViewController sharedRootViewController].nearbyObjectNavigationController.view.frame = [RootViewController sharedRootViewController].gamePlayTabBarController.view.bounds; */
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

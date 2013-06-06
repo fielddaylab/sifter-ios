@@ -10,6 +10,13 @@
 #import "AppModel.h"
 #import <ZXingWidgetController.h>
 
+@protocol LogInViewControllerDelegate <NSObject>
+@required
+- (void)createUserAndLoginWithGroup:(NSString *) username andGameId:(int) gameId inMuseumMode:(BOOL) museumMode;
+- (void)attemptLoginWithUserName:(NSString *) username andPassword:(NSString *) password andGameId:(int) gameId inMuseumMode:(BOOL) museumMode;
+
+@end
+
 @interface LoginViewController : UIViewController <ZXingDelegate>
 {
 	IBOutlet UITextField *usernameField;
@@ -21,6 +28,8 @@
 
 	IBOutlet UILabel *newAccountMessageLabel;
 }
+
+@property(nonatomic, weak) id<LogInViewControllerDelegate> delegate;
 
 -(IBAction) newAccountButtonTouched: (id) sender;
 -(IBAction) loginButtonTouched: (id) sender;

@@ -13,6 +13,7 @@
 #import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
+#import "LoginViewController.h"
 
 #import "Note.h"
 #import "Location.h"
@@ -31,7 +32,7 @@
 #define GAME_ID                         3411
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, LogInViewControllerDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -66,6 +67,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         noteModel = [[InnovNoteModel alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
     }
     return self;
 }
@@ -73,6 +75,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    CGRect frame = [UIScreen mainScreen].applicationFrame;
+    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
+    self.view.frame = frame;
     
 #warning unimplemented: change game and finalize settings
     
@@ -97,7 +102,7 @@
     [AppModel sharedAppModel].currentGame = game;
     [AppModel sharedAppModel].playerId = 7;
     [AppModel sharedAppModel].userName = @"Anonymous";
-    [AppModel sharedAppModel].loggedIn = YES;
+    [AppModel sharedAppModel].loggedIn = NO;
 #warning Make initially not logged in
     
 #warning find out why this is necessary
@@ -115,7 +120,7 @@
     
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
-     [self addChildViewController:listVC];
+    [self addChildViewController:listVC];
     listVC.view.frame = mapVCFrame;
 #warning Possibly add  [self addChildViewController:listVC];
     
@@ -140,6 +145,7 @@
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
     settingsView = [[InnovSettingsView alloc] init];
+    settingsView.delegate = self;
     settingsView.layer.anchorPoint = CGPointMake(1, 0);
     CGRect settingsLocation = settingsView.frame;
     settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
@@ -149,9 +155,10 @@
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     selectedTagsVC.delegate = self;
+    selectedTagsVC.view.layer.anchorPoint = CGPointMake(0, 1);
     CGRect selectedTagsFrame = selectedTagsVC.view.frame;
-    selectedTagsFrame.origin.x = -self.view.frame.size.width/2;
-    selectedTagsFrame.origin.y = self.view.frame.size.height/2+12;
+    selectedTagsFrame.origin.x = 0;
+    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
     selectedTagsVC.view.frame = selectedTagsFrame;
     
     showTagsButton.layer.cornerRadius = 4.0f;
@@ -181,7 +188,7 @@
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
+    
 	[self refresh];
 	
 	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
@@ -309,10 +316,22 @@
 
 - (IBAction)cameraPressed:(id)sender
 {
-    InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
-    editorVC.delegate = self;
-    
-    [self.navigationController pushViewController:editorVC animated:NO];
+    if(![AppModel sharedAppModel].loggedIn)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+        [alert show];
+    }
+    else
+    {
+        InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
+        editorVC.delegate = self;
+        [self.navigationController pushViewController:editorVC animated:NO];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex) [self presentLogIn];
 }
 
 - (IBAction)trackingButtonPressed:(id)sender
@@ -333,9 +352,50 @@
 #warning unimplemented
 }
 
-- (void) toggleLogIn
+- (void) presentLogIn
 {
 #warning unimplemented
+    LoginViewController *logInVC = [[LoginViewController alloc] init];
+    logInVC.delegate = self;
+    [self.navigationController pushViewController:logInVC animated:YES];
+}
+
+#pragma mark Login and Game Selection
+- (void)createUserAndLoginWithGroup:(NSString *)groupName andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
+{
+	[AppModel sharedAppModel].museumMode = museumMode;
+    
+	[[AppServices sharedAppServices] createUserAndLoginWithGroup:[NSString stringWithFormat:@"%d-%@", gameId, groupName]];
+    
+    if(gameId != 0)
+    {
+        [AppModel sharedAppModel].skipGameDetails = YES;
+        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
+    }
+}
+
+- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
+{
+	[AppModel sharedAppModel].userName = userName;
+	[AppModel sharedAppModel].password = password;
+	[AppModel sharedAppModel].museumMode = museumMode;
+    
+	[[AppServices sharedAppServices] login];
+    
+    if(gameId != 0)
+    {
+        [AppModel sharedAppModel].skipGameDetails = YES;
+        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
+    }
+}
+
+- (void)checkForLogInFail
+{
+    if(![AppModel sharedAppModel].loggedIn)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
+        [alert show];
+    }
 }
 
 #pragma mark Present Note Delegate Method
@@ -367,14 +427,14 @@
     
     UIViewController *coming = nil;
     UIViewController *going = nil;
- //   NSString *newButtonTitle;
+    //   NSString *newButtonTitle;
     NSString *newButtonImageName;
     UIViewAnimationTransition transition;
     
     CGRect contentFrame = contentView.frame;
     contentFrame.origin.x = 0;
     contentFrame.origin.y = 0;
-   // coming.view.frame = contentFrame;
+    // coming.view.frame = contentFrame;
     
     if (![contentView.subviews containsObject:mapVC.view])
     {
@@ -402,7 +462,7 @@
     [going.view removeFromSuperview];
     [going removeFromParentViewController];
     
-  //  [self addChildViewController:coming];
+    //  [self addChildViewController:coming];
     coming.view.frame = contentFrame; //setNeedsDisplay?
     [contentView addSubview:coming.view];
     [coming didMoveToParentViewController:self];

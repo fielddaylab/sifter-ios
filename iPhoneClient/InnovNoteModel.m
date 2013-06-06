@@ -139,15 +139,20 @@
     return YES;
 }
 
--(void) addTag: (Tag *) tag
+-(void) addTag: (Tag *) addTag
 {
-    [availableTags addObject: tag];
+    [availableTags addObject: addTag];
     [self updateNotes:allNotes];
 }
 
--(void) removeTag: (Tag *) tag
+-(void) removeTag: (Tag *) removeTag
 {
-    [availableTags removeObject: tag];
+    for(Tag *tag in availableTags)
+    {
+        if(tag.tagId == removeTag.tagId)
+            [availableTags removeObject: tag];
+    }
+    
     [self updateNotes:allNotes];
 }
 

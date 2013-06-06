@@ -69,7 +69,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     Note *noteComment;
     UIBarButtonItem *editButton;
     //UIBarButtonItem *cancelButton;
-    id __unsafe_unretained delegate;
     
     CGRect originalImageViewFrame;
     
@@ -102,6 +101,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    CGRect frame = [UIScreen mainScreen].applicationFrame;
+    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
+    self.view.frame = frame;
     
     /*  cancelButton = [[UIBarButtonItem alloc] initWithTitle: @"Back"
      style: UIBarButtonItemStyleDone
@@ -306,7 +308,12 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void) addCommentButtonPressed:(id)sender {
     [addCommentTextView resignFirstResponder];
     
-    if([addCommentTextView.text length] > 0 && ![addCommentTextView.text isEqualToString:DEFAULT_TEXT])
+    if(![AppModel sharedAppModel].loggedIn)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to comment on notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+        [alert show];
+    }
+    else if([addCommentTextView.text length] > 0 && ![addCommentTextView.text isEqualToString:DEFAULT_TEXT])
     {
         Note *commentNote = [[Note alloc] init];
         commentNote.noteId = [[AppServices sharedAppServices]addCommentToNoteWithId:self.note.noteId andTitle:@""];
@@ -329,6 +336,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     [noteTableView reloadData];
     [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex) [delegate presentLogIn];
 }
 
 - (void)playButtonPressed:(id)sender
@@ -359,20 +371,28 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)likeButtonPressed:(id)sender
 {
-    [likeButton setSelected:!likeButton.selected];
-    self.note.userLiked = likeButton.selected;
-    if(self.note.userLiked)
+    if(![AppModel sharedAppModel].loggedIn)
     {
-        [[AppServices sharedAppServices]likeNote:self.note.noteId];
-        self.note.numRatings++;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to like notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+        [alert show];
     }
     else
     {
-        [[AppServices sharedAppServices]unLikeNote:self.note.noteId];
-        self.note.numRatings--;
+        [likeButton setSelected:!likeButton.selected];
+        self.note.userLiked = likeButton.selected;
+        if(self.note.userLiked)
+        {
+            [[AppServices sharedAppServices]likeNote:self.note.noteId];
+            self.note.numRatings++;
+        }
+        else
+        {
+            [[AppServices sharedAppServices]unLikeNote:self.note.noteId];
+            self.note.numRatings--;
+        }
+        [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
+        [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
     }
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
 }
 
 - (void)shareButtonPressed:(id)sender
@@ -520,8 +540,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     }
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     UITableViewCell *cell;
     if(indexPath.row == 0)
     {
@@ -539,7 +559,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             [cell addSubview:captionTextView];
         }
         
-        usernameLabel.text = [AppModel sharedAppModel].userName;
+        usernameLabel.text = [self.note.title substringFromIndex:([self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location + 1)];
         
         captionTextView.text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
         CGRect frame = captionTextView.frame;

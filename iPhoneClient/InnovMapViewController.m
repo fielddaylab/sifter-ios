@@ -19,14 +19,14 @@
 
 #warning update defined numbers
 
-#define INITIAL_SPAN 0.025
-#define ZOOM_SPAN    0.001
+#define INITIAL_SPAN    0.025
+#define ZOOM_SPAN       0.001
 
-#define ANIMATION_TIME     0.5
+#define ANIMATION_TIME  0.5
 
-#define MADISON_LAT  43.07
-#define MADISON_LONG -89.41
-#define MAX_DISTANCE 20000
+#define MADISON_LAT     43.07
+#define MADISON_LONG    -89.40
+#define MAX_DISTANCE    20000
 
 #define MAX_NOTES_COUNT    50
 
