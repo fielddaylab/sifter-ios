@@ -29,7 +29,7 @@
 #import "InnovSelectedTagsViewController.h"
 
 #define GAME_ID                         3411
-#define SWITCH_VIEWS_ANIMATION_DURATION 1.25
+#define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
 @interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     

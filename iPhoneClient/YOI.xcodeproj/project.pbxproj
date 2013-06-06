@@ -1908,6 +1908,13 @@
 			name = "Frameworks and Dependancies";
 			sourceTree = "<group>";
 		};
+		AB1EF609175FDE180073DBF4 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = icons;
+			sourceTree = "<group>";
+		};
 		AB37BC2E1184CDE600C5CE8B /* Sound Effects */ = {
 			isa = PBXGroup;
 			children = (
@@ -2260,6 +2267,7 @@
 		DD5C6AA71700D6FE00717031 /* InnovationViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				AB1EF609175FDE180073DBF4 /* icons */,
 				DB0773C7174FE10C002D71ED /* InnovNoteModel.h */,
 				DB0773C6174FE10C002D71ED /* InnovNoteModel.m */,
 				DB0743971754FE680068A1DB /* Header Files */,

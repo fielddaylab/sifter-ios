@@ -15,6 +15,7 @@
 #define IMAGEHEIGHT 35
 #define IMAGEWIDTH 35
 #define SPACING 20
+#define ANIMATION_DURATION 0.15
 
 
 @interface InnovSelectedTagsViewController ()<UITableViewDataSource, UITableViewDelegate>
@@ -76,7 +77,7 @@
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
     [scale setToValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setDuration:0.8f];
+    [scale setDuration:ANIMATION_DURATION];
     [scale setRemovedOnCompletion:NO];
     [scale setFillMode:kCAFillModeForwards];
     scale.delegate = self;
@@ -93,7 +94,7 @@
         CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
         [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
         [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-        [scale setDuration:0.8f];
+        [scale setDuration:ANIMATION_DURATION];
         [scale setRemovedOnCompletion:NO];
         [scale setFillMode:kCAFillModeForwards];
         scale.delegate = self;
