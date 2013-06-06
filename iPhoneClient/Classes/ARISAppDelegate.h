@@ -10,8 +10,6 @@
 #import "AppModel.h"
 #import "AppServices.h"
 
-#import "RootViewController.h"
-
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVAudioPlayer.h>
 #import <AVFoundation/AVFoundation.h>

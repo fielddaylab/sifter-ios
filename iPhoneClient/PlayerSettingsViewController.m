@@ -71,7 +71,8 @@
 {
     if([self.playerNameField.text isEqualToString:@""] || [AppModel sharedAppModel].playerMediaId == 0)
     {
-        [[RootViewController sharedRootViewController] showAlert:nil message:@"Please choose a picture and name"];
+#warning add
+        //[[RootViewController sharedRootViewController] showAlert:nil message:@"Please choose a picture and name"];
         return;
     }
     

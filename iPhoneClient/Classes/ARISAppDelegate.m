@@ -82,7 +82,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)applicationWillResignActive:(UIApplication *)application
 {
 	NSLog(@"ARIS: Resigning Active Application");
-    [[RootViewController sharedRootViewController].gamePlayTabBarController dismissModalViewControllerAnimated:NO];
 	[[AppModel sharedAppModel] saveUserDefaults];
 }
 

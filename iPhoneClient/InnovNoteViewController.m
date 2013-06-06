@@ -21,7 +21,6 @@
 #import "AsyncMediaImageView.h"
 #import "InnovNoteEditorViewController.h"
 #import "ARISMoviePlayerViewController.h"
-#import "NoteCommentViewController.h"
 
 #define ANIMATION_TIME      0.5
 

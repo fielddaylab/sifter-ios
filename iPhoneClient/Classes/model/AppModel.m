@@ -9,8 +9,6 @@
 #import "AppModel.h"
 #import "ARISAppDelegate.h"
 #import "Media.h"
-#import "NodeOption.h"
-#import "Quest.h"
 #import "AppServices.h"
 
 @implementation AppModel
@@ -235,7 +233,8 @@
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error])
         {
 			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            [[RootViewController sharedRootViewController] showAlert:@"Error saving to disk" message:[NSString stringWithFormat:@"%@",[error userInfo]]];
+#warning add
+           // [[RootViewController sharedRootViewController] showAlert:@"Error saving to disk" message:[NSString stringWithFormat:@"%@",[error userInfo]]];
         }
     }
 }
@@ -300,40 +299,6 @@
 	return [mediaCache mediaForMediaId:mId];
 }
 
--(Npc *)npcForNpcId:(int)mId
-{
-	NSLog(@"AppModel: Npc %d requested from cached list",mId);
-    
-	Npc *npc = [self.gameNpcList objectForKey:[NSNumber numberWithInt:mId]];
-	
-	if (!npc) {
-		//Let's pause everything and do a lookup
-		NSLog(@"AppModel: Npc not found in cached item list, refresh");
-		[[AppServices sharedAppServices] fetchGameNpcListAsynchronously:NO];
-		
-		npc = [self.gameNpcList objectForKey:[NSNumber numberWithInt:mId]];
-		if (npc) NSLog(@"AppModel: Npc found after refresh");
-		else NSLog(@"AppModel: Npc still NOT found after refresh");
-	}
-	return npc;
-}
-
--(Node *)nodeForNodeId:(int)mId
-{
-	Node *node = [self.gameNodeList objectForKey:[NSNumber numberWithInt:mId]];
-	
-	if (!node) {
-		//Let's pause everything and do a lookup
-		NSLog(@"AppModel: Node not found in cached item list, refresh");
-		[[AppServices sharedAppServices] fetchGameNodeListAsynchronously:NO];
-		
-		node = [self.gameNodeList objectForKey:[NSNumber numberWithInt:mId]];
-		if (node) NSLog(@"AppModel: Node found after refresh");
-		else NSLog(@"AppModel: Node still NOT found after refresh");
-	}
-	return node;
-}
-
 - (Note *)noteForNoteId:(int)mId playerListYesGameListNo:(BOOL)playerorGame
 {
 	Note *note;
@@ -352,54 +317,6 @@
 		else NSLog(@"AppModel: Note still NOT found after refresh");
 	}
 	return note;
-}
-
-- (WebPage *)webPageForWebPageID:(int)mId
-{
-	WebPage *page = [self.gameWebPageList objectForKey:[NSNumber numberWithInt:mId]];
-	
-	if (!page) {
-        
-		
-		[[AppServices sharedAppServices] fetchGameWebpageListAsynchronously:NO];
-		
-		page = [self.gameWebPageList objectForKey:[NSNumber numberWithInt:mId]];
-        
-	}
-	return page;
-}
-
-
-- (Panoramic *)panoramicForPanoramicId:(int)mId
-{
-    Panoramic *pan = [self.gamePanoramicList objectForKey:[NSNumber numberWithInt:mId]];
-	
-	if (!pan) {
-        
-		
-		[[AppServices sharedAppServices] fetchGamePanoramicListAsynchronously:NO];
-		
-		pan = [self.gamePanoramicList objectForKey:[NSNumber numberWithInt:mId]];
-        
-	}
-	return pan;
-    
-}
-
--(Item *)itemForItemId:(int)mId
-{
-	Item *item = [self.gameItemList objectForKey:[NSNumber numberWithInt:mId]];
-	
-	if (!item) {
-		//Let's pause everything and do a lookup
-		NSLog(@"AppModel: Item not found in cached item list, refresh");
-		[[AppServices sharedAppServices] fetchGameItemListAsynchronously:NO];
-		
-		item = [self.gameItemList objectForKey:[NSNumber numberWithInt:mId]];
-		if (item) NSLog(@"AppModel: Item found after refresh");
-		else NSLog(@"AppModel: Item still NOT found after refresh");
-	}
-	return item;
 }
 
 #pragma mark Core Data

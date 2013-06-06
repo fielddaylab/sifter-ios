@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "NearbyObjectProtocol.h"
-#import "Location.h"
 
 extern NSString *const kNoteContentTypeAudio;
 extern NSString *const kNoteContentTypeVideo;

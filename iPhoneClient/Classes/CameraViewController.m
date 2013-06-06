@@ -10,11 +10,7 @@
 #import "ARISAppDelegate.h"
 #import "AppModel.h"
 #import "AppServices.h"
-#import "NotebookViewController.h"
 #import <MobileCoreServices/UTCoreTypes.h>
-#import "GPSViewController.h"
-#import "NoteCommentViewController.h"
-#import "NoteEditorViewController.h"
 #import "InnovViewController.h"
 #import "InnovNoteEditorViewController.h"
 #import "AssetsLibrary/AssetsLibrary.h"
@@ -176,15 +172,6 @@
         //Ignore since it's nonsense
         [newMetadata setObject:@"X" forKey:@"Orientation"];
         
-        //Handle Delegate
-        if([self.parentDelegate isKindOfClass:[NoteCommentViewController class]])
-            [self.parentDelegate addedPhoto];
-        if([self.editView isKindOfClass:[NoteEditorViewController class]])
-        {
-            [self.editView setNoteValid:YES];
-            [self.editView setNoteChanged:YES];
-        }
-        
         // If image not selected from camera roll, save image with metadata to camera roll
         if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
         {
@@ -208,9 +195,10 @@
                       
                       //Do the upload
                       [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                      if([self.editView isKindOfClass:[NoteEditorViewController class]] || [self.editView isKindOfClass:[InnovNoteEditorViewController class]])
-                          [self.editView refreshViewFromModel];
-                      
+                      if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
+                      {
+                          [((InnovNoteEditorViewController *)self.editView) refreshViewFromModel];
+                      }
                   }
                     failureBlock:^(NSError *error)
                   {
@@ -221,8 +209,10 @@
                       NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
                       if (self.mediaData != nil) [mediaData writeToURL:imageURL atomically:YES];
                       [[[AppModel sharedAppModel] uploadManager] uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                      if([self.editView isKindOfClass:[NoteEditorViewController class]] || [self.editView isKindOfClass:[InnovNoteEditorViewController class]])
-                          [self.editView refreshViewFromModel];
+                      if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
+                      {
+                          [((InnovNoteEditorViewController *)self.editView) refreshViewFromModel];
+                      }
                   }
                   ];
              }];
@@ -236,8 +226,10 @@
        
             //Do the upload
             [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
-            if([self.editView isKindOfClass:[NoteEditorViewController class]] || [self.editView isKindOfClass:[InnovNoteEditorViewController class]])
-                [self.editView refreshViewFromModel];
+            if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
+            {
+                [((InnovNoteEditorViewController *)self.editView) refreshViewFromModel];
+            }
         }
 	}
 	else if ([mediaType isEqualToString:@"public.movie"]){
@@ -245,14 +237,6 @@
 		NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
 		self.mediaData = [NSData dataWithContentsOfURL:videoURL];
 		self.mediaFilename = @"video.mp4";
-        if([self.parentDelegate isKindOfClass:[NoteCommentViewController class]]){
-            [self.parentDelegate addedVideo];
-            
-        }
-        if([self.editView isKindOfClass:[NoteEditorViewController class]]) {
-            [self.editView setNoteValid:YES];
-            [self.editView setNoteChanged:YES];
-        }
         
         [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeVideo withFileURL:videoURL];
         
@@ -271,7 +255,8 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)aPicker {
     [aPicker dismissModalViewControllerAnimated:NO];
-    if([backView isKindOfClass:[NotebookViewController class]] || [backView isKindOfClass:[InnovViewController class]]){
+    if([backView isKindOfClass:[InnovViewController class]])
+    {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
         [[AppModel sharedAppModel].gameNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];
     }

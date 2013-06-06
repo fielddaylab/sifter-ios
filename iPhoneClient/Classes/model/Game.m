@@ -13,10 +13,6 @@
 @implementation Game
 
 @synthesize gameId;
-@synthesize inventoryModel;
-@synthesize attributesModel;
-@synthesize questsModel;
-@synthesize locationsModel;
 @synthesize mapType;
 @synthesize hasBeenPlayed;
 @synthesize name;
@@ -62,14 +58,6 @@
 - (NSComparisonResult)compareTitle:(Game*)otherGame
 {
     return [self.name compare:otherGame.name]; 
-}
-
-- (void) clearLocalModels
-{
-    [self.inventoryModel  clearData];
-    [self.attributesModel clearData];
-    [self.questsModel     clearData];
-    [self.locationsModel  clearData];
 }
 
 - (NSString *)description

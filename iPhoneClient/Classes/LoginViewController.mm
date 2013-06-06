@@ -12,7 +12,6 @@
 #import "ChangePasswordViewController.h"
 #import "ForgotViewController.h"
 #import "QRCodeReader.h"
-#import "BumpTestViewController.h"
 
 @implementation LoginViewController
 
@@ -92,19 +91,13 @@
 -(IBAction)newAccountButtonTouched:(id)sender
 {
     SelfRegistrationViewController *selfRegistrationViewController = [[SelfRegistrationViewController alloc] initWithNibName:@"SelfRegistration" bundle:[NSBundle mainBundle]];
+    selfRegistrationViewController.delegate = self.delegate;
     [[self navigationController] pushViewController:selfRegistrationViewController animated:NO];
 }
 
 - (void)zxingController:(ZXingWidgetController*)controller didScanResult:(NSString *)result
 {
     [self dismissModalViewControllerAnimated:NO];
-    if([result isEqualToString:@"TEST_BUMP"])
-    {
-        BumpTestViewController *b = [[BumpTestViewController alloc] initWithNibName:@"BumpTestViewController" bundle:nil];
-        [self presentViewController:b animated:NO completion:nil];
-    }
-    else
-    {
         NSArray *terms  = [result componentsSeparatedByString:@","];
         if([terms count] > 1)
         {
@@ -131,7 +124,6 @@
         }
         
         [self.navigationController popViewControllerAnimated:YES];
-    }
 }
 
 - (void)zxingControllerDidCancel:(ZXingWidgetController*)controller

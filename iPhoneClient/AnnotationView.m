@@ -33,9 +33,9 @@
     {
         self.titleFont = [UIFont fontWithName:@"Arial" size:18];
         self.subtitleFont = [UIFont fontWithName:@"Arial" size:12];
-        
-        self.showTitle = (annotation.location.showTitle && annotation.title != nil && ![annotation.title isEqualToString:@""]) ? YES : NO;
-        self.shouldWiggle = annotation.location.wiggle;
+#warning add in?
+      //  self.showTitle = (annotation.location.showTitle && annotation.title != nil && ![annotation.title isEqualToString:@""]) ? YES : NO;
+      //  self.shouldWiggle = annotation.location.wiggle;
         self.totalWiggleOffsetFromOriginalPosition = 0;
         self.incrementalWiggleOffset = 0;
         self.xOnSinWave = 0;

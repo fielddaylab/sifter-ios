@@ -44,11 +44,6 @@
     self.tabBarItem.badgeValue = nil;
 }
 
--(void)dismissTutorial
-{
-	[[RootViewController sharedRootViewController].tutorialViewController dismissTutorialPopupWithType:tutorialPopupKindNearbyTab];
-}
-
 - (void)refresh
 {
     [[AppServices sharedAppServices] fetchPlayerLocationList];
@@ -56,6 +51,7 @@
 
 -(void)refreshViewFromModel
 {
+    /*
     if ([AppModel sharedAppModel].currentlyInteractingWithObject)
         return;
     
@@ -108,6 +104,7 @@
     }
     
     [nearbyTable reloadData];
+     */
 }
 
 - (void)dequeueForceDisplay
@@ -125,12 +122,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [self.nearbyLocationsList count];
+	return 0;// [self.nearbyLocationsList count];
 }
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    /*
 	static NSString *CellIdentifier = @"Cell";
     NearbyObjectCell *cell = (NearbyObjectCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -148,14 +146,14 @@
 	Media *iconMedia = [[AppModel sharedAppModel] mediaForMediaId: l.iconMediaId];
     [cell.iconView loadImageFromMedia:iconMedia];
     
-	return cell;
+	return cell; */
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+{ /*
 	Location<NearbyObjectProtocol> *l = [self.nearbyLocationsList objectAtIndex:indexPath.row];
     l.delegate = self;
-	[l display];
-}
+	[l display]; */
+} 
 
 @end

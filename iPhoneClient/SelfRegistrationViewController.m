@@ -7,13 +7,14 @@
 //
 
 #import "SelfRegistrationViewController.h"
+
 #import "ARISAppDelegate.h"
 #import "AppModel.h"
 #import "AppServices.h"
 
 @implementation SelfRegistrationViewController
 
-
+@synthesize delegate;
 @synthesize userName;
 @synthesize password;
 @synthesize email;
@@ -47,16 +48,16 @@
 }
  
 - (IBAction)submitButtonTouched: (id) sender{
-	[[RootViewController sharedRootViewController] showWaitingIndicator:@"Creating a New User" displayProgressBar:NO];
-
+//	[[RootViewController sharedRootViewController] showWaitingIndicator:@"Creating a New User" displayProgressBar:NO];
+#warning add?
 	[[AppServices sharedAppServices] registerNewUser:self.userName.text password:self.password.text 
 					firstName:@"" lastName:@"" email:self.email.text];
 }
 	
 -(void)selfRegistrationFailure{
 	NSLog(@"SelfRegistration: Unsuccessfull registration attempt, check network before giving an alert");
-
-	[[RootViewController sharedRootViewController] removeWaitingIndicator];
+#warning add
+	//[[RootViewController sharedRootViewController] removeWaitingIndicator];
     [AppModel sharedAppModel].userName = nil;
     [AppModel sharedAppModel].password = nil;
 	
@@ -74,17 +75,10 @@
 
 -(void)selfRegistrationSuccess{
 	NSLog(@"SelfRegistration: New User Created Successfully");
-	
-	[[RootViewController sharedRootViewController] removeWaitingIndicator];
-
-    /*
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"StartOverResetAlertTitleKey", @"")  
-                                                    message:NSLocalizedString(@"SelfRegistrationSuccessMessageKey", @"")
-												   delegate:nil cancelButtonTitle:NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
-	[alert show];
-    */
+#warning add?
+//	[[RootViewController sharedRootViewController] removeWaitingIndicator];
     
-    [[RootViewController sharedRootViewController] attemptLoginWithUserName:[AppModel sharedAppModel].userName andPassword:[AppModel sharedAppModel].password andGameId:0 inMuseumMode:true];
+    [delegate attemptLoginWithUserName:[AppModel sharedAppModel].userName andPassword:[AppModel sharedAppModel].password andGameId:0 inMuseumMode:true];
 	[userName resignFirstResponder];
 	[password resignFirstResponder];
 	[email resignFirstResponder];

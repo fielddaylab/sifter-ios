@@ -30,4 +30,6 @@ typedef enum {
 @property (nonatomic)                   Note *note;
 @property (nonatomic, weak)             id<InnovNoteEditorViewDelegate> delegate;
 
+-(void)refreshViewFromModel;
+
 @end

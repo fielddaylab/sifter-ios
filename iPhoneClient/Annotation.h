@@ -10,7 +10,6 @@
 #import <MapKit/MapKit.h>
 #import "Media.h"
 #import "NearbyObjectProtocol.h"
-#import "Location.h"
 
 @class Note;
 
@@ -22,7 +21,6 @@
     UIImage *icon;
 	nearbyObjectKind kind;
 	Note *note;
-    Location *location;
 }
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
@@ -32,7 +30,6 @@
 @property (nonatomic) UIImage *icon;
 @property(readwrite, assign) nearbyObjectKind kind;
 @property (nonatomic) Note *note;
-@property (nonatomic) Location *location;
 
 - (id)initWithCoordinate:(CLLocationCoordinate2D) coordinate;
 

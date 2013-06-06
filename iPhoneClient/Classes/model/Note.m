@@ -9,8 +9,6 @@
 #import "Note.h"
 #import "ARISAppDelegate.h"
 #import "AppModel.h"
-#import "NoteEditorViewController.h"
-#import "NoteDetailsViewController.h"
 #import "NearbyObjectsViewController.h"
 #import "NoteContent.h"
 
@@ -41,12 +39,14 @@
 
 - (void) display{
 	NSLog(@"WebPage: Display Self Requested");
-    
+#warning add?
+    /*
         //open up note viewer
         NoteDetailsViewController *dataVC = [[NoteDetailsViewController alloc] initWithNibName:@"NoteDetailsViewController" bundle:nil];
         dataVC.note = self;
         dataVC.delegate = self;
     [[RootViewController sharedRootViewController] displayNearbyObjectView:dataVC];
+     */
 }
 
 -(BOOL)isUploading{

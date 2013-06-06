@@ -90,7 +90,6 @@
     //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
     //   else                                                                                  mapView.mapType = MKMapTypeStandard;
     //  [self playerMoved];
-    [[AppServices sharedAppServices] updateServerMapViewed];
 }
 
 /*

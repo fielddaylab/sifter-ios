@@ -8,10 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AppModel.h"
-#import "Location.h"
 #import <MapKit/MapKit.h>
 #import "DDAnnotation.h"
-#import "NoteEditorViewController.h"
 
 @interface DropOnMapViewController : UIViewController <MKMapViewDelegate, UIActionSheetDelegate>{
     IBOutlet MKMapView *mapView;
@@ -26,7 +24,7 @@
 	NSTimer *refreshTimer;
     int noteId;
     DDAnnotation *myAnnotation;
-    NoteEditorViewController *__unsafe_unretained delegate;
+    __unsafe_unretained id delegate;
     Note *note;
 }
 

@@ -11,17 +11,10 @@
 #import <CoreMotion/CoreMotion.h>
 #import <CoreData/CoreData.h>
 #import "Game.h"
-#import "Location.h"
-#import "Item.h"
-#import "Node.h"
-#import "Npc.h"
 #import "Media.h"
-#import "WebPage.h"
-#import "Panoramic.h"
 #import "Note.h"
 #import "MediaCache.h"
 #import "UploadMan.h"
-#import "Overlay.h"
 
 @interface AppModel : NSObject <UIAccelerometerDelegate>
 {
@@ -182,11 +175,6 @@
 - (void)clearGameLists;
 
 - (Media *)mediaForMediaId:(int)mId;
-- (Item *)itemForItemId:(int)mId;
-- (Node *)nodeForNodeId:(int)mId;
-- (Npc *)npcForNpcId:(int)mId;
-- (WebPage *)webPageForWebPageID:(int)mId;
-- (Panoramic *)panoramicForPanoramicId:(int)mId;
 - (Note *)noteForNoteId:(int)mId playerListYesGameListNo:(BOOL)playerorGame;
 
 @end

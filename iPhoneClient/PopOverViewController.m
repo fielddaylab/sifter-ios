@@ -6,8 +6,8 @@
 //
 //
 
+#import "AppModel.h"
 #import "PopOverViewController.h"
-#import "RootViewController.h"
 
 BOOL shouldPlay;
 id<PopOverViewDelegate> delegate;

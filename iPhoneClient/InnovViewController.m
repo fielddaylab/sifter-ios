@@ -16,7 +16,6 @@
 #import "LoginViewController.h"
 
 #import "Note.h"
-#import "Location.h"
 
 #import "InnovPresentNoteDelegate.h"
 
@@ -32,7 +31,7 @@
 #define GAME_ID                         3411
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, LogInViewControllerDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, LogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -88,7 +87,6 @@
     game.showPlayerLocation       = YES;
     game.allowNoteComments        = YES;
     game.allowNoteLikes           = YES;
-    game.inventoryModel.weightCap = 0;
     game.rating                   = 5;
     game.pcMediaId                = 0;
     game.numPlayers               = 10;
@@ -97,7 +95,6 @@
     game.name                     = @"Note Share";
     game.authors                  = @"Jacob Hanshaw";
     game.mapType                  = @"STREET";
-    [game getReadyToPlay];
 #warning get rid of this and only use note model
     [AppModel sharedAppModel].currentGame = game;
     [AppModel sharedAppModel].playerId = 7;

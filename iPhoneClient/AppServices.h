@@ -7,20 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RootViewController.h"
 #import "AppModel.h"
 #import "MyCLController.h"
-#import "Location.h"
 #import "Game.h"
-#import "Tab.h"
-#import "Item.h"
-#import "Node.h"
-#import "Npc.h"
 #import "Media.h"
-#import "WebPage.h"
-#import "Panoramic.h"
-#import "Quest.h"
-#import "PanoramicMedia.h"
 #import "JSONResult.h"
 #import "JSONConnection.h"
 #import "JSONResult.h"
@@ -91,9 +81,6 @@ extern NSString *const kARISServerServicePackage;
 
 //Get Specific Data (technically, these being called is a sign that the "fetch game data" functions failed somewhere...)
 - (void)fetchMedia:(int)mediaId;
-- (Item *)fetchItem:(int)itemId;
-- (Node *)fetchNode:(int)nodeId;
-- (Npc *)fetchNpc:(int)npcId;
 - (Note *)fetchNote:(int)noteId;
 
 - (void)commitInventoryTrade:(int)gameId fromMe:(int)playerOneId toYou:(int)playerTwoId giving:(NSString *)giftsJSON receiving:(NSString *)receiptsJSON;
@@ -153,13 +140,6 @@ extern NSString *const kARISServerServicePackage;
 
 //Parse individual pieces of server response
 - (Game *)     parseGameFromDictionary:     (NSDictionary *)gameSource;
-- (Location *) parseLocationFromDictionary: (NSDictionary *)locationDictionary;
-- (Item *)     parseItemFromDictionary:     (NSDictionary *)itemDictionary;
-- (Node *)     parseNodeFromDictionary:     (NSDictionary *)nodeDictionary;
-- (Npc *)      parseNpcFromDictionary:      (NSDictionary *)npcDictionary;
-- (WebPage *)  parseWebPageFromDictionary:  (NSDictionary *)webPageDictionary;
-- (Panoramic *)parsePanoramicFromDictionary:(NSDictionary *)webPageDictionary;
-- (Tab *)      parseTabFromDictionary:      (NSDictionary *)tabDictionary;
 - (Note *)     parseNoteFromDictionary:     (NSDictionary *)noteDictionary;
 
 - (void)updateServerGameSelected;

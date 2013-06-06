@@ -33,10 +33,10 @@
 
 	if (jsonError.code) {
 		NSLog(@"JSONResult: SERVER RESPONSE ERROR - Error %d parsing JSON String: %@. There must be a problem with the server",jsonError.code, JSONString);
-
-		[[RootViewController sharedRootViewController] showServerAlertWithEmail:NSLocalizedString(@"BadServerResponseTitleKey",@"")
+#warning add?
+	/*	[[RootViewController sharedRootViewController] showServerAlertWithEmail:NSLocalizedString(@"BadServerResponseTitleKey",@"")
 							message:NSLocalizedString(@"BadServerResponseMessageKey",@"")
-							  details:[NSString stringWithFormat:@"JSONResult: Error Parsing String:\n\n%@",JSONString]];
+							  details:[NSString stringWithFormat:@"JSONResult: Error Parsing String:\n\n%@",JSONString]]; */
 	}
 	self.returnCode = [[resultDictionary objectForKey:@"returnCode"]intValue];
 	self.returnCodeDescription = [resultDictionary objectForKey:@"returnCodeDescription"];
@@ -59,9 +59,10 @@
 	else {
 		NSLog(@"JSONResult: SERVER RESPONSE ERROR - Return Code != 0 for Json String %@",JSONString);
 		
-		[[RootViewController sharedRootViewController] showServerAlertWithEmail:NSLocalizedString(@"BadServerResponseTitleKey",@"")
+#warning add?
+        /*	[[RootViewController sharedRootViewController] showServerAlertWithEmail:NSLocalizedString(@"BadServerResponseTitleKey",@"")
 							message:NSLocalizedString(@"BadServerResponseMessageKey",@"")
-								details:[NSString stringWithFormat:@"JSONResult: Error Parsing String:\n\n%@]",JSONString]];
+								details:[NSString stringWithFormat:@"JSONResult: Error Parsing String:\n\n%@]",JSONString]]; */
 	}
     
     self.userInfo = userData;

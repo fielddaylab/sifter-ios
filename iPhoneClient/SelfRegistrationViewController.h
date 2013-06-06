@@ -7,9 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AppModel.h"
-
-
+#import "LogInDelegate.h"
 
 @interface SelfRegistrationViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate> {
 	IBOutlet UITextField *userName;
@@ -20,6 +18,7 @@
 	
 }
 
+@property(nonatomic, weak) id<LogInDelegate> delegate;
 @property (nonatomic) IBOutlet UITextField *userName;
 @property (nonatomic) IBOutlet UITextField *password;
 @property (nonatomic) IBOutlet UITextField *email;
