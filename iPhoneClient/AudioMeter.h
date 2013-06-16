@@ -6,11 +6,8 @@
 //  Copyright 2010 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-
-@interface AudioMeter : UIView {
-
+@interface AudioMeter : UIView
+{
 	NSMutableArray *barViews;
 	int numberofBars;
 	int spacingBetweenBars;

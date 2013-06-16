@@ -6,7 +6,6 @@
 //  Copyright 2009 University of Wisconsin. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
 #import "Media.h"
@@ -85,10 +84,8 @@
 @property (nonatomic, strong) Media *iconMedia;
 @property (nonatomic, strong) Media *splashMedia;
 
-- (void) getReadyToPlay;
 - (NSComparisonResult)compareDistanceFromPlayer:(Game*)otherGame;
 - (NSComparisonResult)compareCalculatedScore:(Game*)otherGame;
 - (NSComparisonResult)compareTitle:(Game*)otherGame;
-- (void) clearLocalModels;
 
 @end

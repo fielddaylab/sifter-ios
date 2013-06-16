@@ -6,10 +6,8 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@interface TagCell : UITableViewCell
 
-@interface TagCell : UITableViewCell{
-    IBOutlet UILabel *nameLabel;
-}
 @property(nonatomic)IBOutlet UILabel *nameLabel;
+
 @end

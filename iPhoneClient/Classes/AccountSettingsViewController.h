@@ -6,9 +6,6 @@
 //  Copyright 2009 University of Wisconsin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-
 @interface AccountSettingsViewController : UIViewController {
 	IBOutlet UIButton *logoutButton;
 	IBOutlet UIButton *passButton;

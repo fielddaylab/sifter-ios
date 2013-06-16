@@ -6,7 +6,6 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
 @interface Player : NSObject {

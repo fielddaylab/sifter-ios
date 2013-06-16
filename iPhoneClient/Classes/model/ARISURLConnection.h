@@ -6,11 +6,8 @@
 //  Copyright 2009 Brian Deith. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-
-@interface ARISURLConnection : NSURLConnection {
-	
+@interface ARISURLConnection : NSURLConnection
+{	
 	SEL parser;
 }
 

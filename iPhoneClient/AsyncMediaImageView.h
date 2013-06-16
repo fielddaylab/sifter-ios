@@ -6,10 +6,8 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "Media.h"
 #import "ARISMoviePlayerViewController.h"
-
 
 @protocol AsyncMediaImageViewDelegate <NSObject>
 @optional

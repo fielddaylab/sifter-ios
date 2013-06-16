@@ -6,8 +6,6 @@
 //  Copyright 2010-2012 Crittercism Corp. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "CrittercismDelegate.h"
 

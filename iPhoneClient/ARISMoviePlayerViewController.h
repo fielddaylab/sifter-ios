@@ -6,12 +6,13 @@
 //  Copyright 2010 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-
-@interface ARISMoviePlayerViewController : MPMoviePlayerViewController {
+@interface ARISMoviePlayerViewController : MPMoviePlayerViewController
+{
     UIButton *mediaPlaybackButton;
 }
+
 @property(nonatomic, strong) UIButton *mediaPlaybackButton;
+
 @end

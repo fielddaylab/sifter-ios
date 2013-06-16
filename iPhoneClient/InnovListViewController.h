@@ -6,8 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 #import "InnovPresentNoteDelegate.h"
 
 @protocol InnovListViewDelegate <NSObject>

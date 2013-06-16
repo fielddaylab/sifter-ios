@@ -6,9 +6,7 @@
 //  Copyright 2011 University of Wisconsin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "NearbyObjectProtocol.h"
-
 
 @interface NearbyObjectsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
 {

@@ -629,7 +629,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

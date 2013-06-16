@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 
-#import <Foundation/Foundation.h>
 #import <zxing/common/Counted.h>
 #import <zxing/Result.h>
 #import <zxing/BinaryBitmap.h>

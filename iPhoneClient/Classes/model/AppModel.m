@@ -189,7 +189,6 @@
 -(void)clearUserDefaults
 {
 	NSLog(@"Clearing User Defaults");
-    if([AppModel sharedAppModel].currentGame) [[AppModel sharedAppModel].currentGame clearLocalModels];
     [AppModel sharedAppModel].currentGame = nil;
     
     [AppModel sharedAppModel].playerId       = 0;

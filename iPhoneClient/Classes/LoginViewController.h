@@ -6,10 +6,9 @@
 //  Copyright 2009 University of Wisconsin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "AppModel.h"
 #import <ZXingWidgetController.h>
-#import "LogInDelegate.h"
+#import "InnovLogInDelegate.h"
 
 @interface LoginViewController : UIViewController <ZXingDelegate>
 {
@@ -23,7 +22,7 @@
 	IBOutlet UILabel *newAccountMessageLabel;
 }
 
-@property(nonatomic, weak) id<LogInDelegate> delegate;
+@property(nonatomic, weak) id<InnovLogInDelegate> delegate;
 
 -(IBAction) newAccountButtonTouched: (id) sender;
 -(IBAction) loginButtonTouched: (id) sender;

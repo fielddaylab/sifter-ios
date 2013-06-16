@@ -6,9 +6,6 @@
 //  Copyright 2011 UW Madison. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-
 @interface Comment : NSObject {
     NSString *text;
     NSString *playerName;

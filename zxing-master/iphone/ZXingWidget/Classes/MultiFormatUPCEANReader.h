@@ -6,12 +6,10 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "FormatReader.h"
 
+@interface MultiFormatUPCEANReader : FormatReader { }
 
-@interface MultiFormatUPCEANReader : FormatReader {
-
-}
 - (id) init;
+
 @end

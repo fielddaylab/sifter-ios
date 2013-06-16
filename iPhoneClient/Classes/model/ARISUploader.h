@@ -6,12 +6,8 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-
-
-
-@interface ARISUploader : NSObject {
+@interface ARISUploader : NSObject
+{
     NSURL* urlToUpload;
     NSURL *serverURL;
     NSDictionary *userInfo;
@@ -23,8 +19,6 @@
     BOOL uploadDidSucceed;
     NSString *responseString;
     NSError *error;
-
-
 }
 
 - (id)initWithURLToUpload:(NSURL*) urlToUpload gameSpecific:(BOOL)game delegate:(id)delegate

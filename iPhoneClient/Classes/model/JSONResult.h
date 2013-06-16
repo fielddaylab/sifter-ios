@@ -6,9 +6,6 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-
 @interface JSONResult : NSObject {
 	int returnCode;
 	NSString *returnCodeDescription;

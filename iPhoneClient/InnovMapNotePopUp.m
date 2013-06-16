@@ -15,13 +15,16 @@
 #import "AsyncMediaImageView.h"
 #import "InnovPresentNoteDelegate.h"
 
+#define CORNER_RADIUS      9.0
 #define ANIMATION_TIME     0.5
-#define SCALED_DOWN_AMOUNT 0.01  // For example, 0.01 is one hundredth of the normal size
+#define SCALED_DOWN_AMOUNT 0.01
 
 @interface InnovMapNotePopUp ()
 {
+    __weak IBOutlet AsyncMediaImageView *imageView;
+    __weak IBOutlet UILabel *textLabel;
+    
     BOOL hiding;
-
 }
 
 @end
@@ -33,40 +36,25 @@
 - (id)init
 {
     self = [super init];
-    if (self) {
-        // Initialization code
+    if (self)
+    {
         NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"InnovMapNotePopUp" owner:self options:nil];
         InnovMapNotePopUp *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
         [self addSubview:view];
-#warning check if corner radius works and transform is necessary
+        
         self.layer.masksToBounds = YES;
-        self.layer.cornerRadius= 9.0f;
-        self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
+        self.layer.cornerRadius  = CORNER_RADIUS;
+        self.transform = CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
         
          [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
     }
     return self;
 }
 
-- (id)initWithMedia:(Media *) media andText:(NSString*) text
+- (IBAction) notePopUpPressed: (id) sender
 {
-    self = [super init];
-    if (self) {
-        // Initialization code
-        NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"InnovMapNotePopUp" owner:self options:nil];
-        InnovMapNotePopUp *view = [xibArray objectAtIndex:0];
-        self.frame = view.bounds;
-        [self addSubview:view];
-#warning check if corner radius works and transform is necessary
-        self.layer.masksToBounds = YES;
-        self.layer.cornerRadius= 9.0f;
-        self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
-        
-        [imageView loadImageFromMedia:media];
-        [textLabel setText:text];
-    }
-    return self;
+    [delegate presentNote:self.note];
 }
 
 - (void) refreshViewFromModel
@@ -131,19 +119,5 @@
         }
     }
 }
-
-- (IBAction)notePopUpPressed:(id)sender
-{
-    [delegate presentNote:self.note];
-}
-
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect
- {
- // Drawing code
- }
- */
 
 @end

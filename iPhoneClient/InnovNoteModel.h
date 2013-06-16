@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @class Tag;
 
 @interface InnovNoteModel : NSObject

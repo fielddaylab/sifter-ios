@@ -17,8 +17,6 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "TMQuiltViewCell.h"
 
 @class AsyncMediaImageView;

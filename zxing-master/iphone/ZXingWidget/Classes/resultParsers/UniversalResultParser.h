@@ -6,14 +6,9 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "ResultParser.h"
 
-@interface UniversalResultParser : ResultParser {
-  //NSMutableArray *parsers;
-}
-
-//@property(nonatomic,retain) NSMutableArray *parsers;
+@interface UniversalResultParser : ResultParser { }
 
 + (void)initWithDefaultParsers;
 + (ParsedResult *)parsedResultForString:(NSString *)s

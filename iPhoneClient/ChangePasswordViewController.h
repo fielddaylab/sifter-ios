@@ -6,10 +6,8 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-
-@interface ChangePasswordViewController : UIViewController<UITextFieldDelegate> {
+@interface ChangePasswordViewController : UIViewController<UITextFieldDelegate>
+{
     IBOutlet UITextField *userField;
     IBOutlet UITextField *prevPasswordField;
     IBOutlet UITextField *requestedPasswordField;
@@ -18,6 +16,7 @@
     IBOutlet UILabel *newPasswordLabel;
     IBOutlet UIButton *submitButton;
 }
+
 @property(nonatomic)IBOutlet UITextField *userField;
 @property(nonatomic)IBOutlet UITextField *prevPasswordField;
 @property(nonatomic)IBOutlet UITextField *requestedPasswordField;

@@ -35,8 +35,6 @@
         availableTags   = [[NSMutableArray alloc] initWithCapacity:8];
         searchTerms     = [[NSMutableArray alloc] initWithCapacity:8];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestGameNotesReceived:)      name:@"GameNoteListRefreshed"   object:nil];
-        // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestPlayerNotesReceived:) name:@"PlayerNoteListRefreshed" object:nil];
-#warning only receives game note list
     }
     return self;
 }
@@ -123,7 +121,7 @@
 }
 
 -(BOOL) noteShouldBeAvailable: (Note *) note
-{    
+{
     BOOL match = NO;
     for(Tag *tag in availableTags)
     {
@@ -164,7 +162,12 @@
 
 -(void) removeSearchTerm: (NSString *) term
 {
-    [searchTerms removeObject: term];
+    for(NSString *currentTerm in searchTerms)
+    {
+        if([term isEqualToString:currentTerm])
+            [searchTerms removeObject: currentTerm];
+    }
+    
     [self updateNotes:allNotes];
 }
 

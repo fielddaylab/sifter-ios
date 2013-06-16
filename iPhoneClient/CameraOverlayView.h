@@ -6,12 +6,7 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
-
-@interface CameraOverlayView : UIView {
-
-}
+@interface CameraOverlayView : UIView { }
 
 @property (weak, nonatomic) IBOutlet UIButton *libraryButton;
 

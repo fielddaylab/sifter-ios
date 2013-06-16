@@ -6,14 +6,9 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
-
 @protocol InnovNoteEditorViewDelegate
-
 @optional
 - (void) prepareToDisplayNote: (Note *) noteToAdd;
-//- (void) shouldAlsoExit:(BOOL) shouldExit;
 @end
 
 typedef enum {

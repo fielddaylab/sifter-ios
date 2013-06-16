@@ -6,7 +6,6 @@
 //  Copyright 2011 University of Wisconsin. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "AppModel.h"
 #import "MyCLController.h"
 #import "Game.h"

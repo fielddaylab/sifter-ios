@@ -6,7 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
 #import "AppModel.h"
 #import "CameraViewController.h"
 #import "AsyncMediaTouchableImageView.h"
@@ -15,7 +14,8 @@
 #import "UIImage+Scale.h"
 #import <ImageIO/ImageIO.h>
 
-@interface PlayerSettingsViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, AsyncMediaImageViewDelegate, UITextFieldDelegate> {
+@interface PlayerSettingsViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, AsyncMediaImageViewDelegate, UITextFieldDelegate>
+{
 	IBOutlet AsyncMediaImageView *playerPic;
     IBOutlet UITextField *playerNameField;
 	IBOutlet UIButton *playerPicCamButton;
@@ -26,7 +26,6 @@
 @property (nonatomic) IBOutlet UITextField *playerNameField;
 @property (nonatomic) IBOutlet UIButton *playerPicCamButton;
 @property (nonatomic) IBOutlet UIButton *saveButton;
-
 
 -(void)viewDidIntentionallyAppear;
 -(void) refreshViewFromModel;

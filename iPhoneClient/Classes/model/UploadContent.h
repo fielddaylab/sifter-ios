@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 UW Madison. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #include "NoteContentProtocol.h"
 #include "Media.h"

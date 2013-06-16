@@ -29,8 +29,8 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
+    if (self)
+    {
         NSArray *xibArray =  [[NSBundle mainBundle] loadNibNamed:@"InnovSettingsView" owner:self options:nil];
         InnovSettingsView *view = [xibArray objectAtIndex:0];
         self.frame = view.bounds;
@@ -52,12 +52,12 @@
     self.userInteractionEnabled = NO;
     
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setDuration:ANIMATION_DURATION];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
     scale.delegate = self;
+    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
+    [scale setToValue:  [NSNumber numberWithFloat:1.0f]];
+    [scale setDuration: ANIMATION_DURATION];
+    [scale setRemovedOnCompletion: NO];
+    [scale setFillMode: kCAFillModeForwards];
     [self.layer addAnimation:scale forKey:@"transform.scaleUp"];
 }
 
@@ -69,12 +69,12 @@
         self.userInteractionEnabled = NO;
         
         CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-        [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
-        [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-        [scale setDuration:ANIMATION_DURATION];
-        [scale setRemovedOnCompletion:NO];
-        [scale setFillMode:kCAFillModeForwards];
         scale.delegate = self;
+        [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
+        [scale setToValue:  [NSNumber numberWithFloat:0.0f]];
+        [scale setDuration: ANIMATION_DURATION];
+        [scale setRemovedOnCompletion: NO];
+        [scale setFillMode: kCAFillModeForwards];
         [self.layer addAnimation:scale forKey:@"transform.scaleDown"];
     }
     
@@ -146,16 +146,5 @@
     [defaults setObject:  [AppModel sharedAppModel].userName        forKey:@"userName"];
     [defaults setObject:  [AppModel sharedAppModel].displayName     forKey:@"displayName"];
 }
-
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect
- {
- // Drawing code
- }
- */
-
-
 
 @end

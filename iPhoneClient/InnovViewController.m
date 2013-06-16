@@ -11,27 +11,23 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
-#import "InnovNoteModel.h"
 #import "AppServices.h"
-#import "LoginViewController.h"
-
 #import "Note.h"
-
+#import "InnovNoteModel.h"
 #import "InnovPresentNoteDelegate.h"
 
+#import "InnovSettingsView.h"
+#import "LoginViewController.h"
 #import "InnovMapViewController.h"
 #import "InnovListViewController.h"
-
+#import "InnovSelectedTagsViewController.h"
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
-
-#import "InnovSettingsView.h"
-#import "InnovSelectedTagsViewController.h"
 
 #define GAME_ID                         3411
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, LogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -100,7 +96,6 @@
     [AppModel sharedAppModel].playerId = 7;
     [AppModel sharedAppModel].userName = @"Anonymous";
     [AppModel sharedAppModel].loggedIn = NO;
-#warning Make initially not logged in
     
 #warning find out why this is necessary
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
@@ -108,17 +103,17 @@
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
     [self addChildViewController:mapVC];
-    CGRect mapVCFrame = contentView.frame;
-    mapVCFrame.origin.x = 0;
-    mapVCFrame.origin.y = 0;
-    mapVC.view.frame = mapVCFrame;
+    CGRect contentVCFrame = contentView.frame;
+    contentVCFrame.origin.x = 0;
+    contentVCFrame.origin.y = 0;
+    mapVC.view.frame = contentVCFrame;
     [contentView addSubview:mapVC.view];
     [mapVC didMoveToParentViewController:self];
     
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
     [self addChildViewController:listVC];
-    listVC.view.frame = mapVCFrame;
+    listVC.view.frame = contentVCFrame;
 #warning Possibly add  [self addChildViewController:listVC];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -230,8 +225,6 @@
 
 - (void) fetchMoreNotes
 {
-#warning Player Note List needs to be decided
-    //  [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
 #warning implement proper searchers
 #warning fetch more notes each time
     switch (currentSearchAlgorithm)
@@ -259,12 +252,12 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-#warning should be case sensitive?
     [noteModel removeSearchTerm:currentSearchTerm];
     currentSearchTerm = searchText.lowercaseString;
     [noteModel addSearchTerm:currentSearchTerm];
 }
 
+//Enables search bar when search field is empty
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
 {
     UITextField *searchField = nil;
@@ -423,21 +416,18 @@
     
     UIViewController *coming = nil;
     UIViewController *going = nil;
-    //   NSString *newButtonTitle;
     NSString *newButtonImageName;
     UIViewAnimationTransition transition;
     
     CGRect contentFrame = contentView.frame;
     contentFrame.origin.x = 0;
     contentFrame.origin.y = 0;
-    // coming.view.frame = contentFrame;
     
     if (![contentView.subviews containsObject:mapVC.view])
     {
         coming = mapVC;
         going = listVC;
         transition = UIViewAnimationTransitionFlipFromLeft;
-  //      newButtonTitle = @"List";
         newButtonImageName = @"listModeIcon.png";
     }
     else
@@ -445,7 +435,6 @@
         coming = listVC;
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
-  //      newButtonTitle = @"Map";
         newButtonImageName = @"mapModeIcon.png";
     }
     
@@ -505,7 +494,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)dealloc

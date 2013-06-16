@@ -6,7 +6,6 @@
 //  Copyright 2009 Brian Deith. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 #import "Media.h"
 #import "NearbyObjectProtocol.h"

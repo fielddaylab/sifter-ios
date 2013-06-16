@@ -6,10 +6,10 @@
 //  Copyright 2011 University of Wisconsin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "AsyncMediaImageView.h"
 
-@interface NearbyObjectCell : UITableViewCell {
+@interface NearbyObjectCell : UITableViewCell
+{
 	UILabel *title;
 	UILabel *qty;
 	AsyncMediaImageView *iconView;

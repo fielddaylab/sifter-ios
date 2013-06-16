@@ -6,19 +6,17 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "LogInDelegate.h"
+#import "InnovLogInDelegate.h"
 
-@interface SelfRegistrationViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate> {
+@interface SelfRegistrationViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate>
+{
 	IBOutlet UITextField *userName;
 	IBOutlet UITextField *password;
 	IBOutlet UITextField *email;
 	IBOutlet UIButton *createAccountButton;
-
-	
 }
 
-@property(nonatomic, weak) id<LogInDelegate> delegate;
+@property(nonatomic, weak) id<InnovLogInDelegate> delegate;
 @property (nonatomic) IBOutlet UITextField *userName;
 @property (nonatomic) IBOutlet UITextField *password;
 @property (nonatomic) IBOutlet UITextField *email;

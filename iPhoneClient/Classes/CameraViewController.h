@@ -6,14 +6,12 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "AppModel.h"
 #import "CameraOverlayView.h"
 
-
-@interface CameraViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate> {
+@interface CameraViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+{
 	IBOutlet UIButton *cameraButton;
-	//IBOutlet UIButton *libraryButton;
     IBOutlet UIButton *profileButton;
 
 	NSData *mediaData;
@@ -42,7 +40,6 @@
 - (IBAction)cameraButtonTouchAction;
 - (IBAction)libraryButtonTouchAction:(id)sender;
 - (IBAction)profileButtonTouchAction;
-//- (BOOL) isVideoCameraAvailable;
--(void) uploadMedia;
+- (void) uploadMedia;
 - (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData;
 @end

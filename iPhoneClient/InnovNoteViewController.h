@@ -6,8 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 @protocol InnovNoteViewDelegate <NSObject>
 @required
 - (void)presentLogIn;

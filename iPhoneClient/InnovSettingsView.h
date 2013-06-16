@@ -6,8 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 #import "InnovDisplayProtocol.h"
 
 @protocol InnovSettingsViewDelegate <NSObject>
