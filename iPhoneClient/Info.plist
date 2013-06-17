@@ -34,7 +34,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb483707808362432</string>
-				<string>ARIS</string>
+				<string>YOI</string>
 			</array>
 		</dict>
 	</array>
@@ -44,6 +44,8 @@
 	<string></string>
 	<key>FacebookAppID</key>
 	<string>483707808362432</string>
+	<key>FacebookDisplayName</key>
+	<string>YOI</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>

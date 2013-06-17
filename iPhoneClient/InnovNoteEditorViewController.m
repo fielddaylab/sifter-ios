@@ -8,6 +8,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <CoreAudio/CoreAudioTypes.h>
+#import <Twitter/Twitter.h>
+#import <Social/Social.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
@@ -236,9 +238,6 @@
         [self.note.tags addObject:tag];
     }
     
-#warning make delegate method
-    //  if([delegate respondsToSelector:@selector(shouldAlsoExit:)]) [self.delegate shouldAlsoExit: YES];
-    
 #warning point where added to map may change
     if(!self.note.dropped)
     {
@@ -384,6 +383,74 @@
     [self.note.contents addObjectsFromArray:uploadContentsForNote];
     NSLog(@"InnovNoteEditorVC: Added %d upload content(s) to note",[uploadContentsForNote count]);
 }
+
+- (IBAction)shareButtonPressed:(id)sender
+{
+    [self refreshViewFromModel];
+    
+#warning unimplemented
+    NSString *imageURL;
+    for(int i = 0; i < [self.note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
+            imageURL = [noteContent getMedia].url;
+        }
+    }
+    
+    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareImage:imageURL withTitle: self.title andText:note.title];
+    //[self shareText:note.text];
+}
+
+- (BOOL) canSendTweet {
+    Class socialClass = NSClassFromString(@"SLComposeViewController");
+    if (socialClass != nil) {
+        return YES;
+    }
+    Class tweeterClass = NSClassFromString(@"TWTweetComposeViewController");
+    if (tweeterClass == nil) {
+        return NO;
+    }
+    if ([TWTweetComposeViewController canSendTweet]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void) shareText:(NSString *)theText {
+    if ([self canSendTweet]) {
+        Class socialClass = NSClassFromString(@"SLComposeViewController");
+        if (socialClass != nil) {
+            SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+            __weak SLComposeViewController *twitterControllerForBlock = twitterController;
+            twitterController.completionHandler = ^(SLComposeViewControllerResult result) {
+                [twitterControllerForBlock dismissViewControllerAnimated:YES completion:nil];
+                if (result == SLComposeViewControllerResultDone) {
+                    //possibly stop loading indicator
+                }
+                
+            };
+            [twitterController setInitialText:theText];
+            [self presentViewController:twitterController animated:YES completion:nil];
+            
+        } else {
+            
+            
+            TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+            [tweetViewController setInitialText:theText];
+            
+            tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result) {
+                if (result == TWTweetComposeViewControllerResultDone) {
+                } else if (result == TWTweetComposeViewControllerResultCancelled) {
+                }
+                [self dismissViewControllerAnimated:YES completion:nil];
+            };
+            
+            [self presentViewController:tweetViewController animated:YES completion:nil];
+        }
+    }
+}
+
 
 #pragma mark Audio Methods
 

@@ -17,4 +17,6 @@
 
 @property (nonatomic, weak) id<InnovListViewDelegate, InnovPresentNoteDelegate> delegate;
 
+- (void) animateInNote:(Note *) newNote;
+
 @end

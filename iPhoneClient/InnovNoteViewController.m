@@ -9,14 +9,18 @@
 #import "InnovNoteViewController.h"
 #import <CoreAudio/CoreAudioTypes.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Twitter/Twitter.h>
+#import <Social/Social.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
+#import "ARISAppDelegate.h"
 #import "InnovAudioEnums.h"
 #import "Note.h"
 #import "Tag.h"
 #import "Logger.h"
 
+#import "InnovCommentCell.h"
 #import "DAKeyboardControl.h"
 #import "AsyncMediaImageView.h"
 #import "InnovNoteEditorViewController.h"
@@ -391,6 +395,67 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)shareButtonPressed:(id)sender
 {
 #warning unimplemented
+    NSString *imageURL;
+    for(int i = 0; i < [self.note.contents count]; ++i)
+    {
+        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
+            imageURL = [noteContent getMedia].url;
+        }
+    }
+    
+    
+    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareImage:imageURL withTitle: self.title andText:note.title];
+    //[self shareText:note.text];
+}
+
+- (BOOL) canSendTweet {
+    Class socialClass = NSClassFromString(@"SLComposeViewController");
+    if (socialClass != nil) {
+        return YES;
+    }
+    Class tweeterClass = NSClassFromString(@"TWTweetComposeViewController");
+    if (tweeterClass == nil) {
+        return NO;
+    }
+    if ([TWTweetComposeViewController canSendTweet]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void) shareText:(NSString *)theText {
+    if ([self canSendTweet]) {
+        Class socialClass = NSClassFromString(@"SLComposeViewController");
+        if (socialClass != nil) {
+            SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+            __weak SLComposeViewController *twitterControllerForBlock = twitterController;
+            twitterController.completionHandler = ^(SLComposeViewControllerResult result) {
+                [twitterControllerForBlock dismissViewControllerAnimated:YES completion:nil];
+                if (result == SLComposeViewControllerResultDone) {
+                    //possibly stop loading indicator
+                }
+                
+            };
+            [twitterController setInitialText:theText];
+            [self presentViewController:twitterController animated:YES completion:nil];
+            
+        } else {
+            
+            
+            TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+            [tweetViewController setInitialText:theText];
+            
+            tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result) {
+                if (result == TWTweetComposeViewControllerResultDone) {
+                } else if (result == TWTweetComposeViewControllerResultCancelled) {
+                }
+                [self dismissViewControllerAnimated:YES completion:nil];
+            };
+            
+            [self presentViewController:tweetViewController animated:YES completion:nil];
+        }
+    }
 }
 
 #pragma mark Note Contents
@@ -573,27 +638,27 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         cell = [tableView dequeueReusableCellWithIdentifier:COMMENT_CELL_ID];
         if(!cell)
         {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID];
+            cell = [[InnovCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.textLabel.font =  [UIFont fontWithName:@"Helvetica" size:DEFAULT_TEXT_SIZE];
-            cell.textLabel.adjustsFontSizeToFitWidth = NO;
-            cell.textLabel.numberOfLines = 0;
+            ((InnovCommentCell *)cell).textView.font =  [UIFont fontWithName:@"Helvetica" size:DEFAULT_TEXT_SIZE];
         }
         
         if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
         {
-            cell.textLabel.textAlignment = NSTextAlignmentCenter;
-            cell.textLabel.text          = EXPAND_TEXT;
+            ((InnovCommentCell *)cell).textView.textAlignment = NSTextAlignmentCenter;
+            ((InnovCommentCell *)cell).textView.text          = EXPAND_TEXT;
         }
         else
         {
-            cell.textLabel.textAlignment = NSTextAlignmentLeft;
+            ((InnovCommentCell *)cell).textView.textAlignment = NSTextAlignmentLeft;
             if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-                cell.textLabel.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
+                ((InnovCommentCell *)cell).textView.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
             else
-                cell.textLabel.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
+                ((InnovCommentCell *)cell).textView.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
             
-            [cell.textLabel sizeToFit];
+            CGRect frame = ((InnovCommentCell *)cell).textView.frame;
+            frame.size.height = ((InnovCommentCell *)cell).textView.contentSize.height;
+            ((InnovCommentCell *)cell).textView.frame = frame;
         }
     }
     

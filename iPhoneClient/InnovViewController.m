@@ -173,7 +173,6 @@
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
-    
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -199,8 +198,10 @@
 - (void) animateInNote: (Note *) note
 {
 #warning could be different
-    if (![contentView.subviews containsObject:mapVC.view]) [self switchViews];
-    [mapVC showNotePopUpForNote:note];
+    if ([contentView.subviews containsObject:mapVC.view]) //[self switchViews];
+        [mapVC showNotePopUpForNote:note];
+    else
+        [listVC animateInNote:note];
     noteToAdd = nil;
 }
 
@@ -343,7 +344,6 @@
 
 - (void) presentLogIn
 {
-#warning unimplemented
     LoginViewController *logInVC = [[LoginViewController alloc] init];
     logInVC.delegate = self;
     [self.navigationController pushViewController:logInVC animated:YES];
@@ -501,7 +501,8 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload
+{
     contentView = nil;
     showTagsButton = nil;
     trackingButton = nil;

@@ -89,7 +89,9 @@
     //   if     ([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"SATELLITE"]) mapView.mapType = MKMapTypeSatellite;
     //   else if([[AppModel sharedAppModel].currentGame.mapType isEqualToString:@"HYBRID"])    mapView.mapType = MKMapTypeHybrid;
     //   else                                                                                  mapView.mapType = MKMapTypeStandard;
-    //  [self playerMoved];
+    [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
+	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
+    [self updatePlayerLocation];
 }
 
 /*

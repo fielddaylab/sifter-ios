@@ -7,6 +7,7 @@
 //
 
 #import "ARISAppDelegate.h"
+
 #import "InnovViewController.h"
 
 @implementation ARISAppDelegate
@@ -16,6 +17,7 @@ int steps = 0;
 
 @synthesize window;
 @synthesize player;
+@synthesize simpleFacebookShare;
 
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
@@ -33,6 +35,8 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    
+    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Simple Share Demo" appUrl:@"http://www.arisgames.org"];
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
@@ -61,6 +65,25 @@ void uncaughtExceptionHandler(NSException *exception) {
     [Crittercism enableWithAppID: @"5101a46d59e1bd498c000002"];
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    if (!url)
+        return NO;
+    
+    NSString *strPath = [[url host] lowercaseString];
+    if ([strPath isEqualToString:@"games"] || [strPath isEqualToString:@"game"])
+    {
+        NSString *gameID = [url lastPathComponent];
+        [[AppServices sharedAppServices] fetchOneGameGameList:[gameID intValue]];
+    }
+    return YES;
+    //return [simpleFacebookShare handleOpenURL:url];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [simpleFacebookShare handleOpenURL:url];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
 	NSLog(@"ARIS: Application Became Active");
@@ -71,6 +94,8 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[AppServices sharedAppServices] fetchOneGameGameList:[AppModel sharedAppModel].fallbackGameId];
         
     [[[AppModel sharedAppModel]uploadManager] checkForFailedContent];
+    
+    [simpleFacebookShare handleDidBecomeActive];
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
@@ -90,6 +115,8 @@ void uncaughtExceptionHandler(NSException *exception) {
 	NSLog(@"ARIS: Terminating Application");
 	[[AppModel sharedAppModel] saveUserDefaults];
     [[AppModel sharedAppModel] saveCOREData];
+    
+    [simpleFacebookShare close];
 }
 
 - (void)startMyMotionDetect
@@ -177,20 +204,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)vibrate
 {
 	AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);  
-}
-
-// handle opening ARIS using custom URL of form ARIS://?game=397 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
-    if (!url) {  return NO; }
-
-    NSString *strPath = [[url host] lowercaseString];
-    if ([strPath isEqualToString:@"games"] || [strPath isEqualToString:@"game"])
-    {
-        NSString *gameID = [url lastPathComponent];
-        [[AppServices sharedAppServices] fetchOneGameGameList:[gameID intValue]];
-    }
-    return YES;
 }
 
 #pragma mark Memory Management

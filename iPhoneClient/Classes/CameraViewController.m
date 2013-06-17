@@ -92,7 +92,7 @@
     picker = [[UIImagePickerController alloc]init];
     picker.delegate = self;
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.allowsEditing = NO;
+    picker.allowsEditing = YES;
 	picker.showsCameraControls = YES;
     picker.cameraOverlayView = overlay;
     overlay.alpha = 0;

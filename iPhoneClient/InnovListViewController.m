@@ -22,6 +22,8 @@
 #define CELL_X_MARGIN 5
 #define CELL_Y_MARGIN 5
 
+#define ANIMATION_TIME     0.5
+
 static NSString * const CELL_ID = @"Cell";
 
 @interface InnovListViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate>
@@ -40,9 +42,8 @@ static NSString * const CELL_ID = @"Cell";
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+    if (self) 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteList:) name:@"NotesAvailableChanged" object:nil];
-    }
     return self;
 }
 
@@ -68,6 +69,49 @@ static NSString * const CELL_ID = @"Cell";
     [self.view addSubview:quiltView];
     
     [quiltView reloadData];
+}
+
+- (void) animateInNote:(Note *) newNote
+{
+    
+
+    NSMutableArray *mutableNotes = [NSMutableArray arrayWithArray:notes];
+    int index = [notes count]-1;
+    Note *note = [notes objectAtIndex:index];
+    /*
+     //Use if the note won't always be the last note
+    for(int i = 0; i < [mutableNotes count]; ++i)
+    {
+        note = [mutableNotes objectAtIndex:i];
+        if(note.noteId == newNote.noteId)
+        {
+            index = i;
+            [mutableNotes removeObjectAtIndex:index];
+            break;
+        }
+    }
+    */
+    notes = [mutableNotes copy];
+    [quiltView reloadData];
+    /*
+     //Use if the note won't always be the last note
+    int row = index/NUM_COLUMNS;
+    float topOfNewCell = row * CELL_HEIGHT;
+    float offsetToCenter = quiltView.frame.size.height/2 - CELL_HEIGHT/2;
+    float desiredLocation = topOfNewCell;
+    if(offsetToCenter < topOfNewCell) desiredLocation += offsetToCenter;
+    if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
+     */
+    float desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
+    quiltView.contentOffset = CGPointMake(0, desiredLocation);
+    
+    [mutableNotes addObject:note];
+    
+    [UIView beginAnimations:@"animationInNote" context:NULL];
+    [UIView setAnimationDuration:ANIMATION_TIME];
+    [quiltView reloadData];
+    [UIView commitAnimations];
+    
 }
 
 - (void) updateNoteList: (NSNotification *) notification

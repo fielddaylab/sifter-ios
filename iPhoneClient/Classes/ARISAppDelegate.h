@@ -18,15 +18,17 @@
 
 #import "Crittercism.h"
 
+#import "SimpleFacebookShare.h"
 
-
-@interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate> {
+@interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
+{
 	UIWindow *window;
     AVAudioPlayer *player;
 }
 
 @property (nonatomic) UIWindow *window;
 @property (nonatomic, strong) AVAudioPlayer *player;
+@property (nonatomic, strong) SimpleFacebookShare *simpleFacebookShare;
 
 - (void) vibrate;
 - (void) playAudioAlert:(NSString*)wavFileName shouldVibrate:(BOOL)shouldVibrate;

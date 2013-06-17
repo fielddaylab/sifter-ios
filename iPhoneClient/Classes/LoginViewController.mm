@@ -21,9 +21,7 @@
 {
     self = [super initWithNibName:nibName bundle:nibBundle];
     if (self)
-    {
         self.title = NSLocalizedString(@"LoginTitleKey", @"");
-    }
     return self;
 }
 
@@ -75,13 +73,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(IBAction)QRButtonTouched
-{
-    ZXingWidgetController *widController = [[ZXingWidgetController alloc] initWithDelegate:self showCancel:YES OneDMode:NO];
-    widController.readers = [[NSMutableSet alloc ] initWithObjects:[[QRCodeReader alloc] init], nil];
-    [self presentModalViewController:widController animated:NO];
-}
-
 -(void)changePassTouch
 {
     ForgotViewController *forgotPassViewController = [[ForgotViewController alloc] initWithNibName:@"ForgotViewController" bundle:[NSBundle mainBundle]];
@@ -93,42 +84,6 @@
     SelfRegistrationViewController *selfRegistrationViewController = [[SelfRegistrationViewController alloc] initWithNibName:@"SelfRegistration" bundle:[NSBundle mainBundle]];
     selfRegistrationViewController.delegate = self.delegate;
     [[self navigationController] pushViewController:selfRegistrationViewController animated:NO];
-}
-
-- (void)zxingController:(ZXingWidgetController*)controller didScanResult:(NSString *)result
-{
-    [self dismissModalViewControllerAnimated:NO];
-        NSArray *terms  = [result componentsSeparatedByString:@","];
-        if([terms count] > 1)
-        {
-            int gameId = 0;
-            bool create = NO;
-            bool museumMode = NO;
-            
-            if([terms count] > 0) create = [[terms objectAtIndex:0] boolValue];
-            if(create)
-            {
-                if([terms count] > 1) usernameField.text = [terms objectAtIndex:1]; //Group Name
-                if([terms count] > 2) gameId = [[terms objectAtIndex:2] intValue];
-                if([terms count] > 3) museumMode = [[terms objectAtIndex:3] boolValue];
-                [delegate createUserAndLoginWithGroup:usernameField.text andGameId:gameId inMuseumMode:museumMode];
-            }
-            else
-            {
-                if([terms count] > 1) usernameField.text = [terms objectAtIndex:1]; //Username
-                if([terms count] > 2) passwordField.text = [terms objectAtIndex:2]; //Password
-                if([terms count] > 3) gameId = [[terms objectAtIndex:3] intValue];
-                if([terms count] > 4) museumMode = [[terms objectAtIndex:4] boolValue];
-                [delegate attemptLoginWithUserName:usernameField.text andPassword:passwordField.text andGameId:gameId inMuseumMode:museumMode];
-            }
-        }
-        
-        [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)zxingControllerDidCancel:(ZXingWidgetController*)controller
-{
-    [self dismissModalViewControllerAnimated:NO];
 }
 
 @end
