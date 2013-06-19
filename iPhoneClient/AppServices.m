@@ -524,10 +524,8 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 }
 
 -(void)fetchPlayerNoteListAsync{
-    ///if([AppModel sharedAppModel].isGameNoteList)
     [self fetchGameNoteListAsynchronously:YES];
-    // else
-    [self fetchPlayerNoteListAsynchronously:YES];
+    //[self fetchPlayerNoteListAsynchronously:YES];
 }
 
 - (void)noteContentUploadDidfinish:(ARISUploader*)uploader {

@@ -9,17 +9,16 @@
 #import "InnovNoteViewController.h"
 #import <CoreAudio/CoreAudioTypes.h>
 #import <QuartzCore/QuartzCore.h>
-#import <Twitter/Twitter.h>
-#import <Social/Social.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
 #import "InnovAudioEnums.h"
 #import "Note.h"
 #import "Tag.h"
 #import "Logger.h"
 
+#import "InnovPopOverView.h"
+#import "InnovPopOverSocialContentView.h"
 #import "InnovCommentCell.h"
 #import "DAKeyboardControl.h"
 #import "AsyncMediaImageView.h"
@@ -42,17 +41,17 @@
 #define COMMENT_BAR_BUTTON_WIDTH    58
 
 #define DEFAULT_TEXT                @"Add a comment..."
-#define DEFAULT_TEXT_SIZE           14
+#define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
 #define DEFAULT_TEXTVIEW_MARGIN     8
 
 #define EXPAND_INDEX                 3
 #define EXPAND_TEXT                  @".   .   ."
 #define DEFAULT_MAX_VISIBLE_COMMENTS 5
-
+ 
 static NSString * const NOTE_CELL_ID    = @"NoteCell";
 static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
-@interface InnovNoteViewController ()<UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaImageViewDelegate, InnovNoteEditorViewDelegate>
+@interface InnovNoteViewController ()<UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, InnovNoteEditorViewDelegate>
 {
     __weak IBOutlet UITableView *noteTableView;
     
@@ -71,9 +70,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     Note *note;
     Note *noteComment;
     UIBarButtonItem *editButton;
-    //UIBarButtonItem *cancelButton;
-    
-    CGRect originalImageViewFrame;
     
     BOOL expanded;
 	InnovAudioViewerModeType mode;
@@ -107,12 +103,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     CGRect frame = [UIScreen mainScreen].applicationFrame;
     frame.size.height -= self.navigationController.navigationBar.frame.size.height;
     self.view.frame = frame;
-    
+
     editButton = [[UIBarButtonItem alloc] initWithTitle: @"Edit"
                                                   style: UIBarButtonItemStyleDone
                                                  target:self
                                                  action:@selector(editButtonTouchAction:)];
-    self.navigationItem.rightBarButtonItem = editButton;
     
     ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
     ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
@@ -138,7 +133,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
                                                                            COMMENT_BAR_CONTENT_HEIGHT)];
     addCommentTextView.delegate            = self;
     addCommentTextView.layer.cornerRadius  = 9.0f;
-    addCommentTextView.font                = [UIFont fontWithName:@"Helvetica" size:DEFAULT_TEXT_SIZE];
+    addCommentTextView.font                = DEFAULT_FONT;
     addCommentTextView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [addCommentBar addSubview:addCommentTextView];
     
@@ -170,28 +165,40 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     }];
     
     imageView = [[AsyncMediaImageView alloc] init];
-    imageView.frame = CGRectMake(IMAGE_X_MARGIN, IMAGE_Y_MARGIN, self.view.frame.size.width - 2 * IMAGE_X_MARGIN, self.view.frame.size.width - 2 * IMAGE_X_MARGIN);
-    imageView.delegate = self;
+    imageView.frame = CGRectMake(IMAGE_X_MARGIN,
+                                 IMAGE_Y_MARGIN,
+                                 self.view.frame.size.width - 2 * IMAGE_X_MARGIN,
+                                 self.view.frame.size.width - 2 * IMAGE_X_MARGIN);
     
-    usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, IMAGE_Y_MARGIN + imageView.frame.size.height, self.view.frame.size.width-4*BUTTON_WIDTH, BUTTON_HEIGHT)];
+    usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
+                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
+                                                              self.view.frame.size.width-4*BUTTON_WIDTH,
+                                                              BUTTON_HEIGHT)];
     usernameLabel.backgroundColor = [UIColor blackColor];
     usernameLabel.textColor       = [UIColor whiteColor];
     
-    playButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width,            IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    playButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width,
+                                                             IMAGE_Y_MARGIN + imageView.frame.size.height,
+                                                             BUTTON_WIDTH,
+                                                             BUTTON_HEIGHT)];
     playButton.backgroundColor = [UIColor blackColor];
     [playButton setTitle:@"PL" forState:UIControlStateNormal];
     [playButton setTitle:@"PL" forState:UIControlStateHighlighted];
 	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
+                                                             IMAGE_Y_MARGIN + imageView.frame.size.height,
+                                                             BUTTON_WIDTH,
+                                                             BUTTON_HEIGHT)];
     flagButton.backgroundColor = [UIColor blackColor];
-    //   [flagButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    //   [flagButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
     [flagButton setTitle:@"F" forState:UIControlStateNormal];
     [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH, IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH,
+                                                             IMAGE_Y_MARGIN + imageView.frame.size.height,
+                                                             BUTTON_WIDTH,
+                                                             BUTTON_HEIGHT)];
     likeButton.backgroundColor = [UIColor blackColor];
     [likeButton setImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
     [likeButton setImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
@@ -202,22 +209,26 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
     [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
     
-    shareButton = [[UIButton alloc] initWithFrame:CGRectMake(likeButton.frame.origin.x + BUTTON_WIDTH,  IMAGE_Y_MARGIN + imageView.frame.size.height, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    shareButton = [[UIButton alloc] initWithFrame:CGRectMake(likeButton.frame.origin.x + BUTTON_WIDTH,
+                                                             IMAGE_Y_MARGIN + imageView.frame.size.height,
+                                                             BUTTON_WIDTH,
+                                                             BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
     [shareButton setTitle:@"S" forState:UIControlStateNormal];
     [shareButton setTitle:@"S" forState:UIControlStateHighlighted];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT, self.view.frame.size.width, BUTTON_HEIGHT)];
+    captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0,
+                                                                   IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT,
+                                                                   self.view.frame.size.width,
+                                                                   BUTTON_HEIGHT)];
     captionTextView.delegate = self;
     captionTextView.userInteractionEnabled = NO;
-    captionTextView.font = [UIFont fontWithName:@"Helvetica" size:DEFAULT_TEXT_SIZE];
+    captionTextView.font = DEFAULT_FONT;
 }
 
-- (void)viewDidUnload {
-    imageView = nil;
-    captionTextView = nil;
-    playButton = nil;
+- (void)viewDidUnload
+{
     noteTableView = nil;
     addCommentBar = nil;
     addCommentTextView = nil;
@@ -232,13 +243,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [super viewWillAppear: animated];
     
-    captionTextView.text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+    if([AppModel sharedAppModel].playerId == self.note.creatorId)
+            self.navigationItem.rightBarButtonItem = editButton;
+    else
+            self.navigationItem.rightBarButtonItem = nil;
     
-    addCommentTextView.text = DEFAULT_TEXT;
+    addCommentTextView.text      = DEFAULT_TEXT;
     addCommentTextView.textColor = [UIColor lightGrayColor];
-    
-    imageView.userInteractionEnabled = YES;
-    originalImageViewFrame = imageView.frame;
     
     if([self.note.tags count] > 0)
         self.title = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
@@ -254,7 +265,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self updateButtonsForCurrentMode];
     
     [self refreshViewFromModel];
-    
 }
 
 #pragma mark UITextView methods
@@ -302,7 +312,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self.navigationController pushViewController:editVC animated:YES];
 }
 
-- (void) addCommentButtonPressed:(id)sender {
+- (void) addCommentButtonPressed:(id)sender
+{
     [addCommentTextView resignFirstResponder];
     
     if(![AppModel sharedAppModel].loggedIn)
@@ -394,75 +405,16 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)shareButtonPressed:(id)sender
 {
-#warning unimplemented
-    NSString *imageURL;
-    for(int i = 0; i < [self.note.contents count]; ++i)
-    {
-        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
-            imageURL = [noteContent getMedia].url;
-        }
-    }
-    
-    
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareImage:imageURL withTitle: self.title andText:note.title];
-    //[self shareText:note.text];
-}
-
-- (BOOL) canSendTweet {
-    Class socialClass = NSClassFromString(@"SLComposeViewController");
-    if (socialClass != nil) {
-        return YES;
-    }
-    Class tweeterClass = NSClassFromString(@"TWTweetComposeViewController");
-    if (tweeterClass == nil) {
-        return NO;
-    }
-    if ([TWTweetComposeViewController canSendTweet]) {
-        return YES;
-    }
-    return NO;
-}
-
-- (void) shareText:(NSString *)theText {
-    if ([self canSendTweet]) {
-        Class socialClass = NSClassFromString(@"SLComposeViewController");
-        if (socialClass != nil) {
-            SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-            __weak SLComposeViewController *twitterControllerForBlock = twitterController;
-            twitterController.completionHandler = ^(SLComposeViewControllerResult result) {
-                [twitterControllerForBlock dismissViewControllerAnimated:YES completion:nil];
-                if (result == SLComposeViewControllerResultDone) {
-                    //possibly stop loading indicator
-                }
-                
-            };
-            [twitterController setInitialText:theText];
-            [self presentViewController:twitterController animated:YES completion:nil];
-            
-        } else {
-            
-            
-            TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
-            [tweetViewController setInitialText:theText];
-            
-            tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result) {
-                if (result == TWTweetComposeViewControllerResultDone) {
-                } else if (result == TWTweetComposeViewControllerResultCancelled) {
-                }
-                [self dismissViewControllerAnimated:YES completion:nil];
-            };
-            
-            [self presentViewController:tweetViewController animated:YES completion:nil];
-        }
-    }
+    InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
+    socialContent.note = self.note;
+    InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
+    [self.view addSubview:popOver];
 }
 
 #pragma mark Note Contents
 
 - (void)refreshViewFromModel
 {
-#warning was playernotelist
     self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
     [self addCDUploadsToNote];
     [self addUploadsToComments];
@@ -481,7 +433,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             mode = kInnovAudioPlayerAudio;
             [self updateButtonsForCurrentMode];
         }
-#warning test moviePlayer Audio
     }
     
     [noteTableView reloadData];
@@ -527,7 +478,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     playButton.userInteractionEnabled = YES;
     
-#warning use new titles
+#warning use new images
     
     switch (mode) {
 		case kInnovAudioPlayerNoAudio:
@@ -603,7 +554,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         else
             text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
         
-        return [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN);
+        return [text sizeWithFont:DEFAULT_FONT constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN);
     }
 }
 
@@ -632,37 +583,39 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         CGRect frame = captionTextView.frame;
         frame.size.height = captionTextView.contentSize.height;
         captionTextView.frame = frame;
+        return cell;
     }
     else
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:COMMENT_CELL_ID];
+        InnovCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:COMMENT_CELL_ID];
         if(!cell)
         {
             cell = [[InnovCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            ((InnovCommentCell *)cell).textView.font =  [UIFont fontWithName:@"Helvetica" size:DEFAULT_TEXT_SIZE];
+            cell.textView.font = DEFAULT_FONT;
         }
         
         if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
         {
-            ((InnovCommentCell *)cell).textView.textAlignment = NSTextAlignmentCenter;
-            ((InnovCommentCell *)cell).textView.text          = EXPAND_TEXT;
+            cell.userInteractionEnabled = NO;
+            cell.textView.textAlignment = NSTextAlignmentCenter;
+            cell.textView.text          = EXPAND_TEXT;
         }
         else
         {
-            ((InnovCommentCell *)cell).textView.textAlignment = NSTextAlignmentLeft;
+            cell.userInteractionEnabled = YES;
+            cell.textView.textAlignment = NSTextAlignmentLeft;
             if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-                ((InnovCommentCell *)cell).textView.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
+                cell.textView.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
             else
-                ((InnovCommentCell *)cell).textView.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
+                cell.textView.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
             
-            CGRect frame = ((InnovCommentCell *)cell).textView.frame;
-            frame.size.height = ((InnovCommentCell *)cell).textView.contentSize.height;
-            ((InnovCommentCell *)cell).textView.frame = frame;
+            CGRect frame = cell.textView.frame;
+            frame.size.height = cell.textView.contentSize.height;
+            cell.textView.frame = frame;
         }
+        return cell;
     }
-    
-    return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

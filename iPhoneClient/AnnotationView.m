@@ -6,42 +6,59 @@
 //  Copyright 2009 Brian Deith. All rights reserved.
 //
 
+#import "AppModel.h"
+#import "ARISAppDelegate.h"
+#import "AsyncMediaImageView.h"
 #import "AnnotationView.h"
 #import "Annotation.h"
 #import "Media.h"
 #import "NearbyObjectProtocol.h"
 
+#define POINTER_LENGTH 10
+#define WIGGLE_DISTANCE 3.0
+#define WIGGLE_SPEED 0.3
+#define WIGGLE_FRAMELENGTH 0.05 //<-The lower = the faster
+#define ANNOTATION_MAX_WIDTH 300
+#define ANNOTATION_PADDING 5.0
+#define IMAGE_HEIGHT 30
+#define IMAGE_WIDTH 30
+
+@interface AnnotationView()
+{
+    CGRect titleRect;
+	CGRect subtitleRect;
+	CGRect contentRect;
+	UIFont *titleFont;
+	UIFont *subtitleFont;
+	NSMutableData *asyncData;
+	UIImage *icon;
+	AsyncMediaImageView *iconView;
+    bool showTitle;
+    bool shouldWiggle;
+    float totalWiggleOffsetFromOriginalPosition;
+    float incrementalWiggleOffset;
+    float xOnSinWave;
+}
+
+@end
 
 @implementation AnnotationView
-
-@synthesize titleRect;
-@synthesize subtitleRect;
-@synthesize contentRect;
-@synthesize titleFont;
-@synthesize subtitleFont;
-@synthesize icon;
-@synthesize showTitle;
-@synthesize iconView;
-@synthesize shouldWiggle;
-@synthesize totalWiggleOffsetFromOriginalPosition;
-@synthesize incrementalWiggleOffset;
-@synthesize xOnSinWave;
 
 - (id)initWithAnnotation:(Annotation *)annotation reuseIdentifier:(NSString *)reuseIdentifier
 {
 	if (self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier])
     {
-        self.titleFont = [UIFont fontWithName:@"Arial" size:18];
-        self.subtitleFont = [UIFont fontWithName:@"Arial" size:12];
+        titleFont = [UIFont fontWithName:@"Arial" size:18];
+        subtitleFont = [UIFont fontWithName:@"Arial" size:12];
 #warning add in?
-      //  self.showTitle = (annotation.location.showTitle && annotation.title != nil && ![annotation.title isEqualToString:@""]) ? YES : NO;
-      //  self.shouldWiggle = annotation.location.wiggle;
-        self.totalWiggleOffsetFromOriginalPosition = 0;
-        self.incrementalWiggleOffset = 0;
-        self.xOnSinWave = 0;
+      //  showTitle = (annotation.location.showTitle && annotation.title != nil && ![annotation.title isEqualToString:@""]) ? YES : NO;
+      //  shouldWiggle = annotation.location.wiggle;
+        totalWiggleOffsetFromOriginalPosition = 0;
+        incrementalWiggleOffset = 0;
+        xOnSinWave = 0;
 
         CGRect imageViewFrame;
-        if(self.showTitle || annotation.kind == NearbyObjectPlayer) {
+        if(showTitle || annotation.kind == NearbyObjectPlayer) {
             //Find width of annotation
             CGSize titleSize = [annotation.title sizeWithFont:titleFont];
             CGSize subtitleSize = [annotation.subtitle sizeWithFont:subtitleFont];
@@ -80,28 +97,28 @@
         [iconView setFrame:imageViewFrame];
         iconView.contentMode = UIViewContentModeScaleAspectFit;
         
-        [self addSubview:self.iconView];
+        [self addSubview:iconView];
         
-        self.iconView.userInteractionEnabled = NO;
+        iconView.userInteractionEnabled = NO;
         
         //Only load the icon media if it is > 0, otherwise, lets load a default
         if (annotation.iconMediaId > 0) {
             Media *iconMedia = [[AppModel sharedAppModel] mediaForMediaId:annotation.iconMediaId];
-            [self.iconView loadImageFromMedia:iconMedia];
+            [iconView loadImageFromMedia:iconMedia];
         }
 #warning recomment in and fix numbers
  /*       else if (annotation.iconMediaId < 0)
         {
             if(annotation.iconMediaId == -1) ...
             else if(annotation.iconMediaId == -2) ...
-            else self.iconView.image = [UIImage imageNamed:@"noteicon.png"];
+            else iconView.image = [UIImage imageNamed:@"noteicon.png"];
         } */
-        else if (annotation.kind == NearbyObjectItem) self.iconView.image = [UIImage imageNamed:@"item.png"];
-        else if (annotation.kind == NearbyObjectNode) self.iconView.image = [UIImage imageNamed:@"page.png"];
-        else if (annotation.kind == NearbyObjectNPC) self.iconView.image = [UIImage imageNamed:@"npc.png"];
-        else if (annotation.kind == NearbyObjectPlayer) self.iconView.image = [UIImage imageNamed:@"player.png"];
-        else if (annotation.kind == NearbyObjectWebPage) self.iconView.image = [UIImage imageNamed:@"page.png"];
-        else if (annotation.kind == NearbyObjectNote) self.iconView.image = [UIImage imageNamed:@"noteicon.png"]; //annotation.icon
+        else if (annotation.kind == NearbyObjectItem)    iconView.image = [UIImage imageNamed:@"item.png"];
+        else if (annotation.kind == NearbyObjectNode)    iconView.image = [UIImage imageNamed:@"page.png"];
+        else if (annotation.kind == NearbyObjectNPC)     iconView.image = [UIImage imageNamed:@"npc.png"];
+        else if (annotation.kind == NearbyObjectPlayer)  iconView.image = [UIImage imageNamed:@"player.png"];
+        else if (annotation.kind == NearbyObjectWebPage) iconView.image = [UIImage imageNamed:@"page.png"];
+        else if (annotation.kind == NearbyObjectNote)    iconView.image = [UIImage imageNamed:@"noteicon.png"]; //annotation.icon
         
         self.opaque = NO; 
     }
@@ -114,43 +131,41 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    if (self.showTitle) {
+    if (showTitle) {
         CGMutablePathRef calloutPath = CGPathCreateMutable();
-        CGPoint pointerPoint = CGPointMake(self.contentRect.origin.x + 0.5 * self.contentRect.size.width,  self.contentRect.origin.y + self.contentRect.size.height + POINTER_LENGTH);
+        CGPoint pointerPoint = CGPointMake(contentRect.origin.x + 0.5 * contentRect.size.width,  contentRect.origin.y + contentRect.size.height + POINTER_LENGTH);
         CGFloat radius = 7.0;
-        CGPathMoveToPoint(calloutPath, NULL, CGRectGetMinX(self.contentRect) + radius, CGRectGetMinY(self.contentRect));
-        CGPathAddArc(calloutPath, NULL, CGRectGetMaxX(self.contentRect) - radius, CGRectGetMinY(self.contentRect) + radius, radius, 3 * M_PI / 2, 0, 0);
-        CGPathAddArc(calloutPath, NULL, CGRectGetMaxX(self.contentRect) - radius, CGRectGetMaxY(self.contentRect) - radius, radius, 0, M_PI / 2, 0);
+        CGPathMoveToPoint(calloutPath, NULL, CGRectGetMinX(contentRect) + radius, CGRectGetMinY(contentRect));
+        CGPathAddArc(calloutPath, NULL, CGRectGetMaxX(contentRect) - radius, CGRectGetMinY(contentRect) + radius, radius, 3 * M_PI / 2, 0, 0);
+        CGPathAddArc(calloutPath, NULL, CGRectGetMaxX(contentRect) - radius, CGRectGetMaxY(contentRect) - radius, radius, 0, M_PI / 2, 0);
         
-        CGPathAddLineToPoint(calloutPath, NULL, pointerPoint.x + 10.0, CGRectGetMaxY(self.contentRect));
+        CGPathAddLineToPoint(calloutPath, NULL, pointerPoint.x + 10.0, CGRectGetMaxY(contentRect));
         CGPathAddLineToPoint(calloutPath, NULL, pointerPoint.x, pointerPoint.y);
-        CGPathAddLineToPoint(calloutPath, NULL, pointerPoint.x - 10.0,  CGRectGetMaxY(self.contentRect));
+        CGPathAddLineToPoint(calloutPath, NULL, pointerPoint.x - 10.0,  CGRectGetMaxY(contentRect));
         
-        CGPathAddArc(calloutPath, NULL, CGRectGetMinX(self.contentRect) + radius, CGRectGetMaxY(self.contentRect) - radius, radius, M_PI / 2, M_PI, 0);
-        CGPathAddArc(calloutPath, NULL, CGRectGetMinX(self.contentRect) + radius, CGRectGetMinY(self.contentRect) + radius, radius, M_PI, 3 * M_PI / 2, 0);	
+        CGPathAddArc(calloutPath, NULL, CGRectGetMinX(contentRect) + radius, CGRectGetMaxY(contentRect) - radius, radius, M_PI / 2, M_PI, 0);
+        CGPathAddArc(calloutPath, NULL, CGRectGetMinX(contentRect) + radius, CGRectGetMinY(contentRect) + radius, radius, M_PI, 3 * M_PI / 2, 0);	
         CGPathCloseSubpath(calloutPath);
         
         CGContextAddPath(UIGraphicsGetCurrentContext(), calloutPath);
         [[UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:0.8] set];
         CGContextFillPath(UIGraphicsGetCurrentContext());
         [[UIColor whiteColor] set];
-        [self.annotation.title drawInRect:self.titleRect withFont:self.titleFont lineBreakMode:UILineBreakModeMiddleTruncation alignment:UITextAlignmentCenter];
-        [self.annotation.subtitle drawInRect:self.subtitleRect withFont:self.subtitleFont lineBreakMode:UILineBreakModeMiddleTruncation alignment:UITextAlignmentCenter];
+        [self.annotation.title drawInRect:titleRect withFont:titleFont lineBreakMode:UILineBreakModeMiddleTruncation alignment:UITextAlignmentCenter];
+        [self.annotation.subtitle drawInRect:subtitleRect withFont:subtitleFont lineBreakMode:UILineBreakModeMiddleTruncation alignment:UITextAlignmentCenter];
         CGContextAddPath(UIGraphicsGetCurrentContext(), calloutPath);
         CGContextStrokePath(UIGraphicsGetCurrentContext());
     }
     
-    if(self.shouldWiggle)
+    if(shouldWiggle)
     {
-        self.xOnSinWave += WIGGLE_SPEED;
+        xOnSinWave += WIGGLE_SPEED;
         float oldTotal = totalWiggleOffsetFromOriginalPosition;
-        self.totalWiggleOffsetFromOriginalPosition = sin(xOnSinWave) * WIGGLE_DISTANCE;
-        self.incrementalWiggleOffset = totalWiggleOffsetFromOriginalPosition-oldTotal;
-        self.iconView.frame = CGRectOffset(self.iconView.frame, 0.0f, self.incrementalWiggleOffset);
+        totalWiggleOffsetFromOriginalPosition = sin(xOnSinWave) * WIGGLE_DISTANCE;
+        incrementalWiggleOffset = totalWiggleOffsetFromOriginalPosition-oldTotal;
+        iconView.frame = CGRectOffset(iconView.frame, 0.0f, incrementalWiggleOffset);
         [self performSelector:@selector(setNeedsDisplay) withObject:nil afterDelay:WIGGLE_FRAMELENGTH];
     }
 }	
-
-
 
 @end

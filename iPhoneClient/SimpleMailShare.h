@@ -1,6 +1,6 @@
 //
-//  SimpleSafariShare.h
-//  simple-share-demo
+//  SimpleMailShare.h
+//  simple-share
 //
 //  Created by  on 30.05.12.
 //  Copyright 2012 Felix Schulze. All rights reserved.
@@ -18,10 +18,13 @@
 //  limitations under the License.
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 
-@interface SimpleSafariShare : NSObject
+@interface SimpleMailShare : NSObject <MFMailComposeViewControllerDelegate>
 
-- (void) openInSafari:(NSURL *)theUrl;
+- (BOOL) canSendMail;
+- (void) shareText:(NSString *)text subject:(NSString *)subject isHTML:(BOOL)isHTML;
+- (void) shareText:(NSString *)text subject:(NSString *)subject toRecipient:(NSString *)toRecipient isHTML:(BOOL)isHTML;
+- (void) shareText:(NSString *)text asHTML:(BOOL) html withImage:(NSData *)image andSubject:(NSString *) subject toRecipients:(NSArray *) recipients;
 
 @end

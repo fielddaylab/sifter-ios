@@ -204,8 +204,23 @@
 		DB071211176F8CAA0069E15A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB071210176F8CAA0069E15A /* Twitter.framework */; };
 		DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DB071213176F8CEC0069E15A /* SVProgressHUD.m */; };
 		DB071217176F8CEC0069E15A /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DB071215176F8CEC0069E15A /* SVProgressHUD.bundle */; };
-		DB07123B176FA6CA0069E15A /* libsimple-share.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB07123A176FA6CA0069E15A /* libsimple-share.a */; };
+		DB0712441770BCD70069E15A /* InnovNoteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712431770BCD60069E15A /* InnovNoteCell.m */; };
+		DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712511770EA870069E15A /* SimpleFacebookShare.m */; };
+		DB07125C1770EA870069E15A /* SimpleMailShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712551770EA870069E15A /* SimpleMailShare.m */; };
+		DB07125E1770EA870069E15A /* SimpleTwitterShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712591770EA870069E15A /* SimpleTwitterShare.m */; };
+		DB0712631770EE960069E15A /* ViewControllerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712621770EE960069E15A /* ViewControllerHelper.m */; };
 		DB0773C8174FE10C002D71ED /* InnovNoteModel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0773C6174FE10C002D71ED /* InnovNoteModel.m */; };
+		DB0F40601772175E00F19934 /* InnovPopOverView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0F405F1772175E00F19934 /* InnovPopOverView.m */; };
+		DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0F406217721A3B00F19934 /* InnovPopOverSocialContentView.m */; };
+		DB0F406517721B6F00F19934 /* InnovPopOverSocialContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB0F406417721B6F00F19934 /* InnovPopOverSocialContentView.xib */; };
+		DB0F406717721CCD00F19934 /* FB-f-Logo__blue.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F406617721CCC00F19934 /* FB-f-Logo__blue.png */; };
+		DB0F406917721CE000F19934 /* FB-f-Logo__blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F406817721CDF00F19934 /* FB-f-Logo__blue@2x.png */; };
+		DB0F406B17721D9000F19934 /* twitter-bird-white-on-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F406A17721D8F00F19934 /* twitter-bird-white-on-blue.png */; };
+		DB0F406D17721F5000F19934 /* mail_alt.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F406C17721F4F00F19934 /* mail_alt.png */; };
+		DB0F406F17721FBF00F19934 /* mail_alt96.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F406E17721FBE00F19934 /* mail_alt96.png */; };
+		DB0F40731772217B00F19934 /* Pinterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0F40701772217B00F19934 /* Pinterest.framework */; };
+		DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */; };
+		DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F4075177223F400F19934 /* pinterest_badge_red.png */; };
 		DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */; };
 		DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */; };
 		DB1A8AEA174D55B10052DDC6 /* InnovMapNotePopUp.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE9174D55B10052DDC6 /* InnovMapNotePopUp.xib */; };
@@ -538,15 +553,31 @@
 		DB071213176F8CEC0069E15A /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		DB071214176F8CEC0069E15A /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		DB071215176F8CEC0069E15A /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
-		DB071234176FA6CA0069E15A /* SimpleFacebookShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleFacebookShare.h; sourceTree = "<group>"; };
-		DB071235176FA6CA0069E15A /* SimpleGoogleChromeShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleGoogleChromeShare.h; sourceTree = "<group>"; };
-		DB071236176FA6CA0069E15A /* SimpleMailShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMailShare.h; sourceTree = "<group>"; };
-		DB071237176FA6CA0069E15A /* SimpleSafariShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleSafariShare.h; sourceTree = "<group>"; };
-		DB071238176FA6CA0069E15A /* SimpleTwitterShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTwitterShare.h; sourceTree = "<group>"; };
-		DB071239176FA6CA0069E15A /* ViewControllerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewControllerHelper.h; sourceTree = "<group>"; };
-		DB07123A176FA6CA0069E15A /* libsimple-share.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libsimple-share.a"; sourceTree = "<group>"; };
+		DB0712421770BCD60069E15A /* InnovNoteCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteCell.h; sourceTree = "<group>"; };
+		DB0712431770BCD60069E15A /* InnovNoteCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteCell.m; sourceTree = "<group>"; };
+		DB0712501770EA870069E15A /* SimpleFacebookShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleFacebookShare.h; sourceTree = "<group>"; };
+		DB0712511770EA870069E15A /* SimpleFacebookShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleFacebookShare.m; sourceTree = "<group>"; };
+		DB0712541770EA870069E15A /* SimpleMailShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMailShare.h; sourceTree = "<group>"; };
+		DB0712551770EA870069E15A /* SimpleMailShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleMailShare.m; sourceTree = "<group>"; };
+		DB0712581770EA870069E15A /* SimpleTwitterShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTwitterShare.h; sourceTree = "<group>"; };
+		DB0712591770EA870069E15A /* SimpleTwitterShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleTwitterShare.m; sourceTree = "<group>"; };
+		DB0712611770EE960069E15A /* ViewControllerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewControllerHelper.h; sourceTree = "<group>"; };
+		DB0712621770EE960069E15A /* ViewControllerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerHelper.m; sourceTree = "<group>"; };
 		DB0773C6174FE10C002D71ED /* InnovNoteModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteModel.m; sourceTree = "<group>"; };
 		DB0773C7174FE10C002D71ED /* InnovNoteModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteModel.h; sourceTree = "<group>"; };
+		DB0F405E1772175E00F19934 /* InnovPopOverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverView.h; sourceTree = "<group>"; };
+		DB0F405F1772175E00F19934 /* InnovPopOverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverView.m; sourceTree = "<group>"; };
+		DB0F406117721A3B00F19934 /* InnovPopOverSocialContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverSocialContentView.h; sourceTree = "<group>"; };
+		DB0F406217721A3B00F19934 /* InnovPopOverSocialContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverSocialContentView.m; sourceTree = "<group>"; };
+		DB0F406417721B6F00F19934 /* InnovPopOverSocialContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverSocialContentView.xib; sourceTree = "<group>"; };
+		DB0F406617721CCC00F19934 /* FB-f-Logo__blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FB-f-Logo__blue.png"; sourceTree = "<group>"; };
+		DB0F406817721CDF00F19934 /* FB-f-Logo__blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "FB-f-Logo__blue@2x.png"; sourceTree = "<group>"; };
+		DB0F406A17721D8F00F19934 /* twitter-bird-white-on-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-bird-white-on-blue.png"; sourceTree = "<group>"; };
+		DB0F406C17721F4F00F19934 /* mail_alt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mail_alt.png; sourceTree = "<group>"; };
+		DB0F406E17721FBE00F19934 /* mail_alt96.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mail_alt96.png; sourceTree = "<group>"; };
+		DB0F40701772217B00F19934 /* Pinterest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Pinterest.framework; sourceTree = "<group>"; };
+		DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PinterestSDKResources.bundle; sourceTree = "<group>"; };
+		DB0F4075177223F400F19934 /* pinterest_badge_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinterest_badge_red.png; sourceTree = "<group>"; };
 		DB1A8AE0174D4D7F0052DDC6 /* InnovSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovSettingsView.h; sourceTree = "<group>"; };
 		DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovSettingsView.m; sourceTree = "<group>"; };
 		DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovSettingsView.xib; sourceTree = "<group>"; };
@@ -636,7 +667,7 @@
 				AABD101B16B71787007278EF /* libCrittercism_v3_4_9.a in Frameworks */,
 				AA39E32116C4370D005A4E06 /* libPusher-combined.a in Frameworks */,
 				DDCF4110171A4EBC00F839FC /* FacebookSDK.framework in Frameworks */,
-				DB07123B176FA6CA0069E15A /* libsimple-share.a in Frameworks */,
+				DB0F40731772217B00F19934 /* Pinterest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,9 +873,9 @@
 			children = (
 				DDC495D916407DE500D4C063 /* PopOverViewController.h */,
 				DDC495DA16407DE500D4C063 /* PopOverViewController.m */,
+				DDC495DB16407DE500D4C063 /* PopOverViewController.xib */,
 				AA763154169B68A800860665 /* PopOverContentView.h */,
 				AA763155169B68A800860665 /* PopOverContentView.m */,
-				DDC495DB16407DE500D4C063 /* PopOverViewController.xib */,
 			);
 			name = PopOvers;
 			sourceTree = "<group>";
@@ -927,6 +958,8 @@
 		AB1CA8AA13C7CC9000131F81 /* Frameworks and Dependancies */ = {
 			isa = PBXGroup;
 			children = (
+				DB0F40701772217B00F19934 /* Pinterest.framework */,
+				DB0F40711772217B00F19934 /* Resources */,
 				DB071210176F8CAA0069E15A /* Twitter.framework */,
 				AB1660BC14E8754A002C6ACB /* FB Frameworks */,
 				AB9BA24813DFBAB1007470E3 /* libz.dylib */,
@@ -1003,6 +1036,12 @@
 				AB2FE578120A154B00758F8C /* LogoutButton.png */,
 				ABB925DC10C8587200B09506 /* camera.png */,
 				AB4151CA11595A2600DBA15F /* cameraBackground.jpg */,
+				DB0F406617721CCC00F19934 /* FB-f-Logo__blue.png */,
+				DB0F406817721CDF00F19934 /* FB-f-Logo__blue@2x.png */,
+				DB0F406A17721D8F00F19934 /* twitter-bird-white-on-blue.png */,
+				DB0F406C17721F4F00F19934 /* mail_alt.png */,
+				DB0F406E17721FBE00F19934 /* mail_alt96.png */,
+				DB0F4075177223F400F19934 /* pinterest_badge_red.png */,
 			);
 			name = Icons;
 			sourceTree = "<group>";
@@ -1145,17 +1184,19 @@
 			name = SVProgressHUD;
 			sourceTree = "<group>";
 		};
-		DB071233176FA6CA0069E15A /* include */ = {
+		DB0712401770B89A0069E15A /* SimpleShare */ = {
 			isa = PBXGroup;
 			children = (
-				DB071234176FA6CA0069E15A /* SimpleFacebookShare.h */,
-				DB071235176FA6CA0069E15A /* SimpleGoogleChromeShare.h */,
-				DB071236176FA6CA0069E15A /* SimpleMailShare.h */,
-				DB071237176FA6CA0069E15A /* SimpleSafariShare.h */,
-				DB071238176FA6CA0069E15A /* SimpleTwitterShare.h */,
-				DB071239176FA6CA0069E15A /* ViewControllerHelper.h */,
+				DB0712611770EE960069E15A /* ViewControllerHelper.h */,
+				DB0712621770EE960069E15A /* ViewControllerHelper.m */,
+				DB0712541770EA870069E15A /* SimpleMailShare.h */,
+				DB0712551770EA870069E15A /* SimpleMailShare.m */,
+				DB0712581770EA870069E15A /* SimpleTwitterShare.h */,
+				DB0712591770EA870069E15A /* SimpleTwitterShare.m */,
+				DB0712501770EA870069E15A /* SimpleFacebookShare.h */,
+				DB0712511770EA870069E15A /* SimpleFacebookShare.m */,
 			);
-			path = include;
+			name = SimpleShare;
 			sourceTree = "<group>";
 		};
 		DB0743951754FE060068A1DB /* Extern Libraries */ = {
@@ -1168,6 +1209,7 @@
 				AABD101316B7164C007278EF /* CrittercismSDK */,
 				AB549ED11047007B00A901EF /* JSON Framework */,
 				DB071212176F8CD60069E15A /* SVProgressHUD */,
+				DB0712401770B89A0069E15A /* SimpleShare */,
 				DB05E4191753F7FA00FB3BB4 /* DAKeyboardControl */,
 			);
 			name = "Extern Libraries";
@@ -1197,9 +1239,22 @@
 			name = "Header Files";
 			sourceTree = "<group>";
 		};
+		DB0F40711772217B00F19934 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		DB1A8AE8174D55570052DDC6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				DB0F405E1772175E00F19934 /* InnovPopOverView.h */,
+				DB0F405F1772175E00F19934 /* InnovPopOverView.m */,
+				DB0F406117721A3B00F19934 /* InnovPopOverSocialContentView.h */,
+				DB0F406217721A3B00F19934 /* InnovPopOverSocialContentView.m */,
+				DB0F406417721B6F00F19934 /* InnovPopOverSocialContentView.xib */,
 				DDC0E11C1721AF56007DBDAA /* InnovMapNotePopUp.h */,
 				DDC0E11D1721AF56007DBDAA /* InnovMapNotePopUp.m */,
 				DB1A8AE9174D55B10052DDC6 /* InnovMapNotePopUp.xib */,
@@ -1208,6 +1263,8 @@
 				DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */,
 				ABDA40B210506AF400823A94 /* AnnotationView.h */,
 				ABDA40B310506AF400823A94 /* AnnotationView.m */,
+				DB0712421770BCD60069E15A /* InnovNoteCell.h */,
+				DB0712431770BCD60069E15A /* InnovNoteCell.m */,
 				DB071204176F80220069E15A /* InnovCommentCell.h */,
 				DB071205176F80220069E15A /* InnovCommentCell.m */,
 			);
@@ -1252,8 +1309,6 @@
 		DD5C6AA71700D6FE00717031 /* InnovationViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				DB071233176FA6CA0069E15A /* include */,
-				DB07123A176FA6CA0069E15A /* libsimple-share.a */,
 				DBFEDCE0176115FB009C080A /* AppMedia */,
 				DB0743951754FE060068A1DB /* Extern Libraries */,
 				DBFEDCDA176102E9009C080A /* Models */,
@@ -1494,6 +1549,14 @@
 				DBFEDCD41760EEC9009C080A /* Default-568h@2x.png in Resources */,
 				DBFEDCE917611939009C080A /* TagCell.xib in Resources */,
 				DB071217176F8CEC0069E15A /* SVProgressHUD.bundle in Resources */,
+				DB0F406517721B6F00F19934 /* InnovPopOverSocialContentView.xib in Resources */,
+				DB0F406717721CCD00F19934 /* FB-f-Logo__blue.png in Resources */,
+				DB0F406917721CE000F19934 /* FB-f-Logo__blue@2x.png in Resources */,
+				DB0F406B17721D9000F19934 /* twitter-bird-white-on-blue.png in Resources */,
+				DB0F406D17721F5000F19934 /* mail_alt.png in Resources */,
+				DB0F406F17721FBF00F19934 /* mail_alt96.png in Resources */,
+				DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */,
+				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1615,6 +1678,13 @@
 				DBFEDCE717611939009C080A /* TagCell.m in Sources */,
 				DB071206176F80230069E15A /* InnovCommentCell.m in Sources */,
 				DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */,
+				DB0712441770BCD70069E15A /* InnovNoteCell.m in Sources */,
+				DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */,
+				DB07125C1770EA870069E15A /* SimpleMailShare.m in Sources */,
+				DB07125E1770EA870069E15A /* SimpleTwitterShare.m in Sources */,
+				DB0712631770EE960069E15A /* ViewControllerHelper.m in Sources */,
+				DB0F40601772175E00F19934 /* InnovPopOverView.m in Sources */,
+				DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,8 +28,8 @@
 - (void) close;
 - (void) handleDidBecomeActive;
 - (void) shareUrl:(NSURL *)theUrl;
-- (void) shareImage:(NSString *)imageURL withTitle: (NSString *) title andText:(NSString *) text;
 - (void) shareText:(NSString *)theText DEPRECATED_ATTRIBUTE;
+- (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString;
 - (void) getUsernameWithCompletionHandler:(void (^)(NSString *username, NSError *error))completionHandler;
 
 @end

@@ -17,6 +17,8 @@ int steps = 0;
 
 @synthesize window;
 @synthesize player;
+@synthesize simpleMailShare;
+@synthesize simpleTwitterShare;
 @synthesize simpleFacebookShare;
 
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -36,7 +38,10 @@ void uncaughtExceptionHandler(NSException *exception) {
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
-    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Simple Share Demo" appUrl:@"http://www.arisgames.org"];
+    simpleMailShare     = [[SimpleMailShare alloc] init];
+    simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
+    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"YOI" appUrl:@"http://dev.arisgames.org"];
+#warning fix url and appname
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);

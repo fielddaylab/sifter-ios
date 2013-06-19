@@ -18,6 +18,8 @@
 
 #import "Crittercism.h"
 
+#import "SimpleMailShare.h"
+#import "SimpleTwitterShare.h"
 #import "SimpleFacebookShare.h"
 
 @interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
@@ -28,6 +30,8 @@
 
 @property (nonatomic) UIWindow *window;
 @property (nonatomic, strong) AVAudioPlayer *player;
+@property (nonatomic, strong) SimpleMailShare     *simpleMailShare;
+@property (nonatomic, strong) SimpleTwitterShare  *simpleTwitterShare;
 @property (nonatomic, strong) SimpleFacebookShare *simpleFacebookShare;
 
 - (void) vibrate;

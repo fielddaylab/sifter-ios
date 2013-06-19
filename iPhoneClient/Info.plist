@@ -33,7 +33,8 @@
 			<string>org.arisgames</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb483707808362432</string>
+				<string>pin1432066</string>
+				<string>fb669647556383669</string>
 				<string>YOI</string>
 			</array>
 		</dict>
@@ -43,7 +44,7 @@
 	<key>Copyright (human-readable)</key>
 	<string></string>
 	<key>FacebookAppID</key>
-	<string>483707808362432</string>
+	<string>669647556383669</string>
 	<key>FacebookDisplayName</key>
 	<string>YOI</string>
 	<key>LSRequiresIPhoneOS</key>

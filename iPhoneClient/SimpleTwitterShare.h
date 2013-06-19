@@ -1,5 +1,5 @@
 //
-//  SimpleMailShare.h
+//  SimpleTwitterShare.h
 //  simple-share
 //
 //  Created by  on 30.05.12.
@@ -18,12 +18,11 @@
 //  limitations under the License.
 
 #import <Foundation/Foundation.h>
-#import <MessageUI/MessageUI.h>
 
-@interface SimpleMailShare : NSObject <MFMailComposeViewControllerDelegate>
 
-- (BOOL) canSendMail;
-- (void) shareText:(NSString *)text subject:(NSString *)subject isHTML:(BOOL)isHTML;
-- (void) shareText:(NSString *)text subject:(NSString *)subject toRecipient:(NSString *)toRecipient isHTML:(BOOL)isHTML;
+@interface SimpleTwitterShare : NSObject
+
+- (BOOL) canSendTweet;
+- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString;
 
 @end

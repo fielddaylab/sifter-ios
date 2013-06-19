@@ -398,7 +398,7 @@
         }
     }
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareImage:imageURL withTitle: self.title andText:note.title];
+    //[((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareImage:imageURL withTitle: self.title andText:note.title];
     //[self shareText:note.text];
 }
 
