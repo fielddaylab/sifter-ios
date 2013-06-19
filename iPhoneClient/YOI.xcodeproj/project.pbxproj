@@ -242,7 +242,6 @@
 		DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC495DB16407DE500D4C063 /* PopOverViewController.xib */; };
 		DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */; };
 		DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */; };
-		DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */; };
 		DDCF4110171A4EBC00F839FC /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF410F171A4EBC00F839FC /* FacebookSDK.framework */; };
 		DDCF4113171A4F3D00F839FC /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DDCF4112171A4F3D00F839FC /* FacebookSDKResources.bundle */; };
 		DDCF4115171A4F4800F839FC /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DDCF4114171A4F4800F839FC /* FBUserSettingsViewResources.bundle */; };
@@ -616,8 +615,6 @@
 		DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteEditorViewController.h; sourceTree = "<group>"; };
 		DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteEditorViewController.m; sourceTree = "<group>"; };
 		DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovNoteEditorViewController.xib; sourceTree = "<group>"; };
-		DDCD2A281704C38700B2E4D1 /* CameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraOverlayView.h; sourceTree = "<group>"; };
-		DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraOverlayView.m; sourceTree = "<group>"; };
 		DDCF410F171A4EBC00F839FC /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		DDCF4112171A4F3D00F839FC /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		DDCF4114171A4F4800F839FC /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
@@ -832,8 +829,6 @@
 				A7E39EAB0F5F60D000826198 /* CameraViewController.h */,
 				A7E39EAC0F5F60D000826198 /* CameraViewController.m */,
 				A7E39EC90F5F655E00826198 /* CameraViewController.xib */,
-				DDCD2A281704C38700B2E4D1 /* CameraOverlayView.h */,
-				DDCD2A291704C38700B2E4D1 /* CameraOverlayView.m */,
 			);
 			name = Camera;
 			sourceTree = "<group>";
@@ -1662,7 +1657,6 @@
 				DDD0603216C3019500C5F37E /* JSONKit.m in Sources */,
 				DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */,
 				DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */,
-				DDCD2A2A1704C38700B2E4D1 /* CameraOverlayView.m in Sources */,
 				DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */,
 				DDC0E11E1721AF56007DBDAA /* InnovMapNotePopUp.m in Sources */,
 				DB00697A17347403009A4A17 /* InnovSelectedTagsViewController.m in Sources */,

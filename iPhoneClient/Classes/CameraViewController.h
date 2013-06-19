@@ -7,7 +7,6 @@
 //
 
 #import "AppModel.h"
-#import "CameraOverlayView.h"
 
 @interface CameraViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
@@ -20,7 +19,6 @@
     id backView, parentDelegate, editView;
     int noteId;
     BOOL bringUpCamera;
-    IBOutlet CameraOverlayView *overlay;
     UIImagePickerController *picker;
 }
 

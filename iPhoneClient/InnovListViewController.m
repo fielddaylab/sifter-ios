@@ -73,12 +73,10 @@ static NSString * const CELL_ID = @"Cell";
 
 - (void) animateInNote:(Note *) newNote
 {
-    
-
     NSMutableArray *mutableNotes = [NSMutableArray arrayWithArray:notes];
-    int index = [notes count]-1;
-    Note *note = [notes objectAtIndex:index];
-    /*
+    int index;
+    Note *note;
+    
      //Use if the note won't always be the last note
     for(int i = 0; i < [mutableNotes count]; ++i)
     {
@@ -90,26 +88,27 @@ static NSString * const CELL_ID = @"Cell";
             break;
         }
     }
-    */
-    notes = [mutableNotes copy];
     [quiltView reloadData];
-    /*
+    
+    if(index < [mutableNotes count]) [mutableNotes insertObject:note atIndex:index];
+    else [mutableNotes addObject:note];
+    notes = [mutableNotes copy];
+    
      //Use if the note won't always be the last note
     int row = index/NUM_COLUMNS;
     float topOfNewCell = row * CELL_HEIGHT;
     float offsetToCenter = quiltView.frame.size.height/2 - CELL_HEIGHT/2;
     float desiredLocation = topOfNewCell;
-    if(offsetToCenter < topOfNewCell) desiredLocation += offsetToCenter;
+    if(offsetToCenter < topOfNewCell)
+        desiredLocation += offsetToCenter;
     if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
-     */
-    float desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
-    quiltView.contentOffset = CGPointMake(0, desiredLocation);
-    
-    [mutableNotes addObject:note];
+        desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
+    quiltView.contentOffset = CGPointMake(0, desiredLocation);
     [quiltView reloadData];
+    quiltView.contentOffset = CGPointMake(0, desiredLocation);
     [UIView commitAnimations];
     
 }

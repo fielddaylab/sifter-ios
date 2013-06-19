@@ -48,7 +48,6 @@
     if (!_photoView)
     {
         _photoView = [[AsyncMediaImageView alloc] init];
-        _photoView.contentMode = UIViewContentModeScaleAspectFill;
         _photoView.clipsToBounds = YES;
         [self addSubview:_photoView];
     }
@@ -60,7 +59,6 @@
     if (!_categoryIconView)
     {
         _categoryIconView = [[UIImageView alloc] init];
-        _categoryIconView.contentMode = UIViewContentModeScaleAspectFit;
         _categoryIconView.clipsToBounds = YES;
         [self addSubview:_categoryIconView];
     }

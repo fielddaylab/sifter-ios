@@ -95,7 +95,7 @@
 
         iconView = [[AsyncMediaImageView alloc] init];
         [iconView setFrame:imageViewFrame];
-        iconView.contentMode = UIViewContentModeScaleAspectFit;
+        iconView.contentMode = UIViewContentModeScaleAspectFill;
         
         [self addSubview:iconView];
         

@@ -21,6 +21,13 @@
 #import <ImageIO/ImageIO.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface CameraViewController()
+{
+    UIButton *libraryButton;
+}
+
+@end
+
 @implementation CameraViewController
 
 //@synthesize imagePickerController;
@@ -43,13 +50,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-    overlay.libraryButton.layer.borderWidth = 1.0f;
-    overlay.libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
-    overlay.libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
-    overlay.libraryButton.layer.cornerRadius = 15.0f;
+    libraryButton = [[UIButton alloc] initWithFrame:CGRectMake(121, 10, 78, 34)];
+    libraryButton.layer.borderWidth = 1.0f;
+    libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
+    libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+    libraryButton.layer.cornerRadius = 15.0f;
     
-	//[overlay.libraryButton setTitle: NSLocalizedString(@"CameralibraryButtonTitleKey",@"") forState: UIControlStateNormal];
-    //	[overlay.libraryButton setTitle: NSLocalizedString(@"CameraLibraryButtonTitleKey",@"") forState: UIControlStateHighlighted];
+	[libraryButton setImage: [UIImage imageNamed:@"camera_roll.png"] forState: UIControlStateNormal];
+    [libraryButton setImage: [UIImage imageNamed:@"camera_roll.png"] forState: UIControlStateHighlighted];
+    [libraryButton addTarget:self action:@selector(libraryButtonTouchAction:) forControlEvents:UIControlEventTouchUpInside];
 	
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateNormal];
 	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateHighlighted];	
@@ -94,11 +103,11 @@
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     picker.allowsEditing = YES;
 	picker.showsCameraControls = YES;
-    picker.cameraOverlayView = overlay;
-    overlay.alpha = 0;
+    picker.cameraOverlayView = libraryButton;
+    libraryButton.alpha = 0;
     [UIView animateWithDuration:0.5 delay:1.0 options:UIViewAnimationCurveEaseIn animations:^
     {
-        overlay.alpha = 1;
+        libraryButton.alpha = 1;
     } completion:nil];
     
 	[self presentModalViewController:picker animated:NO];
@@ -106,12 +115,12 @@
 
 - (IBAction)libraryButtonTouchAction:(id)sender {
 	NSLog(@"Library Button Pressed");
-    if (sender != overlay.libraryButton) picker = [[UIImagePickerController alloc]init];
+    if (sender != libraryButton) picker = [[UIImagePickerController alloc]init];
     picker.delegate = self;
     picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 	picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
-	if (sender != overlay.libraryButton) [self presentModalViewController:picker animated:NO];
+	if (sender != libraryButton) [self presentModalViewController:picker animated:NO];
 }
 
 - (IBAction)profileButtonTouchAction {
@@ -328,9 +337,8 @@
     return newJPEGData;
 }
 
-
-- (void)viewDidUnload {
-    overlay = nil;
+- (void)viewDidUnload
+{
     [super viewDidUnload];
 }
 @end
