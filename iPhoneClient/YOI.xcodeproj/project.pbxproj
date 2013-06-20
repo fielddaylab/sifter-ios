@@ -221,6 +221,7 @@
 		DB0F40731772217B00F19934 /* Pinterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0F40701772217B00F19934 /* Pinterest.framework */; };
 		DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */; };
 		DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F4075177223F400F19934 /* pinterest_badge_red.png */; };
+		DB14BABA1773673300BB1075 /* InnovRotationNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB14BAB91773673300BB1075 /* InnovRotationNavController.m */; };
 		DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */; };
 		DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */; };
 		DB1A8AEA174D55B10052DDC6 /* InnovMapNotePopUp.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE9174D55B10052DDC6 /* InnovMapNotePopUp.xib */; };
@@ -577,6 +578,8 @@
 		DB0F40701772217B00F19934 /* Pinterest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Pinterest.framework; sourceTree = "<group>"; };
 		DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PinterestSDKResources.bundle; sourceTree = "<group>"; };
 		DB0F4075177223F400F19934 /* pinterest_badge_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinterest_badge_red.png; sourceTree = "<group>"; };
+		DB14BAB81773673300BB1075 /* InnovRotationNavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovRotationNavController.h; sourceTree = "<group>"; };
+		DB14BAB91773673300BB1075 /* InnovRotationNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovRotationNavController.m; sourceTree = "<group>"; };
 		DB1A8AE0174D4D7F0052DDC6 /* InnovSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovSettingsView.h; sourceTree = "<group>"; };
 		DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovSettingsView.m; sourceTree = "<group>"; };
 		DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovSettingsView.xib; sourceTree = "<group>"; };
@@ -1309,6 +1312,8 @@
 				DBFEDCDA176102E9009C080A /* Models */,
 				DB0743971754FE680068A1DB /* Header Files */,
 				DB1A8AE8174D55570052DDC6 /* Views */,
+				DB14BAB81773673300BB1075 /* InnovRotationNavController.h */,
+				DB14BAB91773673300BB1075 /* InnovRotationNavController.m */,
 				DD235FC91700DCCB00795077 /* InnovViewController.h */,
 				DD235FCA1700DCCB00795077 /* InnovViewController.m */,
 				DD235FCB1700DCCB00795077 /* InnovViewController.xib */,
@@ -1679,6 +1684,7 @@
 				DB0712631770EE960069E15A /* ViewControllerHelper.m in Sources */,
 				DB0F40601772175E00F19934 /* InnovPopOverView.m in Sources */,
 				DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */,
+				DB14BABA1773673300BB1075 /* InnovRotationNavController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

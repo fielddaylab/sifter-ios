@@ -419,10 +419,6 @@
     NSString *newButtonImageName;
     UIViewAnimationTransition transition;
     
-    CGRect contentFrame = contentView.frame;
-    contentFrame.origin.x = 0;
-    contentFrame.origin.y = 0;
-    
     if (![contentView.subviews containsObject:mapVC.view])
     {
         coming = mapVC;
@@ -447,8 +443,6 @@
     [going.view removeFromSuperview];
     [going removeFromParentViewController];
     
-    //  [self addChildViewController:coming];
-    coming.view.frame = contentFrame; //setNeedsDisplay?
     [contentView addSubview:coming.view];
     [coming didMoveToParentViewController:self];
     
@@ -461,32 +455,6 @@
     [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateNormal];
     [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateHighlighted];
     [UIView commitAnimations];
-}
-
-#pragma mark Autorotation
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
--(BOOL)shouldAutorotate
-{
-    return YES;
-}
-
--(NSInteger)supportedInterfaceOrientations
-{
-    NSInteger mask = 0;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
-        mask |= UIInterfaceOrientationMaskLandscapeLeft;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
-        mask |= UIInterfaceOrientationMaskLandscapeRight;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
-        mask |= UIInterfaceOrientationMaskPortrait;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
-        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
-    return mask;
 }
 
 #pragma mark Free Memory
