@@ -6,38 +6,16 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import "AppModel.h"
+@protocol CameraViewControllerDelegate <NSObject>
+@required
+- (void) startSpinner;
+- (void) updateImageView:(NSData *) image;
+@end
 
 @interface CameraViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
-{
-	IBOutlet UIButton *cameraButton;
-    IBOutlet UIButton *profileButton;
 
-	NSData *mediaData;
-	NSString *mediaFilename;
-    BOOL showCamera;
-    id backView, parentDelegate, editView;
-    int noteId;
-    BOOL bringUpCamera;
-    UIImagePickerController *picker;
-}
+@property (assign)    int noteId;
+@property (nonatomic) UIViewController *backView;
+@property (nonatomic) id<CameraViewControllerDelegate> editView;
 
-@property (nonatomic) IBOutlet UIButton *cameraButton;
-@property (nonatomic) IBOutlet UIButton *profileButton;
-@property (nonatomic) NSData *mediaData;
-@property (nonatomic) NSString *mediaFilename;
-@property (nonatomic) id backView;
-@property (nonatomic) id parentDelegate;
-@property (nonatomic) id editView;
-@property(nonatomic)UIImagePickerController *picker;
-
-@property(readwrite,assign) BOOL showCamera;
-@property(readwrite,assign) int noteId;
-
-
-- (IBAction)cameraButtonTouchAction;
-- (IBAction)libraryButtonTouchAction:(id)sender;
-- (IBAction)profileButtonTouchAction;
-- (void) uploadMedia;
-- (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData;
 @end

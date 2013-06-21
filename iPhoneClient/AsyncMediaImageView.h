@@ -36,12 +36,15 @@
 @property(readwrite,assign)BOOL loaded;
 @property(readwrite,assign)BOOL dontUseImage;
 
-- (id)initWithFrame:(CGRect)aFrame andMedia:(Media *)aMedia;     
-- (id)initWithFrame:(CGRect)aFrame andMediaId:(int)mediaId;     
+- (id)   initWithFrame:(CGRect)aFrame andMedia:(Media *)aMedia;
+- (id)   initWithFrame:(CGRect)aFrame andMediaId:(int)mediaId;
 - (void) loadImageFromMedia:(Media *) aMedia;
 - (void) setImage:(UIImage*) image;
 - (void) updateViewWithNewImage:(UIImage*)image;
 - (void) reset;
+
+- (void) startSpinner;
+- (void) stopSpinner;
 
 @end
 

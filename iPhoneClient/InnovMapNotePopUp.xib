@@ -78,7 +78,6 @@
 						<string key="NSFrame">{{306, 455}, {20, 20}}</string>
 						<reference key="NSSuperview" ref="481218561"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -171,15 +170,6 @@
 					<object class="IBCocoaTouchEventConnection" key="connection">
 						<string key="label">notePopUpPressed:</string>
 						<reference key="source" ref="266017973"/>
-						<reference key="destination" ref="481218561"/>
-						<int key="IBEventType">7</int>
-					</object>
-					<int key="connectionID">24</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">notePopUpPressed:</string>
-						<reference key="source" ref="266017973"/>
 						<reference key="destination" ref="372490531"/>
 						<int key="IBEventType">7</int>
 					</object>
@@ -257,7 +247,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">30</int>
+			<int key="maxID">33</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

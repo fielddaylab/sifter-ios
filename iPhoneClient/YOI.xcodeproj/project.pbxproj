@@ -96,7 +96,6 @@
 		AA1E2D501652CC7500219535 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E2D4F1652CC7500219535 /* Security.framework */; };
 		AA39E32116C4370D005A4E06 /* libPusher-combined.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA39E32016C4370D005A4E06 /* libPusher-combined.a */; };
 		AA763156169B68A800860665 /* PopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA763155169B68A800860665 /* PopOverContentView.m */; };
-		AA99E61F16F0D80E00E22030 /* libZXingWidget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA99E61A16F0D7FF00E22030 /* libZXingWidget.a */; };
 		AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */ = {isa = PBXBuildFile; fileRef = AABD101716B7164C007278EF /* README_ABOUT_LINK_ERRORS */; };
 		AABD101B16B71787007278EF /* libCrittercism_v3_4_9.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AABD101A16B71787007278EF /* libCrittercism_v3_4_9.a */; };
 		AB0A5BA5120365420065CE68 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0A5BA3120365420065CE68 /* Localizable.strings */; };
@@ -197,6 +196,7 @@
 		D4D366DF111B6789009C4D00 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D366DE111B6789009C4D00 /* CFNetwork.framework */; };
 		DB00697417347303009A4A17 /* InnovSelectedTagsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBFCAE33173441C60060715F /* InnovSelectedTagsViewController.xib */; };
 		DB00697A17347403009A4A17 /* InnovSelectedTagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB00697917347403009A4A17 /* InnovSelectedTagsViewController.m */; };
+		DB01B1031774E6B1005E1784 /* cropBox.png in Resources */ = {isa = PBXBuildFile; fileRef = DB01B1021774E6B1005E1784 /* cropBox.png */; };
 		DB02C62F173AE6FD00A31D55 /* InnovNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */; };
 		DB02C630173AE6FD00A31D55 /* InnovNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB02C62E173AE6FD00A31D55 /* InnovNoteViewController.xib */; };
 		DB05E41C1753F7FA00FB3BB4 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = DB05E41B1753F7FA00FB3BB4 /* DAKeyboardControl.m */; };
@@ -221,7 +221,6 @@
 		DB0F40731772217B00F19934 /* Pinterest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0F40701772217B00F19934 /* Pinterest.framework */; };
 		DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */; };
 		DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0F4075177223F400F19934 /* pinterest_badge_red.png */; };
-		DB14BABA1773673300BB1075 /* InnovRotationNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB14BAB91773673300BB1075 /* InnovRotationNavController.m */; };
 		DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */; };
 		DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */; };
 		DB1A8AEA174D55B10052DDC6 /* InnovMapNotePopUp.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB1A8AE9174D55B10052DDC6 /* InnovMapNotePopUp.xib */; };
@@ -251,30 +250,6 @@
 		DDCF411B171A519E00F839FC /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF411A171A519E00F839FC /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		DDD0603216C3019500C5F37E /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD0603116C3019500C5F37E /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		AA99E61916F0D7FF00E22030 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = ZXingWidget;
-		};
-		AA99E61B16F0D7FF00E22030 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1D60398D13DF7CAD006F4B51;
-			remoteInfo = ZXingTests;
-		};
-		AA99E61D16F0D80700E22030 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = ZXingWidget;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		110EE63414CF0A2B0036360A /* mappoint_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mappoint_red.png; sourceTree = "<group>"; };
@@ -407,7 +382,6 @@
 		AA763154169B68A800860665 /* PopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopOverContentView.h; sourceTree = "<group>"; };
 		AA763155169B68A800860665 /* PopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopOverContentView.m; sourceTree = "<group>"; };
 		AA7A428A16B86C9E00E84252 /* UploadContent1.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UploadContent1.8.xcdatamodel; sourceTree = "<group>"; };
-		AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ZXingWidget.xcodeproj; path = "../zxing-master/iphone/ZXingWidget/ZXingWidget.xcodeproj"; sourceTree = "<group>"; };
 		AABD101416B7164C007278EF /* Crittercism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crittercism.h; sourceTree = "<group>"; };
 		AABD101516B7164C007278EF /* CrittercismDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrittercismDelegate.h; sourceTree = "<group>"; };
 		AABD101716B7164C007278EF /* README_ABOUT_LINK_ERRORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README_ABOUT_LINK_ERRORS; sourceTree = "<group>"; };
@@ -542,6 +516,7 @@
 		D4D366DE111B6789009C4D00 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		DB00697817347403009A4A17 /* InnovSelectedTagsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovSelectedTagsViewController.h; sourceTree = "<group>"; };
 		DB00697917347403009A4A17 /* InnovSelectedTagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovSelectedTagsViewController.m; sourceTree = "<group>"; };
+		DB01B1021774E6B1005E1784 /* cropBox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cropBox.png; sourceTree = "<group>"; };
 		DB02C62C173AE6FD00A31D55 /* InnovNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteViewController.h; sourceTree = "<group>"; };
 		DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteViewController.m; sourceTree = "<group>"; };
 		DB02C62E173AE6FD00A31D55 /* InnovNoteViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovNoteViewController.xib; sourceTree = "<group>"; };
@@ -578,8 +553,6 @@
 		DB0F40701772217B00F19934 /* Pinterest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Pinterest.framework; sourceTree = "<group>"; };
 		DB0F40721772217B00F19934 /* PinterestSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PinterestSDKResources.bundle; sourceTree = "<group>"; };
 		DB0F4075177223F400F19934 /* pinterest_badge_red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pinterest_badge_red.png; sourceTree = "<group>"; };
-		DB14BAB81773673300BB1075 /* InnovRotationNavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovRotationNavController.h; sourceTree = "<group>"; };
-		DB14BAB91773673300BB1075 /* InnovRotationNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovRotationNavController.m; sourceTree = "<group>"; };
 		DB1A8AE0174D4D7F0052DDC6 /* InnovSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovSettingsView.h; sourceTree = "<group>"; };
 		DB1A8AE1174D4D7F0052DDC6 /* InnovSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovSettingsView.m; sourceTree = "<group>"; };
 		DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovSettingsView.xib; sourceTree = "<group>"; };
@@ -637,7 +610,6 @@
 				DDCF411B171A519E00F839FC /* AdSupport.framework in Frameworks */,
 				DDCF4119171A519200F839FC /* Accounts.framework in Frameworks */,
 				DDCF4117171A518700F839FC /* Social.framework in Frameworks */,
-				AA99E61F16F0D80E00E22030 /* libZXingWidget.a in Frameworks */,
 				ABB2CDC613C7498A00F051E4 /* AddressBook.framework in Frameworks */,
 				AB7D277813C7556100F10AD5 /* AddressBookUI.framework in Frameworks */,
 				113F56DE14E4435300525BE6 /* AssetsLibrary.framework in Frameworks */,
@@ -709,7 +681,6 @@
 		29B97314FDCFA39411CA2CEA /* ARIS */ = {
 			isa = PBXGroup;
 			children = (
-				AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */,
 				DD5C6AA71700D6FE00717031 /* InnovationViewControllers */,
 				A7986D6A0F8FEC7200A5469F /* Core App */,
 				A760473F0FC0AA1E00219A53 /* NearbyObjects */,
@@ -878,15 +849,6 @@
 			name = PopOvers;
 			sourceTree = "<group>";
 		};
-		AA99E61516F0D7FF00E22030 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AA99E61A16F0D7FF00E22030 /* libZXingWidget.a */,
-				AA99E61C16F0D7FF00E22030 /* ZXingTests.octest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		AABD101316B7164C007278EF /* CrittercismSDK */ = {
 			isa = PBXGroup;
 			children = (
@@ -996,6 +958,7 @@
 		AB1EF609175FDE180073DBF4 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				DB01B1021774E6B1005E1784 /* cropBox.png */,
 				AB39C81F117E4009007AD31F /* microphone.png */,
 				AB82F78F11F0EAA300B8E3DC /* microphoneForeground.png */,
 				AB4150B51159291400DBA15F /* microphoneBackground.jpg */,
@@ -1220,8 +1183,6 @@
 				DBEDC710174BC8AB004C8966 /* TMQuiltView.m */,
 				DBEDC711174BC8AB004C8966 /* TMQuiltViewCell.h */,
 				DBEDC712174BC8AB004C8966 /* TMQuiltViewCell.m */,
-				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
-				DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */,
 			);
 			name = QuiltView;
 			sourceTree = "<group>";
@@ -1265,6 +1226,8 @@
 				DB0712431770BCD60069E15A /* InnovNoteCell.m */,
 				DB071204176F80220069E15A /* InnovCommentCell.h */,
 				DB071205176F80220069E15A /* InnovCommentCell.m */,
+				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
+				DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1312,8 +1275,6 @@
 				DBFEDCDA176102E9009C080A /* Models */,
 				DB0743971754FE680068A1DB /* Header Files */,
 				DB1A8AE8174D55570052DDC6 /* Views */,
-				DB14BAB81773673300BB1075 /* InnovRotationNavController.h */,
-				DB14BAB91773673300BB1075 /* InnovRotationNavController.m */,
 				DD235FC91700DCCB00795077 /* InnovViewController.h */,
 				DD235FCA1700DCCB00795077 /* InnovViewController.m */,
 				DD235FCB1700DCCB00795077 /* InnovViewController.xib */,
@@ -1351,7 +1312,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				AA99E61E16F0D80700E22030 /* PBXTargetDependency */,
 			);
 			name = YOI;
 			productName = ARIS;
@@ -1399,12 +1359,6 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* ARIS */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = AA99E61516F0D7FF00E22030 /* Products */;
-					ProjectRef = AA99E61416F0D7FF00E22030 /* ZXingWidget.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* YOI */,
@@ -1412,23 +1366,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		AA99E61A16F0D7FF00E22030 /* libZXingWidget.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libZXingWidget.a;
-			remoteRef = AA99E61916F0D7FF00E22030 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA99E61C16F0D7FF00E22030 /* ZXingTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ZXingTests.octest;
-			remoteRef = AA99E61B16F0D7FF00E22030 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		1D60588D0D05DD3D006BFB54 /* Resources */ = {
@@ -1557,6 +1494,7 @@
 				DB0F406F17721FBF00F19934 /* mail_alt96.png in Resources */,
 				DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */,
 				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
+				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1684,7 +1622,6 @@
 				DB0712631770EE960069E15A /* ViewControllerHelper.m in Sources */,
 				DB0F40601772175E00F19934 /* InnovPopOverView.m in Sources */,
 				DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */,
-				DB14BABA1773673300BB1075 /* InnovRotationNavController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1697,14 +1634,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		AA99E61E16F0D80700E22030 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ZXingWidget;
-			targetProxy = AA99E61D16F0D80700E22030 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		AB0A5BA3120365420065CE68 /* Localizable.strings */ = {

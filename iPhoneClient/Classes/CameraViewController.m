@@ -7,36 +7,50 @@
 //
 
 #import "CameraViewController.h"
-#import "ARISAppDelegate.h"
-#import "AppModel.h"
-#import "AppServices.h"
-#import <MobileCoreServices/UTCoreTypes.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <ImageIO/ImageIO.h>
+
 #import "InnovViewController.h"
 #import "InnovNoteEditorViewController.h"
-#import "AssetsLibrary/AssetsLibrary.h"
-#import "UIImage+Scale.h"
-#import "UIImage+Resize.h"
+
 #import "UIImage+fixOrientation.h"
 #import "NSMutableDictionary+ImageMetadata.h"
-#import <ImageIO/ImageIO.h>
-#import <QuartzCore/QuartzCore.h>
+
+#import "AppModel.h"
+#import "AppServices.h"
+#import "Logger.h"
+
+#define BUTTON_Y_OFFSET      10
+#define BUTTON_WIDTH         78
+#define BUTTON_HEIGHT        34
+#define BUTTON_CORNER_RADIUS 15.0f
+#define BUTTON_IMAGE_NAME    @"camera_roll.png"
+#define ANIMATE_DURATION     0.5
+#define ANIMATE_DELAY        1.0
+
+#define CROP_BOX_IMAGE_WIDTH     321
+#define CROP_BOX_IMAGE_HEIGHT    321
+
+#define CROP_IMAGE_WIDTH     320
+#define CROP_IMAGE_HEIGHT    320
 
 @interface CameraViewController()
 {
+    UIView *cameraOverlay;
     UIButton *libraryButton;
+    UIImagePickerController *picker;
+    
+    BOOL bringUpCamera;
+	NSData *mediaData;
+	NSString *mediaFilename;
 }
 
 @end
 
 @implementation CameraViewController
 
-//@synthesize imagePickerController;
-@synthesize cameraButton;
-@synthesize mediaData;
-@synthesize mediaFilename;
-@synthesize profileButton,parentDelegate,backView,showCamera, noteId,editView,picker;
+@synthesize noteId, backView, editView;
 
-//Override init for passing title and icon to tab bar
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
     if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
         self.title = NSLocalizedString(@"CameraTitleKey",@"");
@@ -46,101 +60,73 @@
     return self;
 }
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	
-    libraryButton = [[UIButton alloc] initWithFrame:CGRectMake(121, 10, 78, 34)];
-    libraryButton.layer.borderWidth = 1.0f;
-    libraryButton.layer.borderColor = [UIColor darkGrayColor].CGColor;
-    libraryButton.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
-    libraryButton.layer.cornerRadius = 15.0f;
-    
-	[libraryButton setImage: [UIImage imageNamed:@"camera_roll.png"] forState: UIControlStateNormal];
-    [libraryButton setImage: [UIImage imageNamed:@"camera_roll.png"] forState: UIControlStateHighlighted];
-    [libraryButton addTarget:self action:@selector(libraryButtonTouchAction:) forControlEvents:UIControlEventTouchUpInside];
-	
-	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateNormal];
-	[cameraButton setTitle: NSLocalizedString(@"CameraCameraButtonTitleKey",@"") forState: UIControlStateHighlighted];	
-    [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateNormal];
-    [profileButton setTitle:@"Take Profile Picture" forState:UIControlStateHighlighted];
-    
 
-		
-	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		self.cameraButton.enabled = NO;
-		self.cameraButton.alpha = 1.0;
-        self.profileButton.enabled = NO;
-        self.profileButton.alpha  = 1.0;
-	}
-	else {
-		self.cameraButton.enabled = NO;
-		self.cameraButton.alpha = 0.6;
-        self.profileButton.enabled = NO;
-        self.profileButton.alpha = 0.6;
-	}
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    cameraOverlay = [[UIView alloc] initWithFrame:self.view.frame];
 	
-	NSLog(@"Camera Loaded");
+    libraryButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2-BUTTON_WIDTH/2, BUTTON_Y_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT)];
+    libraryButton.layer.borderWidth  = 1.0f;
+    libraryButton.layer.borderColor  = [UIColor darkGrayColor].CGColor;
+    libraryButton.backgroundColor    = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+    libraryButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+    
+    [libraryButton setImage: [UIImage imageNamed:BUTTON_IMAGE_NAME] forState: UIControlStateNormal];
+    [libraryButton setImage: [UIImage imageNamed:BUTTON_IMAGE_NAME] forState: UIControlStateHighlighted];
+    [libraryButton addTarget:self action:@selector(showLibraryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [cameraOverlay addSubview:libraryButton];
+    
+    picker = [[UIImagePickerController alloc]init];
+    picker.delegate = self;
+    
+    UIImageView *cropBoxImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cropBox.png"]];
+    cropBoxImageView.center = cameraOverlay.center;
+    [cameraOverlay addSubview:cropBoxImageView];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+-(void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
     
     if(bringUpCamera){
         bringUpCamera = NO;
-
-    if(showCamera)
-        [self cameraButtonTouchAction];
-    else
-        [self libraryButtonTouchAction:self];
+        
+        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+            [self showCamera];
+        else
+            [self showLibraryButtonPressed:self];
     }
 }
 
-- (IBAction)cameraButtonTouchAction {
-	NSLog(@"Camera Button Pressed");
-    picker = [[UIImagePickerController alloc]init];
-    picker.delegate = self;
+- (void)showCamera
+{
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.allowsEditing = YES;
-	picker.showsCameraControls = YES;
-    picker.cameraOverlayView = libraryButton;
+    picker.cameraOverlayView   = cameraOverlay;
     libraryButton.alpha = 0;
-    [UIView animateWithDuration:0.5 delay:1.0 options:UIViewAnimationCurveEaseIn animations:^
-    {
-        libraryButton.alpha = 1;
-    } completion:nil];
+    [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
+     {
+         libraryButton.alpha = 1;
+     } completion:nil];
     
 	[self presentModalViewController:picker animated:NO];
 }
 
-- (IBAction)libraryButtonTouchAction:(id)sender {
-	NSLog(@"Library Button Pressed");
-    if (sender != libraryButton) picker = [[UIImagePickerController alloc]init];
-    picker.delegate = self;
+- (void)showLibraryButtonPressed:(id)sender
+{
     picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 	picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
 	if (sender != libraryButton) [self presentModalViewController:picker animated:NO];
 }
 
-- (IBAction)profileButtonTouchAction {
-	NSLog(@"Profile Button Pressed");
-    picker = [[UIImagePickerController alloc]init];
-    picker.delegate = self;
-
-	picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-	picker.mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:picker.sourceType];
-	picker.allowsEditing = NO;
-	picker.showsCameraControls = YES;
-	[self presentModalViewController:picker animated:NO];
-    [AppModel sharedAppModel].profilePic = YES;
-}
-
 #pragma mark UIImagePickerControllerDelegate Protocol Methods
 - (void)imagePickerController:(UIImagePickerController *)aPicker didFinishPickingMediaWithInfo:(NSDictionary  *)info
 {
-    
-    if([self.editView isKindOfClass:[InnovNoteEditorViewController class]]){
+    if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
+    {
         Note *note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.noteId]];
         for(int i = 0; i < [note.contents count]; ++i)
         {
@@ -159,138 +145,76 @@
         
     }
     
-	NSLog(@"CameraViewController: User Selected an Image or Video");
     [aPicker dismissModalViewControllerAnimated:NO];
     
-	NSString* mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-	if ([mediaType isEqualToString:@"public.image"]) {
+    [self.editView startSpinner];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
         
         UIImage* image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
         
-        //Image Data
-        self.mediaData = UIImageJPEGRepresentation(image, 1.0);
-
-        //Image Meta Data
-        NSMutableDictionary *newMetadata = [[NSMutableDictionary alloc] initWithDictionary:[info objectForKey:UIImagePickerControllerMediaMetadata]];
-        CLLocation * location = [AppModel sharedAppModel].playerLocation;
-        [newMetadata setLocation:location];
-        NSString *gameName = [AppModel sharedAppModel].currentGame.name;
-        NSString *descript = [[NSString alloc] initWithFormat: @"%@ %@: %@. %@: %@", NSLocalizedString(@"CameraImageTakenKey", @""), NSLocalizedString(@"CameraGameKey", @""), gameName, NSLocalizedString(@"CameraPlayerKey", @""), [[AppModel sharedAppModel] userName]];
-        [newMetadata setDescription: descript];
-        
         //Ignore since it's nonsense
-        [newMetadata setObject:@"X" forKey:@"Orientation"];
+        //   [[info objectForKey:UIImagePickerControllerMediaMetadata] setObject:@"X" forKey:@"Orientation"];
+        
+        //Image Data
+        mediaData = UIImageJPEGRepresentation(image, 1.0);
+        mediaData = [self dataWithEXIFUsingData:mediaData];
+        
+        UIImage *compressableImage = [UIImage imageWithData:mediaData];
+        compressableImage = [self cropImage:compressableImage];
+        NSData *compressedData = UIImageJPEGRepresentation(compressableImage, 0.5);
+        
+        NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+        NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+        [compressedData writeToURL:imageURL atomically:YES];
+        
+        //Do the upload
+        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.editView updateImageView:compressedData];
+        });
         
         // If image not selected from camera roll, save image with metadata to camera roll
         if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
         {
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
-            [al writeImageDataToSavedPhotosAlbum:self.mediaData metadata:newMetadata completionBlock:^(NSURL *assetURL, NSError *error)
+            [al writeImageDataToSavedPhotosAlbum:mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
              {
                  // once image is saved, get asset from assetURL
-                 [al assetForURL:assetURL resultBlock:^(ALAsset *asset)
-                  {
-                      // save image to temporary directory to be able to upload it
-                      ALAssetRepresentation *defaultRep = [asset defaultRepresentation];
-                      UIImage * image = [UIImage imageWithCGImage:[defaultRep fullResolutionImage]];
-                      
-                      
-                      NSData *imageData = UIImageJPEGRepresentation(image, 0.4);
-                  //    imageData = [self dataWithEXIFUsingData:imageData];
-                      self.mediaFilename = [NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-                      NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: self.mediaFilename];
-                   //
-                      [imageData writeToURL:imageURL atomically:YES];
-                      
-                      //Do the upload
-                      [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                      if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
-                      {
-                          [((InnovNoteEditorViewController *)self.editView) refreshViewFromModel];
-                      }
-                  }
+                 [al assetForURL:assetURL resultBlock:^(ALAsset *asset){}
                     failureBlock:^(NSError *error)
                   {
                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                       [alert show];
-                      //Do the upload
-                      NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-                      NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-                      if (self.mediaData != nil) [mediaData writeToURL:imageURL atomically:YES];
-                      [[[AppModel sharedAppModel] uploadManager] uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-                      if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
-                      {
-                          [((InnovNoteEditorViewController *)self.editView) refreshViewFromModel];
-                      }
                   }
                   ];
              }];
         }
-        else{
-            
-            NSData *data = [NSData dataWithContentsOfURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
-            NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-            NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-            [data writeToURL:imageURL atomically:YES];
-       
-            //Do the upload
-            [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:[info objectForKey:UIImagePickerControllerReferenceURL]];
-            if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
-            {
-                [((InnovNoteEditorViewController *)self.editView) refreshViewFromModel];
-            }
-        }
-	}
-	else if ([mediaType isEqualToString:@"public.movie"]){
-		NSLog(@"CameraViewController: Found a Movie");
-		NSURL *videoURL = [info objectForKey:UIImagePickerControllerMediaURL];
-		self.mediaData = [NSData dataWithContentsOfURL:videoURL];
-		self.mediaFilename = @"video.mp4";
-        
-        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeVideo withFileURL:videoURL];
-        
-    }
+    });
     
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-    NSLog(@"Finished saving image with error: %@", error);
-}
-
--(void) uploadMedia
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
+    [[Logger sharedLogger] logError:error];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)aPicker {
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)aPicker
+{
     [aPicker dismissModalViewControllerAnimated:NO];
+    
     if([backView isKindOfClass:[InnovViewController class]])
     {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
         [[AppModel sharedAppModel].gameNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];
     }
     [self.navigationController popToViewController:self.backView animated:YES];
-    //  [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-#pragma mark UINavigationControllerDelegate Protocol Methods
-- (void)navigationController:(UINavigationController *)navigationController
-	   didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-	//nada
-}
-
-- (void)navigationController:(UINavigationController *)navigationController
-	  willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-	//nada
-}
-
-#pragma mark Memory Management
-- (void)didReceiveMemoryWarning {
-    NSLog(@"CAMERA DID RECEIVE MEMORY WARNING!");
-    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superviewf
-}
-
-- (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData {
+- (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData
+{
     NSMutableData* newJPEGData = [[NSMutableData alloc] init];
     NSMutableDictionary* exifDict = [[NSMutableDictionary alloc] init];
     NSMutableDictionary* locDict = [[NSMutableDictionary alloc] init];
@@ -305,7 +229,14 @@
 	
     [exifDict setObject:datetime forKey:(NSString*)kCGImagePropertyExifDateTimeOriginal];
     [exifDict setObject:datetime forKey:(NSString*)kCGImagePropertyExifDateTimeDigitized];
-	
+    
+    NSString *gameName = [AppModel sharedAppModel].currentGame.name;
+    NSString *descript = [[NSString alloc] initWithFormat: @"%@ %@: %@. %@: %@", NSLocalizedString(@"CameraImageTakenKey", @""), NSLocalizedString(@"CameraGameKey", @""), gameName, NSLocalizedString(@"CameraPlayerKey", @""), [[AppModel sharedAppModel] userName]];
+    [exifDict setDescription: descript];
+    
+    //Ignore since it's nonsense
+	[exifDict setObject:@"X" forKey:@"Orientation"];
+    
     [locDict setObject:[AppModel sharedAppModel].playerLocation.timestamp forKey:(NSString*)kCGImagePropertyGPSTimeStamp];
 	
     if (exifLatitude <0.0){
@@ -337,8 +268,49 @@
     return newJPEGData;
 }
 
+- (UIImage *)cropImage:(UIImage *)oldImage
+{
+    double xOffset = 0;
+    double yOffset = 0;
+    
+    double tabBarHeight = [[UITabBarController alloc] init].tabBar.frame.size.height;
+    double pictureTakingHeight = [[UIScreen mainScreen] bounds].size.height - tabBarHeight;
+    double imagePixelsPerScreenPixelWidth;
+    double imagePixelsPerScreenPixelHeight;
+    if(oldImage.size.width < oldImage.size.height)
+    {
+        imagePixelsPerScreenPixelWidth  = oldImage.size.width /[[UIScreen mainScreen] bounds].size.width;
+        imagePixelsPerScreenPixelHeight = oldImage.size.height/pictureTakingHeight;
+        xOffset = -([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_WIDTH/2) * imagePixelsPerScreenPixelWidth;
+        yOffset = -(pictureTakingHeight/2-CROP_IMAGE_HEIGHT/2)                      * imagePixelsPerScreenPixelHeight;
+    }
+    else
+    {
+        imagePixelsPerScreenPixelWidth  = oldImage.size.width /pictureTakingHeight;
+        imagePixelsPerScreenPixelHeight = oldImage.size.height/[[UIScreen mainScreen] bounds].size.width;
+        xOffset = -(pictureTakingHeight/2-CROP_IMAGE_WIDTH/2)                        * imagePixelsPerScreenPixelWidth;
+        yOffset = -([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_HEIGHT/2) * imagePixelsPerScreenPixelHeight;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake( CROP_IMAGE_WIDTH  * imagePixelsPerScreenPixelWidth, CROP_IMAGE_HEIGHT * imagePixelsPerScreenPixelHeight), NO, 0.0);
+    [oldImage drawAtPoint:CGPointMake( xOffset, yOffset )
+                blendMode:kCGBlendModeCopy
+                    alpha:1.0];
+    UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return croppedImage;
+}
+
+#pragma mark Memory Management
+- (void)didReceiveMemoryWarning
+{
+    NSLog(@"CAMERA DID RECEIVE MEMORY WARNING!");
+    [super didReceiveMemoryWarning];
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
 }
+
 @end

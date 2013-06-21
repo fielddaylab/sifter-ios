@@ -8,7 +8,6 @@
 
 #import "ARISAppDelegate.h"
 
-#import "InnovRotationNavController.h"
 #import "InnovViewController.h"
 
 @implementation ARISAppDelegate
@@ -62,7 +61,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 	[[AppModel sharedAppModel] initUserDefaults];
 
     InnovViewController *innov = [[InnovViewController alloc] init];
-    InnovRotationNavController *nav = [[InnovRotationNavController alloc] initWithRootViewController:innov];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
     if([window respondsToSelector:@selector(setRootViewController:)])
         [window setRootViewController:nav];
     else

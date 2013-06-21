@@ -6,6 +6,8 @@
 //
 //
 
+@class Note;
+
 @protocol InnovNoteEditorViewDelegate
 @optional
 - (void) prepareToDisplayNote: (Note *) noteToAdd;
@@ -17,8 +19,6 @@ typedef enum {
 	kInnovAudioRecorderAudio,
 	kInnovAudioRecorderPlaying
 } InnovAudioRecorderModeType;
-
-@class Note;
 
 @interface InnovNoteEditorViewController : UIViewController
 

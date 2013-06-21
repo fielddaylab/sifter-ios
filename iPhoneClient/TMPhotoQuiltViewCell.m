@@ -22,6 +22,9 @@
 
 #import "AsyncMediaImageView.h"
 
+#define ICON_WIDTH  40
+#define ICON_HEIGHT 40
+
 @implementation TMPhotoQuiltViewCell
 
 @synthesize photoView = _photoView;
@@ -68,7 +71,7 @@
 - (void)layoutSubviews
 {
     self.photoView.frame = CGRectInset(self.bounds, xMargin, yMargin);
-    self.categoryIconView.frame = CGRectMake(xMargin, yMargin, 80, 80);
+    self.categoryIconView.frame = CGRectMake(xMargin+self.photoView.frame.size.width-ICON_WIDTH, yMargin, ICON_WIDTH, ICON_HEIGHT);
 }
 
 @end

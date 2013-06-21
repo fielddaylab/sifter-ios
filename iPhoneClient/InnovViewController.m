@@ -24,7 +24,7 @@
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 
-#define GAME_ID                         3411
+#define GAME_ID                         3427
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
 @interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {

@@ -124,6 +124,25 @@
     self.isLoading = NO;
 }
 
+- (void)startSpinner
+{
+    if(!spinner)
+    {
+        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner.hidesWhenStopped = YES;
+        [self addSubview:spinner];
+    }
+    
+    spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    spinner.color = [UIColor blackColor];
+    [spinner startAnimating];
+}
+
+- (void)stopSpinner
+{
+    [spinner stopAnimating];
+}
+
 - (void)loadImageFromMedia:(Media *) aMedia
 {
     //put a spinner in the view
@@ -131,15 +150,19 @@
     {
         spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         spinner.hidesWhenStopped = YES;
-        spinner.color = [UIColor whiteColor];
+#warning look into this
+        if(self.backgroundColor == [UIColor whiteColor])
+        {
+            spinner.color = [UIColor blackColor];
+        }
         [self addSubview:spinner];
     }
     
     spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    
+    spinner.color = [UIColor whiteColor];
     [spinner startAnimating];
     
-    if(aMedia != self.media)
+    if(aMedia != self.media && aMedia.image != self.media.image)
         self.loaded = NO;
     
     self.media = aMedia;

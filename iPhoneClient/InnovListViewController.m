@@ -74,7 +74,7 @@ static NSString * const CELL_ID = @"Cell";
 - (void) animateInNote:(Note *) newNote
 {
     NSMutableArray *mutableNotes = [NSMutableArray arrayWithArray:notes];
-    int index;
+    int index = -1;
     Note *note;
     
      //Use if the note won't always be the last note
@@ -88,13 +88,18 @@ static NSString * const CELL_ID = @"Cell";
             break;
         }
     }
-    [quiltView reloadData];
+    if(index != -1)
+    {
+        notes = [mutableNotes copy];
+        [quiltView reloadData];
+    }
+    else
+        index = [mutableNotes count];
     
     if(index < [mutableNotes count]) [mutableNotes insertObject:note atIndex:index];
     else [mutableNotes addObject:note];
     notes = [mutableNotes copy];
     
-     //Use if the note won't always be the last note
     int row = index/NUM_COLUMNS;
     float topOfNewCell = row * CELL_HEIGHT;
     float offsetToCenter = quiltView.frame.size.height/2 - CELL_HEIGHT/2;
@@ -107,6 +112,10 @@ static NSString * const CELL_ID = @"Cell";
     [UIView beginAnimations:@"animationInNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
     quiltView.contentOffset = CGPointMake(0, desiredLocation);
+    [UIView commitAnimations];
+    
+    [UIView beginAnimations:@"animationInNote" context:NULL];
+    [UIView setAnimationDuration:ANIMATION_TIME];
     [quiltView reloadData];
     quiltView.contentOffset = CGPointMake(0, desiredLocation);
     [UIView commitAnimations];
@@ -146,7 +155,6 @@ static NSString * const CELL_ID = @"Cell";
     }
     
     Note *note = [notes objectAtIndex:indexPath.row];
-    
     for(NoteContent *noteContent in note.contents)
     {
         if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
@@ -164,17 +172,11 @@ static NSString * const CELL_ID = @"Cell";
 
 - (NSInteger)quiltViewNumberOfColumns:(TMQuiltView *)quiltView
 {
-#warning Landscape?
-   // if ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft
-   //     || [[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)
-   //     return 3;
-    
     return NUM_COLUMNS;
 }
 
-- (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath {
-    //   return ((TMPhotoQuiltViewCell *)[self quiltView:quiltView cellAtIndexPath:indexPath]).photoView.frame.size.height / [self quiltViewNumberOfColumns:aQuiltView];
-    
+- (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath
+{    
     return CELL_HEIGHT;
 }
 

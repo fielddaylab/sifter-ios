@@ -27,7 +27,7 @@
 
 #define DEFAULT_TEXT @"Write a caption..."
 
-@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate> {
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate> {
     
     __weak IBOutlet AsyncMediaTouchableImageView *imageView;
     __weak IBOutlet UITextView *captionTextView;
@@ -309,6 +309,18 @@
 {
     [self cameraButtonTouchAction];
 }
+#warning Probably a better way to do this
+-(void) startSpinner
+{
+    [imageView startSpinner];
+}
+
+-(void) updateImageView:(NSData *)image
+{
+#warning see if works
+    [imageView updateViewWithNewImage:[UIImage imageWithData:image]];
+    [imageView stopSpinner];
+}
 
 -(void)cameraButtonTouchAction
 {
@@ -316,8 +328,6 @@
     
     if(isEditing) cameraVC.backView = self;
     else cameraVC.backView = self.delegate;
-    cameraVC.parentDelegate = self.delegate;
-    cameraVC.showCamera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     cameraVC.editView = self;
     cameraVC.noteId = self.note.noteId;
     

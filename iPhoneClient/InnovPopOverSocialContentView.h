@@ -6,8 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 @class Note;
 
 @protocol InnovPopOverSocialContentViewDelegate <NSObject>
