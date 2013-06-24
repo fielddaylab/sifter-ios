@@ -6,7 +6,7 @@
 //
 //
 
-#define DEBUGMODE 1
+#define DEBUGMODE 0
 
 @interface Logger : NSObject {
     

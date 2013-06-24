@@ -46,7 +46,7 @@
 
 - (void)refresh
 {
-    [[AppServices sharedAppServices] fetchPlayerLocationList];
+   // [[AppServices sharedAppServices] fetchPlayerLocationList];
 }
 
 -(void)refreshViewFromModel

@@ -24,7 +24,7 @@
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 
-#define GAME_ID                         3427
+#define GAME_ID                         3430
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
 @interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
@@ -306,17 +306,17 @@
 
 - (IBAction)cameraPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
+   /* if(![AppModel sharedAppModel].loggedIn)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
     }
     else
-    {
+    {*/
         InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
         editorVC.delegate = self;
         [self.navigationController pushViewController:editorVC animated:NO];
-    }
+ //   }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

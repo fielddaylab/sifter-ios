@@ -18,7 +18,6 @@
 #import "Comment.h"
 #import "Note.h"
 #import "NoteContent.h"
-#import <MapKit/MapKit.h>
 #import "Tag.h"
 #import "ARISUploader.h"
 
@@ -44,30 +43,11 @@ extern NSString *const kARISServerServicePackage;
 - (void)resetAndEmailNewPassword:(NSString *)email;
 - (void)setShowPlayerOnMap;
 
-//Game Picker
-- (void)fetchGameListWithDistanceFilter:(int)distanceInMeters locational:(BOOL)locationalOrNonLocational;
-- (void)fetchRecentGameListForPlayer;
-- (void)fetchPopularGameListForTime: (int)time;
-- (void)fetchGameListBySearch:(NSString *)searchText onPage:(int)page;
-
 - (void)fetchOneGameGameList:(int)gameId;
 
 - (void)fetchTabBarItemsForGame:(int)gameId; //This should probably just be part of "fetchGame".
 
-//Fetch Player State
-- (void)resetAllPlayerLists;
-- (void)fetchAllPlayerLists;
-- (void)fetchPlayerLocationList;
-- (void)fetchPlayerQuestList;
-- (void)fetchPlayerInventory;
-- (void)fetchPlayerOverlayList;
-- (void)fetchNpcConversations:(int)npcId afterViewingNode:(int)nodeId;
-
 //Fetch Game Data (ONLY CALLED ONCE PER GAME!!)
-- (void)resetAllGameLists;
-- (void)fetchAllGameLists;
-- (void)fetchGameOverlayListAsynchronously:  (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchGameNpcListAsynchronously:      (BOOL)YesForAsyncOrNoForSync;
 - (void)fetchGameMediaListAsynchronously:    (BOOL)YesForAsyncOrNoForSync;
 - (void)fetchGameItemListAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
 - (void)fetchGameNodeListAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
@@ -82,7 +62,6 @@ extern NSString *const kARISServerServicePackage;
 - (void)fetchMedia:(int)mediaId;
 - (Note *)fetchNote:(int)noteId;
 
-- (void)commitInventoryTrade:(int)gameId fromMe:(int)playerOneId toYou:(int)playerTwoId giving:(NSString *)giftsJSON receiving:(NSString *)receiptsJSON;
 - (void)uploadImageForMatching:(NSURL *)fileURL;
 
 //Note Stuff
@@ -107,35 +86,14 @@ extern NSString *const kARISServerServicePackage;
 
 //Tell server of state
 - (void)updateServerWithPlayerLocation;
-- (void)updateServerNodeViewed:(int)nodeId fromLocation:(int)locationId;
-- (void)updateServerItemViewed:(int)itemId fromLocation:(int)locationId;
-- (void)updateServerWebPageViewed:(int)webPageId fromLocation:(int)locationId;
-- (void)updateServerPanoramicViewed:(int)panoramicId fromLocation:(int)locationId;
-- (void)updateServerNpcViewed:(int)npcId fromLocation:(int)locationId;
-- (void)updateServerMapViewed;
-- (void)updateServerQuestsViewed;
-- (void)updateServerInventoryViewed;
-- (void)updateServerPickupItem:(int)itemId fromLocation:(int)locationId qty:(int)qty;
-- (void)updateServerDropItemHere:(int)itemId qty:(int)qty;
-- (void)updateServerDestroyItem:(int)itemId qty:(int)qty;
-- (void)updateServerInventoryItem:(int)itemId qty:(int)qty;
-- (void)updateServerAddInventoryItem:(int)itemId addQty:(int)qty;
-- (void)updateServerRemoveInventoryItem:(int)itemId removeQty:(int)qty;
 
 //Parse server responses
 - (NSMutableArray *)parseGameListFromJSON:(JSONResult *)jsonResult;
 - (void)parseGameMediaListFromJSON:       (JSONResult *)jsonResult;
-- (void)parseGameNpcListFromJSON:         (JSONResult *)jsonResult;
-- (void)parseGameItemListFromJSON:        (JSONResult *)jsonResult;
-- (void)parseGameNodeListFromJSON:        (JSONResult *)jsonResult;
-- (void)parseGameWebPageListFromJSON:     (JSONResult *)jsonResult;
-- (void)parseGamePanoramicListFromJSON:   (JSONResult *)jsonResult;
-- (void)parseGameTabListFromJSON:         (JSONResult *)jsonResult;
 - (void)parseGameNoteListFromJSON:        (JSONResult *)jsonResult;
 - (void)parsePlayerNoteListFromJSON:      (JSONResult *)jsonResult;
 - (void)parseRecentGameListFromJSON:      (JSONResult *)jsonResult;
 - (void)parseGameTagsListFromJSON:        (JSONResult *)jsonResult;
-- (void)parseGameCommentResponseFromJSON: (JSONResult *)jsonResult;
 
 //Parse individual pieces of server response
 - (Game *)     parseGameFromDictionary:     (NSDictionary *)gameSource;

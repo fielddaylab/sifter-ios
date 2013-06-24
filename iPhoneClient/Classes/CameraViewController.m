@@ -104,7 +104,7 @@
 - (void)showCamera
 {
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.cameraOverlayView   = cameraOverlay;
+    picker.cameraOverlayView = cameraOverlay;
     libraryButton.alpha = 0;
     [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
      {
@@ -148,31 +148,54 @@
     [aPicker dismissModalViewControllerAnimated:NO];
     
     [self.editView startSpinner];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
-        
-        UIImage* image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
         
         //Ignore since it's nonsense
         //   [[info objectForKey:UIImagePickerControllerMediaMetadata] setObject:@"X" forKey:@"Orientation"];
+        UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) { 
+       // NSLog(@"Original length: %d", UIImageJPEGRepresentation(image, 1.0).length);
+        
+        //clock_t start = clock();
+        
+        //Crop then Compress
+
+        UIImage *compressableImage = [self cropImage:image];
+        NSData *test1 = UIImageJPEGRepresentation(compressableImage, 1.0);
+       // NSLog(@"Crop length: %d", test1.length);
         
         //Image Data
-        mediaData = UIImageJPEGRepresentation(image, 1.0);
+        mediaData = UIImageJPEGRepresentation([UIImage imageWithData:test1], 0.02);
+       // NSLog(@"Compress length: %d", mediaData.length);
         mediaData = [self dataWithEXIFUsingData:mediaData];
+       // NSLog(@"Exif length: %d", mediaData.length);
         
-        UIImage *compressableImage = [UIImage imageWithData:mediaData];
+       // NSLog(@"FIRST EXEC: %f", ((double)(clock()-start) / CLOCKS_PER_SEC));
+        /*
+        NSLog(@"SPLIT");
+        
+        //Compress then Crop
+        start = clock();
+        //Image Data
+        mediaData = UIImageJPEGRepresentation(image, 0.02);
+        NSLog(@"Compress length: %d", mediaData.length);
+        mediaData = [self dataWithEXIFUsingData:mediaData];
+        NSLog(@"Exif length: %d", mediaData.length);
+        
+        compressableImage = [UIImage imageWithData:mediaData];
         compressableImage = [self cropImage:compressableImage];
-        NSData *compressedData = UIImageJPEGRepresentation(compressableImage, 0.5);
-        
+        mediaData = UIImageJPEGRepresentation(compressableImage, 1.0);
+        NSLog(@"Crop length: %d", mediaData.length);
+        NSLog(@"SECOND EXEC: %f", ((double)(clock()-start) / CLOCKS_PER_SEC));
+    */ 
         NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
         NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-        [compressedData writeToURL:imageURL atomically:YES];
+        [mediaData writeToURL:imageURL atomically:YES];
         
         //Do the upload
         [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.editView updateImageView:compressedData];
+            [self.editView updateImageView:mediaData];
         });
         
         // If image not selected from camera roll, save image with metadata to camera roll
@@ -235,7 +258,7 @@
     [exifDict setDescription: descript];
     
     //Ignore since it's nonsense
-	[exifDict setObject:@"X" forKey:@"Orientation"];
+//	[exifDict setObject:@"X" forKey:@"Orientation"];
     
     [locDict setObject:[AppModel sharedAppModel].playerLocation.timestamp forKey:(NSString*)kCGImagePropertyGPSTimeStamp];
 	
@@ -273,6 +296,9 @@
     double xOffset = 0;
     double yOffset = 0;
     
+#warning  MAGIC NUMBER
+    int magicNumber = 10;
+    
     double tabBarHeight = [[UITabBarController alloc] init].tabBar.frame.size.height;
     double pictureTakingHeight = [[UIScreen mainScreen] bounds].size.height - tabBarHeight;
     double imagePixelsPerScreenPixelWidth;
@@ -281,24 +307,23 @@
     {
         imagePixelsPerScreenPixelWidth  = oldImage.size.width /[[UIScreen mainScreen] bounds].size.width;
         imagePixelsPerScreenPixelHeight = oldImage.size.height/pictureTakingHeight;
-        xOffset = -([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_WIDTH/2) * imagePixelsPerScreenPixelWidth;
-        yOffset = -(pictureTakingHeight/2-CROP_IMAGE_HEIGHT/2)                      * imagePixelsPerScreenPixelHeight;
+        xOffset = ([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_WIDTH/2) * imagePixelsPerScreenPixelWidth;
+        yOffset = (pictureTakingHeight/2-CROP_IMAGE_HEIGHT/2 - magicNumber)        * imagePixelsPerScreenPixelHeight;
     }
     else
     {
         imagePixelsPerScreenPixelWidth  = oldImage.size.width /pictureTakingHeight;
         imagePixelsPerScreenPixelHeight = oldImage.size.height/[[UIScreen mainScreen] bounds].size.width;
-        xOffset = -(pictureTakingHeight/2-CROP_IMAGE_WIDTH/2)                        * imagePixelsPerScreenPixelWidth;
-        yOffset = -([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_HEIGHT/2) * imagePixelsPerScreenPixelHeight;
+        xOffset = (pictureTakingHeight/2-CROP_IMAGE_WIDTH/2 - magicNumber)          * imagePixelsPerScreenPixelWidth;
+        yOffset = ([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_HEIGHT/2) * imagePixelsPerScreenPixelHeight;
     }
     
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake( CROP_IMAGE_WIDTH  * imagePixelsPerScreenPixelWidth, CROP_IMAGE_HEIGHT * imagePixelsPerScreenPixelHeight), NO, 0.0);
-    [oldImage drawAtPoint:CGPointMake( xOffset, yOffset )
-                blendMode:kCGBlendModeCopy
-                    alpha:1.0];
-    UIImage *croppedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return croppedImage;
+    CGRect rect = CGRectMake(xOffset, yOffset, CROP_IMAGE_WIDTH * imagePixelsPerScreenPixelWidth, CROP_IMAGE_HEIGHT * imagePixelsPerScreenPixelHeight);
+    
+    CGImageRef imageRef = CGImageCreateWithImageInRect(oldImage.CGImage, rect);
+    UIImage *result = [UIImage imageWithCGImage:imageRef scale:oldImage.scale orientation:oldImage.imageOrientation];
+    CGImageRelease(imageRef);
+    return result;
 }
 
 #pragma mark Memory Management

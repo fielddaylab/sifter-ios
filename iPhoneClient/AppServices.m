@@ -8,6 +8,7 @@
 
 #import "AppServices.h"
 #import "ARISUploader.h"
+#import "Logger.h"
 
 static const int kDefaultCapacity = 10;
 static const BOOL kEmptyBoolValue = NO;
@@ -16,21 +17,10 @@ static const float kEmptyFloatValue = 0.0;
 static const double kEmptyDoubleValue = 0.0;
 NSString *const kARISServerServicePackage = @"v1";
 
-BOOL currentlyFetchingLocationList;
-BOOL currentlyFetchingOverlayList;
 BOOL currentlyFetchingGameNoteList;
-BOOL currentlyFetchingPlayerNoteList;
-BOOL currentlyFetchingInventory;
-BOOL currentlyFetchingQuestList;
 BOOL currentlyFetchingOneGame;
-BOOL currentlyFetchingNearbyGamesList;
-BOOL currentlyFetchingPopularGamesList;
-BOOL currentlyFetchingSearchGamesList;
-BOOL currentlyFetchingRecentGamesList;
 BOOL currentlyUpdatingServerWithPlayerLocation;
 BOOL currentlyUpdatingServerWithMapViewed;
-BOOL currentlyUpdatingServerWithQuestsViewed;
-BOOL currentlyUpdatingServerWithInventoryViewed;
 
 @interface AppServices()
 
@@ -56,20 +46,10 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
 
 - (void) resetCurrentlyFetchingVars
 {
-    currentlyFetchingNearbyGamesList           = NO;
-    currentlyFetchingSearchGamesList           = NO;
-    currentlyFetchingPopularGamesList          = NO;
-    currentlyFetchingRecentGamesList           = NO;
-    currentlyFetchingInventory                 = NO;
-    currentlyFetchingLocationList              = NO;
-    currentlyFetchingOverlayList               = NO;
-    currentlyFetchingQuestList                 = NO;
+    currentlyFetchingOneGame                   = NO;
     currentlyFetchingGameNoteList              = NO;
-    currentlyFetchingPlayerNoteList            = NO;
-    currentlyUpdatingServerWithInventoryViewed = NO;
     currentlyUpdatingServerWithMapViewed       = NO;
     currentlyUpdatingServerWithPlayerLocation  = NO;
-    currentlyUpdatingServerWithQuestsViewed    = NO;
 }
 
 #pragma mark Communication with Server
@@ -178,62 +158,6 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
                                                                andArguments:arguments
                                                                 andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:nil];
-}
-
-- (void)fetchGameListWithDistanceFilter:(int)distanceInMeters locational:(BOOL)locationalOrNonLocational
-{
-    if (currentlyFetchingNearbyGamesList)
-    {
-        NSLog(@"Skipping Request: already fetching nearby games");
-        return;
-    }
-    
-    currentlyFetchingNearbyGamesList = YES;
-    
-	//Call server service
-	NSArray *arguments = [NSArray arrayWithObjects:
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-						  [NSString stringWithFormat:@"%f",[AppModel sharedAppModel].playerLocation.coordinate.latitude],
-						  [NSString stringWithFormat:@"%f",[AppModel sharedAppModel].playerLocation.coordinate.longitude],
-                          [NSString stringWithFormat:@"%d",distanceInMeters],
-                          [NSString stringWithFormat:@"%d",locationalOrNonLocational],
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].showGamesInDevelopment],
-						  nil];
-	
-	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
-                                                            andServiceName:@"games"
-                                                             andMethodName:@"getGamesForPlayerAtLocation"
-                                                              andArguments:arguments andUserInfo:nil];
-	
-	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseNearbyGameListFromJSON:)];
-}
-
-- (void)fetchGameListBySearch:(NSString *)searchText onPage:(int)page {
-    NSLog(@"Searching with Text: %@",searchText);
-    
-    if (currentlyFetchingSearchGamesList)
-    {
-        NSLog(@"Skipping Request: already fetching search games");
-        return;
-    }
-    
-    currentlyFetchingSearchGamesList = YES;
-    
-	//Call server service
-	NSArray *arguments = [NSArray arrayWithObjects:
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-                          [NSString stringWithFormat:@"%f",[AppModel sharedAppModel].playerLocation.coordinate.latitude],
-						  [NSString stringWithFormat:@"%f",[AppModel sharedAppModel].playerLocation.coordinate.longitude],
-						  searchText,
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].showGamesInDevelopment],
-                          [NSString stringWithFormat:@"%d", page],
-						  nil];
-	
-	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
-                                                            andServiceName:@"games"
-                                                             andMethodName:@"getGamesContainingText"
-                                                              andArguments:arguments andUserInfo:nil];
-	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseSearchGameListFromJSON:)];
 }
 
 - (void)updateServerGameSelected
@@ -1149,34 +1073,6 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
     currentlyFetchingGameNoteList = NO;
 }
 
--(void)parsePlayerNoteListFromJSON:(JSONResult *)jsonResult
-{
-	NSArray *noteListArray = (NSArray *)jsonResult.data;
-    NSLog(@"NSNotification: ReceivedNoteList");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList" object:nil]];
-	//NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
-    if(![AppModel sharedAppModel].playerNoteList) [AppModel sharedAppModel].playerNoteList = [[NSMutableDictionary alloc] init];
-    NSMutableArray*noteList = [[NSMutableArray alloc] init];
-    
-	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
-	NSDictionary *dict;
-	while ((dict = [enumerator nextObject])) {
-		Note *tmpNote = [self parseNoteFromDictionary:dict];
-		[[AppModel sharedAppModel].playerNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
-        [noteList addObject:tmpNote];
-	}
-    
-//	[AppModel sharedAppModel].playerNoteList = tempNoteList;
-    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:noteList,@"notes", nil];
-    
-    NSLog(@"NSNotification: NewNoteListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
-    NSLog(@"NSNotification: PlayerNoteListRefreshed");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"PlayerNoteListRefreshed" object:nil userInfo:notes]];
-    
-    currentlyFetchingPlayerNoteList = NO;
-}
-
 -(void)parseLoginResponseFromJSON:(JSONResult *)jsonResult
 {
 	NSLog(@"AppServices: parseLoginResponseFromJSON");
@@ -1336,51 +1232,6 @@ BOOL currentlyUpdatingServerWithInventoryViewed;
     Game * game = (Game *)[[AppModel sharedAppModel].oneGameGameList  objectAtIndex:0];
     NSLog(@"NSNotification: NewOneGameGameListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewOneGameGameListReady" object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:game,@"game", nil]]];
-}
-
--(void)parseNearbyGameListFromJSON: (JSONResult *)jsonResult
-{
-    currentlyFetchingNearbyGamesList = NO;
-    [AppModel sharedAppModel].nearbyGameList = [self parseGameListFromJSON:jsonResult];
-    NSLog(@"NSNotification: NewNearbyGameListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNearbyGameListReady" object:nil]];
-}
-
--(void)parseSearchGameListFromJSON: (JSONResult *)jsonResult
-{
-    currentlyFetchingSearchGamesList = NO;
-    [AppModel sharedAppModel].searchGameList = [self parseGameListFromJSON:jsonResult];
-    NSLog(@"NSNotification: NewSearchGameListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewSearchGameListReady" object:nil]];
-}
-
--(void)parsePopularGameListFromJSON: (JSONResult *)jsonResult{
-    currentlyFetchingPopularGamesList = NO;
-    [AppModel sharedAppModel].popularGameList = [self parseGameListFromJSON:jsonResult];
-    NSLog(@"NSNotification: NewPopularGameListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewPopularGameListReady" object:nil]];
-}
-
--(void)parseRecentGameListFromJSON: (JSONResult *)jsonResult
-{
-    currentlyFetchingRecentGamesList = NO;
-    NSArray *gameListArray = (NSArray *)jsonResult.data;
-    
-    NSMutableArray *tempGameList = [[NSMutableArray alloc] init];
-    
-    NSEnumerator *gameListEnumerator = [gameListArray objectEnumerator];
-    NSDictionary *gameDictionary;
-    while ((gameDictionary = [gameListEnumerator nextObject]))
-        [tempGameList addObject:[self parseGame:(gameDictionary)]];
-    
-    [AppModel sharedAppModel].recentGameList = tempGameList;
-    
-    NSError *error;
-    if (![[AppModel sharedAppModel].mediaCache.context save:&error])
-        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-    
-    NSLog(@"NSNotification: NewRecentGameListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewRecentGameListReady" object:nil]];
 }
 
 - (void)saveGameComment:(NSString*)comment game:(int)gameId starRating:(int)rating

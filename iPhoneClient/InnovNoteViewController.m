@@ -422,9 +422,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     for(int i = 0; i < [self.note.contents count]; ++i)
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
+        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
             [imageView loadImageFromMedia:[noteContent getMedia]];
-        }
         else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
             if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: noteContent.getMedia.url]) {
                 [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:noteContent.getMedia.url]];

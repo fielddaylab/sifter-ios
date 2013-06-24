@@ -74,7 +74,7 @@
 - (void) show
 {
     hiding = NO;
-    
+    note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
     textLabel.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
     for(int i = 0; i < [self.note.contents count]; ++i)
     {

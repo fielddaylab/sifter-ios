@@ -277,7 +277,6 @@
 - (void) showNotePopUpForNote: (Note *) note
 {
     //Note: will always be hidden by touches began except when re-displayed from editor
-    
     if(!notePopUp.hidden) [notePopUp hide];
     
     MKCoordinateRegion region = mapView.region;
@@ -301,7 +300,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)dealloc
