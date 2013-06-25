@@ -86,21 +86,16 @@ static NSString * const CELL_ID = @"Cell";
         if(note.noteId == newNote.noteId)
         {
             index = i;
-            [mutableNotes removeObjectAtIndex:index];
             break;
         }
     }
-    if(index != -1)
+    if(index == -1)
     {
+        index = [mutableNotes count];
+        [mutableNotes addObject:note];
         notes = [mutableNotes copy];
         [quiltView reloadData];
     }
-    else
-        index = [mutableNotes count];
-    
-    if(index < [mutableNotes count]) [mutableNotes insertObject:note atIndex:index];
-    else [mutableNotes addObject:note];
-    notes = [mutableNotes copy];
     
     int row = index/NUM_COLUMNS;
     float topOfNewCell = row * CELL_HEIGHT;
@@ -110,15 +105,9 @@ static NSString * const CELL_ID = @"Cell";
         desiredLocation += offsetToCenter;
     if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
-    
+
     [UIView beginAnimations:@"animationInNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
-    quiltView.contentOffset = CGPointMake(0, desiredLocation);
-    [UIView commitAnimations];
-    
-    [UIView beginAnimations:@"animationInNote" context:NULL];
-    [UIView setAnimationDuration:ANIMATION_TIME];
-    [quiltView reloadData];
     quiltView.contentOffset = CGPointMake(0, desiredLocation);
     [UIView commitAnimations];
     
@@ -153,7 +142,7 @@ static NSString * const CELL_ID = @"Cell";
         cell.xMargin = CELL_X_MARGIN;
         cell.yMargin = CELL_Y_MARGIN;
         cell.photoView.frame = frame;
-        cell.photoView.dontUseImage  = YES;
+        cell.photoView.dontUseImage = YES;
     }
     
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
