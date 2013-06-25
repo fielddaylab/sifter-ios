@@ -303,17 +303,17 @@
 
 - (IBAction)cameraPressed:(id)sender
 {
-   /* if(![AppModel sharedAppModel].loggedIn)
+    if(![AppModel sharedAppModel].loggedIn)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
     }
     else
-    {*/
+    {
         InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
         editorVC.delegate = self;
         [self.navigationController pushViewController:editorVC animated:NO];
- //   }
+    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

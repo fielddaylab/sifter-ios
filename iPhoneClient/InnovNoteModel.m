@@ -260,10 +260,14 @@
 
 -(void) removeTag: (Tag *) removeTag
 {
-    for(Tag *tag in availableTags)
+    for(int i = 0; i < [availableTags count]; ++i)
     {
+        Tag *tag = [availableTags objectAtIndex:i];
         if(tag.tagId == removeTag.tagId)
+        {
             [availableTags removeObject: tag];
+            break;
+        }
     }
     
     [self updateNotes:allNotes];
