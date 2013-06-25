@@ -17,6 +17,7 @@
 #import "NSMutableDictionary+ImageMetadata.h"
 
 #import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
 
@@ -127,14 +128,14 @@
 {
     if([self.editView isKindOfClass:[InnovNoteEditorViewController class]])
     {
-        Note *note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.noteId]];
+        Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.noteId];
         for(int i = 0; i < [note.contents count]; ++i)
         {
             NoteContent *noteContent = [note.contents objectAtIndex:i];
             if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
             {
                 if([[noteContent getUploadState] isEqualToString:@"uploadStateDONE"])
-                    [[AppServices sharedAppServices] deleteNoteContentWithContentId:[noteContent getContentId]];
+                    [[AppServices sharedAppServices] deleteNoteContentWithContentId:[noteContent getContentId] andNoteId:noteId];
                 else
                     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.noteId andFileURL:[NSURL URLWithString:[[noteContent getMedia] url]]];
                 
@@ -148,63 +149,33 @@
     [aPicker dismissModalViewControllerAnimated:NO];
     
     [self.editView startSpinner];
+    
+    //Ignore since it's nonsense
+    //   [[info objectForKey:UIImagePickerControllerMediaMetadata] setObject:@"X" forKey:@"Orientation"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
         
-        //Ignore since it's nonsense
-        //   [[info objectForKey:UIImagePickerControllerMediaMetadata] setObject:@"X" forKey:@"Orientation"];
         UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) { 
-       // NSLog(@"Original length: %d", UIImageJPEGRepresentation(image, 1.0).length);
-        
-        //clock_t start = clock();
-        
-        //Crop then Compress
-
-        UIImage *compressableImage = [self cropImage:image];
-        NSData *test1 = UIImageJPEGRepresentation(compressableImage, 1.0);
-       // NSLog(@"Crop length: %d", test1.length);
-        
-        //Image Data
-        mediaData = UIImageJPEGRepresentation([UIImage imageWithData:test1], 0.02);
-       // NSLog(@"Compress length: %d", mediaData.length);
-        mediaData = [self dataWithEXIFUsingData:mediaData];
-       // NSLog(@"Exif length: %d", mediaData.length);
-        
-       // NSLog(@"FIRST EXEC: %f", ((double)(clock()-start) / CLOCKS_PER_SEC));
-        /*
-        NSLog(@"SPLIT");
-        
-        //Compress then Crop
-        start = clock();
-        //Image Data
+        image = [self cropImage:image];
         mediaData = UIImageJPEGRepresentation(image, 0.02);
-        NSLog(@"Compress length: %d", mediaData.length);
-        mediaData = [self dataWithEXIFUsingData:mediaData];
-        NSLog(@"Exif length: %d", mediaData.length);
-        
-        compressableImage = [UIImage imageWithData:mediaData];
-        compressableImage = [self cropImage:compressableImage];
-        mediaData = UIImageJPEGRepresentation(compressableImage, 1.0);
-        NSLog(@"Crop length: %d", mediaData.length);
-        NSLog(@"SECOND EXEC: %f", ((double)(clock()-start) / CLOCKS_PER_SEC));
-    */ 
-        NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-        NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-        [mediaData writeToURL:imageURL atomically:YES];
-        
-        //Do the upload
-        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.editView updateImageView:mediaData];
         });
         
-        // If image not selected from camera roll, save image with metadata to camera roll
+        mediaData = [self dataWithEXIFUsingData:mediaData];
+        
+        NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+        NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+        [mediaData writeToURL:imageURL atomically:YES];
+        
+        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+        
+        // If image not selected from camera roll
         if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
         {
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
             [al writeImageDataToSavedPhotosAlbum:mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
              {
-                 // once image is saved, get asset from assetURL
                  [al assetForURL:assetURL resultBlock:^(ALAsset *asset){}
                     failureBlock:^(NSError *error)
                   {
@@ -231,7 +202,7 @@
     if([backView isKindOfClass:[InnovViewController class]])
     {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
-        [[AppModel sharedAppModel].gameNoteList removeObjectForKey:[NSNumber numberWithInt:self.noteId]];
+        [[InnovNoteModel sharedNoteModel] removeNote:[[InnovNoteModel sharedNoteModel] noteForNoteId:self.noteId]];
     }
     [self.navigationController popToViewController:self.backView animated:YES];
 }
@@ -258,7 +229,7 @@
     [exifDict setDescription: descript];
     
     //Ignore since it's nonsense
-//	[exifDict setObject:@"X" forKey:@"Orientation"];
+    //	[exifDict setObject:@"X" forKey:@"Orientation"];
     
     [locDict setObject:[AppModel sharedAppModel].playerLocation.timestamp forKey:(NSString*)kCGImagePropertyGPSTimeStamp];
 	
@@ -297,7 +268,7 @@
     double yOffset = 0;
     
 #warning  MAGIC NUMBER
-    int magicNumber = 10;
+    int magicNumber = 8;
     
     double tabBarHeight = [[UITabBarController alloc] init].tabBar.frame.size.height;
     double pictureTakingHeight = [[UIScreen mainScreen] bounds].size.height - tabBarHeight;

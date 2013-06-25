@@ -28,24 +28,12 @@
 @synthesize museumMode;
 @synthesize skipGameDetails;
 @synthesize oneGameGameList;
-@synthesize nearbyGameList;
-@synthesize searchGameList;
-@synthesize popularGameList;
-@synthesize recentGameList;
 @synthesize currentGame;
 @synthesize playerList;
 @synthesize playerLocation;
 @synthesize networkAlert;
 @synthesize gameMediaList;
-@synthesize gameItemList;
-@synthesize gameNodeList;
-@synthesize gameNpcList;
-@synthesize gameWebPageList;
-@synthesize gamePanoramicList;
-@synthesize gameNoteList;
-@synthesize playerNoteList;
 @synthesize profilePic;
-@synthesize overlayList;
 @synthesize overlayIsVisible;
 @synthesize nearbyLocationsList;
 @synthesize gameTagList;
@@ -89,7 +77,6 @@
         skipGameDetails = NO;
 		defaults      = [NSUserDefaults standardUserDefaults];
 		gameMediaList = [[NSMutableDictionary alloc] initWithCapacity:10];
-        overlayList   = [[NSMutableArray alloc] initWithCapacity:10];
         motionManager = [[CMMotionManager alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearGameLists) name:@"NewGameSelected" object:nil];
 	}
@@ -177,13 +164,6 @@
 {
     NSLog(@"Clearing Game Lists");
     [gameMediaList     removeAllObjects];
-    [gameItemList      removeAllObjects];
-    [gameNodeList      removeAllObjects];
-    [gameNpcList       removeAllObjects];
-    [gameWebPageList   removeAllObjects];
-    [gamePanoramicList removeAllObjects];
-    //[gameNoteList removeAllObjects];
-    //[playerNoteList removeAllObjects];
 }
 
 -(void)clearUserDefaults
@@ -296,26 +276,6 @@
 {
     if(mId == 0) return nil;
 	return [mediaCache mediaForMediaId:mId];
-}
-
-- (Note *)noteForNoteId:(int)mId playerListYesGameListNo:(BOOL)playerorGame
-{
-	Note *note;
-    note = [self.gameNoteList objectForKey:[NSNumber numberWithInt:mId]];
-	if(!note) note = [self.playerNoteList objectForKey:[NSNumber numberWithInt:mId]];
-    
-	if (!note) {
-		//Let's pause everything and do a lookup
-		NSLog(@"AppModel: Note not found in cached item list, refresh");
-        if(!playerorGame)
-            [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
-        else
-            [[AppServices sharedAppServices] fetchPlayerNoteListAsynchronously:YES];
-        
-        if (note) NSLog(@"AppModel: Note found after refresh");
-		else NSLog(@"AppModel: Note still NOT found after refresh");
-	}
-	return note;
 }
 
 #pragma mark Core Data

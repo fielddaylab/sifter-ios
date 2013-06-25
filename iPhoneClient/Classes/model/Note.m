@@ -50,21 +50,34 @@
 }
 
 -(BOOL)isUploading{
-    for (int i = 0;i < [self.contents count]; i++) {
-        if ([[(NoteContent *)[self.contents objectAtIndex:i]type] isEqualToString:@"UPLOAD"]) {
+    for (NoteContent *content in self.contents)
+    {
+        if ([[content type] isEqualToString:@"UPLOAD"])
             return  YES;
-        }
     }
     return  NO;
 }
 
 - (int)	iconMediaId {
-    return 71; 
+    return 71;
 }
 
 - (BOOL)compareTo:(Note *)other
-{
-    return  self.noteId         == other.noteId;/* &&
+{    
+   /* if([self.contents count] != [other.contents count]) return NO;
+    
+    for (int i = 0; i < [self.contents count]; ++i)
+    {
+        if((NSObject <NoteContentProtocol> *)[[self.contents objectAtIndex:i] managedObjectContext] !=  (NSObject <NoteContentProtocol> *)[[other.contents objectAtIndex:i] managedObjectContext])
+            return NO;
+        if(![[[self.contents objectAtIndex:i] getUploadState] isEqualToString:[[other.contents objectAtIndex:i] getUploadState]])
+            return NO;
+        
+        if(((NoteContent *)[self.contents objectAtIndex:i]).mediaId != ((NoteContent *)[self.contents objectAtIndex:i]).mediaId)
+            return NO;
+    } */
+    
+    return  self.noteId         == other.noteId; /*  &&
             self.creatorId      == other.creatorId &&
             self.numRatings     == other.numRatings &&
             self.shared         == other.shared &&

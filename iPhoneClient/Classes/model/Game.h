@@ -9,8 +9,6 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "Media.h"
-#import "AsyncMediaImageView.h"
-
 
 @interface Game : NSObject
 {

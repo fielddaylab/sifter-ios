@@ -6,13 +6,20 @@
 //
 //
 
-@class Tag;
+@class Note, Tag;
 
 @interface InnovNoteModel : NSObject
 
-@property(nonatomic) NSArray *availableNotes;
+@property(nonatomic, readonly) NSArray *availableNotes;
 
++(id) sharedNoteModel;
 -(void) clearData;
+
+-(void) addNote:(Note *) note;
+-(void) updateNote:(Note *) note;
+-(void) removeNote:(Note *) note;
+
+-(Note *) noteForNoteId:(int) noteId;
 
 -(void) addTag: (Tag *) tag;
 -(void) removeTag: (Tag *) tag;

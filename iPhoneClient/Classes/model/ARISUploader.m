@@ -14,7 +14,7 @@
 
 static NSString * const BOUNDRY = @"0xKhTmLbOuNdArY";
 
-@interface ARISUploader (Private)
+@interface ARISUploader (Private)<NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
 - (NSURLRequest *)postRequestWithURL: (NSURL *)url 
                              boundry: (NSString *)boundry 

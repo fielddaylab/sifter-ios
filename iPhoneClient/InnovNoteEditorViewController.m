@@ -12,6 +12,7 @@
 #import <Social/Social.h>
 
 #import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Note.h"
 #import "Tag.h"
@@ -205,7 +206,7 @@
         
         imageView.userInteractionEnabled = NO;
         
-        [[AppModel sharedAppModel].gameNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
+        [[InnovNoteModel sharedNoteModel] addNote:self.note];
         
         [self cameraButtonTouchAction];
     }
@@ -249,7 +250,7 @@
         self.note.longitude = [AppModel sharedAppModel].playerLocation.coordinate.longitude;
     }
     
-    [[AppModel sharedAppModel].gameNoteList setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
     
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
@@ -267,7 +268,7 @@
     if((!isEditing || newNote) && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
     {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.note.noteId];
-        [[AppModel sharedAppModel].gameNoteList removeObjectForKey:[NSNumber numberWithInt:self.note.noteId]];
+        [[InnovNoteModel sharedNoteModel] removeNote:note];
         
     }
     
@@ -355,43 +356,26 @@
 
 - (void)refreshViewFromModel
 {
-    
-#warning was playernotelist
-    self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
-    //  if(!self.note) self.note = [[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
-    [self addCDUploadsToNote];
-    
-    for(int i = 0; i < [self.note.contents count]; ++i)
+    if(note)
     {
-        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
-            [imageView loadImageFromMedia:[noteContent getMedia]];
+        self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+        
+        for(int i = 0; i < [self.note.contents count]; ++i)
+        {
+            NoteContent *noteContent = [self.note.contents objectAtIndex:i];
+            if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
+                [imageView loadImageFromMedia:[noteContent getMedia]];
+            }
+            else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
+                if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: noteContent.getMedia.url]) {
+                    [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:noteContent.getMedia.url]];
+                    [ARISMoviePlayer.moviePlayer prepareToPlay];
+                }
+                mode = kInnovAudioRecorderAudio;
+                [self updateButtonsForCurrentMode];
+            }
         }
-        else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
-            if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: noteContent.getMedia.url]) {
-                [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:noteContent.getMedia.url]];
-                [ARISMoviePlayer.moviePlayer prepareToPlay];
-			}
-            mode = kInnovAudioRecorderAudio;
-            [self updateButtonsForCurrentMode];
-        }
-#warning test moviePlayer Audio
     }
-}
-
--(void)addCDUploadsToNote
-{
-    for(int x = [self.note.contents count]-1; x >= 0; x--)
-    {
-        //Removes note contents that are not done uploading, because they will all be added again right after this loop
-        if((NSObject <NoteContentProtocol> *)[[self.note.contents objectAtIndex:x] managedObjectContext] == nil ||
-           ![[[self.note.contents objectAtIndex:x] getUploadState] isEqualToString:@"uploadStateDONE"])
-            [self.note.contents removeObjectAtIndex:x];
-    }
-    
-    NSArray *uploadContentsForNote = [[[AppModel sharedAppModel].uploadManager.uploadContentsForNotes objectForKey:[NSNumber numberWithInt:self.note.noteId]]allValues];
-    [self.note.contents addObjectsFromArray:uploadContentsForNote];
-    NSLog(@"InnovNoteEditorVC: Added %d upload content(s) to note",[uploadContentsForNote count]);
 }
 
 - (IBAction)shareButtonPressed:(id)sender
@@ -553,7 +537,7 @@
             if([[noteContent getType] isEqualToString:kNoteContentTypeAudio])
             {
                 if([[noteContent getUploadState] isEqualToString:@"uploadStateDONE"])
-                    [[AppServices sharedAppServices] deleteNoteContentWithContentId:[noteContent getContentId]];
+                    [[AppServices sharedAppServices] deleteNoteContentWithContentId:[noteContent getContentId] andNoteId:self.note.noteId];
                 else
                     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:self.note.noteId andFileURL:[NSURL URLWithString:[[noteContent getMedia] url]]];
                 

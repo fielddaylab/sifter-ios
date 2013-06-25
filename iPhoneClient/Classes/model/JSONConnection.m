@@ -19,6 +19,7 @@
 @synthesize methodName;
 @synthesize arguments;
 @synthesize handler;
+@synthesize handlerUserInfo;
 @synthesize userInfo;
 @synthesize completeRequestURL;
 @synthesize asyncData;
@@ -105,6 +106,8 @@
     //save the handler
     if (aHandler) self.handler = aHandler;
     else self.handler = nil;
+    
+    self.handlerUserInfo = nil;
 	
     //Make sure we were inited correctly
     if (!completeRequestURL) return;
@@ -118,6 +121,24 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
+- (void) performAsynchronousRequestWithHandler: (SEL)aHandler andUserInfo:(NSDictionary *)hUserInfo{
+    //save the handler
+    if (aHandler) self.handler = aHandler;
+    else self.handler = nil;
+    
+    self.handlerUserInfo = hUserInfo;
+	
+    //Make sure we were inited correctly
+    if (!completeRequestURL) return;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:completeRequestURL];
+    connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+	
+	[self.connection start];
+	
+	//Set up indicators
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
 
 - (void)connection:(NSURLConnection *)theConnection didReceiveData:(NSData *)incrementalData {
     if (self.asyncData == nil) {
@@ -146,7 +167,9 @@
 	//Get the JSONResult here
 	JSONResult *jsonResult = [[JSONResult alloc] initWithJSONString:jsonString andUserData:[self userInfo]];
     
-	if (self.handler != nil)
+	if (self.handler != nil && self.handlerUserInfo != nil)
+		[[AppServices sharedAppServices] performSelector:self.handler withObject:self.handlerUserInfo];
+    else if (self.handler != nil)
 		[[AppServices sharedAppServices] performSelector:self.handler withObject:jsonResult];
 }
 

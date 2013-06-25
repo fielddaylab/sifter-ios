@@ -7,12 +7,14 @@
 //
 
 #import "InnovListViewController.h"
+#import "InnovNoteModel.h"
 
 #import "Note.h"
 #import "NoteContent.h"
 
 #import "TMQuiltView.h"
 #import "TMPhotoQuiltViewCell.h"
+#import "AsyncMediaImageView.h"
 
 #define NUM_COLUMNS 2
 
@@ -154,7 +156,7 @@ static NSString * const CELL_ID = @"Cell";
         cell.photoView.dontUseImage  = YES;
     }
     
-    Note *note = [notes objectAtIndex:indexPath.row];
+    Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
     for(NoteContent *noteContent in note.contents)
     {
         if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])

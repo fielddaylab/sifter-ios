@@ -10,7 +10,8 @@
 #import <CoreAudio/CoreAudioTypes.h>
 #import <QuartzCore/QuartzCore.h>
 
-#import "AppModel.h"
+//#import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "InnovAudioEnums.h"
 #import "Note.h"
@@ -30,12 +31,11 @@
 #define IMAGE_X_MARGIN      0
 #define IMAGE_Y_MARGIN      0
 
-#define BUTTON_WIDTH        36
-#define BUTTON_HEIGHT       36
+#define BUTTON_WIDTH        30
+#define BUTTON_HEIGHT       30
 
-#define COMMENT_BAR_HEIGHT          46
+#define COMMENT_BAR_HEIGHT          24//46
 #define COMMENT_BAR_HEIGHT_MAX      80
-#define COMMENT_BAR_CONTENT_HEIGHT  34
 #define COMMENT_BAR_X_MARGIN        10
 #define COMMENT_BAR_Y_MARGIN        6
 #define COMMENT_BAR_BUTTON_WIDTH    58
@@ -43,6 +43,7 @@
 #define DEFAULT_TEXT                @"Add a comment..."
 #define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
 #define DEFAULT_TEXTVIEW_MARGIN     8
+#define ADJUSTED_TEXTVIEW_MARGIN    0
 
 #define EXPAND_INDEX                 3
 #define EXPAND_TEXT                  @".   .   ."
@@ -130,10 +131,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     addCommentTextView =      [[UITextView alloc] initWithFrame:CGRectMake(COMMENT_BAR_X_MARGIN,
                                                                            COMMENT_BAR_Y_MARGIN,
                                                                            addCommentBar.bounds.size.width - (2 * COMMENT_BAR_X_MARGIN)  - (COMMENT_BAR_BUTTON_WIDTH + COMMENT_BAR_X_MARGIN),
-                                                                           COMMENT_BAR_CONTENT_HEIGHT)];
+                                                                           COMMENT_BAR_HEIGHT-COMMENT_BAR_Y_MARGIN*2)];
     addCommentTextView.delegate            = self;
     addCommentTextView.layer.cornerRadius  = 9.0f;
     addCommentTextView.font                = DEFAULT_FONT;
+    addCommentTextView.contentInset        = UIEdgeInsetsMake(-8,-4,-8,-4);
     addCommentTextView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [addCommentBar addSubview:addCommentTextView];
     
@@ -169,10 +171,10 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
                                  IMAGE_Y_MARGIN,
                                  self.view.frame.size.width - 2 * IMAGE_X_MARGIN,
                                  self.view.frame.size.width - 2 * IMAGE_X_MARGIN);
-    
+#warning change width and add flag
     usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
                                                               IMAGE_Y_MARGIN + imageView.frame.size.height,
-                                                              self.view.frame.size.width-4*BUTTON_WIDTH,
+                                                              self.view.frame.size.width-3*BUTTON_WIDTH,
                                                               BUTTON_HEIGHT)];
     usernameLabel.backgroundColor = [UIColor blackColor];
     usernameLabel.textColor       = [UIColor whiteColor];
@@ -185,7 +187,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [playButton setTitle:@"PL" forState:UIControlStateNormal];
     [playButton setTitle:@"PL" forState:UIControlStateHighlighted];
 	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
+    /*
     flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                              BUTTON_WIDTH,
@@ -194,8 +196,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [flagButton setTitle:@"F" forState:UIControlStateNormal];
     [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
-    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH,
+    */
+    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
@@ -222,6 +224,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
                                                                    IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT,
                                                                    self.view.frame.size.width,
                                                                    BUTTON_HEIGHT)];
+    captionTextView.contentInset = UIEdgeInsetsMake(-8,-4,-8,-4);
     captionTextView.delegate = self;
     captionTextView.userInteractionEnabled = NO;
     captionTextView.font = DEFAULT_FONT;
@@ -250,6 +253,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     addCommentTextView.text      = DEFAULT_TEXT;
     addCommentTextView.textColor = [UIColor lightGrayColor];
+    [self adjustCommentBarToFitText];
     
     if([self.note.tags count] > 0)
         self.title = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
@@ -284,13 +288,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void) adjustCommentBarToFitText
 {
-    CGSize size = CGSizeMake(addCommentTextView.frame.size.width - (2 * DEFAULT_TEXTVIEW_MARGIN), COMMENT_BAR_HEIGHT_MAX - (2 * COMMENT_BAR_Y_MARGIN));
-    CGFloat newHeight = ([addCommentTextView.text sizeWithFont:addCommentTextView.font constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN)) + (2 * COMMENT_BAR_Y_MARGIN);
-    CGFloat heightAdjustment = addCommentBar.frame.size.height - newHeight;
+    CGSize size = CGSizeMake(addCommentTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), COMMENT_BAR_HEIGHT_MAX - (2 * COMMENT_BAR_Y_MARGIN));
+    CGFloat newHeight = ([addCommentTextView.text sizeWithFont:addCommentTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN)) + (2 * COMMENT_BAR_Y_MARGIN);
+    CGFloat oldHeight = addCommentBar.frame.size.height;
     
     CGRect frame = addCommentBar.frame;
-    frame.size.height = newHeight;
-    frame.origin.y   += heightAdjustment;
+    frame.size.height = MAX(newHeight, COMMENT_BAR_HEIGHT);
+    frame.origin.y   += oldHeight-frame.size.height;
     
     addCommentBar.frame = frame;
     
@@ -334,7 +338,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         [[AppServices sharedAppServices]updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:YES];
         
         [self.note.comments insertObject:commentNote atIndex:0];
-        [[AppModel sharedAppModel].gameNoteList   setObject:self.note forKey:[NSNumber numberWithInt:self.note.noteId]];
+        [[InnovNoteModel sharedNoteModel] updateNote:note];
     }
     
     addCommentTextView.text = DEFAULT_TEXT;
@@ -415,10 +419,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)refreshViewFromModel
 {
-    self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
-    [self addCDUploadsToNote];
-    [self addUploadsToComments];
-    
+    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+   
     for(int i = 0; i < [self.note.contents count]; ++i)
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
@@ -436,22 +438,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     [noteTableView reloadData];
 }
-
--(void)addCDUploadsToNote
-{
-    for(int x = [self.note.contents count]-1; x >= 0; x--)
-    {
-        //Removes note contents that are not done uploading, because they will all be added again right after this loop
-        if((NSObject <NoteContentProtocol> *)[[self.note.contents objectAtIndex:x] managedObjectContext] == nil ||
-           ![[[self.note.contents objectAtIndex:x] getUploadState] isEqualToString:@"uploadStateDONE"])
-            [self.note.contents removeObjectAtIndex:x];
-    }
-    
-    NSArray *uploadContentsForNote = [[[AppModel sharedAppModel].uploadManager.uploadContentsForNotes objectForKey:[NSNumber numberWithInt:self.note.noteId]]allValues];
-    [self.note.contents addObjectsFromArray:uploadContentsForNote];
-    NSLog(@"InnovNoteVC: Added %d upload content(s) to note",[uploadContentsForNote count]);
-}
-
+/*
 #warning necessary?
 -(void)addUploadsToComments
 {
@@ -470,7 +457,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         NSLog(@"InnovNoteVC: Added %d upload content(s) to note",[uploadContentForNote count]);
     }
 }
-
+*/
 #pragma mark Audio Methods
 
 - (void)updateButtonsForCurrentMode{
@@ -535,11 +522,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.row == 0)
     {
-        CGSize size = CGSizeMake(captionTextView.frame.size.width - (2 * DEFAULT_TEXTVIEW_MARGIN), CGFLOAT_MAX);
+        CGSize size = CGSizeMake(captionTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), CGFLOAT_MAX);
         NSString *text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-        CGFloat captionTextViewHeight = [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN);
-        
-        return imageView.frame.size.height + BUTTON_HEIGHT + captionTextViewHeight;
+        CGFloat captionTextViewHeight = [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN);
+        if(!([text length] > 0))
+            captionTextViewHeight = -4;
+#warning MAGIC NUMBER
+        return imageView.frame.size.height + BUTTON_HEIGHT + captionTextViewHeight + 4;
     }
     else
     {
@@ -582,6 +571,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         CGRect frame = captionTextView.frame;
         frame.size.height = captionTextView.contentSize.height;
         captionTextView.frame = frame;
+        if(!([captionTextView.text length] > 0))
+            captionTextView.hidden = YES;
         return cell;
     }
     else
@@ -596,13 +587,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         
         if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
         {
-            cell.userInteractionEnabled = NO;
+         //   cell.userInteractionEnabled = YES;
+            cell.textView.userInteractionEnabled = NO;
             cell.textView.textAlignment = NSTextAlignmentCenter;
             cell.textView.text          = EXPAND_TEXT;
         }
         else
         {
-            cell.userInteractionEnabled = YES;
+           // cell.userInteractionEnabled = YES;
+            cell.textView.userInteractionEnabled = YES;
             cell.textView.textAlignment = NSTextAlignmentLeft;
             if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
                 cell.textView.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;

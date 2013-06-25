@@ -62,7 +62,6 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
-#warning need to listen for new notes messages
     }
     return self;
 }
@@ -73,7 +72,6 @@
     
     madisonCenter = [[CLLocation alloc] initWithLatitude:MADISON_LAT longitude:MADISON_LONG];
     
-    //Center on Madison
 	isLocal = NO;
     [self zoomAndCenterMapAnimated:NO];
     
@@ -213,6 +211,9 @@
         Annotation *tmpAnnotation;
         for (int i = 0; i < [[mapView annotations] count]; i++)
         {
+            if(notePopUp.note.noteId == note.noteId)
+                [notePopUp hide];
+            
             if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
                !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
             
@@ -272,6 +273,8 @@
     [super touchesBegan:touches withEvent:event];
     
     [notePopUp hide];
+    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
+    [mapView deselectAnnotation:currentAnnotation animated:YES];
 }
 
 - (void) showNotePopUpForNote: (Note *) note
@@ -282,9 +285,6 @@
     MKCoordinateRegion region = mapView.region;
     region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);
     [mapView setRegion:region animated:YES];
-    
-    Annotation *currentAnnotation = [mapView.selectedAnnotations lastObject];
-    [mapView deselectAnnotation:currentAnnotation animated:YES];
     
     notePopUp.note = note;
     notePopUp.center = mapView.center;

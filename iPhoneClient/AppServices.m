@@ -234,7 +234,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                andUserInfo:nil];
     
     if(refresh)
-        [jsonConnection performAsynchronousRequestWithHandler:@selector(fetchPlayerNoteListAsync)];
+        [jsonConnection performAsynchronousRequestWithHandler:@selector(fetchGameNoteListAsync)];
     else
         [jsonConnection performAsynchronousRequestWithHandler:nil];	
 }
@@ -342,7 +342,9 @@ BOOL currentlyUpdatingServerWithMapViewed;
         [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:[self validIntForKey:@"noteId"      inDictionary:result.userInfo]
                                                               andFileURL:[self validObjectForKey:@"localURL" inDictionary:result.userInfo]];
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
-    [self fetchPlayerNoteListAsync];
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: [self validIntForKey:@"noteId" inDictionary:result.userInfo]],@"noteId", nil];
+    [self sendNotificationToNoteViewer:userInfo];
+    [self fetchGameNoteListAsync];
 }
 
 -(void) addContentToNoteWithText:(NSString *)text type:(NSString *) type mediaId:(int) mediaId andNoteId:(int)noteId andFileURL:(NSURL *)fileURL
@@ -365,7 +367,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(contentAddedToNoteWithText:)];
 }
 
--(void)deleteNoteContentWithContentId:(int)contentId
+-(void)deleteNoteContentWithContentId:(int)contentId andNoteId:(int) noteId
 {
     if(contentId != -1)
     {
@@ -377,7 +379,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                  andMethodName:@"deleteNoteContent"
                                                                   andArguments:arguments
                                                                    andUserInfo:nil];
-        [jsonConnection performAsynchronousRequestWithHandler:@selector(sendNotificationToNoteViewer)];
+        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
+        [jsonConnection performAsynchronousRequestWithHandler:@selector(sendNotificationToNoteViewer:) andUserInfo:userInfo];
     }
 }
 
@@ -408,27 +411,27 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                  andMethodName:@"deleteNote"
                                                                   andArguments:arguments
                                                                    andUserInfo:nil];
+
         [jsonConnection performAsynchronousRequestWithHandler:@selector(sendNotificationToNotebookViewer)];
     }
 }
 
--(void)sendNotificationToNoteViewer
+-(void)sendNotificationToNoteViewer:(NSDictionary *)userInfo
 {
     NSLog(@"NSNotification: NewContentListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewContentListReady" object:nil]];
-    [self fetchPlayerNoteListAsync];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewContentListReady" object:nil userInfo:userInfo]];
+    [self fetchGameNoteListAsync];
 }
 
 -(void)sendNotificationToNotebookViewer
 {
     NSLog(@"NSNotification: NoteDeleted");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NoteDeleted" object:nil]];
-    [self fetchPlayerNoteListAsync];
+    [self fetchGameNoteListAsync];
 }
 
 -(void) uploadContentToNoteWithFileURL:(NSURL *)fileURL name:(NSString *)name noteId:(int) noteId type: (NSString *)type{
     ARISUploader *uploader = [[ARISUploader alloc]initWithURLToUpload:fileURL gameSpecific:YES delegate:self doneSelector:@selector(noteContentUploadDidfinish: ) errorSelector:@selector(uploadNoteContentDidFail:)];
-    
     NSNumber *nId = [[NSNumber alloc]initWithInt:noteId];
     
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc]initWithCapacity:4];
@@ -445,11 +448,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	//[request setUploadProgressDelegate:appDelegate.waitingIndicator.progressView];
     
 	[uploader upload];
+    
+    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
+    [self sendNotificationToNoteViewer:userInfo];
 }
 
--(void)fetchPlayerNoteListAsync{
+-(void)fetchGameNoteListAsync{
     [self fetchGameNoteListAsynchronously:YES];
-    //[self fetchPlayerNoteListAsynchronously:YES];
 }
 
 - (void)noteContentUploadDidfinish:(ARISUploader*)uploader {
@@ -462,7 +467,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
         NSString *newFileName = [uploader responseString];
     
     //TODO: Check that the response string is actually a new filename that was made on the server, not an error
-    
+#warning Don't know use of this
+  /*
     NoteContent *newContent = [[NoteContent alloc] init];
     newContent.noteId = noteId;
     newContent.title = @"Refreshing From Server...";
@@ -470,9 +476,11 @@ BOOL currentlyUpdatingServerWithMapViewed;
     newContent.contentId = 0;
     
     
-    [[[[[AppModel sharedAppModel] playerNoteList] objectForKey:[NSNumber numberWithInt:noteId]] contents] addObject:newContent];
+    [[[[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:noteId]] contents] addObject:newContent]; */
     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:noteId andFileURL:localUrl];
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
+    [self sendNotificationToNoteViewer:userInfo];
     
 	NSLog(@"AppModel: Creating Note Content for Title:%@ File:%@",title,newFileName);
 	
@@ -490,8 +498,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                              andMethodName:@"addContentToNoteFromFileName"
                                                               andArguments:arguments
                                                                andUserInfo:nil];
-    //[AppModel sharedAppModel].isGameNoteList = NO;
-	[jsonConnection performAsynchronousRequestWithHandler:@selector(fetchPlayerNoteListAsync)];
+	[jsonConnection performAsynchronousRequestWithHandler:@selector(fetchGameNoteListAsync)];
 }
 
 - (void)uploadNoteContentDidFail:(ARISUploader *)uploader {
@@ -506,8 +513,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	//if (description == NULL) description = @"filename";
     
     [[AppModel sharedAppModel].uploadManager contentFailedUploading];
-    NSLog(@"NSNotification: NewNoteListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:nId,@"noteId", nil];
+    [self sendNotificationToNoteViewer:userInfo];
 }
 
 - (void)playerPicUploadDidfinish:(ARISUploader*)uploader {
@@ -585,7 +592,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                               andArguments:arguments
                                                                andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
-    
 }
 
 -(void)updateNoteContent:(int)contentId text:(NSString *)text{
@@ -601,76 +607,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                               andArguments:arguments
                                                                andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
-    
-}
-
-- (void)uploadImageForMatching:(NSURL *)fileURL{
-    
-    ARISUploader *uploader = [[ARISUploader alloc]initWithURLToUpload:fileURL gameSpecific:YES delegate:self doneSelector:@selector(uploadImageForMatchingDidFinish: ) errorSelector:@selector(uploadImageForMatchingDidFail:)];
-    
-    NSLog(@"Model: Uploading File. gameID:%d",[AppModel sharedAppModel].currentGame.gameId);
-    
-    [AppModel sharedAppModel].fileToDeleteURL = fileURL;
-    
-   // [[RootViewController sharedRootViewController] showWaitingIndicator:@"Uploading" displayProgressBar:YES];
-    //[uplaoder setUploadProgressDelegate:appDelegate.waitingIndicator.progressView];
-    [uploader upload];
-    
-}
-
-- (void)uploadImageForMatchingDidFinish:(ARISUploader *)uploader
-{
-	//[[RootViewController sharedRootViewController] removeWaitingIndicator];
-    
-    //[[RootViewController sharedRootViewController] showWaitingIndicator:@"Decoding Image" displayProgressBar:NO];
-	
-	NSString *response = [uploader responseString];
-    
-	NSLog(@"Model: uploadImageForMatchingRequestFinished: Upload Media Request Finished. Response: %@", response);
-    
-	NSString *newFileName = [uploader responseString];
-    
-	NSLog(@"AppModel: uploadImageForMatchingRequestFinished: Trying to Match:%@",newFileName);
-	
-	//Call server service
-	NSArray *arguments = [NSArray arrayWithObjects:
-						  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
-						  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-						  newFileName,
-						  nil];
-	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
-                                                            andServiceName:@"qrcodes"
-                                                             andMethodName:@"getBestImageMatchNearbyObjectForPlayer"
-                                                              andArguments:arguments
-                                                               andUserInfo:nil];
-	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseQRCodeObjectFromJSON:)];
-    
-    
-    
-    // delete temporary image file
-    NSError *error;
-    NSFileManager *fileMgr = [NSFileManager defaultManager];
-    
-    if ([fileMgr removeItemAtURL:[AppModel sharedAppModel].fileToDeleteURL error:&error] != YES)
-        NSLog(@"Unable to delete file: %@", [error localizedDescription]);
-    
-}
-
-- (void)uploadImageForMatchingDidFail:(ARISUploader *)uploader
-{
-	//[[RootViewController sharedRootViewController] removeWaitingIndicator];
-	NSError *error = [uploader error];
-	NSLog(@"Model: uploadRequestFailed: %@",[error localizedDescription]);
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle: NSLocalizedString(@"UploadFailedKey", @"") message: NSLocalizedString(@"AppServicesUploadFailedMessageKey", @"") delegate: self cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
-    
-    // delete temporary image file
-    NSError *error2;
-    NSFileManager *fileMgr = [NSFileManager defaultManager];
-    
-    if ([fileMgr removeItemAtURL:[AppModel sharedAppModel].fileToDeleteURL error:&error2] != YES)
-        NSLog(@"Unable to delete file: %@", [error localizedDescription]);;
-	
-	[alert show];
 }
 
 - (void)updateServerWithPlayerLocation
@@ -783,28 +719,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
 		[jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameNoteListFromJSON:)];
 	}
 	else [self parseGameNoteListFromJSON: [jsonConnection performSynchronousRequest]];
-}
-
-- (void)fetchPlayerNoteListAsynchronously:(BOOL)YesForAsyncOrNoForSync
-{
-	/*if (currentlyFetchingPlayerNoteList)
-     {
-     NSLog(@"Skipping Request: already fetching player notes");
-     return;
-     }
-     
-     currentlyFetchingPlayerNoteList = YES;*/
-    
-	NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId], nil];
-	
-	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
-                                                            andServiceName:@"notes"
-                                                             andMethodName:@"getNotesForPlayer"
-                                                              andArguments:arguments andUserInfo:nil];
-	if (YesForAsyncOrNoForSync){
-		[jsonConnection performAsynchronousRequestWithHandler:@selector(parsePlayerNoteListFromJSON:)];
-	}
-	else [self parsePlayerNoteListFromJSON: [jsonConnection performSynchronousRequest]];
 }
 
 - (void) fetchMedia:(int)mediaId
@@ -1048,21 +962,16 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	NSArray *noteListArray = (NSArray *)jsonResult.data;
     NSLog(@"NSNotification: ReceivedNoteList");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
-    //NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
-    if(![AppModel sharedAppModel].gameNoteList) [AppModel sharedAppModel].gameNoteList = [[NSMutableDictionary alloc] init];
-#warning Should only do one of these
-    NSMutableArray *noteList = [[NSMutableArray alloc] init];
+    NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
     
 	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
 	NSDictionary *dict;
 	while ((dict = [enumerator nextObject])) {
         Note *tmpNote = [self parseNoteFromDictionary:dict];
-        [[AppModel sharedAppModel].gameNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
-        [noteList addObject:tmpNote];
+        [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
 	}
     
-	//[AppModel sharedAppModel].gameNoteList = tempNoteList;
-    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:noteList,@"notes", nil];
+    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
     
     NSLog(@"NSNotification: NewNoteListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil]];

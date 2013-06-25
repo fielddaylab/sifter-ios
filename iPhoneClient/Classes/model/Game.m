@@ -7,8 +7,6 @@
 //
 
 #import "Game.h"
-#import "AppModel.h"
-#import "ARISAppDelegate.h"
  
 @implementation Game
 

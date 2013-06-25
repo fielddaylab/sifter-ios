@@ -11,6 +11,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "Note.h"
+#import "InnovNoteModel.h"
 #import "NoteContent.h"
 #import "AsyncMediaImageView.h"
 #import "InnovPresentNoteDelegate.h"
@@ -46,8 +47,6 @@
         self.layer.masksToBounds = YES;
         self.layer.cornerRadius  = CORNER_RADIUS;
         self.transform = CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);
-        
-         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
     }
     return self;
 }
@@ -59,14 +58,27 @@
 
 - (void) refreshViewFromModel
 {
-    self.note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
-    
-    textLabel.text = [note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-    for(int i = 0; i < [self.note.contents count]; ++i)
-    {
-        NoteContent *noteContent = [note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
-    }
+        self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+        
+        textLabel.text = [note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        if([note.contents count] > 0)
+        {
+            for(NoteContent *noteContent in note.contents)
+            {
+                if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
+                    [imageView loadImageFromMedia:[noteContent getMedia]];
+            }
+        }
+        else
+        {
+            imageView.image = nil;
+            [imageView startSpinner];
+            [NSTimer scheduledTimerWithTimeInterval:2.0
+                                             target:self
+                                           selector:@selector(refreshViewFromModel)
+                                           userInfo:nil
+                                            repeats:NO];
+        }
 }
 
 #pragma mark Animations
@@ -74,16 +86,12 @@
 - (void) show
 {
     hiding = NO;
-    note = [[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:self.note.noteId]];
-    textLabel.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-    for(int i = 0; i < [self.note.contents count]; ++i)
-    {
-        NoteContent *noteContent = [note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) [imageView loadImageFromMedia:[noteContent getMedia]];
-    }
-    
     self.hidden = NO;
     self.userInteractionEnabled = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NotesAvailableChanged" object:nil];
+    
+    [self refreshViewFromModel];
+    
     [UIView beginAnimations:@"animationExpandNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
     self.transform=CGAffineTransformMakeScale(1, 1);
@@ -99,6 +107,8 @@
     {
         hiding = YES;
         self.userInteractionEnabled = NO;
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
         [UIView beginAnimations:@"animationShrinkNote" context:NULL];
         [UIView setAnimationDuration:ANIMATION_TIME];
         self.transform=CGAffineTransformMakeScale(SCALED_DOWN_AMOUNT, SCALED_DOWN_AMOUNT);

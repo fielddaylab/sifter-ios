@@ -161,13 +161,9 @@
             self.currentUploadCount++;
             
             if(text)
-            {
                 [[AppServices sharedAppServices] addContentToNoteWithText:text type:type mediaId:0 andNoteId:noteId andFileURL:aUrl];
-            }
             else
-            {            
                 [[AppServices sharedAppServices] uploadContentToNoteWithFileURL:aUrl name:nil noteId:noteId type:type]; 
-            }
         }
         else
         {

@@ -21,7 +21,6 @@
 #import "Tag.h"
 #import "ARISUploader.h"
 
-
 @interface AppServices : NSObject
 
 extern NSString *const kARISServerServicePackage;
@@ -49,20 +48,12 @@ extern NSString *const kARISServerServicePackage;
 
 //Fetch Game Data (ONLY CALLED ONCE PER GAME!!)
 - (void)fetchGameMediaListAsynchronously:    (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchGameItemListAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchGameNodeListAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchGameWebpageListAsynchronously:  (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchGamePanoramicListAsynchronously:(BOOL)YesForAsyncOrNoForSync;
 - (void)fetchGameNoteTagsAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
-
 - (void)fetchGameNoteListAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchPlayerNoteListAsynchronously:   (BOOL)YesForAsyncOrNoForSync;
 
 //Get Specific Data (technically, these being called is a sign that the "fetch game data" functions failed somewhere...)
 - (void)fetchMedia:(int)mediaId;
 - (Note *)fetchNote:(int)noteId;
-
-- (void)uploadImageForMatching:(NSURL *)fileURL;
 
 //Note Stuff
 - (int)createNote;
@@ -73,7 +64,7 @@ extern NSString *const kARISServerServicePackage;
 - (void)dropNote:(int)noteId atCoordinate:(CLLocationCoordinate2D)coordinate;
 - (void)addContentToNoteWithText:(NSString *)text type:(NSString *)type mediaId:(int)mediaId andNoteId:(int)noteId andFileURL:(NSURL *)fileURL;
 - (void)uploadContentToNoteWithFileURL:(NSURL *)fileURL name:(NSString *)name noteId:(int)noteId type:(NSString *)type;
-- (void)deleteNoteContentWithContentId:(int)contentId;
+- (void)deleteNoteContentWithContentId:(int)contentId andNoteId:(int) noteId;
 - (void)deleteNoteLocationWithNoteId:(int)noteId;
 - (void)updateNoteContent:(int)contentId text:(NSString *)text;
 - (void)updateNoteContent:(int)contentId title:(NSString *)title;
@@ -91,8 +82,6 @@ extern NSString *const kARISServerServicePackage;
 - (NSMutableArray *)parseGameListFromJSON:(JSONResult *)jsonResult;
 - (void)parseGameMediaListFromJSON:       (JSONResult *)jsonResult;
 - (void)parseGameNoteListFromJSON:        (JSONResult *)jsonResult;
-- (void)parsePlayerNoteListFromJSON:      (JSONResult *)jsonResult;
-- (void)parseRecentGameListFromJSON:      (JSONResult *)jsonResult;
 - (void)parseGameTagsListFromJSON:        (JSONResult *)jsonResult;
 
 //Parse individual pieces of server response
@@ -104,7 +93,6 @@ extern NSString *const kARISServerServicePackage;
 - (void)saveGameComment:(NSString*)comment game:(int)gameId starRating:(int)rating;
 - (void)sendNotificationToNoteViewer;
 - (void)sendNotificationToNotebookViewer;
-- (void)fetchPlayerNoteListAsync;
 - (void)startOverGame:(int)gameId;
 
 @end

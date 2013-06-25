@@ -8,13 +8,16 @@
 
 #import "InnovNoteModel.h"
 
+#import "AppModel.h"
+#import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
 #import "Tag.h"
 
 @interface InnovNoteModel()
 {
-    NSArray *allNotes;
+    NSMutableDictionary *allNotes;
+    NSMutableArray *availableNotes;
     NSMutableArray *availableTags;
     NSMutableArray *searchTerms;
 }
@@ -25,39 +28,64 @@
 
 @synthesize availableNotes;
 
++ (id)sharedNoteModel
+{
+    static dispatch_once_t pred = 0;
+    __strong static id _sharedObject = nil;
+    dispatch_once(&pred, ^{
+        _sharedObject = [[self alloc] init]; // or some other init method
+    });
+    return _sharedObject;
+}
+
 -(id)init
 {
     self = [super init];
     if(self)
     {
-        [self clearData];
-        availableNotes  = [[NSMutableArray alloc] initWithCapacity:20];
+        allNotes        = [[NSMutableDictionary alloc] init];
+        availableNotes  = [[NSMutableArray alloc] init];
         availableTags   = [[NSMutableArray alloc] initWithCapacity:8];
         searchTerms     = [[NSMutableArray alloc] initWithCapacity:8];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestGameNotesReceived:)      name:@"GameNoteListRefreshed"   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteContents:)      name:@"NewContentListReady"   object:nil];
     }
     return self;
 }
 
 -(void) clearData
 {
-    [self updateNotes:[[NSArray alloc] init]];
+    [allNotes removeAllObjects];
+    [self sendLostNotesNotif:[availableNotes copy]];
+    [availableNotes removeAllObjects];
+    [self sendChangeNotesNotif];
+    [self updateNotes:[[NSDictionary alloc] init]];
 }
 
 -(void) latestGameNotesReceived:(NSNotification *)notification
 {
-    allNotes = [notification.userInfo objectForKey:@"notes"];
-    [self updateNotes:allNotes];
+    NSDictionary *newNotes = [notification.userInfo objectForKey:@"notes"];
+    [allNotes addEntriesFromDictionary:newNotes];
+    for(Note *note in [newNotes allValues])
+        [self updateNotes:newNotes];
 }
 
--(void) updateNotes:(NSArray *)notes
+-(void) updateNotes:(NSDictionary *)notes
 {
     NSMutableArray *newlyAvailableNotes   = [[NSMutableArray alloc] initWithCapacity:20];
     NSMutableArray *newlyUnavailableNotes = [[NSMutableArray alloc] initWithCapacity:20];
-    NSMutableArray *availableNotesMutable = [[NSMutableArray alloc] initWithArray:   availableNotes];
+    
+    //Lost Notes
+    for (Note *existingNote in availableNotes)
+    {
+        if(![self noteShouldBeAvailable:existingNote])
+            [newlyUnavailableNotes addObject: existingNote];
+    }
+    
+    [availableNotes removeObjectsInArray: newlyUnavailableNotes];
     
     //Gained Notes
-    for(Note *newNote in notes)
+    for(Note *newNote in [notes allValues])
     {
         BOOL match = NO;
         
@@ -71,54 +99,141 @@
             [newlyAvailableNotes addObject:newNote];
     }
     
-    //Lost Notes
-    for (Note *existingNote in availableNotes)
-    {
-        BOOL match = NO;
-        for (Note *newNote in notes)
-        {
-            if ([newNote compareTo: existingNote])
-                match = YES;
-        }
-        
-        if((!match && [self noteShouldBeAvailable:existingNote]) || ![self noteShouldBeAvailable:existingNote]) //Lost Note
-            [newlyUnavailableNotes addObject: existingNote];
-    }
-    
-    [availableNotesMutable addObjectsFromArray:  newlyAvailableNotes];
-    [availableNotesMutable removeObjectsInArray: newlyUnavailableNotes];
-    availableNotes = [availableNotesMutable copy];
+    [availableNotes addObjectsFromArray:  newlyAvailableNotes];
     
     if([newlyAvailableNotes count] > 0 || [newlyUnavailableNotes count] > 0)
     {
-        NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                               availableNotes,@"availableNotes",
-                               nil];
-        NSNotification *notif  = [NSNotification notificationWithName:@"NotesAvailableChanged" object:self userInfo:nDict];
-        [[Logger sharedLogger] logNotification: notif];
-        [[NSNotificationCenter defaultCenter] postNotification:notif];
+        [self sendChangeNotesNotif];
         
         if([newlyAvailableNotes count] > 0)
-        {
-            NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                   newlyAvailableNotes,@"newlyAvailableNotes",
-                                   nil];
-            NSNotification *notif  = [NSNotification notificationWithName:@"NewlyAvailableNotesAvailable"  object:self userInfo:nDict];
-            [[Logger sharedLogger] logNotification: notif];
-            [[NSNotificationCenter defaultCenter] postNotification: notif];
-        }
-        if([newlyUnavailableNotes count] > 0)
-        {
-            NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                   newlyUnavailableNotes,@"newlyUnavailableNotes",
-                                   nil];
-            NSNotification *notif  = [NSNotification notificationWithName:@"NewlyUnavailableNotesAvailable" object:self userInfo:nDict];
-            [[Logger sharedLogger] logNotification: notif];
-            [[NSNotificationCenter defaultCenter] postNotification: notif];
-        }
+            [self sendNewNotesNotif:newlyAvailableNotes];
         
+        if([newlyUnavailableNotes count] > 0)
+            [self sendLostNotesNotif:newlyUnavailableNotes];
     }
 }
+
+-(void) updateNoteContents:(NSNotification *)notification
+{
+    Note *note = [self noteForNoteId:[notification.userInfo objectForKey:@"noteId"]];
+    [self updateNoteContentsWithNote:note];
+}
+
+-(void) updateNoteContentsWithNote: (Note *) note
+{
+    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
+    {
+        //Removes note contents that are not done uploading, because they will all be added again right after this loop
+        if([contentObject managedObjectContext] == nil || ![[contentObject getUploadState] isEqualToString:@"uploadStateDONE"])
+            [note.contents removeObject:contentObject];
+    }
+    
+    NSArray *uploadContentsForNote = [[[AppModel sharedAppModel].uploadManager.uploadContentsForNotes objectForKey:[NSNumber numberWithInt:note.noteId]]allValues];
+    [note.contents addObjectsFromArray:uploadContentsForNote];
+}
+
+-(void) addNote:(Note *) note
+{
+    [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+    if([self noteShouldBeAvailable:note])
+    {
+        [availableNotes addObject:note];
+        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+        [self sendChangeNotesNotif];
+    }
+}
+
+-(void) updateNote:(Note *) note
+{
+    [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+    Note *existingNote;
+    if([self noteShouldBeAvailable:note]) {
+        for(existingNote in availableNotes)
+        {
+            if(note.noteId == existingNote.noteId)
+            {
+                [availableNotes removeObject:existingNote];
+                [self sendLostNotesNotif:[NSArray arrayWithObject:existingNote]];
+                break;
+            }
+        }
+        [availableNotes addObject:note];
+        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+        [self sendChangeNotesNotif];
+    }
+}
+
+-(void) removeNote:(Note *) note
+{
+    [allNotes removeObjectForKey:[NSNumber numberWithInt:note.noteId]];
+    Note *existingNote;
+    for(existingNote in availableNotes)
+    {
+        if(note.noteId == existingNote.noteId)
+        {
+            [availableNotes removeObject:existingNote];
+            [self sendLostNotesNotif:[NSArray arrayWithObject:existingNote]];
+            [self sendChangeNotesNotif];
+            break;
+        }
+    }
+}
+
+-(Note *) noteForNoteId:(int) noteId
+{
+#warning REMOVE
+    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+    [array removeObject:@""];
+    
+    NSLog(@"%@: %@ Debug: %@", [array objectAtIndex:3], [array objectAtIndex:4], @"CAlling");
+    
+    Note *note = [allNotes objectForKey:[NSNumber numberWithInt:noteId]];
+    
+    if(!note && note.noteId)
+    {
+        [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+    }
+    else
+        [self updateNoteContentsWithNote:note];
+    
+    return note;
+}
+
+#pragma mark Notifications
+
+-(void) sendChangeNotesNotif
+{
+    NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                           availableNotes,@"availableNotes",
+                           nil];
+    NSNotification *notif  = [NSNotification notificationWithName:@"NotesAvailableChanged" object:self userInfo:nDict];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification:notif];
+}
+
+-(void) sendNewNotesNotif: (NSArray *) notes
+{
+    NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                           notes,@"newlyAvailableNotes",
+                           nil];
+    NSNotification *notif  = [NSNotification notificationWithName:@"NewlyAvailableNotesAvailable"  object:self userInfo:nDict];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification: notif];
+}
+
+-(void) sendLostNotesNotif: (NSArray *) notes
+{
+    NSDictionary *nDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+                           notes,@"newlyUnavailableNotes",
+                           nil];
+    NSNotification *notif  = [NSNotification notificationWithName:@"NewlyUnavailableNotesAvailable" object:self userInfo:nDict];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification: notif];
+}
+
+#pragma mark Available Notes
 
 -(BOOL) noteShouldBeAvailable: (Note *) note
 {

@@ -40,23 +40,12 @@
 	CLLocation *playerLocation;
     
     NSMutableArray *oneGameGameList;
-	NSMutableArray *nearbyGameList;
-    NSMutableArray *searchGameList;
-    NSMutableArray *popularGameList;
     NSMutableArray *recentGamelist;
 	NSMutableArray *playerList;
 	NSMutableArray *nearbyLocationsList;
 
 	NSMutableDictionary *gameMediaList;
-	NSMutableDictionary *gameItemList;
-	NSMutableDictionary *gameNodeList;
-	NSMutableDictionary *gameNpcList;
-    NSMutableDictionary *gameWebPageList;
-    NSMutableDictionary *gamePanoramicList;
-    NSMutableDictionary *gameNoteList;
-    NSMutableDictionary *playerNoteList;
     NSMutableArray *gameTagList;
-    NSMutableArray *overlayList;
 
     UIProgressView *progressBar;
 
@@ -120,28 +109,15 @@
 
 @property(nonatomic, strong) NSURL *fileToDeleteURL;
 @property(nonatomic, strong) NSMutableArray *oneGameGameList;
-@property(nonatomic, strong) NSMutableArray *nearbyGameList;
-@property(nonatomic, strong) NSMutableArray *searchGameList;
-@property(nonatomic, strong) NSMutableArray *popularGameList;
-@property(nonatomic, strong) NSMutableArray *recentGameList;	
+	
 @property(nonatomic, strong) NSMutableArray *playerList;
 
 @property(nonatomic, strong) NSMutableArray *nearbyLocationsList;	
 @property(nonatomic, strong) CLLocation *playerLocation;
 
-@property(nonatomic, strong) NSMutableDictionary *gameNoteList;
-@property(nonatomic, strong) NSMutableDictionary *playerNoteList;
 @property(nonatomic, strong) NSMutableArray *gameTagList;
-@property(nonatomic, strong) NSMutableArray *overlayList;
 
 @property(nonatomic, strong) NSMutableDictionary *gameMediaList;
-@property(nonatomic, strong) NSMutableDictionary *gameItemList;
-@property(nonatomic, strong) NSMutableDictionary *gameNodeList;
-
-@property(nonatomic, strong) NSMutableDictionary *gameNpcList;
-@property(nonatomic, strong) NSMutableDictionary *gameWebPageList;
-
-@property(nonatomic, strong) NSMutableDictionary *gamePanoramicList;
 
 @property(nonatomic, strong) UIAlertView *networkAlert;
 @property(nonatomic, strong) UIProgressView *progressBar;

@@ -24,7 +24,7 @@
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 
-#define GAME_ID                         3430
+#define GAME_ID                         3433
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
 @interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
@@ -46,8 +46,6 @@
     InnovSettingsView *settingsView;
     InnovSelectedTagsViewController *selectedTagsVC;
     
-    InnovNoteModel *noteModel;
-    
     Note *noteToAdd;
     NSString *currentSearchTerm;
     ContentSelector currentSearchAlgorithm;
@@ -61,7 +59,6 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        noteModel = [[InnovNoteModel alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
     }
     return self;
@@ -219,7 +216,7 @@
 
 - (void) updateContentSelector:(ContentSelector)selector
 {
-    [noteModel clearData];
+    [[InnovNoteModel sharedNoteModel] clearData];
     currentSearchAlgorithm = selector;
     [self fetchMoreNotes];
 }
@@ -241,21 +238,21 @@
 
 - (void) addTag: (Tag *) tag
 {
-    [noteModel addTag:tag];
+    [[InnovNoteModel sharedNoteModel] addTag:tag];
 }
 
 - (void) removeTag: (Tag *) tag
 {
-    [noteModel removeTag:tag];
+    [[InnovNoteModel sharedNoteModel] removeTag:tag];
 }
 
 #pragma mark Search Bar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    [noteModel removeSearchTerm:currentSearchTerm];
+    [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = searchText.lowercaseString;
-    [noteModel addSearchTerm:currentSearchTerm];
+    [[InnovNoteModel sharedNoteModel] addSearchTerm:currentSearchTerm];
 }
 
 //Enables search bar when search field is empty

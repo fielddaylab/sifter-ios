@@ -26,6 +26,7 @@
 @property(nonatomic) NSArray *arguments;
 @property(nonatomic) SEL handler;
 @property(nonatomic) NSMutableDictionary *userInfo;
+@property(nonatomic) NSDictionary *handlerUserInfo;
 @property(nonatomic) NSURL *completeRequestURL;
 @property(nonatomic) NSMutableData *asyncData;
 @property(nonatomic) NSURLConnection *connection;
@@ -40,6 +41,7 @@
 
 - (JSONResult*) performSynchronousRequest;
 - (void) performAsynchronousRequestWithHandler: (SEL)handler;
+- (void) performAsynchronousRequestWithHandler: (SEL)handler andUserInfo:(NSDictionary *) hUserInfo;
 - (void)connectionDidFinishLoading:(NSURLConnection*)theConnection;
 - (void)connection:(NSURLConnection *)theConnection didReceiveData:(NSData *)incrementalData;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
