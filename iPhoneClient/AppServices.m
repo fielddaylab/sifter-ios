@@ -8,6 +8,7 @@
 
 #import "AppServices.h"
 #import "ARISUploader.h"
+#import "InnovNoteModel.h"
 #import "Logger.h"
 
 static const int kDefaultCapacity = 10;
@@ -418,6 +419,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 -(void)sendNotificationToNoteViewer:(NSDictionary *)userInfo
 {
+#warning REMOVE
+    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
+    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
+    [array removeObject:@""];
+    
+    NSLog(@"%@: %@ Debug: %@", [array objectAtIndex:3], [array objectAtIndex:4], @"CAlling");
     NSLog(@"NSNotification: NewContentListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewContentListReady" object:nil userInfo:userInfo]];
     [self fetchGameNoteListAsync];
@@ -449,8 +457,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
     
 	[uploader upload];
     
-    userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
-    [self sendNotificationToNoteViewer:userInfo];
+    NSDictionary *userInfoB = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
+    [self sendNotificationToNoteViewer:userInfoB];
 }
 
 -(void)fetchGameNoteListAsync{
@@ -787,12 +795,11 @@ BOOL currentlyUpdatingServerWithMapViewed;
         t.tagId = [self validIntForKey:@"tag_id" inDictionary:tagDictionary];
 		[tempTagsList addObject:t];
 	}
-	[AppModel sharedAppModel].gameTagList = tempTagsList;
     
-  //  NSLog(@"NSNotification: NewNoteListReady");
-  //  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady" object:nil]];
+    NSDictionary *tags  = [[NSDictionary alloc] initWithObjectsAndKeys:tempTagsList,@"tags", nil];
+    
     NSLog(@"NSNotification: NewTagListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewTagListReady" object:nil]];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewTagListReady" object:nil userInfo:tags]];
 }
 
 -(void)addTagToNote:(int)noteId tagName:(NSString *)tag
@@ -974,10 +981,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
     
     NSLog(@"NSNotification: NewNoteListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil]];
-    NSLog(@"NSNotification: GameNoteListRefreshed");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"GameNoteListRefreshed" object:nil userInfo:notes]];
-    //^ This is ridiculous. Each notification is a paraphrasing of the last. <3 Phil
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:notes]];
     
     currentlyFetchingGameNoteList = NO;
 }

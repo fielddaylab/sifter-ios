@@ -77,8 +77,9 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NewNoteListReady" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCategories)    name:@"NewTagListReady"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags)
+             name:@"NoteModelUpdate:Tags"  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
         
         tagList = [[NSMutableArray alloc]initWithCapacity:10];
@@ -114,7 +115,7 @@
     NSString *soundFilePath =[tempDir stringByAppendingString: [NSString stringWithFormat:@"%@.caf",[self getUniqueId]]];
     soundFileURL = [[NSURL alloc] initFileURLWithPath: soundFilePath];
     
-    [self refreshCategories];
+    [self updateTags];
     
     ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
     ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
@@ -606,15 +607,9 @@
 
 #pragma mark Table view methods
 
--(void)refreshCategories
+-(void)updateTags
 {
-    [tagList removeAllObjects];
-    for(int i = 0; i < [[AppModel sharedAppModel].gameTagList count];i++){
-        [tagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
-        
-        if([((Tag *)[tagList objectAtIndex:i]).tagName isEqualToString:newTagName])
-            [tagTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].accessoryType = UITableViewCellAccessoryCheckmark;
-    }
+    tagList = [InnovNoteModel sharedNoteModel].allTags;
     [tagTableView reloadData];
 }
 

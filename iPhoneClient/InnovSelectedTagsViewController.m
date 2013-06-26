@@ -8,7 +8,9 @@
 
 #import "InnovSelectedTagsViewController.h"
 #import <QuartzCore/QuartzCore.h>
+
 #import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "Tag.h"
 #import "Logger.h"
 
@@ -24,8 +26,8 @@
     __weak IBOutlet UITableView *tagTableView;
     
     BOOL hiding;
-    NSMutableArray *tagList;
-    NSMutableArray *selectedTagList;
+    NSArray *tags;
+    NSArray *selectedTags;
     
     ContentSelector selectedContent;
 }
@@ -34,19 +36,17 @@
 
 @implementation InnovSelectedTagsViewController
 
-@synthesize delegate;
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCategories)    name:@"NewTagListReady"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSelectedTags) name:@"NoteModelUpdate:SelectedTags"  object:nil];
         
         self.view.hidden = YES;
         
-        tagList =         [[NSMutableArray alloc] initWithCapacity:10];
-        selectedTagList = [[NSMutableArray alloc] initWithCapacity:10];
+        tags =         [[NSArray alloc] init];
+        selectedTags = [[NSArray alloc] init];
     }
     return self;
 }
@@ -56,7 +56,9 @@
     [super viewDidLoad];
     
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
-    [delegate updateContentSelector:selectedContent];
+    [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
+    
+    [self updateTags];
 }
 
 # pragma  mark Display Methods
@@ -120,22 +122,20 @@
 - (IBAction)contentSelectorChangedValue:(UISegmentedControl *)sender
 {
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
-    [delegate updateContentSelector:selectedContent];
+    [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
 }
 
 #pragma mark TableView DataSource and Delegate Methods
 
--(void)refreshCategories
+-(void)updateTags
 {
-    [tagList removeAllObjects];
-    for(int i = 0; i < [[AppModel sharedAppModel].gameTagList count]; ++i)
-        [tagList addObject:[[AppModel sharedAppModel].gameTagList objectAtIndex:i]];
-    
-    if([selectedTagList count] == 0 && [[AppModel sharedAppModel].gameTagList count] > 0){
-        [selectedTagList addObject:[tagList objectAtIndex:0]];
-        [delegate addTag:[tagList objectAtIndex:0]];
-    }
-    
+    tags = [InnovNoteModel sharedNoteModel].allTags;
+    [tagTableView reloadData];
+}
+
+-(void)updateSelectedTags
+{
+    selectedTags = [InnovNoteModel sharedNoteModel].selectedTags;
     [tagTableView reloadData];
 }
 
@@ -145,7 +145,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [tagList count];
+    return [tags count];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -155,7 +155,7 @@
     if (!cell)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        CGSize textSize = [((Tag *)[tagList objectAtIndex:indexPath.row]).tagName
+        CGSize textSize = [((Tag *)[tags objectAtIndex:indexPath.row]).tagName
                            sizeWithFont:[UIFont boldSystemFontOfSize:16]
                            constrainedToSize:CGSizeMake(cell.frame.size.width - IMAGEWIDTH - 2 * SPACING, cell.frame.size.height)
                            lineBreakMode:UILineBreakModeTailTruncation];
@@ -165,7 +165,7 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
-    [cell.textLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
+    [cell.textLabel setText:((Tag *)[tags objectAtIndex:indexPath.row]).tagName];
     
     
     cell.imageView.frame = CGRectMake( cell.textLabel.frame.origin.x + cell.textLabel.frame.size.width + SPACING,
@@ -176,8 +176,8 @@
     // cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"tag%d.png", ((Tag *)[tagList  objectAtIndex:indexPath.row]).tagId]];
     
     BOOL match = NO;
-    for(int i = 0; i < [selectedTagList count]; ++i)
-        if(((Tag *)[tagList objectAtIndex:indexPath.row]).tagId == ((Tag *)[selectedTagList objectAtIndex:i]).tagId) match = YES;
+    for(int i = 0; i < [selectedTags count]; ++i)
+        if(((Tag *)[tags objectAtIndex:indexPath.row]).tagId == ((Tag *)[selectedTags objectAtIndex:i]).tagId) match = YES;
     
     if(match) cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else cell.accessoryType = UITableViewCellAccessoryNone;
@@ -191,21 +191,18 @@
     if([tableView cellForRowAtIndexPath:indexPath].accessoryType == UITableViewCellAccessoryCheckmark)
     {
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;
-        [selectedTagList removeObject:((Tag *)[tagList objectAtIndex:indexPath.row])];
-        [delegate removeTag:((Tag *)[tagList objectAtIndex:indexPath.row])];
+        [[InnovNoteModel sharedNoteModel] removeTag:((Tag *)[tags objectAtIndex:indexPath.row])];
     }
     else
     {
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
-        [selectedTagList addObject:((Tag *)[tagList objectAtIndex:indexPath.row])];
-        [delegate addTag:((Tag *)[tagList objectAtIndex:indexPath.row])];
+        [[InnovNoteModel sharedNoteModel] addTag:((Tag *)[tags objectAtIndex:indexPath.row])];
     }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)viewDidUnload {

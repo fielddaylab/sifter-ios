@@ -14,26 +14,31 @@
 #import "Note.h"
 #import "Tag.h"
 
+#define NOTES_PER_FETCH 25
+
 @interface InnovNoteModel()
 {
     NSMutableDictionary *allNotes;
     NSMutableArray *availableNotes;
-    NSMutableArray *availableTags;
+    NSArray *allTags;
+    NSMutableArray *selectedTags;
     NSMutableArray *searchTerms;
+    
+    ContentSelector selectedContent;
 }
 
 @end
 
 @implementation InnovNoteModel
 
-@synthesize availableNotes;
+@synthesize availableNotes, allTags, selectedTags;
 
 + (id)sharedNoteModel
 {
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
     dispatch_once(&pred, ^{
-        _sharedObject = [[self alloc] init]; // or some other init method
+        _sharedObject = [[self alloc] init];
     });
     return _sharedObject;
 }
@@ -45,10 +50,12 @@
     {
         allNotes        = [[NSMutableDictionary alloc] init];
         availableNotes  = [[NSMutableArray alloc] init];
-        availableTags   = [[NSMutableArray alloc] initWithCapacity:8];
+        allTags         = [[NSArray alloc] init];
+        selectedTags    = [[NSMutableArray alloc] initWithCapacity:8];
         searchTerms     = [[NSMutableArray alloc] initWithCapacity:8];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(latestGameNotesReceived:)      name:@"GameNoteListRefreshed"   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteContents:)      name:@"NewContentListReady"   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newNotesReceived:)    name:@"NewNoteListReady"    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newTagsReceived:)     name:@"NewTagListReady"     object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteContents:)  name:@"NewContentListReady" object:nil];
     }
     return self;
 }
@@ -59,15 +66,47 @@
     [self sendLostNotesNotif:[availableNotes copy]];
     [availableNotes removeAllObjects];
     [self sendChangeNotesNotif];
-    [self updateNotes:[[NSDictionary alloc] init]];
 }
 
--(void) latestGameNotesReceived:(NSNotification *)notification
+- (void) fetchMoreNotes
+{
+#warning implement proper searchers
+#warning fetch more notes each time
+    switch (selectedContent)
+    {
+        case kTop:
+        case kPopular:
+        case kRecent:
+        case kMine:
+        default:
+            [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+            break;
+    }
+}
+
+
+#pragma mark Updates from Server
+
+-(void) newNotesReceived:(NSNotification *)notification
 {
     NSDictionary *newNotes = [notification.userInfo objectForKey:@"notes"];
     [allNotes addEntriesFromDictionary:newNotes];
-    for(Note *note in [newNotes allValues])
-        [self updateNotes:newNotes];
+    [self updateNotes:newNotes];
+    
+    NSNotification *notif  = [NSNotification notificationWithName:@"NoteModelUpdate:Notes" object:self];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification: notif];
+}
+
+
+-(void) newTagsReceived:(NSNotification *)notification
+{
+    allTags = [notification.userInfo objectForKey:@"tags"];
+    if([selectedTags count] == 0) selectedTags = [allTags mutableCopy];
+    
+    NSNotification *notif  = [NSNotification notificationWithName:@"NoteModelUpdate:Tags" object:self];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification: notif];
 }
 
 -(void) updateNotes:(NSDictionary *)notes
@@ -115,7 +154,7 @@
 
 -(void) updateNoteContents:(NSNotification *)notification
 {
-    Note *note = [self noteForNoteId:[notification.userInfo objectForKey:@"noteId"]];
+    Note *note = [self noteForNoteId:[[notification.userInfo objectForKey:@"noteId"] intValue]];
     [self updateNoteContentsWithNote:note];
 }
 
@@ -147,20 +186,23 @@
 {
     [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
     Note *existingNote;
-    if([self noteShouldBeAvailable:note]) {
-        for(existingNote in availableNotes)
+    for(existingNote in availableNotes)
+    {
+        if(note.noteId == existingNote.noteId)
         {
-            if(note.noteId == existingNote.noteId)
+            [availableNotes removeObject:existingNote];
+            [self sendLostNotesNotif:[NSArray arrayWithObject:existingNote]];
+            if(![self noteShouldBeAvailable:note])
             {
-                [availableNotes removeObject:existingNote];
-                [self sendLostNotesNotif:[NSArray arrayWithObject:existingNote]];
-                break;
+                [self sendChangeNotesNotif];
+                return;
             }
+            break;
         }
-        [availableNotes addObject:note];
-        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
-        [self sendChangeNotesNotif];
     }
+    [availableNotes addObject:note];
+    [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+    [self sendChangeNotesNotif];
 }
 
 -(void) removeNote:(Note *) note
@@ -181,24 +223,84 @@
 
 -(Note *) noteForNoteId:(int) noteId
 {
-#warning REMOVE
-    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
-    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
-    [array removeObject:@""];
-    
-    NSLog(@"%@: %@ Debug: %@", [array objectAtIndex:3], [array objectAtIndex:4], @"CAlling");
-    
     Note *note = [allNotes objectForKey:[NSNumber numberWithInt:noteId]];
     
-    if(!note && note.noteId)
-    {
+    if(!note && note.noteId != 0)
         [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
-    }
     else
         [self updateNoteContentsWithNote:note];
     
     return note;
+}
+
+#pragma mark Available Notes
+
+-(BOOL) noteShouldBeAvailable: (Note *) note
+{
+#warning POSSIBLY CHANGE
+    if(selectedContent != kMine)
+    {
+        BOOL match = NO;
+        for(Tag *tag in selectedTags)
+        {
+            if([note.tags count] > 0)
+                if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId) match = YES;
+        }
+        if(!match) return NO;
+    }
+    for(NSString *searchTerm in searchTerms)
+        if([note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
+    
+    return YES;
+}
+
+-(void) addTag: (Tag *) addTag
+{
+    for(Tag *currentTag in selectedTags)
+        if(currentTag.tagId == addTag.tagId) return;
+    
+    [selectedTags addObject: addTag];
+    [self updateNotes:allNotes];
+    [self sendSelectedTagsUpdateNotification];
+}
+
+-(void) removeTag: (Tag *) removeTag
+{
+    for(int i = 0; i < [selectedTags count]; ++i)
+    {
+        Tag *tag = [selectedTags objectAtIndex:i];
+        if(tag.tagId == removeTag.tagId)
+        {
+            [selectedTags removeObject: tag];
+            [self updateNotes:allNotes];
+            [self sendSelectedTagsUpdateNotification];
+            return;
+        }
+    }
+}
+
+-(void) addSearchTerm: (NSString *) term
+{
+    if([term length] > 0) [searchTerms addObject: term];
+    [self updateNotes:allNotes];
+}
+
+-(void) removeSearchTerm: (NSString *) term
+{
+    for(NSString *currentTerm in searchTerms)
+    {
+        if([term isEqualToString:currentTerm])
+            [searchTerms removeObject: currentTerm];
+    }
+    
+    [self updateNotes:allNotes];
+}
+
+-(void) setSelectedContent: (ContentSelector) contentSelector
+{
+    selectedContent = contentSelector;
+    [self clearData];
+    [self fetchMoreNotes];
 }
 
 #pragma mark Notifications
@@ -233,61 +335,11 @@
     [[NSNotificationCenter defaultCenter] postNotification: notif];
 }
 
-#pragma mark Available Notes
-
--(BOOL) noteShouldBeAvailable: (Note *) note
+- (void) sendSelectedTagsUpdateNotification
 {
-    BOOL match = NO;
-    for(Tag *tag in availableTags)
-    {
-        if([note.tags count] > 0)
-            if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId) match = YES;
-    }
-    
-    if(!match) return NO;
-    
-    for(NSString *searchTerm in searchTerms)
-        if([note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
-    
-    return YES;
-}
-
--(void) addTag: (Tag *) addTag
-{
-    [availableTags addObject: addTag];
-    [self updateNotes:allNotes];
-}
-
--(void) removeTag: (Tag *) removeTag
-{
-    for(int i = 0; i < [availableTags count]; ++i)
-    {
-        Tag *tag = [availableTags objectAtIndex:i];
-        if(tag.tagId == removeTag.tagId)
-        {
-            [availableTags removeObject: tag];
-            break;
-        }
-    }
-    
-    [self updateNotes:allNotes];
-}
-
--(void) addSearchTerm: (NSString *) term
-{
-    if([term length] > 0) [searchTerms addObject: term];
-    [self updateNotes:allNotes];
-}
-
--(void) removeSearchTerm: (NSString *) term
-{
-    for(NSString *currentTerm in searchTerms)
-    {
-        if([term isEqualToString:currentTerm])
-            [searchTerms removeObject: currentTerm];
-    }
-    
-    [self updateNotes:allNotes];
+    NSNotification *notif  = [NSNotification notificationWithName:@"NoteModelUpdate:SelectedTags" object:self];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification: notif];
 }
 
 -(void)dealloc

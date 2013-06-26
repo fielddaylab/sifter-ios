@@ -27,7 +27,7 @@
 #define GAME_ID                         3433
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovSelectedTagsDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -143,7 +143,6 @@
     settingsView.hidden = YES;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
-    selectedTagsVC.delegate = self;
     selectedTagsVC.view.layer.anchorPoint = CGPointMake(0, 1);
     CGRect selectedTagsFrame = selectedTagsVC.view.frame;
     selectedTagsFrame.origin.x = 0;
@@ -156,7 +155,10 @@
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
-    [self refresh];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
+    
+    [mapVC updatePlayerLocation];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -176,11 +178,6 @@
 {
     [super viewDidAppear:animated];
     
-	[self refresh];
-	
-	if (refreshTimer && [refreshTimer isValid]) [refreshTimer invalidate];
-	refreshTimer = [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(refresh) userInfo:nil repeats:YES];
-    
     if(noteToAdd != nil)
         [self animateInNote:noteToAdd];
 }
@@ -190,62 +187,31 @@
 - (void) prepareToDisplayNote: (Note *) note
 {
     noteToAdd = note;
+    #warning could be different
+    [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
+    currentSearchTerm = @"";
+    [[InnovNoteModel sharedNoteModel] setSelectedContent:kMine];
 }
 
 - (void) animateInNote: (Note *) note
 {
-#warning could be different
-    if ([contentView.subviews containsObject:mapVC.view]) //[self switchViews];
+    if ([contentView.subviews containsObject:mapVC.view])
         [mapVC showNotePopUpForNote:note];
     else
         [listVC animateInNote:note];
     noteToAdd = nil;
 }
-
+/*
 #pragma mark Refresh
 
 - (void) refresh
 {
-    [self fetchMoreNotes];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
     [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
     
     [mapVC updatePlayerLocation];
 }
-
-#pragma mark Selected Content Delegate Methods
-
-- (void) updateContentSelector:(ContentSelector)selector
-{
-    [[InnovNoteModel sharedNoteModel] clearData];
-    currentSearchAlgorithm = selector;
-    [self fetchMoreNotes];
-}
-
-- (void) fetchMoreNotes
-{
-#warning implement proper searchers
-#warning fetch more notes each time
-    switch (currentSearchAlgorithm)
-    {
-        case kTop:
-        case kPopular:
-        case kRecent:
-        default:
-            [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
-            break;
-    }
-}
-
-- (void) addTag: (Tag *) tag
-{
-    [[InnovNoteModel sharedNoteModel] addTag:tag];
-}
-
-- (void) removeTag: (Tag *) tag
-{
-    [[InnovNoteModel sharedNoteModel] removeTag:tag];
-}
-
+*/
 #pragma mark Search Bar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText

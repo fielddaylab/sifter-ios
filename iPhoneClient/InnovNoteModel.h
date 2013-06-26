@@ -6,14 +6,24 @@
 //
 //
 
+typedef enum {
+	kTop,
+    kPopular,
+    kRecent,
+    kMine
+} ContentSelector;
+
 @class Note, Tag;
 
 @interface InnovNoteModel : NSObject
 
 @property(nonatomic, readonly) NSArray *availableNotes;
+@property(nonatomic, readonly) NSArray *allTags;
+@property(nonatomic, readonly) NSArray *selectedTags;
 
-+(id) sharedNoteModel;
++(InnovNoteModel *) sharedNoteModel;
 -(void) clearData;
+-(void) fetchMoreNotes;
 
 -(void) addNote:(Note *) note;
 -(void) updateNote:(Note *) note;
@@ -25,5 +35,6 @@
 -(void) removeTag: (Tag *) tag;
 -(void) addSearchTerm: (NSString *) term;
 -(void) removeSearchTerm: (NSString *) term;
+-(void) setSelectedContent: (ContentSelector) contentSelector;
 
 @end

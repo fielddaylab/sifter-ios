@@ -8,14 +8,9 @@
 
 #import "InnovDisplayProtocol.h"
 
-@class Tag;
+//@class Tag;
 
-typedef enum {
-	kTop,
-    kPopular,
-    kRecent
-} ContentSelector;
-
+/*
 @protocol InnovSelectedTagsDelegate <NSObject>
 @required
 - (void) updateContentSelector: (ContentSelector) selector;
@@ -23,9 +18,9 @@ typedef enum {
 - (void) removeTag: (Tag *) tag;
 
 @end
-
+*/
 @interface InnovSelectedTagsViewController : UIViewController <InnovDisplayProtocol>
 
-@property(nonatomic, weak) id<InnovSelectedTagsDelegate> delegate;
+//@property(nonatomic, weak) id<InnovSelectedTagsDelegate> delegate;
 
 @end
