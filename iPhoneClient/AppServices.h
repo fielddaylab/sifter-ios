@@ -77,7 +77,7 @@ extern NSString *const kARISServerServicePackage;
 - (void)updateNoteContent:(int)contentId title:(NSString *)title;
 - (void)addTagToNote:(int)noteId tagName:(NSString *)tag;
 - (void)deleteTagFromNote:(int)noteId tagId:(int)tagId;
-- (int)addCommentToNoteWithId:(int)noteId andTitle:(NSString *)title;
+- (int) addCommentToNoteWithId:(int)noteId andTitle:(NSString *)title;
 - (void)updateCommentWithId:(int)noteId andTitle:(NSString *)title andRefresh:(BOOL)refresh;
 - (void)likeNote:(int)noteId;
 - (void)unLikeNote:(int)noteId;
@@ -96,9 +96,6 @@ extern NSString *const kARISServerServicePackage;
 - (Game *)     parseGameFromDictionary:     (NSDictionary *)gameSource;
 - (Note *)     parseNoteFromDictionary:     (NSDictionary *)noteDictionary;
 
-- (void)updateServerGameSelected;
-- (void)fetchQRCode:(NSString*)QRcodeId;
-- (void)saveGameComment:(NSString*)comment game:(int)gameId starRating:(int)rating;
 - (void)sendNotificationToNoteViewer;
 - (void)sendNotificationToNotebookViewer;
 - (void)startOverGame:(int)gameId;

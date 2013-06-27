@@ -150,26 +150,20 @@
     
     [self.editView startSpinner];
     
-    //Ignore since it's nonsense
-    //   [[info objectForKey:UIImagePickerControllerMediaMetadata] setObject:@"X" forKey:@"Orientation"];
+    UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
+    image = [self cropImage:image];
+    mediaData = UIImageJPEGRepresentation(image, 0.02);
+    
+    [self.editView updateImageView:mediaData];
+    
+    mediaData = [self dataWithEXIFUsingData:mediaData];
+    
+    NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+    NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+    [mediaData writeToURL:imageURL atomically:YES];
+    
+    [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
-        
-        UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
-        image = [self cropImage:image];
-        mediaData = UIImageJPEGRepresentation(image, 0.02);
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.editView updateImageView:mediaData];
-        });
-        
-        mediaData = [self dataWithEXIFUsingData:mediaData];
-        
-        NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-        NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-        [mediaData writeToURL:imageURL atomically:YES];
-        
-        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-        
         // If image not selected from camera roll
         if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
         {

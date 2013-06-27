@@ -21,7 +21,7 @@
 {
     self = [super initWithNibName:nibName bundle:nibBundle];
     if (self)
-        self.title = NSLocalizedString(@"LoginTitleKey", @"");
+        self.title = @"Log In to YOI"; // NSLocalizedString(@"LoginTitleKey", @"");
     return self;
 }
 

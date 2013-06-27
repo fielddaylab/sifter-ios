@@ -383,12 +383,13 @@
 
 - (IBAction)shareButtonPressed:(id)sender
 {
-    [self refreshViewFromModel];
     InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
+    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+    if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.title = [NSString stringWithFormat:@"#%@", [AppModel sharedAppModel].userName];
+    else self.note.title = [NSString stringWithFormat:@"%@ #%@", captionTextView.text, [AppModel sharedAppModel].userName];
     socialContent.note = self.note;
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
     [self.view addSubview:popOver];
-#warning unimplemented
 }
 
 #pragma mark Audio Methods

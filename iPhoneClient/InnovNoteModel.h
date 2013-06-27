@@ -37,4 +37,6 @@ typedef enum {
 -(void) removeSearchTerm: (NSString *) term;
 -(void) setSelectedContent: (ContentSelector) contentSelector;
 
+-(void) updateNoteContentsWithNote: (Note *) note;
+
 @end
