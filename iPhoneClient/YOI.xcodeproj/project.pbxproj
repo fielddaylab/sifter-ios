@@ -77,16 +77,12 @@
 		A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */ = {isa = PBXBuildFile; fileRef = A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */; };
 		A722C8C60FBCD92E009432DB /* SelfRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */; };
 		A76048E70FC1B6DE00219A53 /* QRCodeProtocol.h in Resources */ = {isa = PBXBuildFile; fileRef = A76048E60FC1B6DE00219A53 /* QRCodeProtocol.h */; };
-		A7615F8F0FDED3DC00438796 /* LoginBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = A7615F8E0FDED3DC00438796 /* LoginBackground.png */; };
 		A763B5250F4E283100FDCC55 /* MyCLController.m in Sources */ = {isa = PBXBuildFile; fileRef = A763B5240F4E283100FDCC55 /* MyCLController.m */; };
 		A78FD8B00F4B7E9400820FEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A78FD8AF0F4B7E9400820FEA /* Foundation.framework */; };
 		A78FD8B20F4B7EA200820FEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A78FD8B10F4B7EA200820FEA /* CoreGraphics.framework */; };
 		A79202640F8E717C0049F990 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A79202630F8E717C0049F990 /* MediaPlayer.framework */; };
 		A7955B930F73E095005148E4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7955B920F73E095005148E4 /* AudioToolbox.framework */; };
 		A798301B0FCB1F8100C1C2E7 /* RoundedBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = A798301A0FCB1F8100C1C2E7 /* RoundedBackground.png */; };
-		A7A1728C0F4F27120017E865 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A7A1728A0F4F27120017E865 /* Icon.png */; };
-		A7A1728D0F4F27120017E865 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A7A1728B0F4F27120017E865 /* Default.png */; };
-		A7A172950F4F273B0017E865 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = A7A172940F4F273B0017E865 /* Icon.icns */; };
 		A7E32E9E0FD1CEFD0058EDB7 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E32E9D0FD1CEFD0058EDB7 /* Player.m */; };
 		A7E39EAD0F5F60D000826198 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E39EAC0F5F60D000826198 /* CameraViewController.m */; };
 		A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A7E39EC90F5F655E00826198 /* CameraViewController.xib */; };
@@ -356,7 +352,6 @@
 		A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SelfRegistrationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NearbyObjectProtocol.h; path = Classes/model/NearbyObjectProtocol.h; sourceTree = "<group>"; };
 		A76048E60FC1B6DE00219A53 /* QRCodeProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QRCodeProtocol.h; path = ../../QRCodeProtocol.h; sourceTree = "<group>"; };
-		A7615F8E0FDED3DC00438796 /* LoginBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LoginBackground.png; path = images/LoginBackground.png; sourceTree = "<group>"; };
 		A763B5230F4E283100FDCC55 /* MyCLController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = MyCLController.h; path = Classes/MyCLController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A763B5240F4E283100FDCC55 /* MyCLController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MyCLController.m; path = Classes/MyCLController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A78FD8AF0F4B7E9400820FEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -365,9 +360,7 @@
 		A7955B920F73E095005148E4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		A798301A0FCB1F8100C1C2E7 /* RoundedBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RoundedBackground.png; sourceTree = "<group>"; };
 		A7A172720F4F26280017E865 /* ARIS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARIS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A7A1728A0F4F27120017E865 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A7A1728B0F4F27120017E865 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		A7A172940F4F273B0017E865 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
 		A7E32E9C0FD1CEFD0058EDB7 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		A7E32E9D0FD1CEFD0058EDB7 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		A7E39EAB0F5F60D000826198 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = CameraViewController.h; path = Classes/CameraViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -772,7 +765,6 @@
 		A7986D650F8FEC1100A5469F /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				A7615F8E0FDED3DC00438796 /* LoginBackground.png */,
 				2B3D11AF0F4361940067FD3A /* LoginViewController.h */,
 				2B3D11B00F4361940067FD3A /* LoginViewController.mm */,
 				2B3D11AC0F4361380067FD3A /* LoginViewController.xib */,
@@ -989,8 +981,6 @@
 				AB35E06B155C709F00430AF7 /* 103-map@2x.png */,
 				ABDA40B510506AF400823A94 /* player.png */,
 				A7A1728B0F4F27120017E865 /* Default.png */,
-				A7A172940F4F273B0017E865 /* Icon.icns */,
-				A7A1728A0F4F27120017E865 /* Icon.png */,
 				AB35E066155C6F5200430AF7 /* 298-circlex.png */,
 				AB35E067155C6F5200430AF7 /* 298-circlex@2x.png */,
 				2DEE862215E6BEF500F506CE /* img.png */,
@@ -1376,15 +1366,11 @@
 				28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */,
 				2B3D11AD0F4361380067FD3A /* LoginViewController.xib in Resources */,
 				2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */,
-				A7A1728C0F4F27120017E865 /* Icon.png in Resources */,
-				A7A1728D0F4F27120017E865 /* Default.png in Resources */,
-				A7A172950F4F273B0017E865 /* Icon.icns in Resources */,
 				A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */,
 				A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */,
 				A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */,
 				A76048E70FC1B6DE00219A53 /* QRCodeProtocol.h in Resources */,
 				A798301B0FCB1F8100C1C2E7 /* RoundedBackground.png in Resources */,
-				A7615F8F0FDED3DC00438796 /* LoginBackground.png in Resources */,
 				ABDA40C310506AF400823A94 /* player.png in Resources */,
 				ABB925CA10C8581B00B09506 /* item.png in Resources */,
 				ABB925CB10C8581B00B09506 /* plaque.png in Resources */,
