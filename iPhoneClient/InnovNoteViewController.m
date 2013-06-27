@@ -511,7 +511,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     if(indexPath.row == 0)
     {
         CGSize size = CGSizeMake(captionTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-        NSString *text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        NSString *text = note.title;// [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
         CGFloat captionTextViewHeight = [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN);
         if(!([text length] > 0))
             captionTextViewHeight = -4;
@@ -553,9 +553,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             [cell addSubview:captionTextView];
         }
         
-        usernameLabel.text = [self.note.title substringFromIndex:([self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location + 1)];
+        usernameLabel.text = @"";// [self.note.title substringFromIndex:([self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location + 1)];
         
-        captionTextView.text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        captionTextView.text = note.title;// [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
         CGRect frame = captionTextView.frame;
         frame.size.height = captionTextView.contentSize.height;
         captionTextView.frame = frame;

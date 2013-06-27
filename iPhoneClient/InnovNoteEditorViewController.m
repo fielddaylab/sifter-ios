@@ -142,9 +142,10 @@
 #warning when do we edit
         isEditing = YES;
         
-        if([note.title rangeOfString:@"#" options:NSBackwardsSearch].location != NSNotFound)
-            captionTextView.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-        else captionTextView.text = note.title;
+      //  if([note.title rangeOfString:@"#" options:NSBackwardsSearch].location != NSNotFound)
+      //      captionTextView.text = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+      //  else
+        captionTextView.text = note.title;
         
         if([note.title length] > 0 && ![note.title isEqualToString:DEFAULT_TEXT])
             captionTextView.textColor = [UIColor blackColor];
