@@ -90,6 +90,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     if (self) {
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIfNoteLiked)     name:@"NewLoginResponseReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
@@ -205,11 +206,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [likeButton setImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
     [likeButton setImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [likeButton setSelected:self.note.userLiked];
-    likeButton.titleLabel.center = likeButton.center;
-    likeButton.imageView.center = likeButton.center;
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
     
     shareButton = [[UIButton alloc] initWithFrame:CGRectMake(likeButton.frame.origin.x + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
@@ -267,7 +263,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     mode = kInnovAudioPlayerNoAudio;
     [self updateButtonsForCurrentMode];
-    
+    [self checkIfNoteLiked];
     [self refreshViewFromModel];
 }
 
@@ -390,8 +386,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     }
     else
     {
-        [likeButton setSelected:!likeButton.selected];
-        self.note.userLiked = likeButton.selected;
+        self.note.userLiked = !likeButton.selected;
         if(self.note.userLiked)
         {
             [[AppServices sharedAppServices]likeNote:self.note.noteId];
@@ -402,9 +397,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             [[AppServices sharedAppServices]unLikeNote:self.note.noteId];
             self.note.numRatings--;
         }
-        [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
-        [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
+        [self updateLikeButton];
     }
+}
+
+- (void)updateLikeButton
+{
+    [likeButton setSelected:self.note.userLiked];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
 }
 
 - (void)shareButtonPressed:(id)sender
@@ -420,7 +421,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)refreshViewFromModel
 {
     self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-   
+    [self updateLikeButton];
     for(int i = 0; i < [self.note.contents count]; ++i)
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
@@ -438,26 +439,14 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     [noteTableView reloadData];
 }
-/*
-#warning necessary?
--(void)addUploadsToComments
+
+- (void)checkIfNoteLiked
 {
-    for(int i = 0; i < [self.note.comments count]; i++)
-    {
-        Note *currNote = [self.note.comments objectAtIndex:i];
-        for(int x = [currNote.contents count]-1; x >= 0; x--)
-        {
-            if(![[[currNote.contents objectAtIndex:x] getUploadState] isEqualToString:@"uploadStateDONE"])
-                [currNote.contents removeObjectAtIndex:x];
-        }
-        
-        NSMutableDictionary *uploads = [AppModel sharedAppModel].uploadManager.uploadContentsForNotes;
-        NSArray *uploadContentForNote = [[uploads objectForKey:[NSNumber numberWithInt:currNote.noteId]] allValues];
-        [currNote.contents addObjectsFromArray:uploadContentForNote];
-        NSLog(@"InnovNoteVC: Added %d upload content(s) to note",[uploadContentForNote count]);
-    }
+#warning Called twice if log in from this screen (viewWillAppear and Respond to Log In Notification
+    
+    [[AppServices sharedAppServices] checkIfNoteLiked:self.note.noteId];
 }
-*/
+
 #pragma mark Audio Methods
 
 - (void)updateButtonsForCurrentMode{
@@ -499,9 +488,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)MPMoviePlayerPlaybackDidFinishNotification:(NSNotification *)notif
 {
     if (mode == kInnovAudioPlayerPlaying)
-    {
         [self playButtonPressed:nil];
-    }
 }
 
 
@@ -587,14 +574,12 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         
         if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
         {
-         //   cell.userInteractionEnabled = YES;
             cell.textView.userInteractionEnabled = NO;
             cell.textView.textAlignment = NSTextAlignmentCenter;
             cell.textView.text          = EXPAND_TEXT;
         }
         else
         {
-           // cell.userInteractionEnabled = YES;
             cell.textView.userInteractionEnabled = YES;
             cell.textView.textAlignment = NSTextAlignmentLeft;
             if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)

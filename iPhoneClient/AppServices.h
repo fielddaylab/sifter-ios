@@ -25,6 +25,8 @@
 
 extern NSString *const kARISServerServicePackage;
 
+@property(readwrite) BOOL isCurrentlyFetchingGameNoteList;
+
 + (AppServices *)sharedAppServices;
 
 - (void)resetCurrentlyFetchingVars;
@@ -55,6 +57,11 @@ extern NSString *const kARISServerServicePackage;
 - (void)fetchMedia:(int)mediaId;
 - (Note *)fetchNote:(int)noteId;
 
+-(void) fetch:(int) noteCount moreTopNotesStartingFrom:     (int) lastLocation;
+-(void) fetch:(int) noteCount morePopularNotesStartingFrom: (int) lastLocation;
+-(void) fetch:(int) noteCount moreRecentNotesStartingFrom:  (int) lastLocation;
+-(void) fetch:(int) noteCount morePlayerNotesStartingFrom:  (int) lastLocation;
+
 //Note Stuff
 - (int)createNote;
 - (int)createNoteStartIncomplete;
@@ -74,6 +81,7 @@ extern NSString *const kARISServerServicePackage;
 - (void)updateCommentWithId:(int)noteId andTitle:(NSString *)title andRefresh:(BOOL)refresh;
 - (void)likeNote:(int)noteId;
 - (void)unLikeNote:(int)noteId;
+- (void)checkIfNoteLiked:(int) noteId;
 
 //Tell server of state
 - (void)updateServerWithPlayerLocation;

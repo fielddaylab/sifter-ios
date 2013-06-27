@@ -18,8 +18,6 @@
 @synthesize userInfo;
 @synthesize hash;
 
-
-
 - (JSONResult*)initWithJSONString:(NSString *)JSONString andUserData:(NSDictionary *)userData{
 	
 	//Calculate the hash
@@ -70,7 +68,6 @@
 	return self;
 }
 
-
 - (NSObject*) parseJSONData:(NSObject *)dataObject{
 	//Check if this is a dictionary or or just a simple int/bool
 	if (![dataObject isKindOfClass:[NSDictionary class]]) return dataObject;
@@ -110,14 +107,5 @@
 	}
 	return dictionaryArray;
 }
-
-
-
-
-
-
-
-
-
 
 @end

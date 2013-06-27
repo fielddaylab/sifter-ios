@@ -121,7 +121,7 @@
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 
-- (void) performAsynchronousRequestWithHandler: (SEL)aHandler andUserInfo:(NSDictionary *)hUserInfo{
+- (void) performAsynchronousRequestWithHandler: (SEL)aHandler andUserInfo:(NSMutableDictionary *)hUserInfo{
     //save the handler
     if (aHandler) self.handler = aHandler;
     else self.handler = nil;
@@ -167,8 +167,11 @@
 	//Get the JSONResult here
 	JSONResult *jsonResult = [[JSONResult alloc] initWithJSONString:jsonString andUserData:[self userInfo]];
     
-	if (self.handler != nil && self.handlerUserInfo != nil)
-		[[AppServices sharedAppServices] performSelector:self.handler withObject:self.handlerUserInfo];
+    if(self.handlerUserInfo)
+    {
+        [self.handlerUserInfo setObject:jsonResult forKey:@"JSON"];
+        [[AppServices sharedAppServices] performSelector:self.handler withObject:self.handlerUserInfo];
+    }
     else if (self.handler != nil)
 		[[AppServices sharedAppServices] performSelector:self.handler withObject:jsonResult];
 }

@@ -128,6 +128,7 @@
     if(!self.loggedIn)
     {
         self.showPlayerOnMap = [defaults boolForKey:@"showPlayerOnMap"];
+        self.loggedIn        = [defaults boolForKey:@"loggedIn"];
         self.playerId        = [defaults integerForKey:@"playerId"];
         self.playerMediaId   = [defaults integerForKey:@"playerMediaId"];
         self.userName        = [defaults objectForKey:@"userName"];
@@ -135,27 +136,6 @@
         self.groupName       = [defaults objectForKey:@"groupName"];
         self.groupGame       = [[defaults objectForKey:@"groupName"] intValue];
     }
-    
-	if ([defaults boolForKey:@"resetTutorial"])
-    {
-		self.hasSeenNearbyTabTutorial    = NO;
-		self.hasSeenQuestsTabTutorial    = NO;
-		self.hasSeenMapTabTutorial       = NO;
-		self.hasSeenInventoryTabTutorial = NO;
-		[defaults setBool:NO forKey:@"hasSeenNearbyTabTutorial"];
-		[defaults setBool:NO forKey:@"hasSeenQuestsTabTutorial"];
-		[defaults setBool:NO forKey:@"hasSeenMapTabTutorial"];
-		[defaults setBool:NO forKey:@"hasSeenInventoryTabTutorial"];
-        
-		[defaults setBool:NO forKey:@"resetTutorial"];
-	}
-	else
-    {
-		self.hasSeenNearbyTabTutorial    = [defaults boolForKey:@"hasSeenNearbyTabTutorial"];
-		self.hasSeenQuestsTabTutorial    = [defaults boolForKey:@"hasSeenQuestsTabTutorial"];
-		self.hasSeenMapTabTutorial       = [defaults boolForKey:@"hasSeenMapTabTutorial"];
-		self.hasSeenInventoryTabTutorial = [defaults boolForKey:@"hasSeenInventoryTabTutorial"];
-	}
     
     self.fallbackGameId = [defaults integerForKey:@"gameId"];
 }
@@ -170,12 +150,13 @@
 {
 	NSLog(@"Clearing User Defaults");
     [AppModel sharedAppModel].currentGame = nil;
-    
+    [AppModel sharedAppModel].loggedIn       = NO;
     [AppModel sharedAppModel].playerId       = 0;
     [AppModel sharedAppModel].fallbackGameId = 0;
     [AppModel sharedAppModel].playerMediaId  = -1;
     [AppModel sharedAppModel].userName       = @"";
     [AppModel sharedAppModel].displayName    = @"";
+    [defaults setBool:loggedIn          forKey:@"loggedIn"];
     [defaults setInteger:playerId       forKey:@"playerId"];
     [defaults setInteger:fallbackGameId forKey:@"gameId"];
     [defaults setInteger:playerMediaId  forKey:@"playerMediaId"];
@@ -192,10 +173,7 @@
 	[defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVerison"];
 	[defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBuildNumber"]   forKey:@"buildNum"];
     
-	[defaults setBool:hasSeenNearbyTabTutorial    forKey:@"hasSeenNearbyTabTutorial"];
-	[defaults setBool:hasSeenQuestsTabTutorial    forKey:@"hasSeenQuestsTabTutorial"];
-	[defaults setBool:hasSeenMapTabTutorial       forKey:@"hasSeenMapTabTutorial"];
-	[defaults setBool:hasSeenInventoryTabTutorial forKey:@"hasSeenInventoryTabTutorial"];
+	[defaults setBool:loggedIn                    forKey:@"loggedIn"];
     [defaults setInteger:playerId                 forKey:@"playerId"];
     [defaults setInteger:playerMediaId            forKey:@"playerMediaId"];
     [defaults setInteger:fallbackGameId           forKey:@"gameId"];

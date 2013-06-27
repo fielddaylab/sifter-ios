@@ -18,7 +18,6 @@ static const float kEmptyFloatValue = 0.0;
 static const double kEmptyDoubleValue = 0.0;
 NSString *const kARISServerServicePackage = @"v1";
 
-BOOL currentlyFetchingGameNoteList;
 BOOL currentlyFetchingOneGame;
 BOOL currentlyUpdatingServerWithPlayerLocation;
 BOOL currentlyUpdatingServerWithMapViewed;
@@ -35,6 +34,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 @implementation AppServices
 
+@synthesize isCurrentlyFetchingGameNoteList;
+
 + (id)sharedAppServices
 {
     static dispatch_once_t pred = 0;
@@ -48,7 +49,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 - (void) resetCurrentlyFetchingVars
 {
     currentlyFetchingOneGame                   = NO;
-    currentlyFetchingGameNoteList              = NO;
+    isCurrentlyFetchingGameNoteList            = NO;
     currentlyUpdatingServerWithMapViewed       = NO;
     currentlyUpdatingServerWithPlayerLocation  = NO;
 }
@@ -268,6 +269,32 @@ BOOL currentlyUpdatingServerWithMapViewed;
     [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
 }
 
+-(void)checkIfNoteLiked:(int)noteId
+{
+    NSArray *arguments = [NSArray arrayWithObjects:
+						  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+                          [NSString stringWithFormat:@"%d",noteId],
+                          nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:@"playerLikedObject"
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", nil];
+    
+    [jsonConnection performAsynchronousRequestWithHandler:@selector(parseNoteLikedFromJSON:) andUserInfo:dict]; //This is a cheat to make sure that the fetch Happens After
+}
+
+- (void)parseNoteLikedFromJSON: (NSDictionary *)userInfo
+{
+    JSONResult *JSONresult = [userInfo objectForKey:@"JSON"];
+	NSDictionary *result = (NSDictionary *)JSONresult.data;
+    BOOL liked = [self validBoolForKey:@"liked" inDictionary:result];
+    Note *noteToUpdate = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[userInfo objectForKey:@"noteId"] intValue]];
+    noteToUpdate.userLiked = liked;
+    [[InnovNoteModel sharedNoteModel] updateNote:noteToUpdate];
+}
+
 -(int)addCommentToNoteWithId:(int)noteId andTitle:(NSString *)title
 {
 	NSArray *arguments = [NSArray arrayWithObjects:
@@ -380,7 +407,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                  andMethodName:@"deleteNoteContent"
                                                                   andArguments:arguments
                                                                    andUserInfo:nil];
-        NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
+        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt: noteId],@"noteId", nil];
         [jsonConnection performAsynchronousRequestWithHandler:@selector(sendNotificationToNoteViewer:) andUserInfo:userInfo];
     }
 }
@@ -685,7 +712,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
     JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"games"
                                                              andMethodName:@"getTabBarItemsForGame"
-                                                              andArguments:arguments andUserInfo:nil];
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameTabListFromJSON:)];
 }
 
@@ -704,7 +732,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"qrcodes"
                                                              andMethodName:@"getQRCodeNearbyObjectForPlayer"
-                                                              andArguments:arguments andUserInfo:nil];
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseQRCodeObjectFromJSON:)];
 }
 
@@ -722,11 +751,50 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
                                                              andMethodName:@"getNotesForGame"
-                                                              andArguments:arguments andUserInfo:nil];
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
 	if (YesForAsyncOrNoForSync){
 		[jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameNoteListFromJSON:)];
 	}
 	else [self parseGameNoteListFromJSON: [jsonConnection performSynchronousRequest]];
+}
+
+-(void) fetch:(int) noteCount moreTopNotesStartingFrom:     (int) lastLocation
+{
+    [self fetch:noteCount NotesWithMethod:@"getNextSetOfTopNotesForGame" StartingFrom:lastLocation];
+}
+
+-(void) fetch:(int) noteCount morePopularNotesStartingFrom: (int) lastLocation
+{
+    [self fetch:noteCount NotesWithMethod:@"getNextSetOfPopularNotesForGame" StartingFrom:lastLocation];
+}
+
+-(void) fetch:(int) noteCount moreRecentNotesStartingFrom: (int) lastLocation
+{
+    [self fetch:noteCount NotesWithMethod:@"getNextSetOfRecentNotesForGame" StartingFrom:lastLocation];
+}
+
+-(void) fetch:(int) noteCount morePlayerNotesStartingFrom:  (int) lastLocation
+{
+    [self fetch:noteCount NotesWithMethod:@"getNextSetOfPlayerNotesForGame" StartingFrom:lastLocation];
+}
+
+
+- (void)fetch:(int) noteCount NotesWithMethod:(NSString *) method StartingFrom: (int) lastLocation
+{
+     isCurrentlyFetchingGameNoteList = YES;
+	NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+                          [NSString stringWithFormat:@"%d",lastLocation],
+                          [NSString stringWithFormat:@"%d",noteCount],nil];
+	
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:method
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+
+    [jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameNoteListFromJSON:)];
 }
 
 - (void) fetchMedia:(int)mediaId
@@ -983,7 +1051,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     NSLog(@"NSNotification: NewNoteListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:notes]];
     
-    currentlyFetchingGameNoteList = NO;
+    isCurrentlyFetchingGameNoteList = NO;
 }
 
 -(void)parseLoginResponseFromJSON:(JSONResult *)jsonResult

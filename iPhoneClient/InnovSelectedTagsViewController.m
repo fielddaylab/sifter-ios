@@ -40,8 +40,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSelectedTags) name:@"NoteModelUpdate:SelectedTags"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"          object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:SelectedTags"  object:nil];
         
         self.view.hidden = YES;
         
@@ -130,11 +130,6 @@
 -(void)updateTags
 {
     tags = [InnovNoteModel sharedNoteModel].allTags;
-    [tagTableView reloadData];
-}
-
--(void)updateSelectedTags
-{
     selectedTags = [InnovNoteModel sharedNoteModel].selectedTags;
     [tagTableView reloadData];
 }

@@ -50,6 +50,7 @@
     hiding = NO;
     self.hidden = NO;
     self.userInteractionEnabled = NO;
+    [self updateLogInOutButtonTitle];
     
     CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     scale.delegate = self;

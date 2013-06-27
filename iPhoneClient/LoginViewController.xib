@@ -213,7 +213,6 @@
 						<int key="NSvFlags">-2147483382</int>
 						<string key="NSFrame">{{24, 248}, {280, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>

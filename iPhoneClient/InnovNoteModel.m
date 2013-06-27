@@ -70,17 +70,33 @@
 
 - (void) fetchMoreNotes
 {
-#warning implement proper searchers
-#warning fetch more notes each time
-    switch (selectedContent)
+    if ([AppServices sharedAppServices].isCurrentlyFetchingGameNoteList)
     {
-        case kTop:
-        case kPopular:
-        case kRecent:
-        case kMine:
-        default:
-            [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
-            break;
+        [NSTimer scheduledTimerWithTimeInterval:0.5
+                                         target:self
+                                       selector:@selector(fetchMoreNotes)
+                                       userInfo:nil
+                                        repeats:NO];
+    }
+    else
+    {
+        switch (selectedContent)
+        {
+            case kTop:
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreTopNotesStartingFrom:[allNotes count]];
+                break;
+            case kPopular:
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePopularNotesStartingFrom:[allNotes count]];
+                break;
+            case kRecent:
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreRecentNotesStartingFrom:[allNotes count]];
+                break;
+            case kMine:
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePlayerNotesStartingFrom:[allNotes count]];
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -92,10 +108,7 @@
     NSDictionary *newNotes = [notification.userInfo objectForKey:@"notes"];
     [allNotes addEntriesFromDictionary:newNotes];
     [self updateNotes:newNotes];
-    
-    NSNotification *notif  = [NSNotification notificationWithName:@"NoteModelUpdate:Notes" object:self];
-    [[Logger sharedLogger] logNotification: notif];
-    [[NSNotificationCenter defaultCenter] postNotification: notif];
+    [self sendNotesUpdateNotification];
 }
 
 
@@ -179,6 +192,7 @@
         [availableNotes addObject:note];
         [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
         [self sendChangeNotesNotif];
+        [self sendNotesUpdateNotification];
     }
 }
 
@@ -195,6 +209,7 @@
             if(![self noteShouldBeAvailable:note])
             {
                 [self sendChangeNotesNotif];
+                [self sendNotesUpdateNotification];
                 return;
             }
             break;
@@ -203,6 +218,7 @@
     [availableNotes addObject:note];
     [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
     [self sendChangeNotesNotif];
+    [self sendNotesUpdateNotification];
 }
 
 -(void) removeNote:(Note *) note
@@ -331,6 +347,13 @@
                            notes,@"newlyUnavailableNotes",
                            nil];
     NSNotification *notif  = [NSNotification notificationWithName:@"NewlyUnavailableNotesAvailable" object:self userInfo:nDict];
+    [[Logger sharedLogger] logNotification: notif];
+    [[NSNotificationCenter defaultCenter] postNotification: notif];
+}
+
+- (void) sendNotesUpdateNotification
+{
+    NSNotification *notif  = [NSNotification notificationWithName:@"NoteModelUpdate:Notes" object:self];
     [[Logger sharedLogger] logNotification: notif];
     [[NSNotificationCenter defaultCenter] postNotification: notif];
 }
