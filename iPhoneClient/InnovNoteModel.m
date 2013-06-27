@@ -14,7 +14,7 @@
 #import "Note.h"
 #import "Tag.h"
 
-#define NOTES_PER_FETCH 25
+#define NOTES_PER_FETCH 50
 
 @interface InnovNoteModel()
 {
@@ -173,6 +173,7 @@
 
 -(void) updateNoteContentsWithNote: (Note *) note
 {
+    note = [self noteForNoteId:note.noteId];
     for(NSObject <NoteContentProtocol> *contentObject in note.contents)
     {
         //Removes note contents that are not done uploading, because they will all be added again right after this loop
@@ -186,37 +187,36 @@
 
 -(void) addNote:(Note *) note
 {
+#warning Find out why sending notification breaks this
     [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
     if([self noteShouldBeAvailable:note])
-    {
         [availableNotes addObject:note];
-        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
-        [self sendChangeNotesNotif];
-        [self sendNotesUpdateNotification];
-    }
 }
 
 -(void) updateNote:(Note *) note
 {
     [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
-    Note *existingNote;
-    for(existingNote in availableNotes)
+    Note *noteToRemove;
+    for(Note *existingNote in availableNotes)
     {
         if(note.noteId == existingNote.noteId)
         {
-            [availableNotes removeObject:existingNote];
-            [self sendLostNotesNotif:[NSArray arrayWithObject:existingNote]];
-            if(![self noteShouldBeAvailable:note])
-            {
-                [self sendChangeNotesNotif];
-                [self sendNotesUpdateNotification];
-                return;
-            }
+            noteToRemove = existingNote;
             break;
         }
     }
-    [availableNotes addObject:note];
-    [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+    
+    if(noteToRemove)
+    {
+        [availableNotes removeObject:noteToRemove];
+        [self sendLostNotesNotif:[NSArray arrayWithObject:noteToRemove]];
+    }
+    if([self noteShouldBeAvailable:note])
+    {
+        [availableNotes addObject:note];
+        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+    }
+    
     [self sendChangeNotesNotif];
     [self sendNotesUpdateNotification];
 }
@@ -224,16 +224,20 @@
 -(void) removeNote:(Note *) note
 {
     [allNotes removeObjectForKey:[NSNumber numberWithInt:note.noteId]];
-    Note *existingNote;
-    for(existingNote in availableNotes)
+    Note *noteToRemove;
+    for(Note *existingNote in availableNotes)
     {
         if(note.noteId == existingNote.noteId)
         {
-            [availableNotes removeObject:existingNote];
-            [self sendLostNotesNotif:[NSArray arrayWithObject:existingNote]];
-            [self sendChangeNotesNotif];
+            noteToRemove = existingNote;
             break;
         }
+    }
+    if(noteToRemove)
+    {
+        [availableNotes removeObject:noteToRemove];
+        [self sendLostNotesNotif:[NSArray arrayWithObject:noteToRemove]];
+        [self sendChangeNotesNotif];
     }
 }
 
@@ -243,9 +247,9 @@
     
     if(!note && note.noteId != 0)
         [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
-    else
-        [self updateNoteContentsWithNote:note];
-    
+    //else
+    //    [self updateNoteContentsWithNote:note];
+#warning Consider
     return note;
 }
 

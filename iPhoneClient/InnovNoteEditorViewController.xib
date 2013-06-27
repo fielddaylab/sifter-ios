@@ -183,7 +183,7 @@
 					</object>
 					<object class="IBUIButton" id="1023337611">
 						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">-2147483356</int>
+						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{228, 124}, {82, 49}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
@@ -431,6 +431,30 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">InnovNoteEditorViewController</string>
 					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="backButtonTouchAction:">id</string>
+						<string key="deleteAudioButtonPressed:">id</string>
+						<string key="recordButtonPressed:">id</string>
+						<string key="shareButtonPressed:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="backButtonTouchAction:">
+							<string key="name">backButtonTouchAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteAudioButtonPressed:">
+							<string key="name">deleteAudioButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="recordButtonPressed:">
+							<string key="name">recordButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="shareButtonPressed:">
+							<string key="name">shareButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="captionTextView">UITextView</string>
 						<string key="deleteAudioButton">UIButton</string>
