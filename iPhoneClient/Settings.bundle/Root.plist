@@ -60,7 +60,7 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>About ARIS</string>
+			<string>About</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
