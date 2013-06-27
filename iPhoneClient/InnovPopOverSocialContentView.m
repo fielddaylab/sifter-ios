@@ -15,7 +15,7 @@
 
 #define TWITTER_HANDLE               @"@jacob_hanshaw"
 #define DEFAULT_TITLE                @"Note"
-#define HOME_URL                     @"dev.arisgames.org"
+#define HOME_URL                     @"www.arisgames.org/yoi"
 
 @interface InnovPopOverSocialContentView()<AsyncMediaImageViewDelegate>
 {
@@ -54,7 +54,7 @@
     NSString *imageURL = [self getImageUrlOfCurrentNote];
     
 #warning fix url to be web notebook url
-    NSString *url  = @"jacobhanshaw.com";
+    NSString *url  = HOME_URL;
     
     [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.title withImage:imageURL title:title andURL:url];
 }
@@ -63,7 +63,7 @@
 {
 #warning fix url to be web notebook url
     NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.title];
-    NSString *url  = @"jacobhanshaw.com";
+    NSString *url  = HOME_URL;
     [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url];
 }
 
@@ -89,7 +89,7 @@
         else
             creationIndication = @"found";
         
-        NSString *url    = @"jacobhanshaw.com";
+        NSString *url    = HOME_URL;
         NSString *title  = [self getTitleOfCurrentNote];
         NSString *text   = [NSString stringWithFormat:@"Check out this interesting note about %@ I %@ on the UW-Madison Campus: %@ \n\n\nSee the whole note at: %@ or download the YOI app", title, creationIndication, self.note.title, url];
         NSString *subject = [NSString stringWithFormat:@"Interesting note on %@ from UW-Madison Campus", title];

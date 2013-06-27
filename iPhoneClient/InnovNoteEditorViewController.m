@@ -18,6 +18,8 @@
 #import "Tag.h"
 #import "TagCell.h"
 
+#import "InnovPopOverView.h"
+#import "InnovPopOverSocialContentView.h"
 #import "AsyncMediaTouchableImageView.h"
 #import "ARISMoviePlayerViewController.h"
 #import "InnovViewController.h"
@@ -382,7 +384,10 @@
 - (IBAction)shareButtonPressed:(id)sender
 {
     [self refreshViewFromModel];
-    
+    InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
+    socialContent.note = self.note;
+    InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
+    [self.view addSubview:popOver];
 #warning unimplemented
 }
 

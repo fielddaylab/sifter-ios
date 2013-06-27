@@ -446,13 +446,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 -(void)sendNotificationToNoteViewer:(NSDictionary *)userInfo
 {
-#warning REMOVE
-    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
-    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
-    [array removeObject:@""];
-    
-    NSLog(@"%@: %@ Debug: %@", [array objectAtIndex:3], [array objectAtIndex:4], @"CAlling");
     NSLog(@"NSNotification: NewContentListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewContentListReady" object:nil userInfo:userInfo]];
     [self fetchGameNoteListAsync];
