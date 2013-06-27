@@ -220,12 +220,12 @@
             if([tmpAnnotation.note compareTo:note])
             {
                 found = YES;
-        //        --shownNotesCount;
+                --shownNotesCount;
                 [mapView removeAnnotation:tmpAnnotation];
                 break;
             }
         }
-      //  if(!found) [unshownNotesQueue removeObject:note];
+        if(!found) [unshownNotesQueue removeObject:note];
     }
 }
 

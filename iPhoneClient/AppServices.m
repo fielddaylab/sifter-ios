@@ -958,22 +958,22 @@ BOOL currentlyUpdatingServerWithMapViewed;
 -(void)parseGameNoteListFromJSON: (JSONResult *)jsonResult
 {
     if(!shouldIgnoreResults){
-	NSArray *noteListArray = (NSArray *)jsonResult.data;
-    NSLog(@"NSNotification: ReceivedNoteList");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
-    NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
-    
-	NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
-	NSDictionary *dict;
-	while ((dict = [enumerator nextObject])) {
-        Note *tmpNote = [self parseNoteFromDictionary:dict];
-        [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
-	}
-    
-    NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
-    
-    NSLog(@"NSNotification: NewNoteListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:notes]];
+        NSArray *noteListArray = (NSArray *)jsonResult.data;
+        NSLog(@"NSNotification: ReceivedNoteList");
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
+        NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
+        
+        NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
+        NSDictionary *dict;
+        while ((dict = [enumerator nextObject])) {
+            Note *tmpNote = [self parseNoteFromDictionary:dict];
+            [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
+        }
+        
+        NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
+        
+        NSLog(@"NSNotification: NewNoteListReady");
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:notes]];
     }
     isCurrentlyFetchingGameNoteList = NO;
 }
