@@ -37,10 +37,11 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
     simpleMailShare     = [[SimpleMailShare alloc] init];
     simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
-    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"YOI" appUrl:@"http://dev.arisgames.org"];
+    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"YOI" appUrl:HOME_URL];
 #warning fix url and appname
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];

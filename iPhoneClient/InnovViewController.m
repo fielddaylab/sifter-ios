@@ -12,6 +12,7 @@
 
 #import "AppModel.h"
 #import "AppServices.h"
+#import "ARISAppDelegate.h"
 #import "Note.h"
 #import "InnovNoteModel.h"
 #import "InnovPresentNoteDelegate.h"
@@ -25,8 +26,8 @@
 #import "InnovNoteEditorViewController.h"
 
 
-#define GAME_ID                         3371 //for arisgames.org/yoi
-//#define GAME_ID                         3434 //for dev.arisgames.org/server
+//#define GAME_ID                         3371 //for arisgames.org/yoi
+#define GAME_ID                         3434 //for dev.arisgames.org/server
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
@@ -98,7 +99,6 @@
     [AppModel sharedAppModel].loggedIn = NO;
     
 #warning find out why this is necessary
-    [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
     
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;

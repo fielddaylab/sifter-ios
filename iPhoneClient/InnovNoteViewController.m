@@ -15,6 +15,7 @@
 #import "AppServices.h"
 #import "InnovAudioEnums.h"
 #import "Note.h"
+#import "NoteContent.h"
 #import "Tag.h"
 #import "Logger.h"
 
@@ -617,7 +618,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)dealloc
 {
-    [[AVAudioSession sharedInstance] setDelegate: nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

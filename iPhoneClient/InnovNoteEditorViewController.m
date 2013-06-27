@@ -15,6 +15,7 @@
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Note.h"
+#import "NoteContent.h"
 #import "Tag.h"
 #import "TagCell.h"
 

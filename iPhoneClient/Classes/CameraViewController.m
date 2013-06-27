@@ -8,6 +8,7 @@
 
 #import "CameraViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <QuartzCore/QuartzCore.h>
 #import <ImageIO/ImageIO.h>
 
 #import "InnovViewController.h"
@@ -20,6 +21,8 @@
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
+
+#import "NoteContent.h"
 
 #define BUTTON_Y_OFFSET      10
 #define BUTTON_WIDTH         78

@@ -19,8 +19,6 @@
 {
 	NSUserDefaults *defaults;
 	NSURL *serverURL;
-    BOOL showGamesInDevelopment;
-    BOOL showPlayerOnMap;
     BOOL museumMode;
     BOOL skipGameDetails;
 	Game *currentGame;
@@ -76,8 +74,6 @@
 
 @property(nonatomic, strong) NSURL *serverURL;
 @property(readwrite) BOOL loggedIn;
-@property(readwrite) BOOL showGamesInDevelopment;
-@property(readwrite) BOOL showPlayerOnMap;
 @property(readwrite) BOOL museumMode;
 @property(readwrite) BOOL skipGameDetails;
 

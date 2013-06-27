@@ -11,6 +11,7 @@
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
+#import "Tag.h"
 
 #import "Annotation.h"
 #import "AnnotationView.h"
@@ -42,8 +43,8 @@
     
     CLLocation *madisonCenter;
     
-  //  int shownNotesCount;
-   // NSMutableArray *unshownNotesQueue;
+    int shownNotesCount;
+    NSMutableArray *unshownNotesQueue;
 }
 @end
 
@@ -156,9 +157,7 @@
 #pragma mark update from model
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
-{
-#warning Feature?!
-    /*
+{  
     for(Note *note in unshownNotesQueue)
     {
         if(shownNotesCount < MAX_NOTES_COUNT)
@@ -176,13 +175,13 @@
         }
         else break;
     }
- */   
+
     NSArray *newNotes = (NSArray *)[notification.userInfo objectForKey:@"newlyAvailableNotes"];
     
     for(Note *note in newNotes)
     {
-//        if(shownNotesCount < MAX_NOTES_COUNT)
- //       {
+        if(shownNotesCount < MAX_NOTES_COUNT)
+        {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
@@ -191,13 +190,13 @@
             annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
 #warning this needs to be implemented in AnnotationView.m
             
-           // ++shownNotesCount;
+            ++shownNotesCount;
             [mapView addAnnotation:annotation];
-   /*     }
+        }
         else
         {
             [unshownNotesQueue addObject:note];
-        } */
+        }
     }
 }
 

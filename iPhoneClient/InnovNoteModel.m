@@ -14,8 +14,6 @@
 #import "Note.h"
 #import "Tag.h"
 
-#define NOTES_PER_FETCH 50
-
 @interface InnovNoteModel()
 {
     NSMutableDictionary *allNotes;
@@ -80,19 +78,20 @@
     }
     else
     {
+        [AppServices sharedAppServices].shouldIgnoreResults = NO;
         switch (selectedContent)
         {
             case kTop:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreTopNotesStartingFrom:[allNotes count]];
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreTopNotesStartingFrom:    [allNotes count]];
                 break;
             case kPopular:
                 [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePopularNotesStartingFrom:[allNotes count]];
                 break;
             case kRecent:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreRecentNotesStartingFrom:[allNotes count]];
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreRecentNotesStartingFrom: [allNotes count]];
                 break;
             case kMine:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePlayerNotesStartingFrom:[allNotes count]];
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePlayerNotesStartingFrom: [allNotes count]];
                 break;
             default:
                 break;
@@ -246,7 +245,7 @@
     Note *note = [allNotes objectForKey:[NSNumber numberWithInt:noteId]];
     
     if(!note && note.noteId != 0)
-        [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+        [[AppServices sharedAppServices] fetchNote:note.noteId];
     //else
     //    [self updateNoteContentsWithNote:note];
 #warning Consider
@@ -319,6 +318,7 @@
 -(void) setSelectedContent: (ContentSelector) contentSelector
 {
     selectedContent = contentSelector;
+    [AppServices sharedAppServices].shouldIgnoreResults = YES;
     [self clearData];
     [self fetchMoreNotes];
 }

@@ -12,10 +12,11 @@
 #import "ARISAppDelegate.h"
 #import "AsyncMediaImageView.h"
 #import "Note.h"
+#import "NoteContent.h"
+#import "Tag.h"
 
 #define TWITTER_HANDLE               @"@jacob_hanshaw"
 #define DEFAULT_TITLE                @"Note"
-#define HOME_URL                     @"www.arisgames.org/yoi"
 
 @interface InnovPopOverSocialContentView()<AsyncMediaImageViewDelegate>
 {

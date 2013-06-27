@@ -22,6 +22,9 @@
 #import "SimpleTwitterShare.h"
 #import "SimpleFacebookShare.h"
 
+#define SERVER                       @"http://dev.arisgames.org/server"
+#define HOME_URL                     @"www.arisgames.org/yoi"
+
 @interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {
 	UIWindow *window;

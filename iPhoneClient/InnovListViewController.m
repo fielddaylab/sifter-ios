@@ -176,11 +176,22 @@ static NSString * const CELL_ID = @"Cell";
     [delegate presentNote: [notes objectAtIndex:indexPath.row]];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
+    float yOffset            = aScrollView.contentOffset.y;
+    float scrollViewHeight   = aScrollView.bounds.size.height;
+    float totalContentHeight = aScrollView.contentSize.height;
+    float bottomInset        = aScrollView.contentInset.bottom;
+
+    if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && [notes count] > NOTES_PER_FETCH)
+        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+}
+/*
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+    //possible adjust num rows
     [quiltView reloadData];
 }
-
+*/
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
