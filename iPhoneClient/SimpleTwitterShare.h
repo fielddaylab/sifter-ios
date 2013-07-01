@@ -23,6 +23,6 @@
 @interface SimpleTwitterShare : NSObject
 
 - (BOOL) canSendTweet;
-- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString;
+- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId;
 
 @end

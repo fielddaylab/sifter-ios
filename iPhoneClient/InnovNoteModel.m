@@ -195,24 +195,28 @@
 -(void) updateNote:(Note *) note
 {
     [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
-    Note *noteToRemove;
-    for(Note *existingNote in availableNotes)
+    int indexToRemove = -1;
+    for(int i = 0; i < [availableNotes count]; ++i)
     {
+        Note *existingNote = [availableNotes objectAtIndex:i];
         if(note.noteId == existingNote.noteId)
         {
-            noteToRemove = existingNote;
+            indexToRemove = i;
             break;
         }
     }
     
-    if(noteToRemove)
+    if(indexToRemove != -1)
     {
-        [availableNotes removeObject:noteToRemove];
-        [self sendLostNotesNotif:[NSArray arrayWithObject:noteToRemove]];
+        [self sendLostNotesNotif:[NSArray arrayWithObject:[availableNotes objectAtIndex:indexToRemove]]];
+        [availableNotes removeObjectAtIndex:indexToRemove];
     }
     if([self noteShouldBeAvailable:note])
     {
-        [availableNotes addObject:note];
+        if(indexToRemove >= [availableNotes count])
+            [availableNotes addObject:note];
+        else
+            [availableNotes insertObject:note atIndex:indexToRemove];
         [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
     }
     
@@ -268,7 +272,7 @@
         if(!match) return NO;
     }
     for(NSString *searchTerm in searchTerms)
-        if(![searchTerm isEqualToString:note.username] && [note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
+        if([note.username.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
     
     return YES;
 }

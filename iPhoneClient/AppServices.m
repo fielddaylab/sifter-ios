@@ -259,6 +259,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
     [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
 }
 
+#pragma mark Flagging Server Updates
+
 -(void)flagNote:(int)noteId
 {
     NSArray *arguments = [NSArray arrayWithObjects:
@@ -282,6 +284,80 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
                                                              andMethodName:@"unflagNote"
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+    [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
+}
+
+#pragma mark Sharing Note Server Updates
+
+- (void)sharedNoteToFacebook:(int)noteId
+{
+    Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:noteId];
+    note.facebookShareCount++;
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    
+	NSArray *arguments = [NSArray arrayWithObjects:
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+						  [NSString stringWithFormat:@"%d",noteId],
+						  nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:@"sharedNoteToFacebook"
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+    [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
+}
+
+- (void)sharedNoteToTwitter:(int)noteId
+{
+    Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:noteId];
+    note.twitterShareCount++;
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    
+	NSArray *arguments = [NSArray arrayWithObjects:
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+						  [NSString stringWithFormat:@"%d",noteId],
+						  nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:@"sharedNoteToTwitter"
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+    [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
+}
+
+- (void)sharedNoteToPinterest:(int)noteId
+{
+    Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:noteId];
+    note.pinterestShareCount++;
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    
+	NSArray *arguments = [NSArray arrayWithObjects:
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+						  [NSString stringWithFormat:@"%d",noteId],
+						  nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:@"sharedNoteToPinterest"
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+    [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
+}
+
+- (void)sharedNoteToEmail:(int)noteId
+{
+    Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:noteId];
+    note.emailShareCount++;
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    
+	NSArray *arguments = [NSArray arrayWithObjects:
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+						  [NSString stringWithFormat:@"%d",noteId],
+						  nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:@"sharedNoteToEmail"
                                                               andArguments:arguments
                                                                andUserInfo:nil];
     [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
@@ -708,10 +784,10 @@ BOOL currentlyUpdatingServerWithMapViewed;
 - (void)fetch:(int) noteCount NotesWithMethod:(NSString *) method StartingFrom: (int) lastLocation
 {
     isCurrentlyFetchingGameNoteList = YES;
-	NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+	NSMutableArray *arguments = [NSMutableArray arrayWithObjects:[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
                           [NSString stringWithFormat:@"%d",lastLocation],
                           [NSString stringWithFormat:@"%d",noteCount],nil];
+    if([method isEqualToString:@"getNextSetOfPlayerNotesForGame"]) [arguments addObject: [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId]];
 	
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
@@ -885,21 +961,25 @@ BOOL currentlyUpdatingServerWithMapViewed;
 -(Note *)parseNoteFromDictionary: (NSDictionary *)noteDictionary
 {
 	Note *aNote = [[Note alloc] init];
-    aNote.dropped       = [self validBoolForKey:@"dropped"            inDictionary:noteDictionary];
-    aNote.showOnMap     = [self validBoolForKey:@"public_to_map"      inDictionary:noteDictionary];
-    aNote.showOnList    = [self validBoolForKey:@"public_to_notebook" inDictionary:noteDictionary];
-    aNote.userLiked     = [self validBoolForKey:@"player_liked"       inDictionary:noteDictionary];
-    aNote.userFlagged   = [self validBoolForKey:@"player_flagged"     inDictionary:noteDictionary];
-    aNote.noteId        = [self validIntForKey:@"note_id"             inDictionary:noteDictionary];
-    aNote.parentNoteId  = [self validIntForKey:@"parent_note_id"      inDictionary:noteDictionary];
-    aNote.parentRating  = [self validIntForKey:@"parent_rating"       inDictionary:noteDictionary];
-    aNote.numRatings    = [self validIntForKey:@"likes"               inDictionary:noteDictionary];
-    aNote.creatorId     = [self validIntForKey:@"owner_id"            inDictionary:noteDictionary];
-    aNote.latitude      = [self validDoubleForKey:@"lat"              inDictionary:noteDictionary];
-    aNote.longitude     = [self validDoubleForKey:@"lon"              inDictionary:noteDictionary];
-    aNote.username      = [self validObjectForKey:@"username"         inDictionary:noteDictionary];
-    aNote.displayname   = [self validStringForKey:@"displayname"      inDictionary:noteDictionary];
-    aNote.title         = [self validObjectForKey:@"title"            inDictionary:noteDictionary];
+    aNote.dropped          = [self validBoolForKey:@"dropped"            inDictionary:noteDictionary];
+    aNote.showOnMap        = [self validBoolForKey:@"public_to_map"      inDictionary:noteDictionary];
+    aNote.showOnList       = [self validBoolForKey:@"public_to_notebook" inDictionary:noteDictionary];
+    aNote.userLiked        = [self validBoolForKey:@"player_liked"       inDictionary:noteDictionary];
+    aNote.userFlagged      = [self validBoolForKey:@"player_flagged"     inDictionary:noteDictionary];
+    aNote.noteId           = [self validIntForKey:@"note_id"             inDictionary:noteDictionary];
+    aNote.parentNoteId     = [self validIntForKey:@"parent_note_id"      inDictionary:noteDictionary];
+    aNote.parentRating     = [self validIntForKey:@"parent_rating"       inDictionary:noteDictionary];
+    aNote.numRatings       = [self validIntForKey:@"likes"               inDictionary:noteDictionary];
+    aNote.creatorId        = [self validIntForKey:@"owner_id"            inDictionary:noteDictionary];
+    aNote.latitude         = [self validDoubleForKey:@"lat"              inDictionary:noteDictionary];
+    aNote.longitude        = [self validDoubleForKey:@"lon"              inDictionary:noteDictionary];
+    aNote.username         = [self validObjectForKey:@"username"         inDictionary:noteDictionary];
+    aNote.displayname      = [self validStringForKey:@"displayname"      inDictionary:noteDictionary];
+    aNote.title            = [self validObjectForKey:@"title"            inDictionary:noteDictionary];
+    aNote.facebookShareCount   = [self validIntForKey:@"facebook_shares" inDictionary:noteDictionary];
+    aNote.twitterShareCount     = [self validIntForKey:@"twitter_shares" inDictionary:noteDictionary];
+    aNote.pinterestShareCount = [self validIntForKey:@"pinterest_shares" inDictionary:noteDictionary];
+    aNote.emailShareCount         = [self validIntForKey:@"email_shares" inDictionary:noteDictionary];
     
     NSArray *contents = [self validObjectForKey:@"contents" inDictionary:noteDictionary];
     for (NSDictionary *content in contents)

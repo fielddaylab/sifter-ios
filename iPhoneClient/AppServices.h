@@ -68,7 +68,10 @@ extern NSString *const kARISServerServicePackage;
 - (void)unLikeNote:(int)noteId;
 - (void)flagNote:(int)noteId;
 - (void)unFlagNote:(int)noteId;
-- (void)checkIfNoteLiked:(int) noteId;
+- (void)sharedNoteToFacebook:(int)noteId;
+- (void)sharedNoteToTwitter:(int)noteId;
+- (void)sharedNoteToPinterest:(int)noteId;
+- (void)sharedNoteToEmail:(int)noteId;
 
 //Tell server of state
 - (void)updateServerWithPlayerLocation;

@@ -29,7 +29,7 @@
 - (void) handleDidBecomeActive;
 - (void) shareUrl:(NSURL *)theUrl;
 - (void) shareText:(NSString *)theText DEPRECATED_ATTRIBUTE;
-- (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString;
+- (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId;
 - (void) getUsernameWithCompletionHandler:(void (^)(NSString *username, NSError *error))completionHandler;
 
 @end

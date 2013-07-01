@@ -419,7 +419,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         }
         else
         {
-            [[AppServices sharedAppServices]unLikeNote:self.note.noteId];
+            [[AppServices sharedAppServices] unLikeNote:self.note.noteId];
             self.note.numRatings--;
         }
         [self updateLikeButton];
@@ -438,6 +438,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
     socialContent.note = self.note;
+    [socialContent refreshBadges];
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
     [self.view addSubview:popOver];
 }

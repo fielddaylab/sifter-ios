@@ -387,6 +387,7 @@
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.title = [NSString stringWithFormat:@"#%@", [AppModel sharedAppModel].userName];
     else self.note.title = [NSString stringWithFormat:@"%@ #%@", captionTextView.text, [AppModel sharedAppModel].userName];
     socialContent.note = self.note;
+    [socialContent refreshBadges];
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
     [self.view addSubview:popOver];
 }

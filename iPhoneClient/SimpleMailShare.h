@@ -25,6 +25,6 @@
 - (BOOL) canSendMail;
 - (void) shareText:(NSString *)text subject:(NSString *)subject isHTML:(BOOL)isHTML;
 - (void) shareText:(NSString *)text subject:(NSString *)subject toRecipient:(NSString *)toRecipient isHTML:(BOOL)isHTML;
-- (void) shareText:(NSString *)text asHTML:(BOOL) html withImage:(NSData *)image andSubject:(NSString *) subject toRecipients:(NSArray *) recipients;
+- (void) shareText:(NSString *)text asHTML:(BOOL) html withImage:(NSData *)image andSubject:(NSString *) subject toRecipients:(NSArray *) recipients fromNote:(int)aNoteId;
 
 @end

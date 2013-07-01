@@ -18,7 +18,7 @@
  NSString *const kNoteContentTypeText = @"TEXT";
 
 @implementation Note
-@synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,title,kind,numRatings,delegate,dropped,showOnMap,showOnList,userLiked,tags,latitude,longitude, username, displayname, userFlagged;
+@synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,title,kind,numRatings,delegate,dropped,showOnMap,showOnList,userLiked,tags,latitude,longitude, username, displayname, userFlagged, facebookShareCount, twitterShareCount, pinterestShareCount, emailShareCount;
 
 -(nearbyObjectKind) kind { return NearbyObjectNote; }
 
