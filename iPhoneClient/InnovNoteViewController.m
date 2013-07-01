@@ -360,7 +360,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex) [delegate presentLogIn];
+    if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0) [delegate presentLogIn];
+    else if(buttonIndex != 0)
+    {
+        self.note.userFlagged = !flagButton.selected;
+        [[AppServices sharedAppServices]flagNote:self.note.noteId];
+        [flagButton setSelected:self.note.userFlagged];
+    }
 }
 
 - (void)playButtonPressed:(id)sender
@@ -393,12 +399,18 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     }
     else
     {
-        self.note.userFlagged = !flagButton.selected;
         if(self.note.userFlagged)
-            [[AppServices sharedAppServices]flagNote:self.note.noteId];
-        else
+        {
+            self.note.userFlagged = !flagButton.selected;
             [[AppServices sharedAppServices]unFlagNote:self.note.noteId];
-        [flagButton setSelected:self.note.userFlagged];
+            [flagButton setSelected:self.note.userFlagged];
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are You Sure?" message:@"Are you sure you want to mark this content as inappropriate?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            [alert show];
+        }
+
     }
 }
 
