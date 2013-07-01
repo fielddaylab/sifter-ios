@@ -25,13 +25,9 @@
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 
-
-#define GAME_ID                         3371 //for arisgames.org/yoi
-//#define GAME_ID                         3434 //for dev.arisgames.org/server
-
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -74,31 +70,6 @@
     CGRect frame = [UIScreen mainScreen].applicationFrame;
     frame.size.height -= self.navigationController.navigationBar.frame.size.height;
     self.view.frame = frame;
-    
-#warning unimplemented: change game and finalize settings
-    
-    Game *game = [[Game alloc] init];
-    game.gameId                   = GAME_ID;
-    game.hasBeenPlayed            = YES;
-    game.isLocational             = YES;
-    game.showPlayerLocation       = YES;
-    game.allowNoteComments        = YES;
-    game.allowNoteLikes           = YES;
-    game.rating                   = 5;
-    game.pcMediaId                = 0;
-    game.numPlayers               = 10;
-    game.playerCount              = 5;
-    game.gdescription             = @"Fun";
-    game.name                     = @"Note Share";
-    game.authors                  = @"Jacob Hanshaw";
-    game.mapType                  = @"STREET";
-#warning get rid of this and only use note model
-    [AppModel sharedAppModel].currentGame = game;
-    [AppModel sharedAppModel].playerId = 7;
-    [AppModel sharedAppModel].userName = @"Anonymous";
-    [AppModel sharedAppModel].loggedIn = NO;
-    
-#warning find out why this is necessary
     
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
@@ -204,17 +175,7 @@
         [listVC animateInNote:note];
     noteToAdd = nil;
 }
-/*
-#pragma mark Refresh
 
-- (void) refresh
-{
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
-    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
-    
-    [mapVC updatePlayerLocation];
-}
-*/
 #pragma mark Search Bar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -272,7 +233,7 @@
 
 - (IBAction)cameraPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
@@ -346,7 +307,7 @@
 
 - (void)checkForLogInFail
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
         [alert show];

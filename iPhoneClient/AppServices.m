@@ -259,7 +259,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
 }
 
--(void)checkIfNoteLiked:(int)noteId
+-(void)flagNote:(int)noteId
 {
     NSArray *arguments = [NSArray arrayWithObjects:
 						  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
@@ -267,22 +267,24 @@ BOOL currentlyUpdatingServerWithMapViewed;
                           nil];
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
-                                                             andMethodName:@"playerLikedObject"
+                                                             andMethodName:@"flagNote"
                                                               andArguments:arguments
                                                                andUserInfo:nil];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", nil];
-    
-    [jsonConnection performAsynchronousRequestWithHandler:@selector(parseNoteLikedFromJSON:) andUserInfo:dict]; //This is a cheat to make sure that the fetch Happens After
+	[jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
 }
 
-- (void)parseNoteLikedFromJSON: (NSDictionary *)userInfo
+-(void)unFlagNote:(int)noteId
 {
-    JSONResult *JSONresult = [userInfo objectForKey:@"JSON"];
-	NSDictionary *result = (NSDictionary *)JSONresult.data;
-    BOOL liked = [self validBoolForKey:@"liked" inDictionary:result];
-    Note *noteToUpdate = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[userInfo objectForKey:@"noteId"] intValue]];
-    noteToUpdate.userLiked = liked;
-    [[InnovNoteModel sharedNoteModel] updateNote:noteToUpdate];
+    NSArray *arguments = [NSArray arrayWithObjects:
+						  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+                          [NSString stringWithFormat:@"%d",noteId],
+                          nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+                                                            andServiceName:@"notes"
+                                                             andMethodName:@"unflagNote"
+                                                              andArguments:arguments
+                                                               andUserInfo:nil];
+    [jsonConnection performAsynchronousRequestWithHandler:nil]; //This is a cheat to make sure that the fetch Happens After
 }
 
 -(int)addCommentToNoteWithId:(int)noteId andTitle:(NSString *)title
@@ -622,7 +624,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 - (void)updateServerWithPlayerLocation
 {
 #warning necessary?
- 	if (![AppModel sharedAppModel].loggedIn)
+ 	if ([AppModel sharedAppModel].playerId == 0)
     {
         NSLog(@"Skipping Request: player not logged in");
 		return;
@@ -887,6 +889,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     aNote.showOnMap     = [self validBoolForKey:@"public_to_map"      inDictionary:noteDictionary];
     aNote.showOnList    = [self validBoolForKey:@"public_to_notebook" inDictionary:noteDictionary];
     aNote.userLiked     = [self validBoolForKey:@"player_liked"       inDictionary:noteDictionary];
+    aNote.userFlagged   = [self validBoolForKey:@"player_flagged"     inDictionary:noteDictionary];
     aNote.noteId        = [self validIntForKey:@"note_id"             inDictionary:noteDictionary];
     aNote.parentNoteId  = [self validIntForKey:@"parent_note_id"      inDictionary:noteDictionary];
     aNote.parentRating  = [self validIntForKey:@"parent_rating"       inDictionary:noteDictionary];
@@ -897,7 +900,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
     aNote.username      = [self validObjectForKey:@"username"         inDictionary:noteDictionary];
     aNote.displayname   = [self validStringForKey:@"displayname"      inDictionary:noteDictionary];
     aNote.title         = [self validObjectForKey:@"title"            inDictionary:noteDictionary];
-    aNote.text          = [self validObjectForKey:@"text"             inDictionary:noteDictionary];
     
     NSArray *contents = [self validObjectForKey:@"contents" inDictionary:noteDictionary];
     for (NSDictionary *content in contents)
@@ -986,7 +988,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
     
 	if (jsonResult.data != [NSNull null])
     {
-		[AppModel sharedAppModel].loggedIn = YES;
 		[AppModel sharedAppModel].playerId = [self validIntForKey:@"player_id" inDictionary:((NSDictionary*)jsonResult.data)];
 		[AppModel sharedAppModel].playerMediaId = [self validIntForKey:@"media_id" inDictionary:((NSDictionary*)jsonResult.data)];
         [AppModel sharedAppModel].userName = [self validObjectForKey:@"user_name" inDictionary:((NSDictionary*)jsonResult.data)];
@@ -997,7 +998,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
         //[RootViewController sharedRootViewController].playerChannel = [[RootViewController sharedRootViewController].client subscribeToPrivateChannelNamed:[NSString stringWithFormat:@"%d-player-channel",[AppModel sharedAppModel].playerId]];
     }
 	else
-        [AppModel sharedAppModel].loggedIn = NO;
+        [AppModel sharedAppModel].playerId = 0;
     
     NSLog(@"NSNotification: NewLoginResponseReady");
 	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewLoginResponseReady" object:nil]];

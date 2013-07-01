@@ -14,7 +14,6 @@
 @implementation AppModel
 
 @synthesize serverURL;
-@synthesize loggedIn;
 @synthesize userName;
 @synthesize groupName;
 @synthesize groupGame;
@@ -95,9 +94,8 @@
     
     //Safe to load defaults
     
-    if(!self.loggedIn)
+    if(self.playerId == 0)
     {
-        self.loggedIn        = [defaults boolForKey:@"loggedIn"];
         self.playerId        = [defaults integerForKey:@"playerId"];
         self.playerMediaId   = [defaults integerForKey:@"playerMediaId"];
         self.userName        = [defaults objectForKey:@"userName"];
@@ -119,13 +117,11 @@
 {
 	NSLog(@"Clearing User Defaults");
     [AppModel sharedAppModel].currentGame = nil;
-    [AppModel sharedAppModel].loggedIn       = NO;
     [AppModel sharedAppModel].playerId       = 0;
     [AppModel sharedAppModel].fallbackGameId = 0;
     [AppModel sharedAppModel].playerMediaId  = -1;
     [AppModel sharedAppModel].userName       = @"";
     [AppModel sharedAppModel].displayName    = @"";
-    [defaults setBool:loggedIn          forKey:@"loggedIn"];
     [defaults setInteger:playerId       forKey:@"playerId"];
     [defaults setInteger:fallbackGameId forKey:@"gameId"];
     [defaults setInteger:playerMediaId  forKey:@"playerMediaId"];
@@ -142,7 +138,6 @@
 	[defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVerison"];
 	[defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBuildNumber"]   forKey:@"buildNum"];
     
-	[defaults setBool:loggedIn                    forKey:@"loggedIn"];
     [defaults setInteger:playerId                 forKey:@"playerId"];
     [defaults setInteger:playerMediaId            forKey:@"playerMediaId"];
     [defaults setInteger:fallbackGameId           forKey:@"gameId"];

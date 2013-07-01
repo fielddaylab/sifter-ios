@@ -39,6 +39,24 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
+#warning change game and finalize settings
+    Game *game = [[Game alloc] init];
+    game.gameId                   = GAME_ID;
+    game.hasBeenPlayed            = YES;
+    game.isLocational             = YES;
+    game.showPlayerLocation       = YES;
+    game.allowNoteComments        = YES;
+    game.allowNoteLikes           = YES;
+    game.rating                   = 5;
+    game.pcMediaId                = 0;
+    game.numPlayers               = 10;
+    game.playerCount              = 5;
+    game.gdescription             = @"Fun";
+    game.name                     = @"Note Share";
+    game.authors                  = @"Jacob Hanshaw";
+    game.mapType                  = @"STREET";
+    [AppModel sharedAppModel].currentGame = game;
+    
     simpleMailShare     = [[SimpleMailShare alloc] init];
     simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
     simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"YOI" appUrl:HOME_URL];

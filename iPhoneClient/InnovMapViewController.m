@@ -165,7 +165,7 @@
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
-            annotation.title = note.title;// [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+            annotation.title = note.title;
             annotation.kind = NearbyObjectNote;
             annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
 #warning this needs to be implemented in AnnotationView.m
@@ -185,7 +185,7 @@
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
-            annotation.title = note.title;// [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+            annotation.title = note.title;
             annotation.kind = NearbyObjectNote;
             annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
 #warning this needs to be implemented in AnnotationView.m

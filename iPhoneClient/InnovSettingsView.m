@@ -108,7 +108,7 @@
 }
 - (IBAction)logInOutButtonPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         [delegate presentLogIn];
     }
@@ -121,7 +121,7 @@
 
 - (void)updateLogInOutButtonTitle
 {
-    if([AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId != 0)
     {
         [logInOutButton setTitle:@"Log Out" forState:UIControlStateNormal];
         [logInOutButton setTitle:@"Log Out" forState:UIControlStateHighlighted];
@@ -135,7 +135,6 @@
 
 - (void)performLogout:(NSNotification *)notification
 {
-    [AppModel sharedAppModel].loggedIn       = NO;
     [AppModel sharedAppModel].playerId       = 0;
     [AppModel sharedAppModel].playerMediaId  = -1;
     [AppModel sharedAppModel].userName       = @"";

@@ -10,7 +10,6 @@
 #import <CoreAudio/CoreAudioTypes.h>
 #import <QuartzCore/QuartzCore.h>
 
-//#import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "InnovAudioEnums.h"
@@ -90,8 +89,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIfNoteLiked)     name:@"NewLoginResponseReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
@@ -145,29 +144,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     [addCommentBar setItems:[NSArray arrayWithObjects:flex, addCommentButton, nil]];
     
-    self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
-    
-    [self.view addKeyboardPanningWithActionHandler:^(CGRect keyboardFrameInView) {
-        /*
-         Try not to call "self" inside this block (retain cycle).
-         But if you do, make sure to remove DAKeyboardControl
-         when you are done with the view controller by calling:
-         [self.view removeKeyboardControl];
-         */
-        if (self.isViewLoaded && self.view.window)
-        {
-            CGRect addCommentBarFrame = addCommentBar.frame;
-            addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
-            addCommentBar.frame = addCommentBarFrame;
-            
-            CGRect tableViewFrame = noteTableView.frame;
-            tableViewFrame.size.height = addCommentBarFrame.origin.y;
-            noteTableView.frame = tableViewFrame;
-            
-            [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        }
-    }];
-    
     imageView = [[AsyncMediaImageView alloc] init];
     imageView.frame = CGRectMake(IMAGE_X_MARGIN,
                                  IMAGE_Y_MARGIN,
@@ -176,7 +152,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 #warning change width and add flag
     usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
                                                               IMAGE_Y_MARGIN + imageView.frame.size.height,
-                                                              self.view.frame.size.width-3*BUTTON_WIDTH,
+                                                              self.view.frame.size.width-4*BUTTON_WIDTH,
                                                               BUTTON_HEIGHT)];
     usernameLabel.backgroundColor = [UIColor blackColor];
     usernameLabel.textColor       = [UIColor whiteColor];
@@ -189,23 +165,31 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [playButton setTitle:@"PL" forState:UIControlStateNormal];
     [playButton setTitle:@"PL" forState:UIControlStateHighlighted];
 	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    /*
+    
     flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     flagButton.backgroundColor = [UIColor blackColor];
+    [flagButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
+    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
     [flagButton setTitle:@"F" forState:UIControlStateNormal];
+    [flagButton setTitle:@"F" forState:UIControlStateSelected];
     [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    */
-    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
+    
+    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     likeButton.backgroundColor = [UIColor blackColor];
-    [likeButton setImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
-    [likeButton setImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
+    [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     shareButton = [[UIButton alloc] initWithFrame:CGRectMake(likeButton.frame.origin.x + BUTTON_WIDTH,
@@ -233,8 +217,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     addCommentBar = nil;
     addCommentTextView = nil;
     addCommentButton = nil;
-    
-    [self.view removeKeyboardControl];
     
     [super viewDidUnload];
 }
@@ -264,8 +246,37 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     mode = kInnovAudioPlayerNoAudio;
     [self updateButtonsForCurrentMode];
-    [self checkIfNoteLiked];
-    [self refreshViewFromModel];
+    
+    self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
+    
+    [self.view addKeyboardPanningWithActionHandler:^(CGRect keyboardFrameInView) {
+        /*
+         Try not to call "self" inside this block (retain cycle).
+         But if you do, make sure to remove DAKeyboardControl
+         when you are done with the view controller by calling:
+         [self.view removeKeyboardControl];
+         */
+        if (self.isViewLoaded && self.view.window)
+        {
+            CGRect addCommentBarFrame = addCommentBar.frame;
+            addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
+            addCommentBar.frame = addCommentBarFrame;
+            
+            CGRect tableViewFrame = noteTableView.frame;
+            tableViewFrame.size.height = addCommentBarFrame.origin.y;
+            noteTableView.frame = tableViewFrame;
+            
+            [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
+    }];
+    
+    [self updateNote];
+}
+
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.view removeKeyboardControl];
 }
 
 #pragma mark UITextView methods
@@ -317,7 +328,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [addCommentTextView resignFirstResponder];
     
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to comment on notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
@@ -375,12 +386,25 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)flagButtonPressed:(id)sender
 {
-#warning unimplemented
+    if([AppModel sharedAppModel].playerId == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to flag notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+        [alert show];
+    }
+    else
+    {
+        self.note.userFlagged = !flagButton.selected;
+        if(self.note.userFlagged)
+            [[AppServices sharedAppServices]flagNote:self.note.noteId];
+        else
+            [[AppServices sharedAppServices]unFlagNote:self.note.noteId];
+        [flagButton setSelected:self.note.userFlagged];
+    }
 }
 
 - (void)likeButtonPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to like notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
@@ -405,8 +429,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)updateLikeButton
 {
     [likeButton setSelected:self.note.userLiked];
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",self.note.numRatings] forState:UIControlStateNormal];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",self.note.numRatings] forState:UIControlStateSelected];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",self.note.numRatings] forState:UIControlStateHighlighted];
 }
 
 - (void)shareButtonPressed:(id)sender
@@ -417,12 +442,19 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self.view addSubview:popOver];
 }
 
+- (void)updateNote
+{
+    [[AppServices sharedAppServices] fetchNote:self.note.noteId];
+}
+
 #pragma mark Note Contents
 
 - (void)refreshViewFromModel
 {
     self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
     [self updateLikeButton];
+    [flagButton setSelected:self.note.userFlagged];
+
     for(int i = 0; i < [self.note.contents count]; ++i)
     {
         NoteContent *noteContent = [self.note.contents objectAtIndex:i];
@@ -439,13 +471,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     }
     
     [noteTableView reloadData];
-}
-
-- (void)checkIfNoteLiked
-{
-#warning Called twice if log in from this screen (viewWillAppear and Respond to Log In Notification
-    
-    [[AppServices sharedAppServices] checkIfNoteLiked:self.note.noteId];
 }
 
 #pragma mark Audio Methods
@@ -511,7 +536,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     if(indexPath.row == 0)
     {
         CGSize size = CGSizeMake(captionTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-        NSString *text = note.title;// [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        NSString *text = note.title;
         CGFloat captionTextViewHeight = [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN);
         if(!([text length] > 0))
             captionTextViewHeight = -4;
@@ -553,9 +578,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             [cell addSubview:captionTextView];
         }
         
-        usernameLabel.text = @"";// [self.note.title substringFromIndex:([self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location + 1)];
+        usernameLabel.text = note.username;
         
-        captionTextView.text = note.title;// [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        captionTextView.text = note.title;
         CGRect frame = captionTextView.frame;
         frame.size.height = captionTextView.contentSize.height;
         captionTextView.frame = frame;
@@ -618,7 +643,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning

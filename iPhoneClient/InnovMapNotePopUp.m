@@ -60,7 +60,7 @@
 {
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
         
-    textLabel.text = note.title;// [note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+        textLabel.text = note.title;
         if([note.contents count] > 0)
         {
             for(NoteContent *noteContent in note.contents)

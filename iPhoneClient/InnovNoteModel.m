@@ -268,7 +268,7 @@
         if(!match) return NO;
     }
     for(NSString *searchTerm in searchTerms)
-        if([note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
+        if(![searchTerm isEqualToString:note.username] && [note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
     
     return YES;
 }

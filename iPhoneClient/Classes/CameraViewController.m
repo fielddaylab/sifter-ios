@@ -45,8 +45,6 @@
     UIImagePickerController *picker;
     
     BOOL bringUpCamera;
-	NSData *mediaData;
-	NSString *mediaFilename;
 }
 
 @end
@@ -155,7 +153,7 @@
     
     UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
     image = [self cropImage:image];
-    mediaData = UIImageJPEGRepresentation(image, 0.02);
+    NSData *mediaData = UIImageJPEGRepresentation(image, 0.02);
     
     [self.editView updateImageView:mediaData];
     
@@ -166,10 +164,11 @@
     [mediaData writeToURL:imageURL atomically:YES];
     
     [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
-        // If image not selected from camera roll
-        if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
-        {
+    
+    if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
+            // If image not selected from camera roll
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
             [al writeImageDataToSavedPhotosAlbum:mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
              {
@@ -181,8 +180,8 @@
                   }
                   ];
              }];
-        }
-    });
+        });
+    }
     
     [self.navigationController popViewControllerAnimated:YES];
 }

@@ -18,8 +18,7 @@
  NSString *const kNoteContentTypeText = @"TEXT";
 
 @implementation Note
-@synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,text,title,kind,numRatings,username,delegate,dropped,showOnMap,showOnList,userLiked,hasImage,hasAudio,tags,tagSection,tagName,latitude,longitude;
-@synthesize displayname;
+@synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,title,kind,numRatings,delegate,dropped,showOnMap,showOnList,userLiked,tags,latitude,longitude, username, displayname, userFlagged;
 
 -(nearbyObjectKind) kind { return NearbyObjectNote; }
 
@@ -27,7 +26,6 @@
     self = [super init];
     if (self) {
 		kind = NearbyObjectNote;
-        iconMediaId = 71;
         self.comments = [NSMutableArray arrayWithCapacity:5];
         self.contents = [NSMutableArray arrayWithCapacity:5];
         self.tags = [NSMutableArray arrayWithCapacity:5];
@@ -56,10 +54,6 @@
             return  YES;
     }
     return  NO;
-}
-
-- (int)	iconMediaId {
-    return 71;
 }
 
 - (BOOL)compareTo:(Note *)other

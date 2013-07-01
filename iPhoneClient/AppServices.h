@@ -66,6 +66,8 @@ extern NSString *const kARISServerServicePackage;
 - (void)updateCommentWithId:(int)noteId andTitle:(NSString *)title andRefresh:(BOOL)refresh;
 - (void)likeNote:(int)noteId;
 - (void)unLikeNote:(int)noteId;
+- (void)flagNote:(int)noteId;
+- (void)unFlagNote:(int)noteId;
 - (void)checkIfNoteLiked:(int) noteId;
 
 //Tell server of state
