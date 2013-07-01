@@ -9,13 +9,22 @@
 #import "LoginViewController.h"
 #import "SelfRegistrationViewController.h"
 #import "ARISAppDelegate.h"
-#import "ChangePasswordViewController.h"
 #import "ForgotViewController.h"
-#import "QRCodeReader.h"
+
+@interface LoginViewController() <SelfRegistrationDelegate>
+{
+	IBOutlet UITextField *usernameField;
+	IBOutlet UITextField *passwordField;
+	IBOutlet UIButton *loginButton;
+	IBOutlet UIButton *newAccountButton;
+    IBOutlet UIButton *changePassButton;
+    
+	IBOutlet UILabel *newAccountMessageLabel;
+}
+
+@end
 
 @implementation LoginViewController
-
-@synthesize delegate;
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
@@ -65,7 +74,7 @@
 
 -(IBAction)loginButtonTouched:(id)sender
 {
-    [delegate attemptLoginWithUserName:usernameField.text andPassword:passwordField.text andGameId:0 inMuseumMode:false];
+    [self attemptLoginWithUserName:usernameField.text andPassword:passwordField.text andGameId:0 inMuseumMode:false];
 
     [usernameField resignFirstResponder];
     [passwordField resignFirstResponder];
@@ -73,7 +82,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
--(void)changePassTouch
+-(IBAction)changePassTouch:(id)sender
 {
     ForgotViewController *forgotPassViewController = [[ForgotViewController alloc] initWithNibName:@"ForgotViewController" bundle:[NSBundle mainBundle]];
     [[self navigationController] pushViewController:forgotPassViewController animated:NO];
@@ -82,8 +91,23 @@
 -(IBAction)newAccountButtonTouched:(id)sender
 {
     SelfRegistrationViewController *selfRegistrationViewController = [[SelfRegistrationViewController alloc] initWithNibName:@"SelfRegistration" bundle:[NSBundle mainBundle]];
-    selfRegistrationViewController.delegate = self.delegate;
+    selfRegistrationViewController.delegate = self;
     [[self navigationController] pushViewController:selfRegistrationViewController animated:NO];
+}
+
+- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
+{
+	[AppModel sharedAppModel].userName = userName;
+	[AppModel sharedAppModel].password = password;
+	[AppModel sharedAppModel].museumMode = museumMode;
+    
+	[[AppServices sharedAppServices] login];
+    
+    if(gameId != 0)
+    {
+        [AppModel sharedAppModel].skipGameDetails = YES;
+        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
+    }
 }
 
 @end

@@ -19,6 +19,7 @@
 #import "Logger.h"
 
 #import "InnovPopOverView.h"
+#import "LoginViewController.h"
 #import "InnovPopOverSocialContentView.h"
 #import "InnovCommentCell.h"
 #import "DAKeyboardControl.h"
@@ -360,7 +361,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0) [delegate presentLogIn];
+    if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0)
+    {
+        LoginViewController *logInVC = [[LoginViewController alloc] init];
+        [self.navigationController pushViewController:logInVC animated:YES];
+    }
     else if(buttonIndex != 0)
     {
         self.note.userFlagged = !flagButton.selected;

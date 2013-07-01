@@ -27,7 +27,7 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -272,38 +272,10 @@
 - (void) presentLogIn
 {
     LoginViewController *logInVC = [[LoginViewController alloc] init];
-    logInVC.delegate = self;
     [self.navigationController pushViewController:logInVC animated:YES];
 }
 
 #pragma mark Login and Game Selection
-- (void)createUserAndLoginWithGroup:(NSString *)groupName andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
-{
-	[AppModel sharedAppModel].museumMode = museumMode;
-    
-	[[AppServices sharedAppServices] createUserAndLoginWithGroup:[NSString stringWithFormat:@"%d-%@", gameId, groupName]];
-    
-    if(gameId != 0)
-    {
-        [AppModel sharedAppModel].skipGameDetails = YES;
-        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
-    }
-}
-
-- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
-{
-	[AppModel sharedAppModel].userName = userName;
-	[AppModel sharedAppModel].password = password;
-	[AppModel sharedAppModel].museumMode = museumMode;
-    
-	[[AppServices sharedAppServices] login];
-    
-    if(gameId != 0)
-    {
-        [AppModel sharedAppModel].skipGameDetails = YES;
-        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
-    }
-}
 
 - (void)checkForLogInFail
 {

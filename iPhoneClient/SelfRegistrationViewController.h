@@ -6,7 +6,10 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import "InnovLogInDelegate.h"
+@protocol SelfRegistrationDelegate <NSObject>
+@required
+- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode;
+@end
 
 @interface SelfRegistrationViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate>
 {
@@ -16,7 +19,7 @@
 	IBOutlet UIButton *createAccountButton;
 }
 
-@property(nonatomic, weak) id<InnovLogInDelegate> delegate;
+@property(nonatomic, weak) id<SelfRegistrationDelegate> delegate;
 @property (nonatomic) IBOutlet UITextField *userName;
 @property (nonatomic) IBOutlet UITextField *password;
 @property (nonatomic) IBOutlet UITextField *email;

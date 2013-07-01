@@ -15,8 +15,6 @@
 		111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 111CFA9214520EC700D56207 /* ForgotViewController.xib */; };
 		113F56DE14E4435300525BE6 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 113F56DD14E4435300525BE6 /* AssetsLibrary.framework */; };
 		1147E15913F32260000E4BC2 /* noteicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1147E15513F32260000E4BC2 /* noteicon.png */; };
-		11566433144A414D006902C2 /* ChangePasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11566431144A414D006902C2 /* ChangePasswordViewController.m */; };
-		11566434144A414D006902C2 /* ChangePasswordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11566432144A414D006902C2 /* ChangePasswordViewController.xib */; };
 		1176F2B114C6045100EA4512 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1176F2B014C6045100EA4512 /* check.png */; };
 		118622E01404535300D4B738 /* Note.m in Sources */ = {isa = PBXBuildFile; fileRef = 118622DF1404535300D4B738 /* Note.m */; };
 		118866441406B54C0009E36F /* notebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 118866431406B54C0009E36F /* notebook.png */; };
@@ -48,7 +46,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD73870D9D96C1002E5188 /* MainWindow.xib */; };
 		2B3D11AD0F4361380067FD3A /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B3D11AC0F4361380067FD3A /* LoginViewController.xib */; };
-		2B3D11B10F4361940067FD3A /* LoginViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D11B00F4361940067FD3A /* LoginViewController.mm */; };
+		2B3D11B10F4361940067FD3A /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D11B00F4361940067FD3A /* LoginViewController.m */; };
 		2B3D12EC0F4382070067FD3A /* AccountSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D12EB0F4382070067FD3A /* AccountSettingsViewController.m */; };
 		2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B3D12ED0F4382A00067FD3A /* Account.xib */; };
 		2B3D17070F49C99B0067FD3A /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D17060F49C99B0067FD3A /* Game.m */; };
@@ -74,6 +72,8 @@
 		4ADE919C13CB7CB80009F4AF /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */; };
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
 		89D8B25517820182002A53CA /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B25317820182002A53CA /* CustomBadge.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B261178228F7002A53CA /* InnovCommentViewController.m */; };
+		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
 		A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7149F9C0FB89DC8008BAB5D /* Settings.bundle */; };
 		A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */ = {isa = PBXBuildFile; fileRef = A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */; };
 		A722C8C60FBCD92E009432DB /* SelfRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */; };
@@ -254,9 +254,6 @@
 		111CFA9214520EC700D56207 /* ForgotViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotViewController.xib; sourceTree = "<group>"; };
 		113F56DD14E4435300525BE6 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		1147E15513F32260000E4BC2 /* noteicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noteicon.png; sourceTree = "<group>"; };
-		11566430144A414D006902C2 /* ChangePasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangePasswordViewController.h; sourceTree = "<group>"; };
-		11566431144A414D006902C2 /* ChangePasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangePasswordViewController.m; sourceTree = "<group>"; };
-		11566432144A414D006902C2 /* ChangePasswordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChangePasswordViewController.xib; sourceTree = "<group>"; };
 		1176F2B014C6045100EA4512 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		118622DE1404535200D4B738 /* Note.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Note.h; sourceTree = "<group>"; };
 		118622DF1404535300D4B738 /* Note.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Note.m; sourceTree = "<group>"; };
@@ -299,7 +296,7 @@
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = main.mm; sourceTree = "<group>"; };
 		2B3D11AC0F4361380067FD3A /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		2B3D11AF0F4361940067FD3A /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = LoginViewController.h; path = Classes/LoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		2B3D11B00F4361940067FD3A /* LoginViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LoginViewController.mm; path = Classes/LoginViewController.mm; sourceTree = "<group>"; };
+		2B3D11B00F4361940067FD3A /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginViewController.m; path = Classes/LoginViewController.m; sourceTree = "<group>"; };
 		2B3D12EA0F4382070067FD3A /* AccountSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountSettingsViewController.h; path = Classes/AccountSettingsViewController.h; sourceTree = "<group>"; };
 		2B3D12EB0F4382070067FD3A /* AccountSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountSettingsViewController.m; path = Classes/AccountSettingsViewController.m; sourceTree = "<group>"; };
 		2B3D12ED0F4382A00067FD3A /* Account.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Account.xib; sourceTree = "<group>"; };
@@ -344,6 +341,9 @@
 		4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
 		89D8B25317820182002A53CA /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		89D8B25417820182002A53CA /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
+		89D8B260178228F7002A53CA /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
+		89D8B261178228F7002A53CA /* InnovCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovCommentViewController.m; sourceTree = "<group>"; };
+		89D8B262178228F7002A53CA /* InnovCommentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovCommentViewController.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A7149F9C0FB89DC8008BAB5D /* Settings.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Settings.bundle; sourceTree = "<group>"; };
 		A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelfRegistration.xib; sourceTree = "<group>"; };
@@ -566,7 +566,6 @@
 		DBFEDCE317611939009C080A /* TagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCell.h; sourceTree = "<group>"; };
 		DBFEDCE417611939009C080A /* TagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagCell.m; sourceTree = "<group>"; };
 		DBFEDCE617611939009C080A /* TagCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagCell.xib; sourceTree = "<group>"; };
-		DBFEDCEB176125D7009C080A /* InnovLogInDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovLogInDelegate.h; sourceTree = "<group>"; };
 		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
 		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
 		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
@@ -724,9 +723,6 @@
 		2D73EA1F160CCFD900A1F570 /* Public Name and Image */ = {
 			isa = PBXGroup;
 			children = (
-				11566430144A414D006902C2 /* ChangePasswordViewController.h */,
-				11566431144A414D006902C2 /* ChangePasswordViewController.m */,
-				11566432144A414D006902C2 /* ChangePasswordViewController.xib */,
 				2D73EA20160CD07600A1F570 /* PlayerSettingsViewController.h */,
 				2D73EA21160CD07600A1F570 /* PlayerSettingsViewController.m */,
 				2D73EA22160CD07600A1F570 /* PlayerSettingsViewController.xib */,
@@ -754,7 +750,7 @@
 			isa = PBXGroup;
 			children = (
 				2B3D11AF0F4361940067FD3A /* LoginViewController.h */,
-				2B3D11B00F4361940067FD3A /* LoginViewController.mm */,
+				2B3D11B00F4361940067FD3A /* LoginViewController.m */,
 				2B3D11AC0F4361380067FD3A /* LoginViewController.xib */,
 				111CFA9014520EC700D56207 /* ForgotViewController.h */,
 				111CFA9114520EC700D56207 /* ForgotViewController.m */,
@@ -1164,7 +1160,6 @@
 				DBEDC70D174AC6D4004C8966 /* InnovAudioEnums.h */,
 				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteDelegate.h */,
-				DBFEDCEB176125D7009C080A /* InnovLogInDelegate.h */,
 			);
 			name = "Header Files";
 			sourceTree = "<group>";
@@ -1261,6 +1256,9 @@
 				DB02C62C173AE6FD00A31D55 /* InnovNoteViewController.h */,
 				DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */,
 				DB02C62E173AE6FD00A31D55 /* InnovNoteViewController.xib */,
+				89D8B260178228F7002A53CA /* InnovCommentViewController.h */,
+				89D8B261178228F7002A53CA /* InnovCommentViewController.m */,
+				89D8B262178228F7002A53CA /* InnovCommentViewController.xib */,
 				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
 				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
 				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
@@ -1387,7 +1385,6 @@
 				1117649A143A716600044812 /* buttonborder.png in Resources */,
 				1117649B143A716600044812 /* buttonborder2.png in Resources */,
 				1117649C143A716600044812 /* mappoint.png in Resources */,
-				11566434144A414D006902C2 /* ChangePasswordViewController.xib in Resources */,
 				111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */,
 				ABAFBAC5145A0B810044491C /* Bascom Hill.gpx in Resources */,
 				ABAFBAC6145A0B810044491C /* Engage Offices.gpx in Resources */,
@@ -1460,6 +1457,7 @@
 				DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */,
 				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
+				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1509,7 +1507,7 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.mm in Sources */,
 				1D3623260D0F684500981E51 /* ARISAppDelegate.m in Sources */,
-				2B3D11B10F4361940067FD3A /* LoginViewController.mm in Sources */,
+				2B3D11B10F4361940067FD3A /* LoginViewController.m in Sources */,
 				2B3D12EC0F4382070067FD3A /* AccountSettingsViewController.m in Sources */,
 				2B3D17070F49C99B0067FD3A /* Game.m in Sources */,
 				2B3D18D60F4B25720067FD3A /* AppModel.m in Sources */,
@@ -1543,7 +1541,6 @@
 				11DD5422141E70D00007CD70 /* DropOnMapViewController.m in Sources */,
 				11DD5428141E79160007CD70 /* DDAnnotation.m in Sources */,
 				11DD5429141E79160007CD70 /* DDAnnotationView.m in Sources */,
-				11566433144A414D006902C2 /* ChangePasswordViewController.m in Sources */,
 				111CFA9314520EC700D56207 /* ForgotViewController.m in Sources */,
 				11B28B9D14C4AD1700759BCD /* Tag.m in Sources */,
 				AB9ECB4614DE4B5B00E5E74B /* AsyncMediaPlayerButton.m in Sources */,
@@ -1586,6 +1583,7 @@
 				DB0F40601772175E00F19934 /* InnovPopOverView.m in Sources */,
 				DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */,
 				89D8B25517820182002A53CA /* CustomBadge.m in Sources */,
+				89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

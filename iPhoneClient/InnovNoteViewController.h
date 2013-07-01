@@ -6,16 +6,11 @@
 //
 //
 
-@protocol InnovNoteViewDelegate <NSObject>
-@required
-- (void)presentLogIn;
-@end
-
 @class Note;
 
 @interface InnovNoteViewController : UIViewController 
 
 @property (nonatomic)                    Note *note;
-@property (nonatomic, weak) id<InnovNoteViewDelegate> delegate;
+@property (nonatomic, weak) id delegate;
 
 @end
