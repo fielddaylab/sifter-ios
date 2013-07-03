@@ -75,9 +75,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    CGRect frame = [UIScreen mainScreen].applicationFrame;
-    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
-    self.view.frame = frame;
     
     editButton = [[UIBarButtonItem alloc] initWithTitle: @"Edit"
                                                   style: UIBarButtonItemStyleDone
@@ -253,21 +250,6 @@
     [self.navigationController pushViewController:editVC animated:YES];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0)
-    {
-        LoginViewController *logInVC = [[LoginViewController alloc] init];
-        [self.navigationController pushViewController:logInVC animated:YES];
-    }
-    else if(buttonIndex != 0)
-    {
-        self.note.userFlagged = !flagButton.selected;
-        [[AppServices sharedAppServices]flagNote:self.note.noteId];
-        [flagButton setSelected:self.note.userFlagged];
-    }
-}
-
 - (void)playButtonPressed:(id)sender
 {
 	switch (mode) {
@@ -337,6 +319,21 @@
     }
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0)
+    {
+        LoginViewController *logInVC = [[LoginViewController alloc] init];
+        [self.navigationController pushViewController:logInVC animated:YES];
+    }
+    else if(buttonIndex != 0)
+    {
+        self.note.userFlagged = !flagButton.selected;
+        [[AppServices sharedAppServices]flagNote:self.note.noteId];
+        [flagButton setSelected:self.note.userFlagged];
+    }
+}
+
 - (void)shareButtonPressed:(id)sender
 {
     InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
@@ -349,6 +346,7 @@
 - (void)commentButtonPressed:(id)sender
 {
     InnovCommentViewController *commentVC = [[InnovCommentViewController alloc] init];
+    commentVC.note = self.note;
     [self.navigationController pushViewController:commentVC animated:YES];
 }
 

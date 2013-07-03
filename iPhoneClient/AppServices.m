@@ -784,10 +784,11 @@ BOOL currentlyUpdatingServerWithMapViewed;
 - (void)fetch:(int) noteCount NotesWithMethod:(NSString *) method StartingFrom: (int) lastLocation
 {
     isCurrentlyFetchingGameNoteList = YES;
-	NSMutableArray *arguments = [NSMutableArray arrayWithObjects:[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
+	NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
                           [NSString stringWithFormat:@"%d",lastLocation],
                           [NSString stringWithFormat:@"%d",noteCount],nil];
-    if([method isEqualToString:@"getNextSetOfPlayerNotesForGame"]) [arguments addObject: [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId]];
 	
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
@@ -1135,9 +1136,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
     else
         game.location = [[CLLocation alloc] init];
     
-    
-    
-    
     int iconMediaId;
     if((iconMediaId = [self validIntForKey:@"icon_media_id" inDictionary:gameSource]) > 0)
     {
@@ -1217,18 +1215,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
     Game * game = (Game *)[[AppModel sharedAppModel].oneGameGameList  objectAtIndex:0];
     NSLog(@"NSNotification: NewOneGameGameListReady");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewOneGameGameListReady" object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:game,@"game", nil]]];
-}
-
-- (void)saveGameComment:(NSString*)comment game:(int)gameId starRating:(int)rating
-{
-	NSLog(@"AppModel: Save Comment Requested");
-	NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d", [AppModel sharedAppModel].playerId], [NSString stringWithFormat:@"%d", gameId], [NSString stringWithFormat:@"%d", rating], comment, nil];
-	JSONConnection *jsonConnection = [[JSONConnection alloc] initWithServer:[AppModel sharedAppModel].serverURL
-                                                             andServiceName: @"games"
-                                                              andMethodName:@"saveComment"
-                                                               andArguments:arguments andUserInfo:nil];
-	
-	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameCommentResponseFromJSON:)];
 }
 
 -(void)parseSingleMediaFromJSON: (JSONResult *)jsonResult

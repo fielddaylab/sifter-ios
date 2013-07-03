@@ -37,9 +37,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    CGRect frame = [UIScreen mainScreen].applicationFrame;
-    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
-    self.view.frame = frame;
 
     usernameField.placeholder = NSLocalizedString(@"UsernameKey", @"");
     passwordField.placeholder = NSLocalizedString(@"PasswordKey", @"");

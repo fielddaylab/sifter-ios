@@ -30,15 +30,22 @@
 #define COMMENT_BAR_Y_MARGIN        6
 #define COMMENT_BAR_BUTTON_WIDTH    58
 
+#define DEFAULT_MAX_VISIBLE_COMMENTS 7
+#define EXPAND_INDEX                 ((int)DEFAULT_MAX_VISIBLE_COMMENTS/2)
+#define EXPAND_TEXT                  @". . ."
+
+static NSString * const EXPAND_CELL_ID  = @"ExpandCell";
 static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
-@interface InnovCommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface InnovCommentViewController () <UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, InnovCommentCellDelegate>
 {
     __weak IBOutlet UITableView *commentTableView;
     
     UIToolbar       *addCommentBar;
     UITextView      *addCommentTextView;
     UIBarButtonItem *addCommentButton;
+    
+    BOOL expanded;
 }
 
 @end
@@ -85,7 +92,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     [addCommentBar setItems:[NSArray arrayWithObjects:flex, addCommentButton, nil]];
 }
-/*
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear: animated];
@@ -93,7 +100,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     addCommentTextView.text      = DEFAULT_TEXT;
     addCommentTextView.textColor = [UIColor lightGrayColor];
     [self adjustCommentBarToFitText];
- 
+    
     if([self.note.tags count] > 0)
         self.title = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
     else
@@ -107,7 +114,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
          But if you do, make sure to remove DAKeyboardControl
          when you are done with the view controller by calling:
          [self.view removeKeyboardControl];
-         */ /*
+         */
 #warning check if necessary now that is loaded and released with view visibile
         if (self.isViewLoaded && self.view.window)
         {
@@ -118,10 +125,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             CGRect tableViewFrame = commentTableView.frame;
             tableViewFrame.size.height = addCommentBarFrame.origin.y;
             commentTableView.frame = tableViewFrame;
-            
-            [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            if([commentTableView numberOfRowsInSection:0] > 0)
+                [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
         }
     }];
+    
+    if([commentTableView numberOfRowsInSection:0] > 0)
+        [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -130,30 +140,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self.view removeKeyboardControl];
 }
 
+
+
 #pragma mark Refresh
 
 - (void)refreshViewFromModel
 {
-    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-    [self updateLikeButton];
-    [flagButton setSelected:self.note.userFlagged];
-    
-    for(int i = 0; i < [self.note.contents count]; ++i)
-    {
-        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
-            [imageView loadImageFromMedia:[noteContent getMedia]];
-        else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
-            if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: [noteContent getMedia].url]) {
-                [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:[noteContent getMedia].url]];
-                [ARISMoviePlayer.moviePlayer prepareToPlay];
-			}
-            mode = kInnovAudioPlayerAudio;
-            [self updateButtonsForCurrentMode];
-        }
-    }
-    
-    [noteTableView reloadData];
+    [commentTableView reloadData];
 }
 
 #pragma mark UITextView methods
@@ -167,7 +160,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void) textViewDidChange:(UITextView *)textView
 {
     [self adjustCommentBarToFitText];
-    [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    if([commentTableView numberOfRowsInSection:0] > 0)
+        [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
 }
 
 - (void) adjustCommentBarToFitText
@@ -191,7 +185,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void) addCommentButtonPressed:(id)sender
 {
-    [addCommentTextView resignFirstResponder];
+    [self.view endEditing:YES];
     
     if([AppModel sharedAppModel].playerId == 0)
     {
@@ -203,7 +197,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         Note *commentNote = [[Note alloc] init];
         commentNote.noteId = [[AppServices sharedAppServices] addCommentToNoteWithId:self.note.noteId andTitle:@""];
         
-        commentNote.title = [NSString stringWithFormat:@"%@ -%@", addCommentTextView.text, [AppModel sharedAppModel].userName];
+        commentNote.title = addCommentTextView.text;
         commentNote.parentNoteId = self.note.noteId;
         commentNote.creatorId = [AppModel sharedAppModel].playerId;
         commentNote.username = [AppModel sharedAppModel].userName;
@@ -220,118 +214,64 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self adjustCommentBarToFitText];
     
     [commentTableView reloadData];
-    [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    if([commentTableView numberOfRowsInSection:0] > 0)
+        [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0)
-    {
-        LoginViewController *logInVC = [[LoginViewController alloc] init];
-        [self.navigationController pushViewController:logInVC animated:YES];
-    }
-    else if(buttonIndex != 0)
-    {
-#warning must specifiy comment to flag somehow
-#warning disable interactions with table until response and then enable after
-        self.note.userFlagged = !flagButton.selected;
-        [[AppServices sharedAppServices]flagNote:self.note.noteId];
-        [flagButton setSelected:self.note.userFlagged];
-    }
+        [self presentLogIn];
 }
 
 #pragma mark Table view methods
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
     return 1;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if([note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS && !expanded)
-        return DEFAULT_MAX_VISIBLE_COMMENTS + 1;
+        return DEFAULT_MAX_VISIBLE_COMMENTS;
     else
-        return [note.comments count] + 1;
+        return [note.comments count];
 }
 
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == 0)
-    {
-        CGSize size = CGSizeMake(captionTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-        NSString *text = note.title;
-        CGFloat captionTextViewHeight = [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN);
-        if(!([text length] > 0))
-            captionTextViewHeight = -4;
-#warning MAGIC NUMBER
-        return imageView.frame.size.height + BUTTON_HEIGHT + captionTextViewHeight + 4;
-    }
-    else
-    {
-        CGSize size = CGSizeMake(self.view.frame.size.width - (2 * DEFAULT_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-        
-        NSString *text;
-        if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-            text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
-        else if(!expanded && indexPath.row == EXPAND_INDEX)
-            text      = EXPAND_TEXT;
-        else
-            text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
-        
-        return [text sizeWithFont:DEFAULT_FONT constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN);
-    }
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
+        return  44;
+    
+    CGSize size = CGSizeMake(self.view.frame.size.width - (2 * DEFAULT_TEXTVIEW_MARGIN), CGFLOAT_MAX);
+    NSString *text      = ((Note *)[note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]]).title;
+    
+    return [text sizeWithFont:DEFAULT_FONT constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN)+AUTHOR_ROW_HEIGHT;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell;
-    if(indexPath.row == 0)
+    if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:NOTE_CELL_ID];
-        if(!cell)
-        {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NOTE_CELL_ID];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            [cell addSubview:imageView];
-            [cell addSubview:usernameLabel];
-            [cell addSubview:flagButton];
-            [cell addSubview:playButton];
-            [cell addSubview:likeButton];
-            [cell addSubview:shareButton];
-            [cell addSubview:captionTextView];
-        }
-        
-
-        return cell;
+        UITableViewCell *expandCell = [tableView dequeueReusableCellWithIdentifier:EXPAND_CELL_ID];
+        if(!expandCell)
+            expandCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EXPAND_CELL_ID];
+        expandCell.textLabel.text = EXPAND_TEXT;
+        expandCell.textLabel.textAlignment = UITextAlignmentCenter;
+        return expandCell;
     }
     else
     {
         InnovCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:COMMENT_CELL_ID];
         if(!cell)
         {
-            cell = [[InnovCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID];
+            cell = [[InnovCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID andDelegate:self];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.textView.font = DEFAULT_FONT;
         }
         
-        if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
-        {
-            cell.textView.userInteractionEnabled = NO;
-            cell.textView.textAlignment = NSTextAlignmentCenter;
-            cell.textView.text          = EXPAND_TEXT;
-        }
-        else
-        {
-            cell.textView.userInteractionEnabled = YES;
-            cell.textView.textAlignment = NSTextAlignmentLeft;
-            if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-                cell.textView.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
-            else
-                cell.textView.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
-            
-            CGRect frame = cell.textView.frame;
-            frame.size.height = cell.textView.contentSize.height;
-            cell.textView.frame = frame;
-        }
+        [cell updateWithNote:[self.note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]] andIndex:indexPath.row];
+        
         return cell;
     }
 }
@@ -347,13 +287,37 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         [self adjustCommentBarToFitText];
     }
     
-    if(!expanded && indexPath.row == 3)
+    if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
     {
         expanded = YES;
         [tableView reloadData];
     }
 }
-*/
+
+-(int)getCommentIndexForRow:(int) row
+{
+    if(expanded || row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
+        return [note.comments count]-row-1;
+    else
+        return DEFAULT_MAX_VISIBLE_COMMENTS-row-1;
+}
+
+#pragma mark InnovCommentCell Delegate Methods
+
+- (void)presentLogIn
+{
+    LoginViewController *logInVC = [[LoginViewController alloc] init];
+    [self.navigationController pushViewController:logInVC animated:YES];
+}
+
+- (void)deleteButtonPressed:(UIButton *)sender
+{
+    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+    [self.note.comments removeObjectAtIndex:sender.tag];
+    [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:sender.tag inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [[InnovNoteModel sharedNoteModel] updateNote:self.note];
+}
+
 #pragma mark Remove Memory
 
 - (void)didReceiveMemoryWarning
