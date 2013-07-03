@@ -12,6 +12,7 @@
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
+#import "NoteContent.h"
 #import "Tag.h"
 
 @interface InnovNoteModel()
@@ -261,20 +262,35 @@
 -(BOOL) noteShouldBeAvailable: (Note *) note
 {
 #warning POSSIBLY CHANGE
+    if([note.tags count] == 0) return NO;
+    
     if(selectedContent != kMine)
     {
         BOOL match = NO;
         for(Tag *tag in selectedTags)
         {
-            if([note.tags count] > 0)
-                if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId) match = YES;
+            if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId)
+            {
+                match = YES;
+                break;
+            }
         }
         if(!match) return NO;
     }
     for(NSString *searchTerm in searchTerms)
         if([note.username.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
     
-    return YES;
+    return [self noteHasImage:note];
+}
+
+-(BOOL) noteHasImage: (Note *) note
+{
+    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
+    {
+        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
+            return YES;
+    }
+    return NO;
 }
 
 -(void) addTag: (Tag *) addTag
