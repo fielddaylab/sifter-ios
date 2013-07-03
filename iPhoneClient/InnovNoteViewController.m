@@ -49,7 +49,7 @@
 #define EXPAND_INDEX                 3
 #define EXPAND_TEXT                  @".   .   ."
 #define DEFAULT_MAX_VISIBLE_COMMENTS 5
- 
+
 static NSString * const NOTE_CELL_ID    = @"NoteCell";
 static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
@@ -106,7 +106,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     CGRect frame = [UIScreen mainScreen].applicationFrame;
     frame.size.height -= self.navigationController.navigationBar.frame.size.height;
     self.view.frame = frame;
-
+    
     editButton = [[UIBarButtonItem alloc] initWithTitle: @"Edit"
                                                   style: UIBarButtonItemStyleDone
                                                  target:self
@@ -227,9 +227,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [super viewWillAppear: animated];
     
     if([AppModel sharedAppModel].playerId == self.note.creatorId)
-            self.navigationItem.rightBarButtonItem = editButton;
+        self.navigationItem.rightBarButtonItem = editButton;
     else
-            self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
     
     addCommentTextView.text      = DEFAULT_TEXT;
     addCommentTextView.textColor = [UIColor lightGrayColor];
@@ -271,7 +271,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         }
     }];
     
-    [self updateNote];
+    [[AppServices sharedAppServices] fetchNote:self.note.noteId];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -415,7 +415,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are You Sure?" message:@"Are you sure you want to mark this content as inappropriate?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
             [alert show];
         }
-
+        
     }
 }
 
@@ -460,11 +460,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self.view addSubview:popOver];
 }
 
-- (void)updateNote
-{
-    [[AppServices sharedAppServices] fetchNote:self.note.noteId];
-}
-
 #pragma mark Note Contents
 
 - (void)refreshViewFromModel
@@ -472,19 +467,21 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
     [self updateLikeButton];
     [flagButton setSelected:self.note.userFlagged];
-
-    for(int i = 0; i < [self.note.contents count]; ++i)
+    
+    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
     {
-        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
-            [imageView loadImageFromMedia:[noteContent getMedia]];
-        else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
-            if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: [noteContent getMedia].url]) {
-                [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:[noteContent getMedia].url]];
-                [ARISMoviePlayer.moviePlayer prepareToPlay];
-			}
-            mode = kInnovAudioPlayerAudio;
-            [self updateButtonsForCurrentMode];
+        if([contentObject isKindOfClass:[NoteContent class]])
+        {
+            if([[contentObject getType] isEqualToString: kNoteContentTypePhoto])
+                [imageView loadImageFromMedia:[contentObject getMedia]];
+            else if([[contentObject getType] isEqualToString: kNoteContentTypeAudio]) {
+                if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: [contentObject getMedia].url]) {
+                    [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:[contentObject getMedia].url]];
+                    [ARISMoviePlayer.moviePlayer prepareToPlay];
+                }
+                mode = kInnovAudioPlayerAudio;
+                [self updateButtonsForCurrentMode];
+            }
         }
     }
     
@@ -661,7 +658,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)dealloc
 {
-   [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning

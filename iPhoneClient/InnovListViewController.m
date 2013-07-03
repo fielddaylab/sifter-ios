@@ -146,12 +146,12 @@ static NSString * const CELL_ID = @"Cell";
     }
     
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
-    for(NoteContent *noteContent in note.contents)
+    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
     {
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
+        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
         {
             [cell.photoView reset];
-            [cell.photoView loadImageFromMedia:[noteContent getMedia]];
+            [cell.photoView loadImageFromMedia:[contentObject getMedia]];
             [cell.categoryIconView setImage:[UIImage imageNamed:@"newBanner.png"]];
             break;
         }

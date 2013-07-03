@@ -82,7 +82,7 @@
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags)
-             name:@"NoteModelUpdate:Tags"  object:nil];
+                                                     name:@"NoteModelUpdate:Tags"  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
         
         tagList = [[NSMutableArray alloc]initWithCapacity:10];
@@ -362,19 +362,20 @@
     {
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
         
-        for(int i = 0; i < [self.note.contents count]; ++i)
+        for(NSObject <NoteContentProtocol> *contentObject in note.contents)
         {
-            NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-            if([[noteContent getType] isEqualToString:kNoteContentTypePhoto]) {
-                [imageView loadImageFromMedia:[noteContent getMedia]];
-            }
-            else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
-                if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: noteContent.getMedia.url]) {
-                    [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:noteContent.getMedia.url]];
-                    [ARISMoviePlayer.moviePlayer prepareToPlay];
+            if([contentObject isKindOfClass:[NoteContent class]])
+            {
+                if([[contentObject getType] isEqualToString: kNoteContentTypePhoto])
+                    [imageView loadImageFromMedia:[contentObject getMedia]];
+                else if ([[contentObject getType] isEqualToString:kNoteContentTypeAudio]) {
+                    if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: contentObject.getMedia.url]) {
+                        [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:contentObject.getMedia.url]];
+                        [ARISMoviePlayer.moviePlayer prepareToPlay];
+                    }
+                    mode = kInnovAudioRecorderAudio;
+                    [self updateButtonsForCurrentMode];
                 }
-                mode = kInnovAudioRecorderAudio;
-                [self updateButtonsForCurrentMode];
             }
         }
     }

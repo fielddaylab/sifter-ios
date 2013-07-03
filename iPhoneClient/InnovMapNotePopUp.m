@@ -61,12 +61,13 @@
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
         
         textLabel.text = note.title;
+#warning SHould be unnecessary. Made for new notes
         if([note.contents count] > 0)
         {
-            for(NoteContent *noteContent in note.contents)
+            for(NSObject <NoteContentProtocol> *contentObject in note.contents)
             {
-                if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
-                    [imageView loadImageFromMedia:[noteContent getMedia]];
+                if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
+                    [imageView loadImageFromMedia:[contentObject getMedia]];
             }
         }
         else

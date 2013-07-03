@@ -199,7 +199,6 @@
 		DB071211176F8CAA0069E15A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB071210176F8CAA0069E15A /* Twitter.framework */; };
 		DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DB071213176F8CEC0069E15A /* SVProgressHUD.m */; };
 		DB071217176F8CEC0069E15A /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DB071215176F8CEC0069E15A /* SVProgressHUD.bundle */; };
-		DB0712441770BCD70069E15A /* InnovNoteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712431770BCD60069E15A /* InnovNoteCell.m */; };
 		DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712511770EA870069E15A /* SimpleFacebookShare.m */; };
 		DB07125C1770EA870069E15A /* SimpleMailShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712551770EA870069E15A /* SimpleMailShare.m */; };
 		DB07125E1770EA870069E15A /* SimpleTwitterShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712591770EA870069E15A /* SimpleTwitterShare.m */; };
@@ -517,8 +516,6 @@
 		DB071213176F8CEC0069E15A /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		DB071214176F8CEC0069E15A /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		DB071215176F8CEC0069E15A /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
-		DB0712421770BCD60069E15A /* InnovNoteCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteCell.h; sourceTree = "<group>"; };
-		DB0712431770BCD60069E15A /* InnovNoteCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteCell.m; sourceTree = "<group>"; };
 		DB0712501770EA870069E15A /* SimpleFacebookShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleFacebookShare.h; sourceTree = "<group>"; };
 		DB0712511770EA870069E15A /* SimpleFacebookShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleFacebookShare.m; sourceTree = "<group>"; };
 		DB0712541770EA870069E15A /* SimpleMailShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMailShare.h; sourceTree = "<group>"; };
@@ -1188,8 +1185,6 @@
 				DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */,
 				ABDA40B210506AF400823A94 /* AnnotationView.h */,
 				ABDA40B310506AF400823A94 /* AnnotationView.m */,
-				DB0712421770BCD60069E15A /* InnovNoteCell.h */,
-				DB0712431770BCD60069E15A /* InnovNoteCell.m */,
 				DB071204176F80220069E15A /* InnovCommentCell.h */,
 				DB071205176F80220069E15A /* InnovCommentCell.m */,
 				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
@@ -1575,7 +1570,6 @@
 				DBFEDCE717611939009C080A /* TagCell.m in Sources */,
 				DB071206176F80230069E15A /* InnovCommentCell.m in Sources */,
 				DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */,
-				DB0712441770BCD70069E15A /* InnovNoteCell.m in Sources */,
 				DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */,
 				DB07125C1770EA870069E15A /* SimpleMailShare.m in Sources */,
 				DB07125E1770EA870069E15A /* SimpleTwitterShare.m in Sources */,

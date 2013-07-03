@@ -8,7 +8,6 @@
 //
 
 #import "InnovViewController.h"
-#import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
@@ -34,8 +33,6 @@
     
     __weak IBOutlet UIView *contentView;
     
-    NSTimer *refreshTimer;
-    
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;
     UISearchBar *searchBar;
@@ -48,7 +45,6 @@
     
     Note *noteToAdd;
     NSString *currentSearchTerm;
-    ContentSelector currentSearchAlgorithm;
 }
 
 @end
@@ -58,9 +54,8 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+    if (self)
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
-    }
     return self;
 }
 
@@ -123,16 +118,9 @@
     selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
     selectedTagsVC.view.frame = selectedTagsFrame;
     
-    showTagsButton.layer.cornerRadius = 4.0f;
-    
 	trackingButton.selected = YES;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
-    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
-    
-    [mapVC updatePlayerLocation];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -146,6 +134,11 @@
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
+    
+    if([[InnovNoteModel sharedNoteModel].availableNotes count] == 0)
+        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
+        [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -153,7 +146,7 @@
     [super viewDidAppear:animated];
     
     if(noteToAdd != nil)
-        [self animateInNote:noteToAdd];
+        [self animateInNote];
 }
 
 #pragma mark Display New Note
@@ -161,18 +154,18 @@
 - (void) prepareToDisplayNote: (Note *) note
 {
     noteToAdd = note;
-    #warning could be different
+#warning could be different
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = @"";
-    [[InnovNoteModel sharedNoteModel] setSelectedContent:kMine];
+    [selectedTagsVC updateSelectedContent:kMine];
 }
 
-- (void) animateInNote: (Note *) note
+- (void) animateInNote
 {
     if ([contentView.subviews containsObject:mapVC.view])
-        [mapVC showNotePopUpForNote:note];
+        [mapVC showNotePopUpForNote:noteToAdd];
     else
-        [listVC animateInNote:note];
+        [listVC animateInNote:noteToAdd];
     noteToAdd = nil;
 }
 

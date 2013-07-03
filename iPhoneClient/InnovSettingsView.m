@@ -104,19 +104,16 @@
 - (IBAction)aboutButtonPressed:(id)sender
 {
     [delegate showAbout];
-#warning unimplemented
 }
 - (IBAction)logInOutButtonPressed:(id)sender
 {
-    if([AppModel sharedAppModel].playerId == 0)
-    {
-        [delegate presentLogIn];
-    }
-    else
+    if([AppModel sharedAppModel].playerId != 0)
     {
         [self performLogout:nil];
         [self updateLogInOutButtonTitle];
     }
+    else
+        [delegate presentLogIn];
 }
 
 - (void)updateLogInOutButtonTitle

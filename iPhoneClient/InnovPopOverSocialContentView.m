@@ -18,6 +18,7 @@
 #import "NoteContent.h"
 #import "Tag.h"
 
+#warning CHANGE TWITTER HANDLE
 #define TWITTER_HANDLE               @"@jacob_hanshaw"
 #define PINTEREST_CLIENT_ID          @"1432066"
 #define DEFAULT_TITLE                @"Note"
@@ -178,10 +179,10 @@
 {
     if(!media)
     {
-        for(NoteContent *noteContent in self.note.contents)
+        for(NSObject <NoteContentProtocol> *contentObject in note.contents)
         {
-            if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
-                return (media = [noteContent getMedia]);
+            if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
+                return (media = [contentObject getMedia]);
         }
     }
     

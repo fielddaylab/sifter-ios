@@ -6,10 +6,7 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 @interface InnovPopOverView : UIView
 
 - (id)initWithFrame:(CGRect)frame andContentView: (UIView *) contentView;
-
 @end

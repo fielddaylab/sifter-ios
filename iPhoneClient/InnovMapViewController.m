@@ -7,6 +7,7 @@
 //
 
 #import "InnovMapViewController.h"
+#import <MapKit/MapKit.h>
 
 #import "AppServices.h"
 #import "Logger.h"
@@ -57,9 +58,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         tracking = NO;
-    //    unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation)       name:@"PlayerMoved" object:nil];
+        unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
@@ -122,7 +121,14 @@
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
     
     tracking = !tracking;
-    if(!tracking) [delegate stoppedTracking];
+    if(tracking)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
+        [delegate stoppedTracking];
+    }
+    else
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PlayerMoved" object:nil];
+    
     [self updatePlayerLocation];
 }
 
@@ -131,7 +137,7 @@
     CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
     isLocal = distance <= MAX_DISTANCE;
     [mapView setShowsUserLocation:isLocal];
-    if (mapView && tracking) [self zoomAndCenterMapAnimated:YES];
+    if (mapView && (tracking || isLocal)) [self zoomAndCenterMapAnimated:YES];
 }
 
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
@@ -157,7 +163,7 @@
 #pragma mark update from model
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
-{  
+{
     for(Note *note in unshownNotesQueue)
     {
         if(shownNotesCount < MAX_NOTES_COUNT)
@@ -175,7 +181,7 @@
         }
         else break;
     }
-
+    
     NSArray *newNotes = (NSArray *)[notification.userInfo objectForKey:@"newlyAvailableNotes"];
     
     for(Note *note in newNotes)

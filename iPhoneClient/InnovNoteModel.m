@@ -71,7 +71,7 @@
 {
     if ([AppServices sharedAppServices].isCurrentlyFetchingGameNoteList)
     {
-        [NSTimer scheduledTimerWithTimeInterval:0.5
+        [NSTimer scheduledTimerWithTimeInterval:1.0
                                          target:self
                                        selector:@selector(fetchMoreNotes)
                                        userInfo:nil
