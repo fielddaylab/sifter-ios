@@ -6,6 +6,7 @@
 //
 //
 
+#import "InnovNoteModel.h"
 #import "InnovDisplayProtocol.h"
 
 @interface InnovSelectedTagsViewController : UIViewController <InnovDisplayProtocol>

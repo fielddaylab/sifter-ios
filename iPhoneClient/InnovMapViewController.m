@@ -135,9 +135,9 @@
 - (void) updatePlayerLocation
 {
     CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
-    isLocal = distance <= MAX_DISTANCE;
+    isLocal = (distance <= MAX_DISTANCE);
     [mapView setShowsUserLocation:isLocal];
-    if (mapView && (tracking || isLocal)) [self zoomAndCenterMapAnimated:YES];
+    if (mapView && (tracking || !isLocal)) [self zoomAndCenterMapAnimated:YES];
 }
 
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
@@ -149,13 +149,11 @@
     {
         region.center = [AppModel sharedAppModel].playerLocation.coordinate;
         region.span = MKCoordinateSpanMake(ZOOM_SPAN, ZOOM_SPAN);
-        
     }
     else
     {
         region.center = madisonCenter.coordinate;
         region.span = MKCoordinateSpanMake(INITIAL_SPAN, INITIAL_SPAN);
-        
     }
     [mapView setRegion:region animated:animated];
 }
