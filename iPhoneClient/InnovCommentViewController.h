@@ -6,6 +6,10 @@
 //
 //
 
+@class Note;
+
 @interface InnovCommentViewController : UIViewController
+
+@property (nonatomic)                    Note *note;
 
 @end
