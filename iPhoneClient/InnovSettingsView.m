@@ -98,7 +98,7 @@
 
 - (IBAction)notificationsButtonPressed:(id)sender
 {
-#warning unimplemented
+    [delegate showNotifications];
 }
 
 - (IBAction)aboutButtonPressed:(id)sender

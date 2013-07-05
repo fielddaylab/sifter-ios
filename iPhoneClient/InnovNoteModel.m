@@ -10,6 +10,7 @@
 
 #import "AppModel.h"
 #import "AppServices.h"
+#import "MyCLController.h"
 #import "Logger.h"
 #import "Note.h"
 #import "NoteContent.h"
@@ -23,6 +24,9 @@
     NSArray *allTags;
     NSMutableArray *selectedTags;
     NSMutableArray *searchTerms;
+    
+    BOOL unprocessedNotifs;
+    NSArray *notifNotesCounts;
     
     ContentSelector selectedContent;
 }
@@ -69,6 +73,8 @@
     return self;
 }
 
+#pragma mark Clear Model
+
 -(void) clearAllData
 {
     [allNotes removeAllObjects];
@@ -81,6 +87,60 @@
     [availableNotes removeAllObjects];
     [self sendChangeNotesNotif];
 }
+
+#pragma mark Mark Notes For Notification
+
+- (void) setUpNotificationsForTopNotes: (int) topNotes popularNotes: (int) popularNotes recentNotes: (int) recentNotes andMyRecentNotes: (int) myRecentNotes
+{
+    notifNotesCounts = [NSArray arrayWithObjects:[NSNumber numberWithInt:topNotes], [NSNumber numberWithInt:popularNotes],
+                       [NSNumber numberWithInt:recentNotes], [NSNumber numberWithInt:myRecentNotes], nil];
+    [self setUpNotifications];
+}
+
+- (void) setUpNotifications
+{
+    
+    if([[notifNotesCounts objectAtIndex:kTop] intValue] > [[arrayOfArraysByType objectAtIndex:kTop] count])
+    {
+        unprocessedNotifs = YES;
+        [self fetchMoreNotesOfType:kTop];
+        return;
+    }
+    else if([[notifNotesCounts objectAtIndex:kPopular] intValue] > [[arrayOfArraysByType objectAtIndex:kPopular] count])
+    {
+        unprocessedNotifs = YES;
+        [self fetchMoreNotesOfType:kPopular];
+        return;
+    }
+    else if([[notifNotesCounts objectAtIndex:kRecent] intValue] > [[arrayOfArraysByType objectAtIndex:kRecent] count])
+    {
+        unprocessedNotifs = YES;
+        [self fetchMoreNotesOfType:kRecent];
+        return;
+    }
+    else if([[notifNotesCounts objectAtIndex:kMine] intValue]> [[arrayOfArraysByType objectAtIndex:kMine] count])
+    {
+        unprocessedNotifs = YES;
+        [self fetchMoreNotesOfType:kMine];
+        return;
+    }
+    
+    unprocessedNotifs = NO;
+    NSMutableArray *notifNoteIds = [[NSMutableArray alloc] initWithCapacity:20];
+    
+    for(int i = 0; i < kNumContents; ++i)
+    {
+        for(int j = 0; j < [[notifNotesCounts objectAtIndex:i] intValue]; ++j)
+        {
+            [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:j]];
+        }
+    }
+    
+    NSArray *notifNotes = [allNotes objectsForKeys:notifNoteIds notFoundMarker:[[Note alloc] init]];
+    [[MyCLController sharedMyCLController] prepareNotificationsForNotes: notifNotes];
+}
+
+#pragma mark Fetch More Notes
 
 - (void) fetchMoreNotes
 {
@@ -110,7 +170,6 @@
     }
 }
 
-
 #pragma mark Updates from Server
 
 -(void) newNotesReceived:(NSNotification *)notification
@@ -119,13 +178,10 @@
     [allNotes addEntriesFromDictionary:newNotes];
     ContentSelector updatedNotes = [[notification.userInfo objectForKey:@"ContentSelector"] intValue];
     NSMutableArray *selectedArray = [arrayOfArraysByType objectAtIndex:updatedNotes];
-    int previousSize = [selectedArray count];
     [selectedArray addObjectsFromArray:[newNotes allKeys]];
     
-    if(previousSize < MAX_NOTIFCATIONS_PER_CONTENT)
-    {
-#warning UPDATE NOTIFICATIONS WITH PROPER NOTES HERE
-    }
+    if(unprocessedNotifs)
+        [self setUpNotifications];
     
     if(updatedNotes == selectedContent)
     {

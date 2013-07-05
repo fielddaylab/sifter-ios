@@ -15,7 +15,6 @@ typedef enum {
 } ContentSelector;
 
 #define NOTES_PER_FETCH 50
-#define MAX_NOTIFCATIONS_PER_CONTENT 20
 
 @class Note, Tag;
 
@@ -28,6 +27,9 @@ typedef enum {
 +(InnovNoteModel *) sharedNoteModel;
 -(void) clearAllData;
 -(void) clearAvailableData;
+
+-(void) setUpNotificationsForTopNotes: (int) topNotes popularNotes: (int) popularNotes recentNotes: (int) recentNotes andMyRecentNotes: (int) myRecentNotes;
+
 -(void) fetchMoreNotes;
 -(void) fetchMoreNotesOfType:(ContentSelector) specifiedContent;
 

@@ -6,9 +6,6 @@
 //  Copyright University of Wisconsin 2009. All rights reserved.
 //
 
-#import "AppModel.h"
-#import "AppServices.h"
-
 #import <AVFoundation/AVAudioPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMotion/CoreMotion.h>

@@ -6,5 +6,7 @@
 //
 //
 
+@class Note;
 @interface InnovViewController : UIViewController
+@property(nonatomic) Note *noteToAdd;
 @end

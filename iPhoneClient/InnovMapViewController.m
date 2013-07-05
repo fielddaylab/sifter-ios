@@ -9,6 +9,7 @@
 #import "InnovMapViewController.h"
 #import <MapKit/MapKit.h>
 
+#import "AppModel.h"
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"

@@ -7,7 +7,9 @@
 //
 
 #import "JSONResult.h"
+
 #import "JSON.h"
+#import "AppModel.h"
 #import "ARISAppDelegate.h"
 
 @implementation JSONResult

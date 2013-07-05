@@ -6,9 +6,19 @@
 //  Copyright University of Wisconsin 2009. All rights reserved.
 //
 
-#import "ARISAppDelegate.h"
-
 #import "InnovViewController.h"
+
+#import "AppModel.h"
+#import "AppServices.h"
+#import "ARISAppDelegate.h"
+#import "InnovNoteModel.h"
+
+@interface ARISAppDelegate()
+{
+    InnovViewController *innov;
+}
+
+@end
 
 @implementation ARISAppDelegate
 
@@ -34,7 +44,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"Call Stack: %@", exception.callStackSymbols);
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
@@ -79,7 +89,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 	//To set these defaults, edit Settings.bundle->Root.plist
 	[[AppModel sharedAppModel] initUserDefaults];
 
-    InnovViewController *innov = [[InnovViewController alloc] init];
+    innov = [[InnovViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
     if([window respondsToSelector:@selector(setRootViewController:)])
         [window setRootViewController:nav];
@@ -87,6 +97,12 @@ void uncaughtExceptionHandler(NSException *exception) {
         [window addSubview:nav.view];
     
     [Crittercism enableWithAppID: @"5101a46d59e1bd498c000002"];
+
+    NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if([localNotifOptions objectForKey:@"noteId"])
+       innov.noteToAdd = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+    
+    return YES;
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -122,12 +138,14 @@ void uncaughtExceptionHandler(NSException *exception) {
     [[InnovNoteModel sharedNoteModel] clearAllData];
     
     [simpleFacebookShare handleDidBecomeActive];
+    [[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
 	NSLog(@"ARIS: Resigning Active Application");
 	[[AppModel sharedAppModel] saveUserDefaults];
+    [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 }
 
 -(void) applicationWillTerminate:(UIApplication *)application

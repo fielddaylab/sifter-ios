@@ -17,6 +17,8 @@
 #import "InnovPresentNoteDelegate.h"
 
 #import "InnovSettingsView.h"
+#import "InnovPopOverView.h"
+#import "InnovPopOverNotifContentView.h"
 #import "LoginViewController.h"
 #import "InnovMapViewController.h"
 #import "InnovListViewController.h"
@@ -26,7 +28,7 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPopOverNotifContentViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -42,14 +44,16 @@
     InnovListViewController *listVC;
     InnovSettingsView *settingsView;
     InnovSelectedTagsViewController *selectedTagsVC;
+    InnovPopOverView *popOver;
     
-    Note *noteToAdd;
     NSString *currentSearchTerm;
 }
 
 @end
 
 @implementation InnovViewController
+
+@synthesize noteToAdd;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -253,6 +257,19 @@
 }
 
 #pragma mark Settings Delegate Methods
+
+- (void) showNotifications
+{
+    InnovPopOverNotifContentView *notifView = [[InnovPopOverNotifContentView alloc] init];
+    notifView.delegate = self;
+    popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:notifView];
+    [self.view addSubview:popOver];
+}
+
+- (void) dismiss
+{
+    [popOver removeFromSuperview];
+}
 
 - (void) showAbout
 {

@@ -7,6 +7,8 @@
 //
 
 #import "MediaCache.h"
+
+#import "AppModel.h"
 #import "AppServices.h"
 
 @implementation MediaCache

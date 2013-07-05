@@ -7,9 +7,12 @@
 //
 
 #import "LoginViewController.h"
-#import "SelfRegistrationViewController.h"
+
+#import "AppModel.h"
+#import "AppServices.h"
 #import "ARISAppDelegate.h"
 #import "ForgotViewController.h"
+#import "SelfRegistrationViewController.h"
 
 @interface LoginViewController() <SelfRegistrationDelegate>
 {

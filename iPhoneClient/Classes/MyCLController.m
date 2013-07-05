@@ -47,6 +47,11 @@
  */
 #import "MyCLController.h"
 
+#import "AppModel.h"
+#import "InnovNoteModel.h"
+#import "Note.h"
+#import "Tag.h"
+
 // Shorthand for getting localized strings, used in formats below for readability
 #define LocStr(key) [[NSBundle mainBundle] localizedStringForKey:(key) value:@"" table:nil]
 
@@ -77,7 +82,7 @@
 		self.locationManager.distanceFilter = 5; //Minimum change of 5 meters for update
 	}
 	return self;
-		
+    
 }
 
 
@@ -97,31 +102,31 @@
 		// We handle CoreLocation-related errors here
         if ([error code]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NoLocationTitleKey", nil) message:NSLocalizedString(@"NoLocationMessageKey", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
-            [alert show];	
+            [alert show];
         }
-		switch ([error code]) {				
-            // This error code is usually returned whenever user taps "Don't Allow" in response to
-            // being told your app wants to access the current location. Once this happens, you cannot
-            // attempt to get the location again until the app has quit and relaunched.
-            //
-            // "Don't Allow" on two successive app launches is the same as saying "never allow". The user
-            // can reset this for all apps by going to Settings > General > Reset > Reset Location Warnings.
-            //
+		switch ([error code]) {
+                // This error code is usually returned whenever user taps "Don't Allow" in response to
+                // being told your app wants to access the current location. Once this happens, you cannot
+                // attempt to get the location again until the app has quit and relaunched.
+                //
+                // "Don't Allow" on two successive app launches is the same as saying "never allow". The user
+                // can reset this for all apps by going to Settings > General > Reset > Reset Location Warnings.
+                //
 			case kCLErrorDenied:{
                 [errorString appendFormat:@"%@\n", NSLocalizedString(@"LocationDenied", nil)];
             }
-            break;
+                break;
 				
-            // This error code is usually returned whenever the device has no data or WiFi connectivity,
-            // or when the location cannot be determined for some other reason.
-            //
-            // CoreLocation will keep trying, so you can keep waiting, or prompt the user.
-            //
-            
+                // This error code is usually returned whenever the device has no data or WiFi connectivity,
+                // or when the location cannot be determined for some other reason.
+                //
+                // CoreLocation will keep trying, so you can keep waiting, or prompt the user.
+                //
+                
 			case kCLErrorLocationUnknown:{
-                    [errorString appendFormat:@"%@\n", NSLocalizedString(@"LocationUnknown", nil)];
+                [errorString appendFormat:@"%@\n", NSLocalizedString(@"LocationUnknown", nil)];
             }
-            break;
+                break;
 				
 				// We shouldn't ever get an unknown error code, but just in case...
 				//}
@@ -129,7 +134,7 @@
                 [errorString appendFormat:@"%@ %d\n", NSLocalizedString(@"GenericLocationError", nil), [error code]];
             }
 				
-            break;
+                break;
 		}
 	} else {
 		// We handle all non-CoreLocation errors here
@@ -141,5 +146,56 @@
 	//Send the update somewhere?
 }
 
+- (void)prepareNotificationsForNotes:(NSArray *) notes
+{
+    // Do not create regions if support is unavailable or disabled && Check the authorization status
+    if ([CLLocationManager regionMonitoringAvailable] && (([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized) ||
+                                                          ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined)))
+    {
+        // Clear out any old regions to prevent buildup.
+        if ([self.locationManager.monitoredRegions count] > 0) {
+            for (id obj in self.locationManager.monitoredRegions)
+                [self.locationManager stopMonitoringForRegion:obj];
+        }
+        
+        // If the overlay's radius is too large, registration fails automatically,
+        // so clamp the radius to the max value.
+        /*CLLocationDegrees radius = overlay.radius;
+         if (radius > self.locManager.maximumRegionMonitoringDistance) {
+         radius = self.locManager.maximumRegionMonitoringDistance;
+         }*/
+        
+        // Create the region to be monitored.
+        for(Note *note in notes)
+        {
+            CLRegion* region = [[CLRegion alloc] initCircularRegionWithCenter:CLLocationCoordinate2DMake(note.latitude, note.longitude)
+                                                                       radius:kCLLocationAccuracyHundredMeters identifier:[NSString stringWithFormat:@"%d", note.noteId]];
+            [self.locationManager startMonitoringForRegion:region];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
+{
+    // If the user's current location is not within the region anymore, stop updating
+    if ([region containsCoordinate:[AppModel sharedAppModel].playerLocation.coordinate])
+    {
+        Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[region.identifier intValue]];
+        NSString *tagName = ((Tag *)[note.tags objectAtIndex:0]).tagName;
+        
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        localNotification.alertBody = [NSString stringWithFormat:@"There is a note nearby about %@ that you may be interested in viewing.", tagName];
+        localNotification.alertAction = nil;
+        localNotification.hasAction = YES;
+        localNotification.userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];
+        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    }
+    //[self.locationManager startUpdatingLocation];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
+{
+    //[self.locationManager stopUpdatingLocation];
+}
 
 @end
