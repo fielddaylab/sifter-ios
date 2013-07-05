@@ -87,8 +87,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 	AVAudioPlayer *soundPlayer;
 	NSURL *soundFileURL;
 	InnovAudioRecorderModeType mode;
-	NSTimer *recordLengthCutoffTimer;
-    int secondsRecording;
+	NSTimer *recordLengthCutoffAndPlayProgressTimer;
+    double secondsRecordingOrPlaying;
+    double audioLength;
 }
 
 @end
@@ -103,8 +104,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     if (self) {
         // Custom initialization
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags)
-                                                     name:@"NoteModelUpdate:Tags"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
         
         tagList = [[NSArray alloc]init];
@@ -139,10 +140,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(NOTE_CONTENT_CELL_X_MARGIN + imageView.frame.size.width + NOTE_CONTENT_IMAGE_TEXT_MARGIN, NOTE_CONTENT_CELL_Y_MARGIN, 196, IMAGE_HEIGHT)];
     captionTextView.delegate = self;
     
-    recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, 46)];
     [recordButton addTarget:self action:@selector(recordButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    deleteAudioButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+    deleteAudioButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 46)];
     [deleteAudioButton addTarget:self action:@selector(deleteAudioButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     deleteNoteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 46)];
@@ -508,9 +509,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 			
 			[soundRecorder record];
             
-			recordLengthCutoffTimer = [NSTimer scheduledTimerWithTimeInterval:PROGRESS_UPDATE_INTERVAL
+			recordLengthCutoffAndPlayProgressTimer = [NSTimer scheduledTimerWithTimeInterval:PROGRESS_UPDATE_INTERVAL
                                                                        target:self
-                                                                     selector:@selector(recordTimerResponse)
+                                                                     selector:@selector(playOrRecordTimerResponse)
                                                                      userInfo:nil
                                                                       repeats:YES];
             
@@ -520,7 +521,17 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 			
 		case kInnovAudioRecorderPlaying:
         {
+            if (soundPlayer != nil)
+                [soundPlayer stop];
+            else
 			[ARISMoviePlayer.moviePlayer stop];
+            
+            [recordLengthCutoffAndPlayProgressTimer invalidate];
+			
+            secondsRecordingOrPlaying = 0.0;
+            recordButton.percentDone = 0.0;
+            [recordButton setNeedsDisplay];
+            
             mode = kInnovAudioRecorderAudio;
         }
             break;
@@ -534,6 +545,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 {
                     soundPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundFileURL error:&error];
                     [[Logger sharedLogger] logError:error];
+                    audioLength = soundPlayer.duration;
                     [soundPlayer prepareToPlay];
                     [soundPlayer setDelegate: self];
                 }
@@ -542,14 +554,20 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             else
                 [ARISMoviePlayer.moviePlayer play];
             
+            recordLengthCutoffAndPlayProgressTimer = [NSTimer scheduledTimerWithTimeInterval:PROGRESS_UPDATE_INTERVAL
+                                                                                      target:self
+                                                                                    selector:@selector(playOrRecordTimerResponse)
+                                                                                    userInfo:nil
+                                                                                     repeats:YES];
 			mode = kInnovAudioRecorderPlaying;
         }
             break;
 			
 		case kInnovAudioRecorderRecording:
         {
-            [recordLengthCutoffTimer invalidate];
+            [recordLengthCutoffAndPlayProgressTimer invalidate];
 			
+            secondsRecordingOrPlaying = 0.0;
             recordButton.percentDone = 0.0;
             [recordButton setNeedsDisplay];
             
@@ -569,18 +587,19 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [self updateButtonsForCurrentMode];
 }
 
-- (void)recordTimerResponse
+- (void)playOrRecordTimerResponse
 {
-    secondsRecording++;
+    secondsRecordingOrPlaying += PROGRESS_UPDATE_INTERVAL;
     
-    if(secondsRecording == MAX_AUDIO_LENGTH)
-    {
-        [recordLengthCutoffTimer invalidate];
+    if((secondsRecordingOrPlaying >= MAX_AUDIO_LENGTH && mode == kInnovAudioRecorderRecording) ||
+       (secondsRecordingOrPlaying >= audioLength      && mode == kInnovAudioRecorderPlaying))
         [self recordButtonPressed:nil];
-    }
     else
     {
-        recordButton.percentDone = secondsRecording/MAX_AUDIO_LENGTH;
+        if(mode == kInnovAudioRecorderRecording)
+            recordButton.percentDone = secondsRecordingOrPlaying/MAX_AUDIO_LENGTH;
+        else if(audioLength > 0)
+            recordButton.percentDone = secondsRecordingOrPlaying/audioLength;
         [recordButton setNeedsDisplay];
     }
 }
@@ -612,25 +631,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 	[self updateButtonsForCurrentMode];
 }
 
-#pragma mark Audio Recorder Delegate Metods
-
-- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag
-{
-	//[self.meterUpdateTimer invalidate];
-	//[self.meter updateLevel:0];
-	//self.meter.alpha = 0.0;
-	
-	mode = kInnovAudioRecorderAudio;
-	[self updateButtonsForCurrentMode];
-    
-}
-
 #pragma mark Audio Player Delegate Methods
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
-	mode = kInnovAudioRecorderAudio;
-	[self updateButtonsForCurrentMode];
+    if (mode == kInnovAudioRecorderPlaying)
+        [self recordButtonPressed:nil];
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
@@ -639,12 +645,16 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 #pragma mark MPMoviePlayerController notifications
 
+- (void)MPMoviePlayerLoadStateDidChange:(NSNotification *)notification
+{
+    if ((ARISMoviePlayer.moviePlayer.loadState & MPMovieLoadStatePlaythroughOK) == MPMovieLoadStatePlaythroughOK)
+       audioLength = ARISMoviePlayer.moviePlayer.duration;
+}
+
 - (void)MPMoviePlayerPlaybackDidFinishNotification:(NSNotification *)notif
 {
     if (mode == kInnovAudioRecorderPlaying)
-    {
         [self recordButtonPressed:nil];
-    }
 }
 
 /*
