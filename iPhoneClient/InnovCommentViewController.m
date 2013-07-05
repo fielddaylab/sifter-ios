@@ -34,6 +34,8 @@
 #define EXPAND_INDEX                 ((int)DEFAULT_MAX_VISIBLE_COMMENTS/2)
 #define EXPAND_TEXT                  @". . ."
 
+#define MAX_COMMENT_LENGTH           255
+
 static NSString * const EXPAND_CELL_ID  = @"ExpandCell";
 static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
@@ -155,6 +157,14 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     textView.textColor = [UIColor blackColor];
     if([textView.text isEqualToString:DEFAULT_TEXT]) textView.text = @"";
+}
+
+- (BOOL )textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{    
+    if([[textView text] length] - range.length + text.length > MAX_COMMENT_LENGTH)
+        return NO;
+    
+    return YES;
 }
 
 - (void) textViewDidChange:(UITextView *)textView
@@ -313,9 +323,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)deleteButtonPressed:(UIButton *)sender
 {
     self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+    int deletedNoteId = ((Note *)[self.note.comments objectAtIndex:sender.tag]).noteId;
     [self.note.comments removeObjectAtIndex:sender.tag];
     [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:sender.tag inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
     [[InnovNoteModel sharedNoteModel] updateNote:self.note];
+    [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
 }
 
 #pragma mark Remove Memory
