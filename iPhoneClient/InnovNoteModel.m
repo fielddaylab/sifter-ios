@@ -278,19 +278,9 @@
         if(!match) return NO;
     }
     for(NSString *searchTerm in searchTerms)
-        if([note.username.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
+        if([note.username.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.text.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
     
-    return [self noteHasImage:note];
-}
-
--(BOOL) noteHasImage: (Note *) note
-{
-    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
-    {
-        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
-            return YES;
-    }
-    return NO;
+    return (note.imageMediaId != 0);
 }
 
 -(void) addTag: (Tag *) addTag

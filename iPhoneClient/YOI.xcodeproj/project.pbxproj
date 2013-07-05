@@ -74,6 +74,7 @@
 		89D8B25517820182002A53CA /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B25317820182002A53CA /* CustomBadge.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B261178228F7002A53CA /* InnovCommentViewController.m */; };
 		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
+		89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F99AF017866A7900DEB46F /* ProgressButton.m */; };
 		A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7149F9C0FB89DC8008BAB5D /* Settings.bundle */; };
 		A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */ = {isa = PBXBuildFile; fileRef = A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */; };
 		A722C8C60FBCD92E009432DB /* SelfRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */; };
@@ -343,6 +344,8 @@
 		89D8B260178228F7002A53CA /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
 		89D8B261178228F7002A53CA /* InnovCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovCommentViewController.m; sourceTree = "<group>"; };
 		89D8B262178228F7002A53CA /* InnovCommentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovCommentViewController.xib; sourceTree = "<group>"; };
+		89F99AEF17866A7900DEB46F /* ProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgressButton.h; path = ../../../../../JacobHanshaw/Desktop/ARIS/YOI/iPhoneClient/ProgressButton.h; sourceTree = "<group>"; };
+		89F99AF017866A7900DEB46F /* ProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProgressButton.m; path = ../../../../../JacobHanshaw/Desktop/ARIS/YOI/iPhoneClient/ProgressButton.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A7149F9C0FB89DC8008BAB5D /* Settings.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Settings.bundle; sourceTree = "<group>"; };
 		A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelfRegistration.xib; sourceTree = "<group>"; };
@@ -663,6 +666,8 @@
 		29B97314FDCFA39411CA2CEA /* ARIS */ = {
 			isa = PBXGroup;
 			children = (
+				89F99AEF17866A7900DEB46F /* ProgressButton.h */,
+				89F99AF017866A7900DEB46F /* ProgressButton.m */,
 				DD5C6AA71700D6FE00717031 /* InnovationViewControllers */,
 				A7986D6A0F8FEC7200A5469F /* Core App */,
 				A760473F0FC0AA1E00219A53 /* NearbyObjects */,
@@ -1578,6 +1583,7 @@
 				DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */,
 				89D8B25517820182002A53CA /* CustomBadge.m in Sources */,
 				89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */,
+				89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

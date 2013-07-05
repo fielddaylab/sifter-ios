@@ -111,30 +111,30 @@
 - (IBAction)facebookButtonPressed:(id)sender
 {
     NSString *title = [self getTitleOfCurrentNote];
-    NSString *imageURL = [self getImageUrlOfCurrentNote];
+    NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
     
 #warning fix url to be web notebook url
     NSString *url  = HOME_URL;
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.title withImage:imageURL title:title andURL:url fromNote:self.note.noteId];
+    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId];
 }
 
 - (IBAction)twitterButtonPressed:(id)sender
 {
 #warning fix url to be web notebook url
-    NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.title];
+    NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
     NSString *url  = HOME_URL;
     [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId];
 }
 
 - (IBAction)pinterestButtonPressed:(id)sender
 {
-    NSString *imageURL = [self getImageUrlOfCurrentNote];
+    NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
     
     Pinterest *pinterest = [[Pinterest alloc] initWithClientId:PINTEREST_CLIENT_ID];
     [pinterest createPinWithImageURL:[NSURL URLWithString:imageURL]
                            sourceURL:[NSURL URLWithString: HOME_URL]
-                         description:self.note.title];
+                         description:self.note.text];
     
     [[AppServices sharedAppServices] sharedNoteToPinterest:self.note.noteId];
 }
@@ -142,7 +142,7 @@
 - (IBAction)emailButtonPressed:(id)sender
 {
     NSData  *image;
-    if((image = [self getImageDataOfCurrentNote]))
+    if((image = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].image))
     {
         #warning fix url to be web notebook url and link to app and add better subject line
         NSString *creationIndication;
@@ -153,12 +153,12 @@
         
         NSString *url    = HOME_URL;
         NSString *title  = [self getTitleOfCurrentNote];
-        NSString *text   = [NSString stringWithFormat:@"Check out this interesting note about %@ I %@ on the UW-Madison Campus: %@ \n\n\nSee the whole note at: %@ or download the YOI app", title, creationIndication, self.note.title, url];
+        NSString *text   = [NSString stringWithFormat:@"Check out this interesting note about %@ I %@ on the UW-Madison Campus: %@ \n\n\nSee the whole note at: %@ or download the YOI app", title, creationIndication, self.note.text, url];
         NSString *subject = [NSString stringWithFormat:@"Interesting note on %@ from UW-Madison Campus", title];
         [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleMailShare shareText:text asHTML:NO withImage:image andSubject:subject toRecipients:nil fromNote:self.note.noteId];
     }
     else
-        [imageView loadImageFromMedia:[self getImageMedia]];
+        [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
 }
 
 - (void)imageFinishedLoading
@@ -172,31 +172,6 @@
         return ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
     
     return DEFAULT_TITLE;
-}
-
-#pragma mark Get Image Information
-- (Media *) getImageMedia
-{
-    if(!media)
-    {
-        for(NSObject <NoteContentProtocol> *contentObject in note.contents)
-        {
-            if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
-                return (media = [contentObject getMedia]);
-        }
-    }
-    
-    return media;
-}
-
-- (NSString *) getImageUrlOfCurrentNote
-{
-    return  [self getImageMedia].url;
-}
-
-- (NSData *) getImageDataOfCurrentNote
-{
-    return [self getImageMedia].image;
 }
 
 @end

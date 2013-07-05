@@ -41,6 +41,11 @@ extern NSString *const kNoteContentTypeText;
 @property(readwrite, assign) int parentRating;
 @property(nonatomic, unsafe_unretained) id delegate;
 
+//abstracted note contents
+@property(nonatomic) NSString *text;
+@property(nonatomic) int      audioMediaId;
+@property(nonatomic) int      imageMediaId;
+
 -(BOOL)isUploading;
 -(BOOL)compareTo: (Note *) note;
 @end

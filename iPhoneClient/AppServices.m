@@ -785,10 +785,10 @@ BOOL currentlyUpdatingServerWithMapViewed;
 {
     isCurrentlyFetchingGameNoteList = YES;
 	NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-                          [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
-                          [NSString stringWithFormat:@"%d",lastLocation],
-                          [NSString stringWithFormat:@"%d",noteCount],nil];
+                                 [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
+                                 [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
+                                 [NSString stringWithFormat:@"%d",lastLocation],
+                                 [NSString stringWithFormat:@"%d",noteCount],nil];
 	
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
@@ -1005,6 +1005,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
             media.url = fullUrl;
             media.type = [self validObjectForKey:@"type" inDictionary:m];
         }
+        
+        if([c.type isEqualToString: kNoteContentTypePhoto])
+            aNote.imageMediaId = c.mediaId;
+        else if ([c.type isEqualToString:kNoteContentTypeAudio])
+            aNote.audioMediaId = c.mediaId;
+        else if ([c.type isEqualToString:kNoteContentTypeText])
+            aNote.text = c.text;
         
         [aNote.contents addObject:c];
     }

@@ -214,24 +214,21 @@
     [self updateLikeButton];
     [flagButton setSelected:self.note.userFlagged];
     
-    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
+    [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+    
+    if(note.audioMediaId)
     {
-        if([contentObject isKindOfClass:[NoteContent class]])
-        {
-            if([[contentObject getType] isEqualToString: kNoteContentTypePhoto])
-                [imageView loadImageFromMedia:[contentObject getMedia]];
-            else if ([[contentObject getType] isEqualToString:kNoteContentTypeAudio]) {
-                if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: [contentObject getMedia].url]) {
-                    [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:[contentObject getMedia].url]];
-                    [ARISMoviePlayer.moviePlayer prepareToPlay];
-                }
-                mode = kInnovAudioPlayerAudio;
-                [self updatePlayButtonForCurrentMode];
-            }
+        NSString *audioURL = [[AppModel sharedAppModel] mediaForMediaId:note.audioMediaId].url;
+        if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: audioURL]) {
+            [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:audioURL]];
+            [ARISMoviePlayer.moviePlayer prepareToPlay];
         }
+        mode = kInnovAudioPlayerAudio;
+        [self updatePlayButtonForCurrentMode];
     }
     
-    captionTextView.text = note.title;
+    captionTextView.text = note.text;
+    
     CGRect frame = captionTextView.frame;
     frame.size.height = captionTextView.contentSize.height;
     captionTextView.frame = frame;
@@ -331,6 +328,9 @@
         self.note.userFlagged = !flagButton.selected;
         [[AppServices sharedAppServices]flagNote:self.note.noteId];
         [flagButton setSelected:self.note.userFlagged];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Thank You" message:@"Thank you for your input. We will look into the matter further and remove inappropriate content." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
     }
 }
 

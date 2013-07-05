@@ -90,7 +90,7 @@
     [flagButton setSelected:note.userFlagged];
     [self updateLikeButton];
     
-    textView.text = note.title;
+    textView.text = note.text;
     CGRect frame = textView.frame;
     frame.size.height = textView.contentSize.height;
     textView.frame = frame;
@@ -165,6 +165,9 @@
         note.userFlagged = !flagButton.selected;
         [[AppServices sharedAppServices]flagNote:note.noteId];
         [flagButton setSelected:note.userFlagged];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Thank You" message:@"Thank you for your input. We will look into the matter further and remove inappropriate content." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
     }
 }
 

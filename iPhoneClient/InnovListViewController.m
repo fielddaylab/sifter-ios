@@ -44,7 +44,7 @@ static NSString * const CELL_ID = @"Cell";
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) 
+    if (self)
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteList:) name:@"NotesAvailableChanged" object:nil];
     return self;
 }
@@ -79,7 +79,7 @@ static NSString * const CELL_ID = @"Cell";
     int index = -1;
     Note *note;
     
-     //Use if the note won't always be the last note
+    //Use if the note won't always be the last note
     for(int i = 0; i < [mutableNotes count]; ++i)
     {
         note = [mutableNotes objectAtIndex:i];
@@ -105,7 +105,7 @@ static NSString * const CELL_ID = @"Cell";
         desiredLocation += offsetToCenter;
     if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
-
+    
     [UIView beginAnimations:@"animationInNote" context:NULL];
     [UIView setAnimationDuration:ANIMATION_TIME];
     quiltView.contentOffset = CGPointMake(0, desiredLocation);
@@ -146,16 +146,9 @@ static NSString * const CELL_ID = @"Cell";
     }
     
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
-    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
-    {
-        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString: kNoteContentTypePhoto])
-        {
-            [cell.photoView reset];
-            [cell.photoView loadImageFromMedia:[contentObject getMedia]];
-            [cell.categoryIconView setImage:[UIImage imageNamed:@"newBanner.png"]];
-            break;
-        }
-    }
+    [cell.photoView reset];
+    [cell.photoView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+    [cell.categoryIconView setImage:[UIImage imageNamed:@"newBanner.png"]];
     
     return cell;
 }
@@ -167,7 +160,7 @@ static NSString * const CELL_ID = @"Cell";
 }
 
 - (CGFloat)quiltView:(TMQuiltView *)aQuiltView heightForCellAtIndexPath:(NSIndexPath *)indexPath
-{    
+{
     return CELL_HEIGHT;
 }
 
@@ -181,17 +174,17 @@ static NSString * const CELL_ID = @"Cell";
     float scrollViewHeight   = aScrollView.bounds.size.height;
     float totalContentHeight = aScrollView.contentSize.height;
     float bottomInset        = aScrollView.contentInset.bottom;
-
+    
     if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && [notes count] > NOTES_PER_FETCH)
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 /*
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    //possible adjust num rows
-    [quiltView reloadData];
-}
-*/
+ - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+ {
+ //possible adjust num rows
+ [quiltView reloadData];
+ }
+ */
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
