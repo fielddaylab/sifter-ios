@@ -42,5 +42,4 @@
 - (void) playAudioAlert:(NSString*)wavFileName shouldVibrate:(BOOL)shouldVibrate;
 - (void) stopAudio;
 - (BOOL) application:(UIApplication *)application handleOpenURL:(NSURL *)url;
-- (void) startMyMotionDetect;
 @end

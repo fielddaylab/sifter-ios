@@ -10,10 +10,12 @@ typedef enum {
 	kTop,
     kPopular,
     kRecent,
-    kMine
+    kMine,
+    kNumContents
 } ContentSelector;
 
 #define NOTES_PER_FETCH 50
+#define MAX_NOTIFCATIONS_PER_CONTENT 20
 
 @class Note, Tag;
 
@@ -24,8 +26,10 @@ typedef enum {
 @property(nonatomic, readonly) NSArray *selectedTags;
 
 +(InnovNoteModel *) sharedNoteModel;
--(void) clearData;
+-(void) clearAllData;
+-(void) clearAvailableData;
 -(void) fetchMoreNotes;
+-(void) fetchMoreNotesOfType:(ContentSelector) specifiedContent;
 
 -(void) addNote:(Note *) note;
 -(void) updateNote:(Note *) note;

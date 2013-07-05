@@ -9,7 +9,6 @@
 #import "AppServices.h"
 
 #import "AppModel.h"
-#import "InnovNoteModel.h"
 #import "ARISUploader.h"
 #import "ARISAppDelegate.h"
 #import "Logger.h"
@@ -758,31 +757,30 @@ BOOL currentlyUpdatingServerWithMapViewed;
     }
 }
 
-#pragma mark ASync Fetch selectors
+#pragma mark Async Fetch selectors
 
--(void) fetch:(int) noteCount moreTopNotesStartingFrom:     (int) lastLocation
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFrom: (int) lastLocation
 {
-    [self fetch:noteCount NotesWithMethod:@"getNextSetOfTopNotesForGame" StartingFrom:lastLocation];
-}
-
--(void) fetch:(int) noteCount morePopularNotesStartingFrom: (int) lastLocation
-{
-    [self fetch:noteCount NotesWithMethod:@"getNextSetOfPopularNotesForGame" StartingFrom:lastLocation];
-}
-
--(void) fetch:(int) noteCount moreRecentNotesStartingFrom: (int) lastLocation
-{
-    [self fetch:noteCount NotesWithMethod:@"getNextSetOfRecentNotesForGame" StartingFrom:lastLocation];
-}
-
--(void) fetch:(int) noteCount morePlayerNotesStartingFrom:  (int) lastLocation
-{
-    [self fetch:noteCount NotesWithMethod:@"getNextSetOfPlayerNotesForGame" StartingFrom:lastLocation];
-}
-
-
-- (void)fetch:(int) noteCount NotesWithMethod:(NSString *) method StartingFrom: (int) lastLocation
-{
+    NSString *method;
+    switch (selectedContent)
+    {
+        case kTop:
+            method = @"getNextSetOfTopNotesForGame";
+            break;
+        case kPopular:
+            method = @"getNextSetOfPopularNotesForGame";
+            break;
+        case kRecent:
+            method = @"getNextSetOfRecentNotesForGame";
+            break;
+        case kMine:
+            method = @"getNextSetOfPlayerNotesForGame";
+            break;
+        default:
+            break;
+    }
+    
+    
     isCurrentlyFetchingGameNoteList = YES;
 	NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
                                  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
@@ -796,7 +794,9 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                               andArguments:arguments
                                                                andUserInfo:nil];
     
-    [jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameNoteListFromJSON:)];
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:selectedContent], @"ContentSelector", nil];
+    
+    [jsonConnection performAsynchronousRequestWithHandler:@selector(parseGameNoteListFromJSON:) andUserInfo:userInfo];
 }
 
 - (void) fetchMedia:(int)mediaId
@@ -1030,7 +1030,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	NSDictionary *dict;
     while ((dict = [enumerator nextObject]))
     {
-        //This is returning an object with playerId,tex, and rating. Right now, we just want the text
+        //This is returning an object with playerId, tex, and rating. Right now, we just want the text
         //TODO: Create a Comments object
         Note *c = [self parseNoteFromDictionary:dict];
         [aNote.comments addObject:c];
@@ -1045,9 +1045,11 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	return aNote;
 }
 
--(void)parseGameNoteListFromJSON: (JSONResult *)jsonResult
+-(void)parseGameNoteListFromJSON: (NSMutableDictionary *) userInfo
 {
     if(!shouldIgnoreResults){
+        JSONResult *jsonResult = [userInfo objectForKey:@"JSON"];
+        [userInfo removeObjectForKey:@"JSON"];
         NSArray *noteListArray = (NSArray *)jsonResult.data;
         NSLog(@"NSNotification: ReceivedNoteList");
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
@@ -1060,10 +1062,10 @@ BOOL currentlyUpdatingServerWithMapViewed;
             [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
         }
         
-        NSDictionary *notes  = [[NSDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
-        
+        NSMutableDictionary *info  = [[NSMutableDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
+        [info addEntriesFromDictionary:userInfo];
         NSLog(@"NSNotification: NewNoteListReady");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:notes]];
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:info]];
     }
     isCurrentlyFetchingGameNoteList = NO;
 }
