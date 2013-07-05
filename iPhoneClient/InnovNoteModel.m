@@ -19,6 +19,7 @@
 {
     NSMutableDictionary *allNotes;
     NSMutableArray *availableNotes;
+    NSMutableArray *arrayOfArraysByType;
     NSArray *allTags;
     NSMutableArray *selectedTags;
     NSMutableArray *searchTerms;
@@ -49,6 +50,15 @@
     {
         allNotes        = [[NSMutableDictionary alloc] init];
         availableNotes  = [[NSMutableArray alloc] init];
+        arrayOfArraysByType             = [[NSMutableArray alloc] initWithCapacity:kNumContents];
+        NSMutableArray *topNotes        = [[NSMutableArray alloc] init];
+        NSMutableArray *popularNotes    = [[NSMutableArray alloc] init];
+        NSMutableArray *recentNotes     = [[NSMutableArray alloc] init];
+        NSMutableArray *mineNotes       = [[NSMutableArray alloc] init];
+        [arrayOfArraysByType addObject:topNotes];
+        [arrayOfArraysByType addObject:popularNotes];
+        [arrayOfArraysByType addObject:recentNotes];
+        [arrayOfArraysByType addObject:mineNotes];
         allTags         = [[NSArray alloc] init];
         selectedTags    = [[NSMutableArray alloc] initWithCapacity:8];
         searchTerms     = [[NSMutableArray alloc] initWithCapacity:8];
@@ -59,9 +69,14 @@
     return self;
 }
 
--(void) clearData
+-(void) clearAllData
 {
     [allNotes removeAllObjects];
+    [self clearAvailableData];
+}
+
+-(void) clearAvailableData
+{
     [self sendLostNotesNotif:[availableNotes copy]];
     [availableNotes removeAllObjects];
     [self sendChangeNotesNotif];
@@ -69,34 +84,29 @@
 
 - (void) fetchMoreNotes
 {
+    [self fetchMoreNotesOfType:selectedContent];
+}
+
+- (void) fetchMoreNotesWithUserInfo: (NSNotification *) notification
+{
+    [self fetchMoreNotesOfType:[[notification.userInfo objectForKey:@"ContentSelector"] intValue]];
+}
+
+- (void) fetchMoreNotesOfType:(ContentSelector) specifiedContent
+{
     if ([AppServices sharedAppServices].isCurrentlyFetchingGameNoteList)
     {
         [NSTimer scheduledTimerWithTimeInterval:1.0
                                          target:self
-                                       selector:@selector(fetchMoreNotes)
-                                       userInfo:nil
+                                       selector:@selector(fetchMoreNotesWithUserInfo:)
+                                       userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:specifiedContent], @"ContentSelector", nil]
                                         repeats:NO];
     }
     else
     {
+        int currentNoteCount = [[arrayOfArraysByType objectAtIndex:specifiedContent] count];
         [AppServices sharedAppServices].shouldIgnoreResults = NO;
-        switch (selectedContent)
-        {
-            case kTop:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreTopNotesStartingFrom:    [allNotes count]];
-                break;
-            case kPopular:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePopularNotesStartingFrom:[allNotes count]];
-                break;
-            case kRecent:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreRecentNotesStartingFrom: [allNotes count]];
-                break;
-            case kMine:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePlayerNotesStartingFrom: [allNotes count]];
-                break;
-            default:
-                break;
-        }
+        [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH more: specifiedContent NotesStartingFrom: currentNoteCount];
     }
 }
 
@@ -107,8 +117,21 @@
 {
     NSDictionary *newNotes = [notification.userInfo objectForKey:@"notes"];
     [allNotes addEntriesFromDictionary:newNotes];
-    [self updateNotes:newNotes];
-    [self sendNotesUpdateNotification];
+    ContentSelector updatedNotes = [[notification.userInfo objectForKey:@"ContentSelector"] intValue];
+    NSMutableArray *selectedArray = [arrayOfArraysByType objectAtIndex:updatedNotes];
+    int previousSize = [selectedArray count];
+    [selectedArray addObjectsFromArray:[newNotes allKeys]];
+    
+    if(previousSize < MAX_NOTIFCATIONS_PER_CONTENT)
+    {
+#warning UPDATE NOTIFICATIONS WITH PROPER NOTES HERE
+    }
+    
+    if(updatedNotes == selectedContent)
+    {
+        [self updateAvailableNotes];
+        [self sendNotesUpdateNotification];
+    }
 }
 
 
@@ -122,7 +145,14 @@
     [[NSNotificationCenter defaultCenter] postNotification: notif];
 }
 
--(void) updateNotes:(NSDictionary *)notes
+-(void) updateAvailableNotes
+{
+    NSArray *selectedNoteIds = [arrayOfArraysByType objectAtIndex:selectedContent];
+    NSArray *selectedNotes   = [allNotes objectsForKeys:selectedNoteIds notFoundMarker:[[Note alloc] init]];
+    [self updateNotes:selectedNotes];
+}
+
+-(void) updateNotes:(NSArray *)notes
 {
     NSMutableArray *newlyAvailableNotes   = [[NSMutableArray alloc] initWithCapacity:20];
     NSMutableArray *newlyUnavailableNotes = [[NSMutableArray alloc] initWithCapacity:20];
@@ -137,7 +167,7 @@
     [availableNotes removeObjectsInArray: newlyUnavailableNotes];
     
     //Gained Notes
-    for(Note *newNote in [notes allValues])
+    for(Note *newNote in notes)
     {
         BOOL match = NO;
         
@@ -289,7 +319,7 @@
         if(currentTag.tagId == addTag.tagId) return;
     
     [selectedTags addObject: addTag];
-    [self updateNotes:allNotes];
+    [self updateAvailableNotes];
     [self sendSelectedTagsUpdateNotification];
 }
 
@@ -301,7 +331,7 @@
         if(tag.tagId == removeTag.tagId)
         {
             [selectedTags removeObject: tag];
-            [self updateNotes:allNotes];
+            [self updateAvailableNotes];
             [self sendSelectedTagsUpdateNotification];
             return;
         }
@@ -311,7 +341,7 @@
 -(void) addSearchTerm: (NSString *) term
 {
     if([term length] > 0) [searchTerms addObject: term];
-    [self updateNotes:allNotes];
+    [self updateAvailableNotes];
 }
 
 -(void) removeSearchTerm: (NSString *) term
@@ -321,16 +351,19 @@
         if([term isEqualToString:currentTerm])
             [searchTerms removeObject: currentTerm];
     }
-    
-    [self updateNotes:allNotes];
+    [self updateAvailableNotes];
 }
 
 -(void) setSelectedContent: (ContentSelector) contentSelector
 {
     selectedContent = contentSelector;
     [AppServices sharedAppServices].shouldIgnoreResults = YES;
-    [self clearData];
-    [self fetchMoreNotes];
+    [self clearAvailableData];
+    
+    if([[arrayOfArraysByType objectAtIndex:selectedContent] count] < NOTES_PER_FETCH)
+        [self fetchMoreNotes];
+    else
+        [self updateAvailableNotes];
 }
 
 #pragma mark Notifications
