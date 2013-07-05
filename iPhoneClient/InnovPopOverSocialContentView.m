@@ -19,7 +19,7 @@
 #import "Tag.h"
 
 #warning CHANGE TWITTER HANDLE
-#define TWITTER_HANDLE               @"@jacob_hanshaw"
+#define TWITTER_HANDLE               @"@y_o_i"
 #define PINTEREST_CLIENT_ID          @"1432066"
 #define DEFAULT_TITLE                @"Note"
 
