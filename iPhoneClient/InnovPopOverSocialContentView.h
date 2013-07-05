@@ -20,4 +20,6 @@
 
 @property(nonatomic) Note *note;
 
+- (void) refreshBadges;
+
 @end

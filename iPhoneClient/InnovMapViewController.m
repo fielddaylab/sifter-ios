@@ -7,10 +7,12 @@
 //
 
 #import "InnovMapViewController.h"
+#import <MapKit/MapKit.h>
 
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
+#import "Tag.h"
 
 #import "Annotation.h"
 #import "AnnotationView.h"
@@ -42,8 +44,8 @@
     
     CLLocation *madisonCenter;
     
-  //  int shownNotesCount;
-   // NSMutableArray *unshownNotesQueue;
+    int shownNotesCount;
+    NSMutableArray *unshownNotesQueue;
 }
 @end
 
@@ -56,9 +58,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         tracking = NO;
-    //    unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation)       name:@"PlayerMoved" object:nil];
+        unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
@@ -121,16 +121,23 @@
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
     
     tracking = !tracking;
-    if(!tracking) [delegate stoppedTracking];
+    if(tracking)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
+        [delegate stoppedTracking];
+    }
+    else
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PlayerMoved" object:nil];
+    
     [self updatePlayerLocation];
 }
 
 - (void) updatePlayerLocation
 {
     CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
-    isLocal = distance <= MAX_DISTANCE;
+    isLocal = (distance <= MAX_DISTANCE);
     [mapView setShowsUserLocation:isLocal];
-    if (mapView && tracking) [self zoomAndCenterMapAnimated:YES];
+    if (mapView && (tracking || !isLocal)) [self zoomAndCenterMapAnimated:YES];
 }
 
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
@@ -142,13 +149,11 @@
     {
         region.center = [AppModel sharedAppModel].playerLocation.coordinate;
         region.span = MKCoordinateSpanMake(ZOOM_SPAN, ZOOM_SPAN);
-        
     }
     else
     {
         region.center = madisonCenter.coordinate;
         region.span = MKCoordinateSpanMake(INITIAL_SPAN, INITIAL_SPAN);
-        
     }
     [mapView setRegion:region animated:animated];
 }
@@ -157,8 +162,6 @@
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
 {
-#warning Feature?!
-    /*
     for(Note *note in unshownNotesQueue)
     {
         if(shownNotesCount < MAX_NOTES_COUNT)
@@ -166,7 +169,7 @@
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
-            annotation.title = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+            annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
             annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
 #warning this needs to be implemented in AnnotationView.m
@@ -176,28 +179,28 @@
         }
         else break;
     }
- */   
+    
     NSArray *newNotes = (NSArray *)[notification.userInfo objectForKey:@"newlyAvailableNotes"];
     
     for(Note *note in newNotes)
     {
-//        if(shownNotesCount < MAX_NOTES_COUNT)
- //       {
+        if(shownNotesCount < MAX_NOTES_COUNT)
+        {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
-            annotation.title = [note.title substringToIndex: [note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+            annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
             annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
 #warning this needs to be implemented in AnnotationView.m
             
-           // ++shownNotesCount;
+            ++shownNotesCount;
             [mapView addAnnotation:annotation];
-   /*     }
+        }
         else
         {
             [unshownNotesQueue addObject:note];
-        } */
+        }
     }
 }
 
@@ -221,12 +224,12 @@
             if([tmpAnnotation.note compareTo:note])
             {
                 found = YES;
-        //        --shownNotesCount;
+                --shownNotesCount;
                 [mapView removeAnnotation:tmpAnnotation];
                 break;
             }
         }
-      //  if(!found) [unshownNotesQueue removeObject:note];
+        if(!found) [unshownNotesQueue removeObject:note];
     }
 }
 

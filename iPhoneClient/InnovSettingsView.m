@@ -104,24 +104,21 @@
 - (IBAction)aboutButtonPressed:(id)sender
 {
     [delegate showAbout];
-#warning unimplemented
 }
 - (IBAction)logInOutButtonPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
-    {
-        [delegate presentLogIn];
-    }
-    else
+    if([AppModel sharedAppModel].playerId != 0)
     {
         [self performLogout:nil];
         [self updateLogInOutButtonTitle];
     }
+    else
+        [delegate presentLogIn];
 }
 
 - (void)updateLogInOutButtonTitle
 {
-    if([AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId != 0)
     {
         [logInOutButton setTitle:@"Log Out" forState:UIControlStateNormal];
         [logInOutButton setTitle:@"Log Out" forState:UIControlStateHighlighted];
@@ -135,7 +132,6 @@
 
 - (void)performLogout:(NSNotification *)notification
 {
-    [AppModel sharedAppModel].loggedIn       = NO;
     [AppModel sharedAppModel].playerId       = 0;
     [AppModel sharedAppModel].playerMediaId  = -1;
     [AppModel sharedAppModel].userName       = @"";

@@ -15,8 +15,6 @@
 		111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 111CFA9214520EC700D56207 /* ForgotViewController.xib */; };
 		113F56DE14E4435300525BE6 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 113F56DD14E4435300525BE6 /* AssetsLibrary.framework */; };
 		1147E15913F32260000E4BC2 /* noteicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1147E15513F32260000E4BC2 /* noteicon.png */; };
-		11566433144A414D006902C2 /* ChangePasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11566431144A414D006902C2 /* ChangePasswordViewController.m */; };
-		11566434144A414D006902C2 /* ChangePasswordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11566432144A414D006902C2 /* ChangePasswordViewController.xib */; };
 		1176F2B114C6045100EA4512 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1176F2B014C6045100EA4512 /* check.png */; };
 		118622E01404535300D4B738 /* Note.m in Sources */ = {isa = PBXBuildFile; fileRef = 118622DF1404535300D4B738 /* Note.m */; };
 		118866441406B54C0009E36F /* notebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 118866431406B54C0009E36F /* notebook.png */; };
@@ -48,7 +46,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD73870D9D96C1002E5188 /* MainWindow.xib */; };
 		2B3D11AD0F4361380067FD3A /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B3D11AC0F4361380067FD3A /* LoginViewController.xib */; };
-		2B3D11B10F4361940067FD3A /* LoginViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D11B00F4361940067FD3A /* LoginViewController.mm */; };
+		2B3D11B10F4361940067FD3A /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D11B00F4361940067FD3A /* LoginViewController.m */; };
 		2B3D12EC0F4382070067FD3A /* AccountSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D12EB0F4382070067FD3A /* AccountSettingsViewController.m */; };
 		2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B3D12ED0F4382A00067FD3A /* Account.xib */; };
 		2B3D17070F49C99B0067FD3A /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3D17060F49C99B0067FD3A /* Game.m */; };
@@ -73,10 +71,13 @@
 		4AD5C41514E0704F00081B20 /* UploadMan.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD5C41414E0704F00081B20 /* UploadMan.m */; };
 		4ADE919C13CB7CB80009F4AF /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */; };
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
+		89D8B25517820182002A53CA /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B25317820182002A53CA /* CustomBadge.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B261178228F7002A53CA /* InnovCommentViewController.m */; };
+		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
+		89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F99AF017866A7900DEB46F /* ProgressButton.m */; };
 		A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7149F9C0FB89DC8008BAB5D /* Settings.bundle */; };
 		A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */ = {isa = PBXBuildFile; fileRef = A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */; };
 		A722C8C60FBCD92E009432DB /* SelfRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */; };
-		A76048E70FC1B6DE00219A53 /* QRCodeProtocol.h in Resources */ = {isa = PBXBuildFile; fileRef = A76048E60FC1B6DE00219A53 /* QRCodeProtocol.h */; };
 		A763B5250F4E283100FDCC55 /* MyCLController.m in Sources */ = {isa = PBXBuildFile; fileRef = A763B5240F4E283100FDCC55 /* MyCLController.m */; };
 		A78FD8B00F4B7E9400820FEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A78FD8AF0F4B7E9400820FEA /* Foundation.framework */; };
 		A78FD8B20F4B7EA200820FEA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A78FD8B10F4B7EA200820FEA /* CoreGraphics.framework */; };
@@ -91,7 +92,6 @@
 		AA1E2D4E1652CC6000219535 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E2D4D1652CC6000219535 /* libicucore.dylib */; };
 		AA1E2D501652CC7500219535 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E2D4F1652CC7500219535 /* Security.framework */; };
 		AA39E32116C4370D005A4E06 /* libPusher-combined.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA39E32016C4370D005A4E06 /* libPusher-combined.a */; };
-		AA763156169B68A800860665 /* PopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA763155169B68A800860665 /* PopOverContentView.m */; };
 		AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */ = {isa = PBXBuildFile; fileRef = AABD101716B7164C007278EF /* README_ABOUT_LINK_ERRORS */; };
 		AABD101B16B71787007278EF /* libCrittercism_v3_4_9.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AABD101A16B71787007278EF /* libCrittercism_v3_4_9.a */; };
 		AB0A5BA5120365420065CE68 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0A5BA3120365420065CE68 /* Localizable.strings */; };
@@ -200,7 +200,6 @@
 		DB071211176F8CAA0069E15A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB071210176F8CAA0069E15A /* Twitter.framework */; };
 		DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DB071213176F8CEC0069E15A /* SVProgressHUD.m */; };
 		DB071217176F8CEC0069E15A /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DB071215176F8CEC0069E15A /* SVProgressHUD.bundle */; };
-		DB0712441770BCD70069E15A /* InnovNoteCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712431770BCD60069E15A /* InnovNoteCell.m */; };
 		DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712511770EA870069E15A /* SimpleFacebookShare.m */; };
 		DB07125C1770EA870069E15A /* SimpleMailShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712551770EA870069E15A /* SimpleMailShare.m */; };
 		DB07125E1770EA870069E15A /* SimpleTwitterShare.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0712591770EA870069E15A /* SimpleTwitterShare.m */; };
@@ -234,8 +233,6 @@
 		DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD235FCB1700DCCB00795077 /* InnovViewController.xib */; };
 		DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C285016F3BF0D00CBC085 /* Logger.m */; };
 		DDC0E11E1721AF56007DBDAA /* InnovMapNotePopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC0E11D1721AF56007DBDAA /* InnovMapNotePopUp.m */; };
-		DDC495DC16407DE500D4C063 /* PopOverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC495DA16407DE500D4C063 /* PopOverViewController.m */; };
-		DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC495DB16407DE500D4C063 /* PopOverViewController.xib */; };
 		DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */; };
 		DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */; };
 		DDCF4110171A4EBC00F839FC /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF410F171A4EBC00F839FC /* FacebookSDK.framework */; };
@@ -257,9 +254,6 @@
 		111CFA9214520EC700D56207 /* ForgotViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotViewController.xib; sourceTree = "<group>"; };
 		113F56DD14E4435300525BE6 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		1147E15513F32260000E4BC2 /* noteicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = noteicon.png; sourceTree = "<group>"; };
-		11566430144A414D006902C2 /* ChangePasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangePasswordViewController.h; sourceTree = "<group>"; };
-		11566431144A414D006902C2 /* ChangePasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangePasswordViewController.m; sourceTree = "<group>"; };
-		11566432144A414D006902C2 /* ChangePasswordViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChangePasswordViewController.xib; sourceTree = "<group>"; };
 		1176F2B014C6045100EA4512 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
 		118622DE1404535200D4B738 /* Note.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Note.h; sourceTree = "<group>"; };
 		118622DF1404535300D4B738 /* Note.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Note.m; sourceTree = "<group>"; };
@@ -302,14 +296,14 @@
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = main.mm; sourceTree = "<group>"; };
 		2B3D11AC0F4361380067FD3A /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		2B3D11AF0F4361940067FD3A /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = LoginViewController.h; path = Classes/LoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		2B3D11B00F4361940067FD3A /* LoginViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LoginViewController.mm; path = Classes/LoginViewController.mm; sourceTree = "<group>"; };
+		2B3D11B00F4361940067FD3A /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginViewController.m; path = Classes/LoginViewController.m; sourceTree = "<group>"; };
 		2B3D12EA0F4382070067FD3A /* AccountSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountSettingsViewController.h; path = Classes/AccountSettingsViewController.h; sourceTree = "<group>"; };
 		2B3D12EB0F4382070067FD3A /* AccountSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountSettingsViewController.m; path = Classes/AccountSettingsViewController.m; sourceTree = "<group>"; };
 		2B3D12ED0F4382A00067FD3A /* Account.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Account.xib; sourceTree = "<group>"; };
 		2B3D17050F49C99B0067FD3A /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		2B3D17060F49C99B0067FD3A /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Game.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		2B3D18D40F4B25720067FD3A /* AppModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AppModel.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		2B3D18D50F4B25720067FD3A /* AppModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppModel.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		2B3D18D40F4B25720067FD3A /* AppModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = AppModel.h; path = Classes/model/AppModel.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		2B3D18D50F4B25720067FD3A /* AppModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = AppModel.m; path = Classes/model/AppModel.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2D26697B1623483200342A7E /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
 		2D26697C1623483200342A7E /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
 		2D26697E1623487000342A7E /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
@@ -345,13 +339,19 @@
 		4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
 		4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+Hardware.h"; sourceTree = "<group>"; };
 		4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
+		89D8B25317820182002A53CA /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
+		89D8B25417820182002A53CA /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
+		89D8B260178228F7002A53CA /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
+		89D8B261178228F7002A53CA /* InnovCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovCommentViewController.m; sourceTree = "<group>"; };
+		89D8B262178228F7002A53CA /* InnovCommentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovCommentViewController.xib; sourceTree = "<group>"; };
+		89F99AEF17866A7900DEB46F /* ProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressButton.h; sourceTree = "<group>"; };
+		89F99AF017866A7900DEB46F /* ProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressButton.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A7149F9C0FB89DC8008BAB5D /* Settings.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Settings.bundle; sourceTree = "<group>"; };
 		A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelfRegistration.xib; sourceTree = "<group>"; };
 		A722C8C40FBCD92E009432DB /* SelfRegistrationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = SelfRegistrationViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SelfRegistrationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NearbyObjectProtocol.h; path = Classes/model/NearbyObjectProtocol.h; sourceTree = "<group>"; };
-		A76048E60FC1B6DE00219A53 /* QRCodeProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QRCodeProtocol.h; path = ../../QRCodeProtocol.h; sourceTree = "<group>"; };
 		A763B5230F4E283100FDCC55 /* MyCLController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = MyCLController.h; path = Classes/MyCLController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A763B5240F4E283100FDCC55 /* MyCLController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MyCLController.m; path = Classes/MyCLController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A78FD8AF0F4B7E9400820FEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -372,8 +372,6 @@
 		AA1E2D4D1652CC6000219535 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		AA1E2D4F1652CC7500219535 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AA39E32016C4370D005A4E06 /* libPusher-combined.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libPusher-combined.a"; sourceTree = "<group>"; };
-		AA763154169B68A800860665 /* PopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopOverContentView.h; sourceTree = "<group>"; };
-		AA763155169B68A800860665 /* PopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopOverContentView.m; sourceTree = "<group>"; };
 		AA7A428A16B86C9E00E84252 /* UploadContent1.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UploadContent1.8.xcdatamodel; sourceTree = "<group>"; };
 		AABD101416B7164C007278EF /* Crittercism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crittercism.h; sourceTree = "<group>"; };
 		AABD101516B7164C007278EF /* CrittercismDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrittercismDelegate.h; sourceTree = "<group>"; };
@@ -394,8 +392,8 @@
 		AB1660C914E8754B002C6ACB /* UploadManager_Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadManager_Tests.h; sourceTree = "<group>"; };
 		AB1660CA14E8754B002C6ACB /* UploadManager_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UploadManager_Tests.m; sourceTree = "<group>"; };
 		AB1660CC14E8754B002C6ACB /* UploadManager Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UploadManager Tests-Prefix.pch"; sourceTree = "<group>"; };
-		AB18AEB8137B249A00382826 /* AppServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppServices.h; path = ../../AppServices.h; sourceTree = "<group>"; };
-		AB18AEB9137B249A00382826 /* AppServices.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppServices.m; path = ../../AppServices.m; sourceTree = "<group>"; };
+		AB18AEB8137B249A00382826 /* AppServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppServices.h; sourceTree = "<group>"; };
+		AB18AEB9137B249A00382826 /* AppServices.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppServices.m; sourceTree = "<group>"; };
 		AB21D30514ED9C9000DC016F /* blue_button.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = blue_button.psd; sourceTree = "<group>"; };
 		AB21D30614ED9C9000DC016F /* grey_button.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = grey_button.psd; sourceTree = "<group>"; };
 		AB2482F316C04A5300D81E73 /* Grainger.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Grainger.gpx; sourceTree = "<group>"; };
@@ -521,8 +519,6 @@
 		DB071213176F8CEC0069E15A /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		DB071214176F8CEC0069E15A /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		DB071215176F8CEC0069E15A /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
-		DB0712421770BCD60069E15A /* InnovNoteCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteCell.h; sourceTree = "<group>"; };
-		DB0712431770BCD60069E15A /* InnovNoteCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteCell.m; sourceTree = "<group>"; };
 		DB0712501770EA870069E15A /* SimpleFacebookShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleFacebookShare.h; sourceTree = "<group>"; };
 		DB0712511770EA870069E15A /* SimpleFacebookShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleFacebookShare.m; sourceTree = "<group>"; };
 		DB0712541770EA870069E15A /* SimpleMailShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMailShare.h; sourceTree = "<group>"; };
@@ -570,7 +566,6 @@
 		DBFEDCE317611939009C080A /* TagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCell.h; sourceTree = "<group>"; };
 		DBFEDCE417611939009C080A /* TagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagCell.m; sourceTree = "<group>"; };
 		DBFEDCE617611939009C080A /* TagCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagCell.xib; sourceTree = "<group>"; };
-		DBFEDCEB176125D7009C080A /* InnovLogInDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovLogInDelegate.h; sourceTree = "<group>"; };
 		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
 		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
 		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
@@ -578,9 +573,6 @@
 		DD3C285016F3BF0D00CBC085 /* Logger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logger.m; sourceTree = "<group>"; };
 		DDC0E11C1721AF56007DBDAA /* InnovMapNotePopUp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovMapNotePopUp.h; sourceTree = "<group>"; };
 		DDC0E11D1721AF56007DBDAA /* InnovMapNotePopUp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovMapNotePopUp.m; sourceTree = "<group>"; };
-		DDC495D916407DE500D4C063 /* PopOverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopOverViewController.h; sourceTree = "<group>"; };
-		DDC495DA16407DE500D4C063 /* PopOverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopOverViewController.m; sourceTree = "<group>"; };
-		DDC495DB16407DE500D4C063 /* PopOverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopOverViewController.xib; sourceTree = "<group>"; };
 		DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteEditorViewController.h; sourceTree = "<group>"; };
 		DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteEditorViewController.m; sourceTree = "<group>"; };
 		DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovNoteEditorViewController.xib; sourceTree = "<group>"; };
@@ -695,11 +687,6 @@
 				ABDA40B110506AF400823A94 /* Annotation.m */,
 				4A92FB09139EDF1B00B41218 /* Comment.h */,
 				4A92FB0A139EDFEA00B41218 /* Comment.m */,
-				A76048E60FC1B6DE00219A53 /* QRCodeProtocol.h */,
-				2B3D18D40F4B25720067FD3A /* AppModel.h */,
-				2B3D18D50F4B25720067FD3A /* AppModel.m */,
-				AB18AEB8137B249A00382826 /* AppServices.h */,
-				AB18AEB9137B249A00382826 /* AppServices.m */,
 				11B28B9B14C4AD1700759BCD /* Tag.h */,
 				11B28B9C14C4AD1700759BCD /* Tag.m */,
 				118622DE1404535200D4B738 /* Note.h */,
@@ -736,9 +723,6 @@
 		2D73EA1F160CCFD900A1F570 /* Public Name and Image */ = {
 			isa = PBXGroup;
 			children = (
-				11566430144A414D006902C2 /* ChangePasswordViewController.h */,
-				11566431144A414D006902C2 /* ChangePasswordViewController.m */,
-				11566432144A414D006902C2 /* ChangePasswordViewController.xib */,
 				2D73EA20160CD07600A1F570 /* PlayerSettingsViewController.h */,
 				2D73EA21160CD07600A1F570 /* PlayerSettingsViewController.m */,
 				2D73EA22160CD07600A1F570 /* PlayerSettingsViewController.xib */,
@@ -766,7 +750,7 @@
 			isa = PBXGroup;
 			children = (
 				2B3D11AF0F4361940067FD3A /* LoginViewController.h */,
-				2B3D11B00F4361940067FD3A /* LoginViewController.mm */,
+				2B3D11B00F4361940067FD3A /* LoginViewController.m */,
 				2B3D11AC0F4361380067FD3A /* LoginViewController.xib */,
 				111CFA9014520EC700D56207 /* ForgotViewController.h */,
 				111CFA9114520EC700D56207 /* ForgotViewController.m */,
@@ -803,6 +787,10 @@
 			isa = PBXGroup;
 			children = (
 				29B97316FDCFA39411CA2CEA /* main.mm */,
+				2B3D18D40F4B25720067FD3A /* AppModel.h */,
+				2B3D18D50F4B25720067FD3A /* AppModel.m */,
+				AB18AEB8137B249A00382826 /* AppServices.h */,
+				AB18AEB9137B249A00382826 /* AppServices.m */,
 				1D3623240D0F684500981E51 /* ARISAppDelegate.h */,
 				1D3623250D0F684500981E51 /* ARISAppDelegate.m */,
 				28A0AB4B0D9B1048005BE974 /* ARIS_Prefix.pch */,
@@ -811,7 +799,6 @@
 				A7149F9C0FB89DC8008BAB5D /* Settings.bundle */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				2B3D17040F49C9920067FD3A /* Model */,
-				AA93121816C17D2300130773 /* PopOvers */,
 				A763B5230F4E283100FDCC55 /* MyCLController.h */,
 				A763B5240F4E283100FDCC55 /* MyCLController.m */,
 				AB42A66711D69F1500FD6D4B /* ARISMoviePlayerViewController.h */,
@@ -827,18 +814,6 @@
 				DD3C285016F3BF0D00CBC085 /* Logger.m */,
 			);
 			name = "Core App";
-			sourceTree = "<group>";
-		};
-		AA93121816C17D2300130773 /* PopOvers */ = {
-			isa = PBXGroup;
-			children = (
-				DDC495D916407DE500D4C063 /* PopOverViewController.h */,
-				DDC495DA16407DE500D4C063 /* PopOverViewController.m */,
-				DDC495DB16407DE500D4C063 /* PopOverViewController.xib */,
-				AA763154169B68A800860665 /* PopOverContentView.h */,
-				AA763155169B68A800860665 /* PopOverContentView.m */,
-			);
-			name = PopOvers;
 			sourceTree = "<group>";
 		};
 		AABD101316B7164C007278EF /* CrittercismSDK */ = {
@@ -1155,6 +1130,8 @@
 			children = (
 				4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */,
 				4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */,
+				89D8B25417820182002A53CA /* CustomBadge.h */,
+				89D8B25317820182002A53CA /* CustomBadge.m */,
 				DBFEDCE21761160F009C080A /* UIImage+ */,
 				DB0743961754FE210068A1DB /* QuiltView */,
 				AABD101316B7164C007278EF /* CrittercismSDK */,
@@ -1183,7 +1160,6 @@
 				DBEDC70D174AC6D4004C8966 /* InnovAudioEnums.h */,
 				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteDelegate.h */,
-				DBFEDCEB176125D7009C080A /* InnovLogInDelegate.h */,
 			);
 			name = "Header Files";
 			sourceTree = "<group>";
@@ -1199,6 +1175,8 @@
 		DB1A8AE8174D55570052DDC6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				89F99AEF17866A7900DEB46F /* ProgressButton.h */,
+				89F99AF017866A7900DEB46F /* ProgressButton.m */,
 				DB0F405E1772175E00F19934 /* InnovPopOverView.h */,
 				DB0F405F1772175E00F19934 /* InnovPopOverView.m */,
 				DB0F406117721A3B00F19934 /* InnovPopOverSocialContentView.h */,
@@ -1212,8 +1190,6 @@
 				DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */,
 				ABDA40B210506AF400823A94 /* AnnotationView.h */,
 				ABDA40B310506AF400823A94 /* AnnotationView.m */,
-				DB0712421770BCD60069E15A /* InnovNoteCell.h */,
-				DB0712431770BCD60069E15A /* InnovNoteCell.m */,
 				DB071204176F80220069E15A /* InnovCommentCell.h */,
 				DB071205176F80220069E15A /* InnovCommentCell.m */,
 				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
@@ -1280,6 +1256,9 @@
 				DB02C62C173AE6FD00A31D55 /* InnovNoteViewController.h */,
 				DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */,
 				DB02C62E173AE6FD00A31D55 /* InnovNoteViewController.xib */,
+				89D8B260178228F7002A53CA /* InnovCommentViewController.h */,
+				89D8B261178228F7002A53CA /* InnovCommentViewController.m */,
+				89D8B262178228F7002A53CA /* InnovCommentViewController.xib */,
 				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
 				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
 				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
@@ -1369,7 +1348,6 @@
 				A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */,
 				A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */,
 				A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */,
-				A76048E70FC1B6DE00219A53 /* QRCodeProtocol.h in Resources */,
 				A798301B0FCB1F8100C1C2E7 /* RoundedBackground.png in Resources */,
 				ABDA40C310506AF400823A94 /* player.png in Resources */,
 				ABB925CA10C8581B00B09506 /* item.png in Resources */,
@@ -1407,7 +1385,6 @@
 				1117649A143A716600044812 /* buttonborder.png in Resources */,
 				1117649B143A716600044812 /* buttonborder2.png in Resources */,
 				1117649C143A716600044812 /* mappoint.png in Resources */,
-				11566434144A414D006902C2 /* ChangePasswordViewController.xib in Resources */,
 				111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */,
 				ABAFBAC5145A0B810044491C /* Bascom Hill.gpx in Resources */,
 				ABAFBAC6145A0B810044491C /* Engage Offices.gpx in Resources */,
@@ -1446,7 +1423,6 @@
 				2DEE862315E6BEF500F506CE /* img.png in Resources */,
 				2D73EA24160CD07600A1F570 /* PlayerSettingsViewController.xib in Resources */,
 				3A69944B1625F6610015B48A /* newBanner.png in Resources */,
-				DDC495DD16407DE500D4C063 /* PopOverViewController.xib in Resources */,
 				AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */,
 				DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */,
 				DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */,
@@ -1481,6 +1457,7 @@
 				DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */,
 				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
+				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1530,7 +1507,7 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.mm in Sources */,
 				1D3623260D0F684500981E51 /* ARISAppDelegate.m in Sources */,
-				2B3D11B10F4361940067FD3A /* LoginViewController.mm in Sources */,
+				2B3D11B10F4361940067FD3A /* LoginViewController.m in Sources */,
 				2B3D12EC0F4382070067FD3A /* AccountSettingsViewController.m in Sources */,
 				2B3D17070F49C99B0067FD3A /* Game.m in Sources */,
 				2B3D18D60F4B25720067FD3A /* AppModel.m in Sources */,
@@ -1564,7 +1541,6 @@
 				11DD5422141E70D00007CD70 /* DropOnMapViewController.m in Sources */,
 				11DD5428141E79160007CD70 /* DDAnnotation.m in Sources */,
 				11DD5429141E79160007CD70 /* DDAnnotationView.m in Sources */,
-				11566433144A414D006902C2 /* ChangePasswordViewController.m in Sources */,
 				111CFA9314520EC700D56207 /* ForgotViewController.m in Sources */,
 				11B28B9D14C4AD1700759BCD /* Tag.m in Sources */,
 				AB9ECB4614DE4B5B00E5E74B /* AsyncMediaPlayerButton.m in Sources */,
@@ -1581,8 +1557,6 @@
 				2D2669821623487000342A7E /* UIImage+Alpha.m in Sources */,
 				2D2669831623487000342A7E /* UIImage+RoundedCorner.m in Sources */,
 				2D26698616234CE400342A7E /* UIImage+fixOrientation.m in Sources */,
-				DDC495DC16407DE500D4C063 /* PopOverViewController.m in Sources */,
-				AA763156169B68A800860665 /* PopOverContentView.m in Sources */,
 				DDD0603216C3019500C5F37E /* JSONKit.m in Sources */,
 				DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */,
 				DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */,
@@ -1601,13 +1575,15 @@
 				DBFEDCE717611939009C080A /* TagCell.m in Sources */,
 				DB071206176F80230069E15A /* InnovCommentCell.m in Sources */,
 				DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */,
-				DB0712441770BCD70069E15A /* InnovNoteCell.m in Sources */,
 				DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */,
 				DB07125C1770EA870069E15A /* SimpleMailShare.m in Sources */,
 				DB07125E1770EA870069E15A /* SimpleTwitterShare.m in Sources */,
 				DB0712631770EE960069E15A /* ViewControllerHelper.m in Sources */,
 				DB0F40601772175E00F19934 /* InnovPopOverView.m in Sources */,
 				DB0F406317721A3B00F19934 /* InnovPopOverSocialContentView.m in Sources */,
+				89D8B25517820182002A53CA /* CustomBadge.m in Sources */,
+				89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */,
+				89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1653,8 +1629,8 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jacob Hanshaw (Q56AX76JEP)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jacob Hanshaw (Q56AX76JEP)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1786,8 +1762,8 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jacob Hanshaw (Q56AX76JEP)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jacob Hanshaw (Q56AX76JEP)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

@@ -18,8 +18,7 @@
  NSString *const kNoteContentTypeText = @"TEXT";
 
 @implementation Note
-@synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,text,title,kind,numRatings,username,delegate,dropped,showOnMap,showOnList,userLiked,hasImage,hasAudio,tags,tagSection,tagName,latitude,longitude;
-@synthesize displayname;
+@synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,kind,numRatings,delegate,dropped,showOnMap,showOnList,userLiked,tags,latitude,longitude, username, displayname, userFlagged, facebookShareCount, twitterShareCount, pinterestShareCount, emailShareCount, text, audioMediaId, imageMediaId, title;
 
 -(nearbyObjectKind) kind { return NearbyObjectNote; }
 
@@ -27,7 +26,6 @@
     self = [super init];
     if (self) {
 		kind = NearbyObjectNote;
-        iconMediaId = 71;
         self.comments = [NSMutableArray arrayWithCapacity:5];
         self.contents = [NSMutableArray arrayWithCapacity:5];
         self.tags = [NSMutableArray arrayWithCapacity:5];
@@ -58,24 +56,10 @@
     return  NO;
 }
 
-- (int)	iconMediaId {
-    return 71;
-}
-
 - (BOOL)compareTo:(Note *)other
 {    
-   /* if([self.contents count] != [other.contents count]) return NO;
-    
-    for (int i = 0; i < [self.contents count]; ++i)
-    {
-        if((NSObject <NoteContentProtocol> *)[[self.contents objectAtIndex:i] managedObjectContext] !=  (NSObject <NoteContentProtocol> *)[[other.contents objectAtIndex:i] managedObjectContext])
-            return NO;
-        if(![[[self.contents objectAtIndex:i] getUploadState] isEqualToString:[[other.contents objectAtIndex:i] getUploadState]])
-            return NO;
-        
-        if(((NoteContent *)[self.contents objectAtIndex:i]).mediaId != ((NoteContent *)[self.contents objectAtIndex:i]).mediaId)
-            return NO;
-    } */
+   // if([self.contents count] != [other.contents count]) return NO;
+    //note.imageMediaId note.audioMediaId note.text
     
     return  self.noteId         == other.noteId; /*  &&
             self.creatorId      == other.creatorId &&

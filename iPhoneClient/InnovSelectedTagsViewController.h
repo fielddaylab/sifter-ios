@@ -6,21 +6,11 @@
 //
 //
 
+#import "InnovNoteModel.h"
 #import "InnovDisplayProtocol.h"
 
-//@class Tag;
-
-/*
-@protocol InnovSelectedTagsDelegate <NSObject>
-@required
-- (void) updateContentSelector: (ContentSelector) selector;
-- (void) addTag:    (Tag *) tag;
-- (void) removeTag: (Tag *) tag;
-
-@end
-*/
 @interface InnovSelectedTagsViewController : UIViewController <InnovDisplayProtocol>
 
-//@property(nonatomic, weak) id<InnovSelectedTagsDelegate> delegate;
+- (void)updateSelectedContent:(ContentSelector) selector;
 
 @end

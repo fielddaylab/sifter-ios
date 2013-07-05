@@ -19,11 +19,21 @@
 
 #import <FacebookSDK/FacebookSDK.h>
 #import "SimpleFacebookShare.h"
+#import "AppServices.h"
 #import "SVProgressHUD.h"
 
-@implementation SimpleFacebookShare {
+@interface SimpleFacebookShare()
+{
     NSString *appActionLink;
 }
+
+@property(nonatomic, readwrite) int noteId;
+
+@end
+
+@implementation SimpleFacebookShare 
+
+@synthesize noteId;
 
 - (id)initWithAppName:(NSString *)theAppName appUrl:(NSString *)theAppUrl {
     self = [super init];
@@ -76,8 +86,9 @@
 }
 
 //NEW METHOD
-- (void)shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString
+- (void)shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId
 {
+    self.noteId = aNoteId;
     [self _shareInitalParams:@{
      @"picture"     : imageURL,
      @"name"        : title,
@@ -135,7 +146,7 @@
         }];
     }
 }
-
+//MODIFIED METHOD
 - (void)_shareParams:(NSDictionary *)params {
     __weak SimpleFacebookShare *selfForBlock = self;
     [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:params handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
@@ -144,12 +155,15 @@
             [SVProgressHUD showErrorWithStatus:@"Saving Error."];
         } else {
             NSDictionary *resultParams = [selfForBlock _parseURLParams:[resultURL query]];
-            if ([resultParams valueForKey:@"post_id"]) {
-                [SVProgressHUD showSuccessWithStatus:@"Success"];
-            }
-            else if ([resultParams valueForKey:@"error_code"]) {
+            if ([resultParams valueForKey:@"error_code"])
+            {
                 [SVProgressHUD showErrorWithStatus:@"An Error Has Occured."];
                 NSLog(@"Error: %@", [resultParams valueForKey:@"error_msg"]);
+            }
+            else if ([resultParams valueForKey:@"post_id"])
+            {
+                [SVProgressHUD showSuccessWithStatus:@"Success"];
+                [[AppServices sharedAppServices] sharedNoteToFacebook: selfForBlock.noteId];
             }
         }
     }];

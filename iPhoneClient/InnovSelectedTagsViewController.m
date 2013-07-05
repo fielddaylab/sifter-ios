@@ -125,9 +125,16 @@
     [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
 }
 
+- (void)updateSelectedContent:(ContentSelector) selector
+{
+    contentSelectorSegCntrl.selectedSegmentIndex = selector;
+    selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
+    [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
+}
+
 #pragma mark TableView DataSource and Delegate Methods
 
--(void)updateTags
+- (void)updateTags
 {
     tags = [InnovNoteModel sharedNoteModel].allTags;
     selectedTags = [InnovNoteModel sharedNoteModel].selectedTags;

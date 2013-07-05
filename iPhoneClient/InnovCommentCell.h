@@ -6,10 +6,19 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+#define AUTHOR_ROW_HEIGHT 36
+
+@protocol InnovCommentCellDelegate <NSObject>
+@required
+-(void) deleteButtonPressed:(UIButton *)sender;
+-(void) presentLogIn;
+@end
+
+@class Note;
 
 @interface InnovCommentCell : UITableViewCell
 
-@property (nonatomic) UITextView *textView;
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andDelegate:(id<InnovCommentCellDelegate>) aDelegate;
+-(void) updateWithNote:(Note *) aNote andIndex:(int) index;
 
 @end

@@ -7,5 +7,4 @@
 //
 
 @interface InnovViewController : UIViewController
-
 @end

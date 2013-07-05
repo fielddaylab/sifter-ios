@@ -6,8 +6,6 @@
 //
 //
 
-#import <MapKit/MapKit.h>
-
 @protocol InnovPresentNoteDelegate;
 
 @protocol InnovMapViewDelegate <NSObject>

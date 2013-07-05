@@ -12,9 +12,8 @@
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
+#import "NoteContent.h"
 #import "Tag.h"
-
-#define NOTES_PER_FETCH 50
 
 @interface InnovNoteModel()
 {
@@ -72,7 +71,7 @@
 {
     if ([AppServices sharedAppServices].isCurrentlyFetchingGameNoteList)
     {
-        [NSTimer scheduledTimerWithTimeInterval:0.5
+        [NSTimer scheduledTimerWithTimeInterval:1.0
                                          target:self
                                        selector:@selector(fetchMoreNotes)
                                        userInfo:nil
@@ -80,19 +79,20 @@
     }
     else
     {
+        [AppServices sharedAppServices].shouldIgnoreResults = NO;
         switch (selectedContent)
         {
             case kTop:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreTopNotesStartingFrom:[allNotes count]];
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreTopNotesStartingFrom:    [allNotes count]];
                 break;
             case kPopular:
                 [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePopularNotesStartingFrom:[allNotes count]];
                 break;
             case kRecent:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreRecentNotesStartingFrom:[allNotes count]];
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH moreRecentNotesStartingFrom: [allNotes count]];
                 break;
             case kMine:
-                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePlayerNotesStartingFrom:[allNotes count]];
+                [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH morePlayerNotesStartingFrom: [allNotes count]];
                 break;
             default:
                 break;
@@ -196,24 +196,28 @@
 -(void) updateNote:(Note *) note
 {
     [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
-    Note *noteToRemove;
-    for(Note *existingNote in availableNotes)
+    int indexToRemove = -1;
+    for(int i = 0; i < [availableNotes count]; ++i)
     {
+        Note *existingNote = [availableNotes objectAtIndex:i];
         if(note.noteId == existingNote.noteId)
         {
-            noteToRemove = existingNote;
+            indexToRemove = i;
             break;
         }
     }
     
-    if(noteToRemove)
+    if(indexToRemove != -1)
     {
-        [availableNotes removeObject:noteToRemove];
-        [self sendLostNotesNotif:[NSArray arrayWithObject:noteToRemove]];
+        [self sendLostNotesNotif:[NSArray arrayWithObject:[availableNotes objectAtIndex:indexToRemove]]];
+        [availableNotes removeObjectAtIndex:indexToRemove];
     }
     if([self noteShouldBeAvailable:note])
     {
-        [availableNotes addObject:note];
+        if(indexToRemove >= [availableNotes count])
+            [availableNotes addObject:note];
+        else
+            [availableNotes insertObject:note atIndex:indexToRemove];
         [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
     }
     
@@ -246,7 +250,7 @@
     Note *note = [allNotes objectForKey:[NSNumber numberWithInt:noteId]];
     
     if(!note && note.noteId != 0)
-        [[AppServices sharedAppServices] fetchGameNoteListAsynchronously:YES];
+        [[AppServices sharedAppServices] fetchNote:note.noteId];
     //else
     //    [self updateNoteContentsWithNote:note];
 #warning Consider
@@ -258,20 +262,25 @@
 -(BOOL) noteShouldBeAvailable: (Note *) note
 {
 #warning POSSIBLY CHANGE
+    if([note.tags count] == 0) return NO;
+    
     if(selectedContent != kMine)
     {
         BOOL match = NO;
         for(Tag *tag in selectedTags)
         {
-            if([note.tags count] > 0)
-                if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId) match = YES;
+            if (((Tag *)[note.tags objectAtIndex:0]).tagId == tag.tagId)
+            {
+                match = YES;
+                break;
+            }
         }
         if(!match) return NO;
     }
     for(NSString *searchTerm in searchTerms)
-        if([note.title.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
+        if([note.username.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.text.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
     
-    return YES;
+    return (note.imageMediaId != 0);
 }
 
 -(void) addTag: (Tag *) addTag
@@ -319,6 +328,7 @@
 -(void) setSelectedContent: (ContentSelector) contentSelector
 {
     selectedContent = contentSelector;
+    [AppServices sharedAppServices].shouldIgnoreResults = YES;
     [self clearData];
     [self fetchMoreNotes];
 }

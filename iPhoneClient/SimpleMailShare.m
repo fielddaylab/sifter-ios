@@ -18,12 +18,13 @@
 //  limitations under the License.
 
 #import "SimpleMailShare.h"
-
+#import "AppServices.h"
 #import "SVProgressHUD.h"
 #import "ViewControllerHelper.h"
 
 @implementation SimpleMailShare {
     MFMailComposeViewController *mailComposeViewController;
+    int noteId;
 }
 
 - (void) dealloc {
@@ -35,13 +36,12 @@
 }
 
 //New Method
-- (void) shareText:(NSString *) text asHTML:(BOOL) html withImage:(NSData *)image andSubject:(NSString *) subject toRecipients:(NSArray *) recipients
+- (void) shareText:(NSString *) text asHTML:(BOOL) html withImage:(NSData *)image andSubject:(NSString *) subject toRecipients:(NSArray *) recipients fromNote:(int)aNoteId
 {
     if ([self canSendMail]) {
-        
+        noteId = aNoteId;
         mailComposeViewController.mailComposeDelegate = nil;
         mailComposeViewController = [[MFMailComposeViewController alloc] init];
-        mailComposeViewController.mailComposeDelegate = self;
         mailComposeViewController.mailComposeDelegate = self;
         if(recipients)
             [mailComposeViewController setToRecipients:recipients];
@@ -90,7 +90,10 @@
 
 #pragma mark - MFMailComposeViewControllerDelegate
 
-- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+- (void) mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    if(result == MFMailComposeResultSent)
+        [[AppServices sharedAppServices] sharedNoteToEmail:noteId];
     [mailComposeViewController dismissModalViewControllerAnimated:YES];
 }
 

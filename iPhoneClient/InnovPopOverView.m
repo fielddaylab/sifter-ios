@@ -64,7 +64,8 @@
     for(UITouch *touch in touches)
     {
         CGPoint point = [touch locationInView:self];
-         if(!CGRectContainsPoint(contentView.frame, point)) [self removeFromSuperview];
+         if(!CGRectContainsPoint(contentView.frame, point))
+             [self removeFromSuperview];
     }
    
 }

@@ -8,10 +8,10 @@
 //
 
 #import "InnovViewController.h"
-#import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
+#import "ARISAppDelegate.h"
 #import "Note.h"
 #import "InnovNoteModel.h"
 #import "InnovPresentNoteDelegate.h"
@@ -24,20 +24,14 @@
 #import "InnovNoteViewController.h"
 #import "InnovNoteEditorViewController.h"
 
-
-#define GAME_ID                         3371 //for arisgames.org/yoi
-//#define GAME_ID                         3434 //for dev.arisgames.org/server
-
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovListViewDelegate, InnovLogInDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteViewDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
     
     __weak IBOutlet UIView *contentView;
-    
-    NSTimer *refreshTimer;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;
@@ -51,7 +45,6 @@
     
     Note *noteToAdd;
     NSString *currentSearchTerm;
-    ContentSelector currentSearchAlgorithm;
 }
 
 @end
@@ -61,44 +54,14 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
+    if (self)
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
-    }
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    CGRect frame = [UIScreen mainScreen].applicationFrame;
-    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
-    self.view.frame = frame;
-    
-#warning unimplemented: change game and finalize settings
-    
-    Game *game = [[Game alloc] init];
-    game.gameId                   = GAME_ID;
-    game.hasBeenPlayed            = YES;
-    game.isLocational             = YES;
-    game.showPlayerLocation       = YES;
-    game.allowNoteComments        = YES;
-    game.allowNoteLikes           = YES;
-    game.rating                   = 5;
-    game.pcMediaId                = 0;
-    game.numPlayers               = 10;
-    game.playerCount              = 5;
-    game.gdescription             = @"Fun";
-    game.name                     = @"Note Share";
-    game.authors                  = @"Jacob Hanshaw";
-    game.mapType                  = @"STREET";
-#warning get rid of this and only use note model
-    [AppModel sharedAppModel].currentGame = game;
-    [AppModel sharedAppModel].playerId = 7;
-    [AppModel sharedAppModel].userName = @"Anonymous";
-    [AppModel sharedAppModel].loggedIn = NO;
-    
-#warning find out why this is necessary
-    [AppModel sharedAppModel].serverURL = [NSURL URLWithString:@"http://dev.arisgames.org/server"];
     
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
@@ -152,16 +115,9 @@
     selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
     selectedTagsVC.view.frame = selectedTagsFrame;
     
-    showTagsButton.layer.cornerRadius = 4.0f;
-    
 	trackingButton.selected = YES;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
-    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
-    
-    [mapVC updatePlayerLocation];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -175,6 +131,11 @@
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
+    
+    if([[InnovNoteModel sharedNoteModel].availableNotes count] == 0)
+        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
+        [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -182,7 +143,7 @@
     [super viewDidAppear:animated];
     
     if(noteToAdd != nil)
-        [self animateInNote:noteToAdd];
+        [self animateInNote];
 }
 
 #pragma mark Display New Note
@@ -190,31 +151,21 @@
 - (void) prepareToDisplayNote: (Note *) note
 {
     noteToAdd = note;
-    #warning could be different
+#warning could be different
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = @"";
-    [[InnovNoteModel sharedNoteModel] setSelectedContent:kMine];
+    [selectedTagsVC updateSelectedContent:kMine];
 }
 
-- (void) animateInNote: (Note *) note
+- (void) animateInNote
 {
     if ([contentView.subviews containsObject:mapVC.view])
-        [mapVC showNotePopUpForNote:note];
+        [mapVC showNotePopUpForNote:noteToAdd];
     else
-        [listVC animateInNote:note];
+        [listVC animateInNote:noteToAdd];
     noteToAdd = nil;
 }
-/*
-#pragma mark Refresh
 
-- (void) refresh
-{
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
-    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
-    
-    [mapVC updatePlayerLocation];
-}
-*/
 #pragma mark Search Bar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -272,7 +223,7 @@
 
 - (IBAction)cameraPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
@@ -311,42 +262,14 @@
 - (void) presentLogIn
 {
     LoginViewController *logInVC = [[LoginViewController alloc] init];
-    logInVC.delegate = self;
     [self.navigationController pushViewController:logInVC animated:YES];
 }
 
 #pragma mark Login and Game Selection
-- (void)createUserAndLoginWithGroup:(NSString *)groupName andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
-{
-	[AppModel sharedAppModel].museumMode = museumMode;
-    
-	[[AppServices sharedAppServices] createUserAndLoginWithGroup:[NSString stringWithFormat:@"%d-%@", gameId, groupName]];
-    
-    if(gameId != 0)
-    {
-        [AppModel sharedAppModel].skipGameDetails = YES;
-        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
-    }
-}
-
-- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
-{
-	[AppModel sharedAppModel].userName = userName;
-	[AppModel sharedAppModel].password = password;
-	[AppModel sharedAppModel].museumMode = museumMode;
-    
-	[[AppServices sharedAppServices] login];
-    
-    if(gameId != 0)
-    {
-        [AppModel sharedAppModel].skipGameDetails = YES;
-        [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
-    }
-}
 
 - (void)checkForLogInFail
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
         [alert show];

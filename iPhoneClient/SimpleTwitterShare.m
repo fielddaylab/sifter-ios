@@ -20,6 +20,7 @@
 #import <Twitter/Twitter.h>
 #import <Social/Social.h>
 #import "SimpleTwitterShare.h"
+#import "AppServices.h"
 #import "ViewControllerHelper.h"
 #import "SVProgressHUD.h"
 
@@ -47,7 +48,7 @@
     return NO;
 }
 
-- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString
+- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId
 {
     if ([self canSendTweet])
     {
@@ -79,6 +80,7 @@
                 [twitterControllerForBlock dismissViewControllerAnimated:YES completion:nil];
                 if (result == SLComposeViewControllerResultDone) {
                     [SVProgressHUD showSuccessWithStatus:@"Success"];
+                    [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
                 }
                 
             };

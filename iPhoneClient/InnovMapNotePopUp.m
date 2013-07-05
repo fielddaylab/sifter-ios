@@ -60,14 +60,11 @@
 {
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
         
-        textLabel.text = [note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
+#warning SHould be unnecessary. Made for new notes
         if([note.contents count] > 0)
         {
-            for(NoteContent *noteContent in note.contents)
-            {
-                if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
-                    [imageView loadImageFromMedia:[noteContent getMedia]];
-            }
+            [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+            textLabel.text = note.text;
         }
         else
         {

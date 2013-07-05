@@ -13,6 +13,8 @@ typedef enum {
     kMine
 } ContentSelector;
 
+#define NOTES_PER_FETCH 50
+
 @class Note, Tag;
 
 @interface InnovNoteModel : NSObject
@@ -28,7 +30,6 @@ typedef enum {
 -(void) addNote:(Note *) note;
 -(void) updateNote:(Note *) note;
 -(void) removeNote:(Note *) note;
-
 -(Note *) noteForNoteId:(int) noteId;
 
 -(void) addTag: (Tag *) tag;
@@ -36,7 +37,5 @@ typedef enum {
 -(void) addSearchTerm: (NSString *) term;
 -(void) removeSearchTerm: (NSString *) term;
 -(void) setSelectedContent: (ContentSelector) contentSelector;
-
--(void) updateNoteContentsWithNote: (Note *) note;
 
 @end

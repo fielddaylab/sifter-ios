@@ -7,75 +7,49 @@
 //
 
 #import "InnovNoteViewController.h"
-#import <CoreAudio/CoreAudioTypes.h>
-#import <QuartzCore/QuartzCore.h>
 
-//#import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "InnovAudioEnums.h"
 #import "Note.h"
+#import "NoteContent.h"
 #import "Tag.h"
 #import "Logger.h"
 
 #import "InnovPopOverView.h"
 #import "InnovPopOverSocialContentView.h"
-#import "InnovCommentCell.h"
-#import "DAKeyboardControl.h"
+#import "LoginViewController.h"
+#import "InnovCommentViewController.h"
 #import "AsyncMediaImageView.h"
 #import "InnovNoteEditorViewController.h"
 #import "ARISMoviePlayerViewController.h"
 
-#define ANIMATION_TIME      0.5
-
 #define IMAGE_X_MARGIN      0
 #define IMAGE_Y_MARGIN      0
 
-#define BUTTON_WIDTH        30
-#define BUTTON_HEIGHT       30
+#define BUTTON_WIDTH        36
+#define BUTTON_HEIGHT       36
 
-#define COMMENT_BAR_HEIGHT          24//46
-#define COMMENT_BAR_HEIGHT_MAX      80
-#define COMMENT_BAR_X_MARGIN        10
-#define COMMENT_BAR_Y_MARGIN        6
-#define COMMENT_BAR_BUTTON_WIDTH    58
+#define DEFAULT_FONT        [UIFont fontWithName:@"Helvetica" size:14]
 
-#define DEFAULT_TEXT                @"Add a comment..."
-#define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
-#define DEFAULT_TEXTVIEW_MARGIN     8
-#define ADJUSTED_TEXTVIEW_MARGIN    0
-
-#define EXPAND_INDEX                 3
-#define EXPAND_TEXT                  @".   .   ."
-#define DEFAULT_MAX_VISIBLE_COMMENTS 5
- 
-static NSString * const NOTE_CELL_ID    = @"NoteCell";
-static NSString * const COMMENT_CELL_ID = @"CommentCell";
-
-@interface InnovNoteViewController ()<UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, InnovNoteEditorViewDelegate>
+@interface InnovNoteViewController ()<InnovNoteEditorViewDelegate>
 {
-    __weak IBOutlet UITableView *noteTableView;
-    
-    UIToolbar       *addCommentBar;
-    UITextView      *addCommentTextView;
-    UIBarButtonItem *addCommentButton;
+    UIScrollView *noteView;
     
     AsyncMediaImageView *imageView;
+    UIButton *playButton;
     UILabel  *usernameLabel;
     UIButton *flagButton;
-    UIButton *playButton;
     UIButton *likeButton;
     UIButton *shareButton;
+    UIButton *commentButton;
     UITextView *captionTextView;
     
     Note *note;
-    Note *noteComment;
     UIBarButtonItem *editButton;
     
-    BOOL expanded;
 	InnovAudioViewerModeType mode;
     ARISMoviePlayerViewController *ARISMoviePlayer;
-    
 }
 
 @end
@@ -87,10 +61,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if (self)
+    {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIfNoteLiked)     name:@"NewLoginResponseReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
@@ -102,110 +75,78 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    CGRect frame = [UIScreen mainScreen].applicationFrame;
-    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
-    self.view.frame = frame;
-
+    
     editButton = [[UIBarButtonItem alloc] initWithTitle: @"Edit"
                                                   style: UIBarButtonItemStyleDone
                                                  target:self
                                                  action:@selector(editButtonTouchAction:)];
     
+    noteView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+    noteView.bounces = NO;
+    [self.view addSubview:noteView];
+    
     ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
     ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
-    ARISMoviePlayer.moviePlayer.view.hidden = YES;
-    [self.view addSubview:ARISMoviePlayer.view];
+    ARISMoviePlayer.moviePlayer.view.hidden    = YES;
+    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
+    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
-    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
-#warning never changed; Could do messages and update from model
-    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
-    
-    addCommentBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
-                                                                self.view.bounds.size.height - COMMENT_BAR_HEIGHT,
-                                                                self.view.bounds.size.width,
-                                                                COMMENT_BAR_HEIGHT)];
-    addCommentBar.barStyle = UIBarStyleBlackOpaque;
-    addCommentBar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:addCommentBar];
-    
-    addCommentTextView =      [[UITextView alloc] initWithFrame:CGRectMake(COMMENT_BAR_X_MARGIN,
-                                                                           COMMENT_BAR_Y_MARGIN,
-                                                                           addCommentBar.bounds.size.width - (2 * COMMENT_BAR_X_MARGIN)  - (COMMENT_BAR_BUTTON_WIDTH + COMMENT_BAR_X_MARGIN),
-                                                                           COMMENT_BAR_HEIGHT-COMMENT_BAR_Y_MARGIN*2)];
-    addCommentTextView.delegate            = self;
-    addCommentTextView.layer.cornerRadius  = 9.0f;
-    addCommentTextView.font                = DEFAULT_FONT;
-    addCommentTextView.contentInset        = UIEdgeInsetsMake(-8,-4,-8,-4);
-    addCommentTextView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [addCommentBar addSubview:addCommentTextView];
-    
-    addCommentButton = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStyleDone target:self action:@selector(addCommentButtonPressed:)];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-    [addCommentBar setItems:[NSArray arrayWithObjects:flex, addCommentButton, nil]];
-    
-    self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
-    
-    [self.view addKeyboardPanningWithActionHandler:^(CGRect keyboardFrameInView) {
-        /*
-         Try not to call "self" inside this block (retain cycle).
-         But if you do, make sure to remove DAKeyboardControl
-         when you are done with the view controller by calling:
-         [self.view removeKeyboardControl];
-         */
-        if (self.isViewLoaded && self.view.window)
-        {
-            CGRect addCommentBarFrame = addCommentBar.frame;
-            addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
-            addCommentBar.frame = addCommentBarFrame;
-            
-            CGRect tableViewFrame = noteTableView.frame;
-            tableViewFrame.size.height = addCommentBarFrame.origin.y;
-            noteTableView.frame = tableViewFrame;
-            
-            [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        }
-    }];
+    [noteView addSubview:ARISMoviePlayer.view];
     
     imageView = [[AsyncMediaImageView alloc] init];
     imageView.frame = CGRectMake(IMAGE_X_MARGIN,
                                  IMAGE_Y_MARGIN,
                                  self.view.frame.size.width - 2 * IMAGE_X_MARGIN,
                                  self.view.frame.size.width - 2 * IMAGE_X_MARGIN);
-#warning change width and add flag
+    [noteView addSubview:imageView];
+    
+    playButton  = [[UIButton alloc] initWithFrame:CGRectMake(IMAGE_X_MARGIN + imageView.frame.size.width -BUTTON_WIDTH,
+                                                             IMAGE_Y_MARGIN + imageView.frame.size.height-BUTTON_HEIGHT,
+                                                             BUTTON_WIDTH,
+                                                             BUTTON_HEIGHT)];
+    playButton.backgroundColor = [UIColor clearColor];
+    [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+    [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateHighlighted];
+	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [noteView addSubview:playButton];
+    
     usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
                                                               IMAGE_Y_MARGIN + imageView.frame.size.height,
-                                                              self.view.frame.size.width-3*BUTTON_WIDTH,
+                                                              self.view.frame.size.width-4*BUTTON_WIDTH,
                                                               BUTTON_HEIGHT)];
     usernameLabel.backgroundColor = [UIColor blackColor];
     usernameLabel.textColor       = [UIColor whiteColor];
+    [noteView addSubview:usernameLabel];
     
-    playButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width,
+    flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.origin.x  + usernameLabel.frame.size.width,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
-    playButton.backgroundColor = [UIColor blackColor];
-    [playButton setTitle:@"PL" forState:UIControlStateNormal];
-    [playButton setTitle:@"PL" forState:UIControlStateHighlighted];
-	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    /*
-    flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
-                                                             IMAGE_Y_MARGIN + imageView.frame.size.height,
-                                                             BUTTON_WIDTH,
-                                                             BUTTON_HEIGHT)];
+    
     flagButton.backgroundColor = [UIColor blackColor];
+    [flagButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
+    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
     [flagButton setTitle:@"F" forState:UIControlStateNormal];
+    [flagButton setTitle:@"F" forState:UIControlStateSelected];
     [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    */
-    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(playButton.frame.origin.x  + BUTTON_WIDTH,
+    [noteView addSubview:flagButton];
+    
+    likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x  + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     likeButton.backgroundColor = [UIColor blackColor];
-    [likeButton setImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
-    [likeButton setImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
+    [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
+    [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [noteView addSubview:likeButton];
     
     shareButton = [[UIButton alloc] initWithFrame:CGRectMake(likeButton.frame.origin.x + BUTTON_WIDTH,
                                                              IMAGE_Y_MARGIN + imageView.frame.size.height,
@@ -215,26 +156,30 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [shareButton setTitle:@"S" forState:UIControlStateNormal];
     [shareButton setTitle:@"S" forState:UIControlStateHighlighted];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [noteView addSubview:shareButton];
+    
+    commentButton = [[UIButton alloc] initWithFrame:CGRectMake(shareButton.frame.origin.x + BUTTON_WIDTH,
+                                                               IMAGE_Y_MARGIN + imageView.frame.size.height,
+                                                               BUTTON_WIDTH,
+                                                               BUTTON_HEIGHT)];
+    commentButton.backgroundColor = [UIColor blackColor];
+    [commentButton setTitle:@"C" forState:UIControlStateNormal];
+    [commentButton setTitle:@"C" forState:UIControlStateHighlighted];
+	[commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [noteView addSubview:commentButton];
     
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0,
                                                                    IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT,
                                                                    self.view.frame.size.width,
                                                                    BUTTON_HEIGHT)];
     captionTextView.contentInset = UIEdgeInsetsMake(-8,-4,-8,-4);
-    captionTextView.delegate = self;
     captionTextView.userInteractionEnabled = NO;
     captionTextView.font = DEFAULT_FONT;
+    [noteView addSubview:captionTextView];
 }
 
 - (void)viewDidUnload
 {
-    noteTableView = nil;
-    addCommentBar = nil;
-    addCommentTextView = nil;
-    addCommentButton = nil;
-    
-    [self.view removeKeyboardControl];
-    
     [super viewDidUnload];
 }
 
@@ -243,64 +188,54 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [super viewWillAppear: animated];
     
     if([AppModel sharedAppModel].playerId == self.note.creatorId)
-            self.navigationItem.rightBarButtonItem = editButton;
+        self.navigationItem.rightBarButtonItem = editButton;
     else
-            self.navigationItem.rightBarButtonItem = nil;
-    
-    addCommentTextView.text      = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
-    [self adjustCommentBarToFitText];
+        self.navigationItem.rightBarButtonItem = nil;
     
     if([self.note.tags count] > 0)
         self.title = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
     else
         self.title = @"Note";
     
-    if (self.note.creatorId == [AppModel sharedAppModel].playerId)
-        self.navigationItem.rightBarButtonItem = editButton;
-    else
-        self.navigationItem.rightBarButtonItem = nil;
+    usernameLabel.text = note.username;
     
     mode = kInnovAudioPlayerNoAudio;
-    [self updateButtonsForCurrentMode];
-    [self checkIfNoteLiked];
+    [self updatePlayButtonForCurrentMode];
+    
     [self refreshViewFromModel];
+    [[AppServices sharedAppServices] fetchNote:self.note.noteId];
 }
 
-#pragma mark UITextView methods
+#pragma mark Refresh
 
-- (void) textViewDidBeginEditing:(UITextView *)textView
+- (void)refreshViewFromModel
 {
-    textView.textColor = [UIColor blackColor];
-    if([textView.text isEqualToString:DEFAULT_TEXT]) textView.text = @"";
+    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+    [self updateLikeButton];
+    [flagButton setSelected:self.note.userFlagged];
+    
+    [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+    
+    if(note.audioMediaId)
+    {
+        NSString *audioURL = [[AppModel sharedAppModel] mediaForMediaId:note.audioMediaId].url;
+        if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: audioURL]) {
+            [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:audioURL]];
+            [ARISMoviePlayer.moviePlayer prepareToPlay];
+        }
+        mode = kInnovAudioPlayerAudio;
+        [self updatePlayButtonForCurrentMode];
+    }
+    
+    captionTextView.text = note.text;
+    
+    CGRect frame = captionTextView.frame;
+    frame.size.height = captionTextView.contentSize.height;
+    captionTextView.frame = frame;
+    if(!([captionTextView.text length] > 0))
+        captionTextView.hidden = YES;
+    noteView.contentSize = CGSizeMake(self.view.frame.size.width, IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT + captionTextView.frame.size.height);
 }
-
-- (void) textViewDidChange:(UITextView *)textView
-{
-    [self adjustCommentBarToFitText];
-    [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-}
-
-
-- (void) adjustCommentBarToFitText
-{
-    CGSize size = CGSizeMake(addCommentTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), COMMENT_BAR_HEIGHT_MAX - (2 * COMMENT_BAR_Y_MARGIN));
-    CGFloat newHeight = ([addCommentTextView.text sizeWithFont:addCommentTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN)) + (2 * COMMENT_BAR_Y_MARGIN);
-    CGFloat oldHeight = addCommentBar.frame.size.height;
-    
-    CGRect frame = addCommentBar.frame;
-    frame.size.height = MAX(newHeight, COMMENT_BAR_HEIGHT);
-    frame.origin.y   += oldHeight-frame.size.height;
-    
-    addCommentBar.frame = frame;
-    
-    CGRect tableViewFrame = noteTableView.frame;
-    tableViewFrame.size.height = addCommentBar.frame.origin.y;
-    noteTableView.frame = tableViewFrame;
-    
-    self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
-}
-
 
 #pragma mark Button methods
 
@@ -312,45 +247,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [self.navigationController pushViewController:editVC animated:YES];
 }
 
-- (void) addCommentButtonPressed:(id)sender
-{
-    [addCommentTextView resignFirstResponder];
-    
-    if(![AppModel sharedAppModel].loggedIn)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to comment on notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
-        [alert show];
-    }
-    else if([addCommentTextView.text length] > 0 && ![addCommentTextView.text isEqualToString:DEFAULT_TEXT])
-    {
-        Note *commentNote = [[Note alloc] init];
-        commentNote.noteId = [[AppServices sharedAppServices]addCommentToNoteWithId:self.note.noteId andTitle:@""];
-        
-        commentNote.title = [NSString stringWithFormat:@"%@ -%@", addCommentTextView.text, [AppModel sharedAppModel].userName];
-        commentNote.parentNoteId = self.note.noteId;
-        commentNote.creatorId = [AppModel sharedAppModel].playerId;
-        commentNote.username = [AppModel sharedAppModel].userName;
-#warning probably unnecessary to do this second call
-        [[AppServices sharedAppServices]updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:YES];
-        
-        [self.note.comments insertObject:commentNote atIndex:0];
-        [[InnovNoteModel sharedNoteModel] updateNote:note];
-    }
-    
-    addCommentTextView.text = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
-    
-    [self adjustCommentBarToFitText];
-    
-    [noteTableView reloadData];
-    [noteTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([noteTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(buttonIndex) [delegate presentLogIn];
-}
-
 - (void)playButtonPressed:(id)sender
 {
 	switch (mode) {
@@ -359,13 +255,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 		case kInnovAudioPlayerPlaying:
             [ARISMoviePlayer.moviePlayer stop];
             mode = kInnovAudioPlayerAudio;
-            [self updateButtonsForCurrentMode];
+            [self updatePlayButtonForCurrentMode];
             break;
 			
 		case kInnovAudioPlayerAudio:
             [ARISMoviePlayer.moviePlayer play];
 			mode = kInnovAudioPlayerPlaying;
-			[self updateButtonsForCurrentMode];
+			[self updatePlayButtonForCurrentMode];
             break;
 		default:
 			break;
@@ -374,12 +270,31 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)flagButtonPressed:(id)sender
 {
-#warning unimplemented
+    if([AppModel sharedAppModel].playerId == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to flag notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+        [alert show];
+    }
+    else
+    {
+        if(self.note.userFlagged)
+        {
+            self.note.userFlagged = !flagButton.selected;
+            [[AppServices sharedAppServices]unFlagNote:self.note.noteId];
+            [flagButton setSelected:self.note.userFlagged];
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are You Sure?" message:@"Are you sure you want to mark this content as inappropriate?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            [alert show];
+        }
+        
+    }
 }
 
 - (void)likeButtonPressed:(id)sender
 {
-    if(![AppModel sharedAppModel].loggedIn)
+    if([AppModel sharedAppModel].playerId == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to like notes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
         [alert show];
@@ -394,84 +309,76 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         }
         else
         {
-            [[AppServices sharedAppServices]unLikeNote:self.note.noteId];
+            [[AppServices sharedAppServices] unLikeNote:self.note.noteId];
             self.note.numRatings--;
         }
         [self updateLikeButton];
     }
 }
 
-- (void)updateLikeButton
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    [likeButton setSelected:self.note.userLiked];
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateNormal];
-    [likeButton setTitle:[NSString stringWithFormat:@"%d",note.numRatings] forState:UIControlStateHighlighted];
+    if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0)
+    {
+        LoginViewController *logInVC = [[LoginViewController alloc] init];
+        [self.navigationController pushViewController:logInVC animated:YES];
+    }
+    else if(buttonIndex != 0)
+    {
+        self.note.userFlagged = !flagButton.selected;
+        [[AppServices sharedAppServices]flagNote:self.note.noteId];
+        [flagButton setSelected:self.note.userFlagged];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Thank You" message:@"Thank you for your input. We will look into the matter further and remove inappropriate content." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
+    }
 }
 
 - (void)shareButtonPressed:(id)sender
 {
     InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
     socialContent.note = self.note;
+    [socialContent refreshBadges];
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
     [self.view addSubview:popOver];
 }
 
-#pragma mark Note Contents
-
-- (void)refreshViewFromModel
+- (void)commentButtonPressed:(id)sender
 {
-    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-    [self updateLikeButton];
-    for(int i = 0; i < [self.note.contents count]; ++i)
+    InnovCommentViewController *commentVC = [[InnovCommentViewController alloc] init];
+    commentVC.note = self.note;
+    [self.navigationController pushViewController:commentVC animated:YES];
+}
+
+#pragma mark Update Button Appearance
+
+- (void)updatePlayButtonForCurrentMode
+{
+    playButton.hidden = NO;
+    switch (mode)
     {
-        NoteContent *noteContent = [self.note.contents objectAtIndex:i];
-        if([[noteContent getType] isEqualToString:kNoteContentTypePhoto])
-            [imageView loadImageFromMedia:[noteContent getMedia]];
-        else if ([[noteContent getType] isEqualToString:kNoteContentTypeAudio]) {
-            if (![[ARISMoviePlayer.moviePlayer.contentURL absoluteString] isEqualToString: [noteContent getMedia].url]) {
-                [ARISMoviePlayer.moviePlayer setContentURL: [NSURL URLWithString:[noteContent getMedia].url]];
-                [ARISMoviePlayer.moviePlayer prepareToPlay];
-			}
-            mode = kInnovAudioPlayerAudio;
-            [self updateButtonsForCurrentMode];
-        }
-    }
-    
-    [noteTableView reloadData];
-}
-
-- (void)checkIfNoteLiked
-{
-#warning Called twice if log in from this screen (viewWillAppear and Respond to Log In Notification
-    
-    [[AppServices sharedAppServices] checkIfNoteLiked:self.note.noteId];
-}
-
-#pragma mark Audio Methods
-
-- (void)updateButtonsForCurrentMode{
-    
-    playButton.userInteractionEnabled = YES;
-    
-#warning use new images
-    
-    switch (mode) {
 		case kInnovAudioPlayerNoAudio:
-            playButton.userInteractionEnabled = NO;
-            [playButton setTitle: @"" forState: UIControlStateNormal];
-            [playButton setTitle: @"" forState: UIControlStateHighlighted];
+            playButton.hidden = YES;
 			break;
 		case kInnovAudioPlayerAudio:
-			[playButton setTitle: @"PL" forState: UIControlStateNormal];
-			[playButton setTitle: @"PL" forState: UIControlStateHighlighted];
+            [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+            [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateHighlighted];
 			break;
 		case kInnovAudioPlayerPlaying:
-			[playButton setTitle: @"ST" forState: UIControlStateNormal];
-			[playButton setTitle: @"ST" forState: UIControlStateHighlighted];
+            [playButton setImage:[UIImage imageNamed:@"stop_button.png"] forState:UIControlStateNormal];
+            [playButton setImage:[UIImage imageNamed:@"stop_button.png"] forState:UIControlStateHighlighted];
 			break;
 		default:
 			break;
 	}
+}
+
+- (void)updateLikeButton
+{
+    [likeButton setSelected:self.note.userLiked];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",self.note.numRatings] forState:UIControlStateNormal];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",self.note.numRatings] forState:UIControlStateSelected];
+    [likeButton setTitle:[NSString stringWithFormat:@"%d",self.note.numRatings] forState:UIControlStateHighlighted];
 }
 
 #pragma mark MPMoviePlayerController notifications
@@ -481,7 +388,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     if (ARISMoviePlayer.moviePlayer.playbackState == MPMoviePlaybackStatePlaying)
     {
         mode = kInnovAudioPlayerPlaying;
-        [self updateButtonsForCurrentMode];
+        [self updatePlayButtonForCurrentMode];
     }
 }
 
@@ -491,133 +398,10 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         [self playButtonPressed:nil];
 }
 
-
-#pragma mark Table view methods
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    if([note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS && !expanded)
-        return DEFAULT_MAX_VISIBLE_COMMENTS + 1;
-    else
-        return [note.comments count] + 1;
-}
-
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(indexPath.row == 0)
-    {
-        CGSize size = CGSizeMake(captionTextView.frame.size.width - (2 * ADJUSTED_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-        NSString *text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-        CGFloat captionTextViewHeight = [text sizeWithFont:captionTextView.font constrainedToSize:size].height + (2 * ADJUSTED_TEXTVIEW_MARGIN);
-        if(!([text length] > 0))
-            captionTextViewHeight = -4;
-#warning MAGIC NUMBER
-        return imageView.frame.size.height + BUTTON_HEIGHT + captionTextViewHeight + 4;
-    }
-    else
-    {
-        CGSize size = CGSizeMake(self.view.frame.size.width - (2 * DEFAULT_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-        
-        NSString *text;
-        if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-            text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
-        else if(!expanded && indexPath.row == EXPAND_INDEX)
-            text      = EXPAND_TEXT;
-        else
-            text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
-        
-        return [text sizeWithFont:DEFAULT_FONT constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN);
-    }
-}
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell;
-    if(indexPath.row == 0)
-    {
-        cell = [tableView dequeueReusableCellWithIdentifier:NOTE_CELL_ID];
-        if(!cell)
-        {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NOTE_CELL_ID];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            [cell addSubview:imageView];
-            [cell addSubview:usernameLabel];
-            [cell addSubview:flagButton];
-            [cell addSubview:playButton];
-            [cell addSubview:likeButton];
-            [cell addSubview:shareButton];
-            [cell addSubview:captionTextView];
-        }
-        
-        usernameLabel.text = [self.note.title substringFromIndex:([self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location + 1)];
-        
-        captionTextView.text = [self.note.title substringToIndex: [self.note.title rangeOfString:@"#" options:NSBackwardsSearch].location];
-        CGRect frame = captionTextView.frame;
-        frame.size.height = captionTextView.contentSize.height;
-        captionTextView.frame = frame;
-        if(!([captionTextView.text length] > 0))
-            captionTextView.hidden = YES;
-        return cell;
-    }
-    else
-    {
-        InnovCommentCell *cell = [tableView dequeueReusableCellWithIdentifier:COMMENT_CELL_ID];
-        if(!cell)
-        {
-            cell = [[InnovCommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:COMMENT_CELL_ID];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.textView.font = DEFAULT_FONT;
-        }
-        
-        if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
-        {
-            cell.textView.userInteractionEnabled = NO;
-            cell.textView.textAlignment = NSTextAlignmentCenter;
-            cell.textView.text          = EXPAND_TEXT;
-        }
-        else
-        {
-            cell.textView.userInteractionEnabled = YES;
-            cell.textView.textAlignment = NSTextAlignmentLeft;
-            if(expanded || indexPath.row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-                cell.textView.text      = ((Note *)[note.comments objectAtIndex:[note.comments count]-indexPath.row]).title;
-            else
-                cell.textView.text      = ((Note *)[note.comments objectAtIndex:(DEFAULT_MAX_VISIBLE_COMMENTS-indexPath.row)]).title;
-            
-            CGRect frame = cell.textView.frame;
-            frame.size.height = cell.textView.contentSize.height;
-            cell.textView.frame = frame;
-        }
-        return cell;
-    }
-}
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [addCommentTextView resignFirstResponder];
-    
-    if(![addCommentTextView.text length])
-    {
-        addCommentTextView.text = DEFAULT_TEXT;
-        addCommentTextView.textColor = [UIColor lightGrayColor];
-        [self adjustCommentBarToFitText];
-    }
-    
-    if(!expanded && indexPath.row == 3)
-    {
-        expanded = YES;
-        [tableView reloadData];
-    }
-}
-
-#pragma mark Remove Mem
+#pragma mark Remove Memory
 
 - (void)dealloc
 {
-    [[AVAudioSession sharedInstance] setDelegate: nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

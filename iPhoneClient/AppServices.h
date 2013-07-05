@@ -6,26 +6,16 @@
 //  Copyright 2011 University of Wisconsin. All rights reserved.
 //
 
-#import "AppModel.h"
+@class JSONResult;
+
 #import "MyCLController.h"
-#import "Game.h"
-#import "Media.h"
-#import "JSONResult.h"
-#import "JSONConnection.h"
-#import "JSONResult.h"
-#import "JSON.h"
-#import "ARISAppDelegate.h"
-#import "Comment.h"
-#import "Note.h"
-#import "NoteContent.h"
-#import "Tag.h"
-#import "ARISUploader.h"
 
 @interface AppServices : NSObject
 
 extern NSString *const kARISServerServicePackage;
 
 @property(readwrite) BOOL isCurrentlyFetchingGameNoteList;
+@property(readwrite) BOOL shouldIgnoreResults;
 
 + (AppServices *)sharedAppServices;
 
@@ -42,20 +32,15 @@ extern NSString *const kARISServerServicePackage;
 - (void)uploadPlayerPicMediaWithFileURL:(NSURL *)fileURL;
 - (void)updatePlayer:(int)playerId withName:(NSString *)name andImage:(int)mid;
 - (void)resetAndEmailNewPassword:(NSString *)email;
-- (void)setShowPlayerOnMap;
-
 - (void)fetchOneGameGameList:(int)gameId;
-
-- (void)fetchTabBarItemsForGame:(int)gameId; //This should probably just be part of "fetchGame".
 
 //Fetch Game Data (ONLY CALLED ONCE PER GAME!!)
 - (void)fetchGameMediaListAsynchronously:    (BOOL)YesForAsyncOrNoForSync;
 - (void)fetchGameNoteTagsAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
-- (void)fetchGameNoteListAsynchronously:     (BOOL)YesForAsyncOrNoForSync;
 
 //Get Specific Data (technically, these being called is a sign that the "fetch game data" functions failed somewhere...)
 - (void)fetchMedia:(int)mediaId;
-- (Note *)fetchNote:(int)noteId;
+- (void)fetchNote:(int)noteId;
 
 -(void) fetch:(int) noteCount moreTopNotesStartingFrom:     (int) lastLocation;
 -(void) fetch:(int) noteCount morePopularNotesStartingFrom: (int) lastLocation;
@@ -81,23 +66,25 @@ extern NSString *const kARISServerServicePackage;
 - (void)updateCommentWithId:(int)noteId andTitle:(NSString *)title andRefresh:(BOOL)refresh;
 - (void)likeNote:(int)noteId;
 - (void)unLikeNote:(int)noteId;
-- (void)checkIfNoteLiked:(int) noteId;
+- (void)flagNote:(int)noteId;
+- (void)unFlagNote:(int)noteId;
+- (void)sharedNoteToFacebook:(int)noteId;
+- (void)sharedNoteToTwitter:(int)noteId;
+- (void)sharedNoteToPinterest:(int)noteId;
+- (void)sharedNoteToEmail:(int)noteId;
 
 //Tell server of state
 - (void)updateServerWithPlayerLocation;
 
 //Parse server responses
-- (NSMutableArray *)parseGameListFromJSON:(JSONResult *)jsonResult;
 - (void)parseGameMediaListFromJSON:       (JSONResult *)jsonResult;
 - (void)parseGameNoteListFromJSON:        (JSONResult *)jsonResult;
 - (void)parseGameTagsListFromJSON:        (JSONResult *)jsonResult;
 
 //Parse individual pieces of server response
-- (Game *)     parseGameFromDictionary:     (NSDictionary *)gameSource;
 - (Note *)     parseNoteFromDictionary:     (NSDictionary *)noteDictionary;
 
-- (void)sendNotificationToNoteViewer;
+- (void)sendNotificationToNoteViewer: (NSDictionary *) userInfo;
 - (void)sendNotificationToNotebookViewer;
-- (void)startOverGame:(int)gameId;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "UploadMan.h"
 #import "AppServices.h"
+#import "Reachability.h"
 
 @implementation UploadMan
 @synthesize uploadContentsForNotes;

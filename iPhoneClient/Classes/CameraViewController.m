@@ -8,6 +8,7 @@
 
 #import "CameraViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <QuartzCore/QuartzCore.h>
 #import <ImageIO/ImageIO.h>
 
 #import "InnovViewController.h"
@@ -20,6 +21,8 @@
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
+
+#import "NoteContent.h"
 
 #define BUTTON_Y_OFFSET      10
 #define BUTTON_WIDTH         78
@@ -41,16 +44,16 @@
     UIButton *libraryButton;
     UIImagePickerController *picker;
     
-    BOOL bringUpCamera;
-	NSData *mediaData;
-	NSString *mediaFilename;
+    BOOL bringUpCamera;	
 }
+
+@property(nonatomic) NSData *mediaData;
 
 @end
 
 @implementation CameraViewController
 
-@synthesize noteId, backView, editView;
+@synthesize noteId, backView, editView, mediaData;
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
     if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
@@ -152,23 +155,25 @@
     
     UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
     image = [self cropImage:image];
-    mediaData = UIImageJPEGRepresentation(image, 0.02);
+    self.mediaData = UIImageJPEGRepresentation(image, 0.02);
     
-    [self.editView updateImageView:mediaData];
+    [self.editView updateImageView:self.mediaData];
     
-    mediaData = [self dataWithEXIFUsingData:mediaData];
+    self.mediaData = [self dataWithEXIFUsingData:self.mediaData];
     
     NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
     NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
     [mediaData writeToURL:imageURL atomically:YES];
     
     [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
-        // If image not selected from camera roll
-        if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
-        {
+    
+    __weak CameraViewController *selfForBlock = self;
+    if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
+            // If image not selected from camera roll
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
-            [al writeImageDataToSavedPhotosAlbum:mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
+            [al writeImageDataToSavedPhotosAlbum:selfForBlock.mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
              {
                  [al assetForURL:assetURL resultBlock:^(ALAsset *asset){}
                     failureBlock:^(NSError *error)
@@ -178,8 +183,8 @@
                   }
                   ];
              }];
-        }
-    });
+        });
+    }
     
     [self.navigationController popViewControllerAnimated:YES];
 }

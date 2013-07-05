@@ -14,9 +14,6 @@
 @implementation AppModel
 
 @synthesize serverURL;
-@synthesize showGamesInDevelopment;
-@synthesize showPlayerOnMap;
-@synthesize loggedIn;
 @synthesize userName;
 @synthesize groupName;
 @synthesize groupGame;
@@ -95,40 +92,10 @@
 	NSLog(@"ARIS: Loading User Defaults");
 	[defaults synchronize];
     
-    NSURL *currServ = [NSURL URLWithString:[defaults stringForKey:@"baseServerString"]];
-    
-    if ([[currServ absoluteString] isEqual:@"http://arisgames.org/server1"] ||
-        [[currServ absoluteString] isEqual:@"http://arisgames.org/stagingserver1/"] ||
-        [[currServ absoluteString] isEqual:@""])
-    {
-        NSString *updatedURL = @"http://arisgames.org/server";
-        [defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:updatedURL] forKey:@"baseServerString"];
-        [defaults synchronize];
-        currServ = [NSURL URLWithString:updatedURL];
-    }
-    if (self.serverURL && ![currServ isEqual:self.serverURL])
-    {
-        [[AppModel sharedAppModel].mediaCache clearCache];
-        NSLog(@"NSNotification: LogoutRequested");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"LogoutRequested" object:self]];
-        self.serverURL = currServ;
-        return;
-    }
-    self.serverURL = currServ;
-    if(self.showGamesInDevelopment != [defaults boolForKey:@"showGamesInDevelopment"])
-    {
-        self.showGamesInDevelopment = [defaults boolForKey:@"showGamesInDevelopment"];
-        NSLog(@"NSNotification: LogoutRequested");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"LogoutRequested" object:self]];
-        return;
-    }
-    
     //Safe to load defaults
     
-    if(!self.loggedIn)
+    if(self.playerId == 0)
     {
-        self.showPlayerOnMap = [defaults boolForKey:@"showPlayerOnMap"];
-        self.loggedIn        = [defaults boolForKey:@"loggedIn"];
         self.playerId        = [defaults integerForKey:@"playerId"];
         self.playerMediaId   = [defaults integerForKey:@"playerMediaId"];
         self.userName        = [defaults objectForKey:@"userName"];
@@ -150,13 +117,11 @@
 {
 	NSLog(@"Clearing User Defaults");
     [AppModel sharedAppModel].currentGame = nil;
-    [AppModel sharedAppModel].loggedIn       = NO;
     [AppModel sharedAppModel].playerId       = 0;
     [AppModel sharedAppModel].fallbackGameId = 0;
     [AppModel sharedAppModel].playerMediaId  = -1;
     [AppModel sharedAppModel].userName       = @"";
     [AppModel sharedAppModel].displayName    = @"";
-    [defaults setBool:loggedIn          forKey:@"loggedIn"];
     [defaults setInteger:playerId       forKey:@"playerId"];
     [defaults setInteger:fallbackGameId forKey:@"gameId"];
     [defaults setInteger:playerMediaId  forKey:@"playerMediaId"];
@@ -173,7 +138,6 @@
 	[defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVerison"];
 	[defaults setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBuildNumber"]   forKey:@"buildNum"];
     
-	[defaults setBool:loggedIn                    forKey:@"loggedIn"];
     [defaults setInteger:playerId                 forKey:@"playerId"];
     [defaults setInteger:playerMediaId            forKey:@"playerMediaId"];
     [defaults setInteger:fallbackGameId           forKey:@"gameId"];
@@ -198,39 +162,6 @@
 
 -(void)initUserDefaults
 {
-	//Load the settings bundle data into an array
-	NSString *pathStr            = [[NSBundle mainBundle] bundlePath];
-	NSString *settingsBundlePath = [pathStr stringByAppendingPathComponent:@"Settings.bundle"];
-	NSString *finalPath          = [settingsBundlePath stringByAppendingPathComponent:@"Root.plist"];
-	NSDictionary *settingsDict   = [NSDictionary dictionaryWithContentsOfFile:finalPath];
-	NSArray *prefSpecifierArray  = [settingsDict objectForKey:@"PreferenceSpecifiers"];
-	
-	//Find the Defaults
-	NSString *baseAppURLDefault = @"Unknown Default";
-    NSNumber *showGamesInDevelopmentDefault,*showPlayerOnMapDefault;
-	NSDictionary *prefItem;
-	for (prefItem in prefSpecifierArray)
-	{
-		NSString *keyValueStr = [prefItem objectForKey:@"Key"];
-		
-		if ([keyValueStr isEqualToString:@"baseServerString"])
-            baseAppURLDefault = [prefItem objectForKey:@"DefaultValue"];
-        if ([keyValueStr isEqualToString:@"showGamesInDevelopment"])
-			showGamesInDevelopmentDefault = [prefItem objectForKey:@"DefaultValue"];
-        if ([keyValueStr isEqualToString:@"showPlayerOnMap"])
-			showPlayerOnMapDefault = [prefItem objectForKey:@"DefaultValue"];
-    }
-	
-	// since no default values have been set (i.e. no preferences file created), create it here
-	NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys: 
-								 baseAppURLDefault,  @"baseServerString",
-                                 showGamesInDevelopmentDefault , @"showGamesInDevelopment",
-                                 showPlayerOnMapDefault,@"showPlayerOnMap",
-								 nil];
-	
-	[[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
-	[[NSUserDefaults standardUserDefaults] synchronize];
-    
     uploadManager = [[UploadMan alloc]  init];
     mediaCache    = [[MediaCache alloc] init];
 }
