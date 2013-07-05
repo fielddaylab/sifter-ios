@@ -9,6 +9,7 @@
 @class JSONResult;
 
 #import "MyCLController.h"
+#import "InnovNoteModel.h"
 
 @interface AppServices : NSObject
 
@@ -42,10 +43,7 @@ extern NSString *const kARISServerServicePackage;
 - (void)fetchMedia:(int)mediaId;
 - (void)fetchNote:(int)noteId;
 
--(void) fetch:(int) noteCount moreTopNotesStartingFrom:     (int) lastLocation;
--(void) fetch:(int) noteCount morePopularNotesStartingFrom: (int) lastLocation;
--(void) fetch:(int) noteCount moreRecentNotesStartingFrom:  (int) lastLocation;
--(void) fetch:(int) noteCount morePlayerNotesStartingFrom:  (int) lastLocation;
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFrom: (int) lastLocation ;
 
 //Note Stuff
 - (int)createNote;
