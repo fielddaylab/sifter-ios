@@ -20,13 +20,13 @@
 {
     NSMutableDictionary *allNotes;
     NSMutableArray *availableNotes;
+    NSArray *notifNotesCounts;
     NSMutableArray *arrayOfArraysByType;
     NSArray *allTags;
     NSMutableArray *selectedTags;
     NSMutableArray *searchTerms;
     
     BOOL unprocessedNotifs;
-    NSArray *notifNotesCounts;
     
     ContentSelector selectedContent;
 }
@@ -35,7 +35,7 @@
 
 @implementation InnovNoteModel
 
-@synthesize availableNotes, allTags, selectedTags;
+@synthesize availableNotes, notifNotesCounts, allTags, selectedTags;
 
 + (id)sharedNoteModel
 {

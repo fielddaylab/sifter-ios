@@ -15,6 +15,7 @@
 
 @property(nonatomic) id<InnovPopOverNotifContentViewDelegate> delegate;
 
+- (void) refreshFromModel;
 - (IBAction)sliderValueChanged:(id)sender;
 - (IBAction)saveButtonPressed:(id)sender;
 

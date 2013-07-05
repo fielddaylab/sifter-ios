@@ -21,6 +21,7 @@ typedef enum {
 @interface InnovNoteModel : NSObject
 
 @property(nonatomic, readonly) NSArray *availableNotes;
+@property(nonatomic, readonly) NSArray *notifNotesCounts;
 @property(nonatomic, readonly) NSArray *allTags;
 @property(nonatomic, readonly) NSArray *selectedTags;
 

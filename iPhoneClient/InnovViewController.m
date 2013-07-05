@@ -262,6 +262,7 @@
 {
     InnovPopOverNotifContentView *notifView = [[InnovPopOverNotifContentView alloc] init];
     notifView.delegate = self;
+    [notifView refreshFromModel];
     popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:notifView];
     [self.view addSubview:popOver];
 }

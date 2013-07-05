@@ -46,6 +46,18 @@
     return self;
 }
 
+- (void) refreshFromModel
+{
+    if ([InnovNoteModel sharedNoteModel].notifNotesCounts != nil)
+    {
+        topNotesSlider.value      = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kTop] intValue];
+        popularNotesSlider.value  = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kPopular] intValue];
+        recentNotesSlider.value   = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kRecent] intValue];
+        myRecentNotesSlider.value = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kMine] intValue];
+        [self updateLabels];
+    }
+}
+
 - (IBAction)sliderValueChanged:(UISlider *)sender
 {
     [sender setValue:((int)(sender.value + 0.5)) animated:NO];
@@ -65,13 +77,13 @@
 - (void)decrementIndexesOtherThan:(ContentSelector) index
 {
     while((((int)((UISlider *)[allSliders objectAtIndex:kTop]).value) + ((int)((UISlider *)[allSliders objectAtIndex:kPopular]).value)
-          + ((int)((UISlider *)[allSliders objectAtIndex:kRecent]).value) + ((int)((UISlider *)[allSliders objectAtIndex:kMine]).value)) > MAX_OBSERVABLE_LOCATIONS)
+           + ((int)((UISlider *)[allSliders objectAtIndex:kRecent]).value) + ((int)((UISlider *)[allSliders objectAtIndex:kMine]).value)) > MAX_OBSERVABLE_LOCATIONS)
     {
         int r;
         while((r = arc4random() % kNumContents) == index);
         
         if(((UISlider *)[allSliders objectAtIndex:r]).value > 0)
-          ((UISlider *)[allSliders objectAtIndex:r]).value  -= 1;
+            ((UISlider *)[allSliders objectAtIndex:r]).value  -= 1;
     }
 }
 
@@ -116,12 +128,12 @@
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end
