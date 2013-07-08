@@ -188,6 +188,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         imageView.userInteractionEnabled = YES;
         
+        [editNoteTableView reloadData];
+        
         if([self.note.tags count] > 0)
         {
             originalTagId = ((Tag *)[self.note.tags objectAtIndex:0]).tagId;
@@ -853,7 +855,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         
         newTagName = cell.nameLabel.text;
-        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
         
         self.title = newTagName;
     }

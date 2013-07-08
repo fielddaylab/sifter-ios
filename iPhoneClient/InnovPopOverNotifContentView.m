@@ -7,6 +7,8 @@
 //
 
 #import "InnovPopOverNotifContentView.h"
+
+#import "AppModel.h"
 #import "InnovNoteModel.h"
 
 #define MAX_OBSERVABLE_LOCATIONS 20
@@ -60,6 +62,8 @@
 
 - (IBAction)sliderValueChanged:(UISlider *)sender
 {
+    if(sender != myRecentNotesSlider || [AppModel sharedAppModel].playerId != 0)
+    {
     [sender setValue:((int)(sender.value + 0.5)) animated:NO];
     
     if(sender == topNotesSlider)
@@ -70,6 +74,14 @@
         [self decrementIndexesOtherThan:kRecent];
     else if (sender == myRecentNotesSlider)
         [self decrementIndexesOtherThan:kMine];
+    }
+    else
+    {
+        [myRecentNotesSlider setValue:((int)(sender.value + 0.5)) animated:NO];
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to receive notifications about notes you created." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
+    }
     
     [self updateLabels];
 }

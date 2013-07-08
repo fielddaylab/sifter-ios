@@ -100,25 +100,25 @@
 - (void) setUpNotifications
 {
     
-    if([[notifNotesCounts objectAtIndex:kTop] intValue] > [[arrayOfArraysByType objectAtIndex:kTop] count])
+    if([[notifNotesCounts objectAtIndex:kTop] intValue] > [[arrayOfArraysByType objectAtIndex:kTop] count] && ([[arrayOfArraysByType objectAtIndex:kTop] count] % NOTES_PER_FETCH == 0))
     {
         unprocessedNotifs = YES;
         [self fetchMoreNotesOfType:kTop];
         return;
     }
-    else if([[notifNotesCounts objectAtIndex:kPopular] intValue] > [[arrayOfArraysByType objectAtIndex:kPopular] count])
+    else if([[notifNotesCounts objectAtIndex:kPopular] intValue] > [[arrayOfArraysByType objectAtIndex:kPopular] count] && ([[arrayOfArraysByType objectAtIndex:kPopular] count] % NOTES_PER_FETCH == 0))
     {
         unprocessedNotifs = YES;
         [self fetchMoreNotesOfType:kPopular];
         return;
     }
-    else if([[notifNotesCounts objectAtIndex:kRecent] intValue] > [[arrayOfArraysByType objectAtIndex:kRecent] count])
+    else if([[notifNotesCounts objectAtIndex:kRecent] intValue] > [[arrayOfArraysByType objectAtIndex:kRecent] count] && ([[arrayOfArraysByType objectAtIndex:kRecent] count] % NOTES_PER_FETCH == 0))
     {
         unprocessedNotifs = YES;
         [self fetchMoreNotesOfType:kRecent];
         return;
     }
-    else if([[notifNotesCounts objectAtIndex:kMine] intValue]> [[arrayOfArraysByType objectAtIndex:kMine] count])
+    else if([[notifNotesCounts objectAtIndex:kMine] intValue]> [[arrayOfArraysByType objectAtIndex:kMine] count] && ([[arrayOfArraysByType objectAtIndex:kMine] count] % NOTES_PER_FETCH == 0))
     {
         unprocessedNotifs = YES;
         [self fetchMoreNotesOfType:kMine];
@@ -130,7 +130,7 @@
     
     for(int i = 0; i < kNumContents; ++i)
     {
-        for(int j = 0; j < [[notifNotesCounts objectAtIndex:i] intValue]; ++j)
+        for(int j = 0; j < MIN([[notifNotesCounts objectAtIndex:i] intValue], [[arrayOfArraysByType objectAtIndex:i] count]); ++j)
         {
             [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:j]];
         }

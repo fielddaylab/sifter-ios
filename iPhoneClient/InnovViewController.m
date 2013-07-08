@@ -46,14 +46,13 @@
     InnovSelectedTagsViewController *selectedTagsVC;
     InnovPopOverView *popOver;
     
+    Note *noteToAdd;
     NSString *currentSearchTerm;
 }
 
 @end
 
 @implementation InnovViewController
-
-@synthesize noteToAdd;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -147,7 +146,10 @@
     [super viewDidAppear:animated];
     
     if(noteToAdd != nil)
-        [self animateInNote];
+    {
+        [self animateInNote:noteToAdd];
+        noteToAdd = nil;
+    }
 }
 
 #pragma mark Display New Note
@@ -161,13 +163,12 @@
     [selectedTagsVC updateSelectedContent:kMine];
 }
 
-- (void) animateInNote
+- (void) animateInNote: (Note *) note
 {
     if ([contentView.subviews containsObject:mapVC.view])
-        [mapVC showNotePopUpForNote:noteToAdd];
+        [mapVC showNotePopUpForNote:note];
     else
-        [listVC animateInNote:noteToAdd];
-    noteToAdd = nil;
+        [listVC animateInNote:note];
 }
 
 #pragma mark Search Bar Delegate Methods

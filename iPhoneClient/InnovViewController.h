@@ -8,5 +8,5 @@
 
 @class Note;
 @interface InnovViewController : UIViewController
-@property(nonatomic) Note *noteToAdd;
+- (void) animateInNote: (Note *) note;
 @end

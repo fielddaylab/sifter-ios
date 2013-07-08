@@ -175,7 +175,7 @@ static NSString * const CELL_ID = @"Cell";
     float totalContentHeight = aScrollView.contentSize.height;
     float bottomInset        = aScrollView.contentInset.bottom;
     
-    if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && [notes count] > NOTES_PER_FETCH)
+    if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && ([notes count] % NOTES_PER_FETCH == 0))
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 /*

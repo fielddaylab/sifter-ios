@@ -44,7 +44,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"Call Stack: %@", exception.callStackSymbols);
 }
 
-- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
@@ -88,8 +88,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     //Init keys in UserDefaults in case the user has not visited the ARIS Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
 	[[AppModel sharedAppModel] initUserDefaults];
-
+    
     innov = [[InnovViewController alloc] init];
+    
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
     if([window respondsToSelector:@selector(setRootViewController:)])
         [window setRootViewController:nav];
@@ -97,10 +98,10 @@ void uncaughtExceptionHandler(NSException *exception) {
         [window addSubview:nav.view];
     
     [Crittercism enableWithAppID: @"5101a46d59e1bd498c000002"];
-
+    
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])
-       innov.noteToAdd = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+        [innov animateInNote: [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]]];
     
     return YES;
 }
@@ -129,16 +130,35 @@ void uncaughtExceptionHandler(NSException *exception) {
 	NSLog(@"ARIS: Application Became Active");
 	[[AppModel sharedAppModel]       loadUserDefaults];
     [[AppServices sharedAppServices] resetCurrentlyFetchingVars];
-
+    
     if([AppModel sharedAppModel].fallbackGameId != 0 && ![AppModel sharedAppModel].currentGame)
         [[AppServices sharedAppServices] fetchOneGameGameList:[AppModel sharedAppModel].fallbackGameId];
-        
+    
     [[[AppModel sharedAppModel]uploadManager] checkForFailedContent];
     
-    [[InnovNoteModel sharedNoteModel] clearAllData];
+    //[[InnovNoteModel sharedNoteModel] clearAllData];
     
     [simpleFacebookShare handleDidBecomeActive];
     [[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    if (application.applicationState == UIApplicationStateInactive )
+    {
+        [innov.navigationController popToRootViewControllerAnimated:YES];
+        
+        NSDictionary *localNotifOptions = notification.userInfo;
+        if([localNotifOptions objectForKey:@"noteId"])
+            [innov animateInNote: [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]]];
+        //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
+        //If the visible view controller in your view controller stack isn't the one you need then show the right one.
+    }
+    
+    if(application.applicationState == UIApplicationStateActive )
+    {
+        //The application received a notification in the active state, so you can display an alert view or do something appropriate.
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -161,14 +181,14 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void) playAudioAlert:(NSString*)wavFileName shouldVibrate:(BOOL)shouldVibrate
 {
-	if (shouldVibrate == YES) [NSThread detachNewThreadSelector:@selector(vibrate) toTarget:self withObject:nil];	
+	if (shouldVibrate == YES) [NSThread detachNewThreadSelector:@selector(vibrate) toTarget:self withObject:nil];
 	[NSThread detachNewThreadSelector:@selector(playAudio:) toTarget:self withObject:wavFileName];
 }
 
 - (void)playAudio:(NSString*)wavFileName
 {
 	NSURL* url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:wavFileName ofType:@"wav"]];
-
+    
     [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategorySoloAmbient error: nil];
     [[AVAudioSession sharedInstance] setActive: YES error: nil];
     
@@ -192,7 +212,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)vibrate
 {
-	AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);  
+	AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 #pragma mark Memory Management
