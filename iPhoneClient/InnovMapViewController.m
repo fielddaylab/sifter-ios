@@ -14,6 +14,7 @@
 #import "Logger.h"
 #import "Note.h"
 #import "Tag.h"
+#import "WildcardGestureRecognizer.h"
 
 #import "Annotation.h"
 #import "AnnotationView.h"
@@ -80,6 +81,20 @@
     notePopUp.hidden   = YES;
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
+    
+    
+    NSString *reqSysVer = @"6.0";
+    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+    if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedDescending)
+    {        
+        WildcardGestureRecognizer * tapInterceptor = [[WildcardGestureRecognizer alloc] init];
+        __weak InnovMapViewController *weakSelf = self;
+        tapInterceptor.touchesBeganCallback = ^(NSSet * touches, UIEvent * event) {
+            [weakSelf touchesBegan:nil withEvent:nil];
+            [[weakSelf.navigationController.viewControllers objectAtIndex:0] touchesBegan:nil withEvent:nil];
+        };
+        [mapView addGestureRecognizer:tapInterceptor];
+    } 
 }
 
 - (void)viewDidAppear:(BOOL)animated
