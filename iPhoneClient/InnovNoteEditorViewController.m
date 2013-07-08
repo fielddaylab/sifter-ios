@@ -228,9 +228,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     {
         self.note = [[Note alloc] init];
         self.note.text =  DEFAULT_TEXT;
-        self.note.creatorId = [AppModel sharedAppModel].playerId;
-        self.note.username = [AppModel sharedAppModel].userName;
-        self.note.noteId = [[AppServices sharedAppServices] createNoteStartIncomplete];
+        self.note.creatorId   = [AppModel sharedAppModel].playerId;
+#warning Probably useless to put in user/display name
+        self.note.username    = [AppModel sharedAppModel].userName;
+        self.note.displayname = [AppModel sharedAppModel].displayName;
+        self.note.noteId      = [[AppServices sharedAppServices] createNoteStartIncomplete];
         isEditing = NO;
         newNote = YES;
 #warning should allows show on List and Map?

@@ -18,8 +18,9 @@
 //  limitations under the License.
 
 #import <Foundation/Foundation.h>
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface SimpleFacebookShare : NSObject
+@interface SimpleFacebookShare : NSObject <FBLoginViewDelegate>
 
 - (id)initWithAppName:(NSString *)theAppName appUrl:(NSString *)theAppUrl;
 - (BOOL) handleOpenURL:(NSURL *)theUrl;

@@ -108,8 +108,10 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
+    BOOL facebook = [simpleFacebookShare handleOpenURL:url];
+    
     if (!url)
-        return NO;
+        return facebook;
     
     NSString *strPath = [[url host] lowercaseString];
     if ([strPath isEqualToString:@"games"] || [strPath isEqualToString:@"game"])
@@ -118,7 +120,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[AppServices sharedAppServices] fetchOneGameGameList:[gameID intValue]];
     }
     return YES;
-    //return [simpleFacebookShare handleOpenURL:url];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {

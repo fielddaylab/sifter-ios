@@ -224,7 +224,8 @@
     [exifDict setObject:datetime forKey:(NSString*)kCGImagePropertyExifDateTimeDigitized];
     
     NSString *gameName = [AppModel sharedAppModel].currentGame.name;
-    NSString *descript = [[NSString alloc] initWithFormat: @"%@ %@: %@. %@: %@", NSLocalizedString(@"CameraImageTakenKey", @""), NSLocalizedString(@"CameraGameKey", @""), gameName, NSLocalizedString(@"CameraPlayerKey", @""), [[AppModel sharedAppModel] userName]];
+    NSString *nameToDisplay = ([[AppModel sharedAppModel].displayName length] > 0) ? [AppModel sharedAppModel].displayName : [AppModel sharedAppModel].userName;
+    NSString *descript = [[NSString alloc] initWithFormat: @"%@ %@: %@. %@: %@", NSLocalizedString(@"CameraImageTakenKey", @""), NSLocalizedString(@"CameraGameKey", @""), gameName, NSLocalizedString(@"CameraPlayerKey", @""), nameToDisplay];
     [exifDict setDescription: descript];
     
     //Ignore since it's nonsense

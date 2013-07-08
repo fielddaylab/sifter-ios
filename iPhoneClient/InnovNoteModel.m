@@ -363,8 +363,11 @@
         }
         if(!match) return NO;
     }
+    
+    NSString *author = ([note.displayname length] > 0) ? note.displayname : note.username;
+    
     for(NSString *searchTerm in searchTerms)
-        if([note.username.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.text.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
+        if([author.lowercaseString rangeOfString:searchTerm].location == NSNotFound && [note.text.lowercaseString rangeOfString:searchTerm].location == NSNotFound) return NO;
     
     return (note.imageMediaId != 0);
 }

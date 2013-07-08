@@ -211,6 +211,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         commentNote.parentNoteId = self.note.noteId;
         commentNote.creatorId = [AppModel sharedAppModel].playerId;
         commentNote.username = [AppModel sharedAppModel].userName;
+        commentNote.displayname = [AppModel sharedAppModel].displayName;
 #warning probably unnecessary to do this second call
         [[AppServices sharedAppServices]updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:YES];
         

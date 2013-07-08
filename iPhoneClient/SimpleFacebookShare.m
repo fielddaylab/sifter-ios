@@ -17,10 +17,11 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import <FacebookSDK/FacebookSDK.h>
 #import "SimpleFacebookShare.h"
+
 #import "AppServices.h"
 #import "SVProgressHUD.h"
+#import "ViewControllerHelper.h"
 
 @interface SimpleFacebookShare()
 {
@@ -107,53 +108,61 @@
     }
 }
 
-- (void)_shareAndReauthorize:(NSDictionary *)params {
-    if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound) {
+- (void)_shareAndReauthorize:(NSDictionary *)params
+{
+    __weak SimpleFacebookShare *selfForBlock = self;
+    if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound)
+    {
         [FBSession.activeSession requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_actions"]
                                               defaultAudience:FBSessionDefaultAudienceFriends
-                                            completionHandler:^(FBSession *session, NSError *error) {
-                                                if (!error) {
+                                            completionHandler:^(FBSession *session, NSError *error)
+        {
+                                                if (!error)
+                                                {
                                                     NSLog(@"Authorization Error: %@", error);
                                                     [SVProgressHUD showErrorWithStatus:@"Authorization Error"];
                                                 }
-                                                else {
-                                                    [self _shareParams:params];
+                                                else 
+                                                    [selfForBlock _shareParams:params];
 
-                                                }
                                             }];
     }
-    else {
+    else 
         [self _shareParams:params];
-    }
 }
 
 - (void)_shareAndOpenSession:(NSDictionary *)params {
-
-    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
-        [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            [self _shareAndReauthorize:params];
+    __weak SimpleFacebookShare *selfForBlock = self;
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
+    {
+        [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
+        {
+            [selfForBlock _shareAndReauthorize:params];
         }];
     }
     else {
         [FBSession openActiveSessionWithPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            if (error) {
+            if (error)
+            {
                 NSLog(@"Authorization Error: %@", error);
                 [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
             }
-            else {
-                [self _shareAndReauthorize:params];
-            }
+            else
+                [selfForBlock _shareAndReauthorize:params];
         }];
     }
 }
 //MODIFIED METHOD
 - (void)_shareParams:(NSDictionary *)params {
     __weak SimpleFacebookShare *selfForBlock = self;
-    [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:params handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
-        if (error) {
+    [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:params handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error)
+    {
+        if (error)
+        {
             NSLog(@"Saving Error: %@", error);
             [SVProgressHUD showErrorWithStatus:@"Saving Error."];
-        } else {
+        }
+        else {
             NSDictionary *resultParams = [selfForBlock _parseURLParams:[resultURL query]];
             if ([resultParams valueForKey:@"error_code"])
             {
@@ -169,16 +178,26 @@
     }];
 }
 
+/*     [simpleFacebookShare getUsernameWithCompletionHandler:^(NSString *username, NSError *error){
+ //empty
+ NSLog(@"STUFF");
+ }]; */
+#warning below methods likely unused
 - (void)getUsernameWithCompletionHandler:(void (^)(NSString *username, NSError *error))completionHandler {
-    if (completionHandler) {
-        if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded) {
+    if (completionHandler)
+    {
+        if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
+        {
             __weak SimpleFacebookShare *selfForBlock = self;
-            [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+            [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
+            {
                 [selfForBlock _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
 
             }];
         }
-        [self _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
+        else
+            [self _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
+#warning Else wasn't here before
     }
 }
 
@@ -190,27 +209,29 @@
                                   completionHandler(nil, error);
                               }
                               else {
+                               //   NSString *facebookID = [result objectForKey:@"id"];
                                   NSString *username = [result objectForKey:@"name"];
                                   completionHandler(username, nil);
                               }
                           }];
 }
 
-- (BOOL)isLoggedIn {
+- (BOOL)isLoggedIn
+{
     FBSessionState state = FBSession.activeSession.state;
-    if (state == FBSessionStateOpen || state == FBSessionStateCreatedTokenLoaded || state == FBSessionStateOpenTokenExtended) {
+    if (state == FBSessionStateOpen || state == FBSessionStateCreatedTokenLoaded || state == FBSessionStateOpenTokenExtended) 
         return YES;
-    }
-    else {
-        return NO;
-    }
+    
+    return NO;
 }
 
-- (void)close {
+- (void)close
+{
     [FBSession.activeSession close];
 }
 
-- (void)handleDidBecomeActive {
+- (void)handleDidBecomeActive
+{
     [FBSession.activeSession handleDidBecomeActive];
 }
 
@@ -228,5 +249,57 @@
     return params;
 }
 
+#pragma mark Login Button Delegate Methods
+
+- (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView
+{
+    //log in to user, wait for user info
+}
+
+- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
+{
+    //should never get here
+}
+
+- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
+                            user:(id<FBGraphUser>)user
+{
+    [[AppServices sharedAppServices] loginWithFacebookEmail:[user objectForKey:@"email"] displayName:user.first_name andId:user.id];
+   // [((UINavigationController *)[ViewControllerHelper getCurrentRootViewController]) popToRootViewControllerAnimated:YES];
+}
+
+- (void)loginView:(FBLoginView *)loginView
+      handleError:(NSError *)error {
+    NSString *alertMessage, *alertTitle;
+    if (error.fberrorShouldNotifyUser) {
+        // If the SDK has a message for the user, surface it. This conveniently
+        // handles cases like password change or iOS6 app slider state.
+        alertTitle = @"Facebook Error";
+        alertMessage = error.fberrorUserMessage;
+    } else if (error.fberrorCategory == FBErrorCategoryAuthenticationReopenSession) {
+        // It is important to handle session closures since they can happen
+        // outside of the app. You can inspect the error for more context
+        // but this sample generically notifies the user.
+        alertTitle = @"Session Error";
+        alertMessage = @"Your current session is no longer valid. Please log in again.";
+    } else if (error.fberrorCategory == FBErrorCategoryUserCancelled) {
+        // The user has cancelled a login. You can inspect the error
+        // for more context. For this sample, we will simply ignore it.
+        NSLog(@"user cancelled login");
+    } else {
+        // For simplicity, this sample treats other errors blindly.
+        alertTitle  = @"Unknown Error";
+        alertMessage = @"Error. Please try again later.";
+        NSLog(@"Unexpected error:%@", error);
+    }
+    
+    if (alertMessage) {
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMessage
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+    }
+}
 
 @end

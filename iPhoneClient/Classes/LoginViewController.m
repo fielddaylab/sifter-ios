@@ -7,6 +7,7 @@
 //
 
 #import "LoginViewController.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 #import "AppModel.h"
 #import "AppServices.h"
@@ -33,7 +34,10 @@
 {
     self = [super initWithNibName:nibName bundle:nibBundle];
     if (self)
-        self.title = @"Log In to YOI"; // NSLocalizedString(@"LoginTitleKey", @"");
+    {
+        self.title = NSLocalizedString(@"LoginTitleKey", @"");
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissLogIn) name:@"LogInSucceeded" object:nil];
+    }
     return self;
 }
 
@@ -46,14 +50,27 @@
     [loginButton setTitle:NSLocalizedString(@"LoginKey",@"") forState:UIControlStateNormal];
     newAccountMessageLabel.text = NSLocalizedString(@"NewAccountMessageKey", @"");
     [newAccountButton setTitle:NSLocalizedString(@"CreateAccountKey",@"") forState:UIControlStateNormal];
+    
+    FBLoginView *loginView = [[FBLoginView alloc] init];
+    loginView.center = self.view.center;
+    loginView.readPermissions = @[@"email"];
+    loginView.publishPermissions = @[@"publish_actions"];
+    loginView.defaultAudience = FBSessionDefaultAudienceFriends;
+    loginView.delegate = ((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare;
+    [self.view addSubview:loginView];
+    [loginView sizeToFit];
+}
+
+- (void) dismissLogIn
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [usernameField resignFirstResponder];
-    [passwordField resignFirstResponder];
+    [self.view endEditing:YES];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -68,18 +85,12 @@
 //Makes keyboard disappear on touch outside of keyboard or textfield
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [usernameField resignFirstResponder];
-    [passwordField resignFirstResponder];
+    [self.view endEditing:YES];
 }
 
 -(IBAction)loginButtonTouched:(id)sender
 {
     [self attemptLoginWithUserName:usernameField.text andPassword:passwordField.text andGameId:0 inMuseumMode:false];
-
-    [usernameField resignFirstResponder];
-    [passwordField resignFirstResponder];
-    
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(IBAction)changePassTouch:(id)sender

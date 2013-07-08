@@ -197,7 +197,7 @@
     else
         self.title = @"Note";
     
-    usernameLabel.text = note.username;
+    usernameLabel.text = ([note.displayname length] > 0) ? note.displayname : note.username;
     
     mode = kInnovAudioPlayerNoAudio;
     [self updatePlayButtonForCurrentMode];
