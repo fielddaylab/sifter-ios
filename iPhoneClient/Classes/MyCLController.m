@@ -55,6 +55,12 @@
 // Shorthand for getting localized strings, used in formats below for readability
 #define LocStr(key) [[NSBundle mainBundle] localizedStringForKey:(key) value:@"" table:nil]
 
+@interface MyCLController()
+{
+    CLRegion *backgroundNoteRegion;
+}
+
+@end
 
 @implementation MyCLController
 
@@ -178,19 +184,20 @@
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     // If the user's current location is not within the region anymore, stop updating
-    if ([region containsCoordinate:[AppModel sharedAppModel].playerLocation.coordinate])
-    {
-        Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[region.identifier intValue]];
-        NSString *tagName = ((Tag *)[note.tags objectAtIndex:0]).tagName;
-        
-        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-        localNotification.alertBody = [NSString stringWithFormat:@"There is a note nearby about %@ that you may be interested in viewing.", tagName];
-        localNotification.alertAction = nil;
-        localNotification.hasAction = YES;
-        localNotification.userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];
-        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-    }
-    //[self.locationManager startUpdatingLocation];
+    //  if ([region containsCoordinate:[AppModel sharedAppModel].playerLocation.coordinate])
+    //  {
+    Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[region.identifier intValue]];
+    NSString *tagName = ((Tag *)[note.tags objectAtIndex:0]).tagName;
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.alertBody = [NSString stringWithFormat:@"There is a note nearby about %@ that you may be interested in viewing.", tagName];
+    localNotification.alertAction = nil;
+    localNotification.hasAction = YES;
+    localNotification.userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    //  }
+    
+   // [self.locationManager startUpdatingLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
