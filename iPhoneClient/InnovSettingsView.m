@@ -144,6 +144,8 @@
     [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare logOut];
     
     [self updateLogInOutButtonTitle];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LogOutSucceeded" object:nil];
 }
 
 @end

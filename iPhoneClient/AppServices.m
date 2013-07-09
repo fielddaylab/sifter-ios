@@ -1088,13 +1088,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
         [AppModel sharedAppModel].displayName = [self validObjectForKey:@"display_name" inDictionary:((NSDictionary*)jsonResult.data) ];
         [[AppModel sharedAppModel] saveUserDefaults];
         
-        //Subscribe to player channel
-        //[RootViewController sharedRootViewController].playerChannel = [[RootViewController sharedRootViewController].client subscribeToPrivateChannelNamed:[NSString stringWithFormat:@"%d-player-channel",[AppModel sharedAppModel].playerId]];
-        
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"LogInSucceeded" object:nil]];
     }
 	else
+    {
         [AppModel sharedAppModel].playerId = 0;
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"LogInFailed" object:nil]];
+    }
     
     NSLog(@"NSNotification: NewLoginResponseReady");
 	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewLoginResponseReady" object:nil]];

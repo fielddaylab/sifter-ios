@@ -63,7 +63,7 @@
 
 - (void) dismissLogIn
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES]; 
 }
 
 - (void) viewWillDisappear:(BOOL)animated

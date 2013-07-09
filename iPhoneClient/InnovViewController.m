@@ -58,7 +58,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInFailed) name:@"LogInFailed" object:nil];
     return self;
 }
 
@@ -286,13 +286,10 @@
 
 #pragma mark Login and Game Selection
 
-- (void)checkForLogInFail
+- (void)logInFailed
 {
-    if([AppModel sharedAppModel].playerId == 0)
-    {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
         [alert show];
-    }
 }
 
 #pragma mark Present Note Delegate Method
