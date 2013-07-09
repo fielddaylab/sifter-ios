@@ -8,6 +8,12 @@
 
 @class Note;
 
+#import "CustomBadge.h"
+
+#warning CHANGE TWITTER HANDLE
+#define DEFAULT_TITLE                @"Note"
+#define TWITTER_HANDLE               @"@y_o_i"
+
 @protocol InnovPopOverSocialContentViewDelegate <NSObject>
 @required
 - (void) mailButtonPressed:      (id) sender;
@@ -19,6 +25,16 @@
 @interface InnovPopOverSocialContentView : UIView
 
 @property(nonatomic) Note *note;
+
+@property(weak, nonatomic) IBOutlet UILabel *shareLabel;
+@property(weak, nonatomic) IBOutlet UIButton *facebookButton;
+@property(nonatomic) CustomBadge *facebookBadge;
+@property(weak, nonatomic) IBOutlet UIButton *twitterButton;
+@property(nonatomic) CustomBadge *twitterBadge;
+@property(weak, nonatomic) IBOutlet UIButton *pinterestButton;
+@property(nonatomic) CustomBadge *pinterestBadge;
+@property(weak, nonatomic) IBOutlet UIButton *emailButton;
+@property(nonatomic) CustomBadge *emailBadge;
 
 - (void) refreshBadges;
 

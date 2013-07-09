@@ -22,6 +22,10 @@
 #import "AppServices.h"
 #import "SVProgressHUD.h"
 #import "ViewControllerHelper.h"
+#import "Logger.h"
+
+#define ACCESS_TOKEN_KEY    @"AccessToken"
+#define EXPIRATION_DATE_KEY @"ExpDate"
 
 @interface SimpleFacebookShare()
 {
@@ -32,7 +36,7 @@
 
 @end
 
-@implementation SimpleFacebookShare 
+@implementation SimpleFacebookShare
 
 @synthesize noteId;
 
@@ -41,7 +45,7 @@
     if (self) {
         NSArray *actionLinks = [NSArray arrayWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:theAppName, @"name", theAppUrl, @"link", nil], nil];
         NSError *error = nil;
-
+        
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:actionLinks options:NSJSONWritingPrettyPrinted error:&error];
         NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         appActionLink = jsonString;
@@ -49,18 +53,19 @@
     return self;
 }
 
-- (BOOL)handleOpenURL:(NSURL *)theUrl {
+- (BOOL)handleOpenURL:(NSURL *)theUrl
+{
     return [FBSession.activeSession handleOpenURL:theUrl];
 }
 
 
 - (void)logOut {
     [FBSession.activeSession closeAndClearTokenInformation];
-
+    
     //Delete data from User Defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:@"FBAccessTokenInformationKey"];
-
+    
     //Remove facebook Cookies:
     NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     for (NSHTTPCookie *cookie in [storage cookies]) {
@@ -74,41 +79,36 @@
 
 - (void)shareUrl:(NSURL *)theUrl {
     [self _shareInitalParams:@{
-            @"link" : [theUrl absoluteString],
-            @"actions" : appActionLink
-    }];
+     @"link" : [theUrl absoluteString],
+     @"actions" : appActionLink
+     }  automatically: NO];
 }
 
 - (void)shareText:(NSString *)theText {
     [self _shareInitalParams:@{
      @"description" : theText,
      @"actions" : appActionLink
-     }];
+     }  automatically: NO];
 }
 
 //NEW METHOD
-- (void)shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId
+- (void)shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId automatically:(BOOL) autoShare
 {
     self.noteId = aNoteId;
-    [self _shareInitalParams:@{
-     @"picture"     : imageURL,
-     @"name"        : title,
-     @"description" : text,
-     @"message"     : text,
-     @"link"        : urlString
-    }];
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:imageURL, @"picture", title, @"name", text, @"description", text, @"message", urlString, @"link", nil];
+    [self _shareInitalParams:params automatically:autoShare];
 }
 
-- (void)_shareInitalParams:(NSDictionary *)params {
+- (void)_shareInitalParams:(NSDictionary *)params automatically: (BOOL) autoShare {
     if (FBSession.activeSession.isOpen) {
-        [self _shareAndReauthorize:params];
+        [self _shareAndReauthorize:params automatically: autoShare];
     }
     else {
-        [self _shareAndOpenSession:params];
+        [self _shareAndOpenSession:params automatically: autoShare];
     }
 }
 
-- (void)_shareAndReauthorize:(NSDictionary *)params
+- (void)_shareAndReauthorize:(NSDictionary *)params automatically: (BOOL) autoShare
 {
     __weak SimpleFacebookShare *selfForBlock = self;
     if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound)
@@ -116,66 +116,76 @@
         [FBSession.activeSession requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_actions"]
                                               defaultAudience:FBSessionDefaultAudienceFriends
                                             completionHandler:^(FBSession *session, NSError *error)
-        {
-                                                if (!error)
-                                                {
-                                                    NSLog(@"Authorization Error: %@", error);
-                                                    [SVProgressHUD showErrorWithStatus:@"Authorization Error"];
-                                                }
-                                                else 
-                                                    [selfForBlock _shareParams:params];
-
-                                            }];
+         {
+             if (error)
+             {
+                 [[Logger sharedLogger] logError:error];
+                 [SVProgressHUD showErrorWithStatus:@"Authorization Error"];
+             }
+             else
+                 [selfForBlock _shareParams:params automatically: autoShare];
+             
+         }];
     }
-    else 
-        [self _shareParams:params];
+    else
+        [self _shareParams:params automatically: autoShare];
 }
 
-- (void)_shareAndOpenSession:(NSDictionary *)params {
+- (void)_shareAndOpenSession:(NSDictionary *)params automatically: (BOOL) autoShare {
     __weak SimpleFacebookShare *selfForBlock = self;
     if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
     {
         [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
-        {
-            [selfForBlock _shareAndReauthorize:params];
-        }];
+         {
+             [selfForBlock _shareAndReauthorize:params automatically: autoShare];
+         }];
     }
     else {
         [FBSession openActiveSessionWithPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
             if (error)
             {
-                NSLog(@"Authorization Error: %@", error);
+                [[Logger sharedLogger] logError:error];
                 [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
             }
             else
-                [selfForBlock _shareAndReauthorize:params];
+                [selfForBlock _shareAndReauthorize:params automatically: autoShare];
         }];
     }
 }
 //MODIFIED METHOD
-- (void)_shareParams:(NSDictionary *)params {
-    __weak SimpleFacebookShare *selfForBlock = self;
-    [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:params handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error)
+- (void)_shareParams:(NSDictionary *)params automatically: (BOOL) autoShare {
+    if(!autoShare)
     {
-        if (error)
-        {
-            NSLog(@"Saving Error: %@", error);
-            [SVProgressHUD showErrorWithStatus:@"Saving Error."];
-        }
-        else {
-            NSDictionary *resultParams = [selfForBlock _parseURLParams:[resultURL query]];
-            if ([resultParams valueForKey:@"error_code"])
-            {
-                [SVProgressHUD showErrorWithStatus:@"An Error Has Occured."];
-                NSLog(@"Error: %@", [resultParams valueForKey:@"error_msg"]);
-            }
-            else if ([resultParams valueForKey:@"post_id"])
-            {
-                [SVProgressHUD showSuccessWithStatus:@"Success"];
-                [[AppServices sharedAppServices] sharedNoteToFacebook: selfForBlock.noteId];
-            }
-        }
-    }];
+        __weak SimpleFacebookShare *selfForBlock = self;
+        [FBWebDialogs presentFeedDialogModallyWithSession:nil parameters:params handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error)
+         {
+             if (error)
+             {
+                 [[Logger sharedLogger] logError:error];
+                 [SVProgressHUD showErrorWithStatus:@"Saving Error."];
+             }
+             else {
+                 NSDictionary *resultParams = [selfForBlock _parseURLParams:[resultURL query]];
+                 if ([resultParams valueForKey:@"error_code"])
+                 {
+                     [SVProgressHUD showErrorWithStatus:@"An Error Has Occured."];
+                     NSLog(@"Error: %@", [resultParams valueForKey:@"error_msg"]);
+                 }
+                 else if ([resultParams valueForKey:@"post_id"])
+                 {
+                     [SVProgressHUD showSuccessWithStatus:@"Success"];
+                     [[AppServices sharedAppServices] sharedNoteToFacebook: selfForBlock.noteId];
+                 }
+             }
+         }];
+    }
+    else
+    {
+        [FBRequestConnection startWithGraphPath:@"me/feed" parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if (error)
+                [[Logger sharedLogger] logError:error];
+        }];
+    }
 }
 
 /*     [simpleFacebookShare getUsernameWithCompletionHandler:^(NSString *username, NSError *error){
@@ -190,10 +200,10 @@
         {
             __weak SimpleFacebookShare *selfForBlock = self;
             [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
-            {
-                [selfForBlock _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
-
-            }];
+             {
+                 [selfForBlock _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
+                 
+             }];
         }
         else
             [self _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
@@ -209,7 +219,7 @@
                                   completionHandler(nil, error);
                               }
                               else {
-                               //   NSString *facebookID = [result objectForKey:@"id"];
+                                  //   NSString *facebookID = [result objectForKey:@"id"];
                                   NSString *username = [result objectForKey:@"name"];
                                   completionHandler(username, nil);
                               }
@@ -219,7 +229,7 @@
 - (BOOL)isLoggedIn
 {
     FBSessionState state = FBSession.activeSession.state;
-    if (state == FBSessionStateOpen || state == FBSessionStateCreatedTokenLoaded || state == FBSessionStateOpenTokenExtended) 
+    if (state == FBSessionStateOpen || state == FBSessionStateCreatedTokenLoaded || state == FBSessionStateOpenTokenExtended)
         return YES;
     
     return NO;
@@ -241,9 +251,9 @@
     for (NSString *pair in pairs) {
         NSArray *kv = [pair componentsSeparatedByString:@"="];
         NSString *val =
-                [[kv objectAtIndex:1]
-                        stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
+        [[kv objectAtIndex:1]
+         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
         [params setObject:val forKey:[kv objectAtIndex:0]];
     }
     return params;
@@ -265,7 +275,7 @@
                             user:(id<FBGraphUser>)user
 {
     [[AppServices sharedAppServices] loginWithFacebookEmail:[user objectForKey:@"email"] displayName:user.name andId:user.id];
-   // [((UINavigationController *)[ViewControllerHelper getCurrentRootViewController]) popToRootViewControllerAnimated:YES];
+    // [((UINavigationController *)[ViewControllerHelper getCurrentRootViewController]) popToRootViewControllerAnimated:YES];
 }
 
 - (void)loginView:(FBLoginView *)loginView

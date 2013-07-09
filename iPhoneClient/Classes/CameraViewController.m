@@ -72,10 +72,11 @@
     cameraOverlay = [[UIView alloc] initWithFrame:self.view.frame];
 	
     libraryButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2-BUTTON_WIDTH/2, BUTTON_Y_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT)];
-    libraryButton.layer.borderWidth  = 1.0f;
-    libraryButton.layer.borderColor  = [UIColor darkGrayColor].CGColor;
-    libraryButton.backgroundColor    = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
-    libraryButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+    libraryButton.layer.borderWidth   = 1.0f;
+    libraryButton.layer.borderColor   = [UIColor darkGrayColor].CGColor;
+    libraryButton.backgroundColor     = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+    libraryButton.layer.masksToBounds = YES;
+    libraryButton.layer.cornerRadius  = BUTTON_CORNER_RADIUS;
     
     [libraryButton setImage: [UIImage imageNamed:BUTTON_IMAGE_NAME] forState: UIControlStateNormal];
     [libraryButton setImage: [UIImage imageNamed:BUTTON_IMAGE_NAME] forState: UIControlStateHighlighted];

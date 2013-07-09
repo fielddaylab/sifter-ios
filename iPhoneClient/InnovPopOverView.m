@@ -16,6 +16,7 @@
 @interface InnovPopOverView()
 {
     UIView *contentView;
+    UIButton *exitButton;
 }
 
 @end
@@ -34,7 +35,7 @@
         contentView.center = self.center;
         
         [self addSubview:contentView];
-        UIButton *exitButton = [[UIButton alloc] initWithFrame:CGRectMake(0,
+        exitButton = [[UIButton alloc] initWithFrame:CGRectMake(0,
                                                                           0,
                                                                           BUTTON_WIDTH,
                                                                           BUTTON_HEIGHT)];
@@ -47,6 +48,13 @@
         [self addSubview: exitButton];
     }
     return self;
+}
+
+- (void) adjustContentFrame:(CGRect)frame
+{
+    contentView.frame = frame;
+    exitButton.center = CGPointMake(self.frame.origin.x + contentView.frame.origin.x + contentView.frame.size.width,
+                                    self.frame.origin.y + contentView.frame.origin.y);
 }
 
 - (void) exitButtonPressed: (id) sender

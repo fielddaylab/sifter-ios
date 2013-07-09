@@ -34,12 +34,6 @@
 @synthesize overlayIsVisible;
 @synthesize nearbyLocationsList;
 @synthesize gameTagList;
-@synthesize hasSeenNearbyTabTutorial;
-@synthesize hasSeenQuestsTabTutorial;
-@synthesize hasSeenMapTabTutorial;
-@synthesize hasSeenInventoryTabTutorial;
-@synthesize tabsReady;
-@synthesize currentlyInteractingWithObject;
 @synthesize hidePlayers;
 @synthesize progressBar;
 @synthesize isGameNoteList;

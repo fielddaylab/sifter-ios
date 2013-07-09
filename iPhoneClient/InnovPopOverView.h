@@ -11,4 +11,6 @@
 @interface InnovPopOverView : UIView
 
 - (id)initWithFrame:(CGRect)frame andContentView: (UIView *) contentView;
+- (void)adjustContentFrame:(CGRect)frame;
+
 @end

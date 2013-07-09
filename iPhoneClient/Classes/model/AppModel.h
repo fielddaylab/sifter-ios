@@ -116,15 +116,6 @@
 @property(nonatomic, strong) UIAlertView *networkAlert;
 @property(nonatomic, strong) UIProgressView *progressBar;
 
-//Training Flags
-@property(readwrite) BOOL hasSeenNearbyTabTutorial;
-@property(readwrite) BOOL hasSeenQuestsTabTutorial;
-@property(readwrite) BOOL hasSeenMapTabTutorial;
-@property(readwrite) BOOL hasSeenInventoryTabTutorial;
-@property(readwrite) BOOL tabsReady;
-
-@property(readwrite) BOOL currentlyInteractingWithObject;
-
 // CORE Data
 @property (nonatomic, readonly) NSManagedObjectModel *managedObjectModel;
 @property (nonatomic, readonly) NSManagedObjectContext *managedObjectContext;

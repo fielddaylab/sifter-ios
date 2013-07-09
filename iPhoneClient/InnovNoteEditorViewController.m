@@ -9,6 +9,7 @@
 typedef enum {
     NoteContentSection,
     RecordSection,
+    ShareSection,
     TagSection,
     DeleteSection,
     NumSections
@@ -16,19 +17,18 @@ typedef enum {
 
 #import <AVFoundation/AVFoundation.h>
 #import <CoreAudio/CoreAudioTypes.h>
-#import <Twitter/Twitter.h>
-#import <Social/Social.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
+#import "ARISAppDelegate.h"
 #import "Note.h"
 #import "NoteContent.h"
 #import "Tag.h"
 #import "TagCell.h"
 
 #import "ProgressButton.h"
-#import "InnovPopOverView.h"
 #import "InnovPopOverSocialContentView.h"
 #import "AsyncMediaTouchableImageView.h"
 #import "ARISMoviePlayerViewController.h"
@@ -49,8 +49,13 @@ typedef enum {
 #define IMAGE_HEIGHT 85
 #define IMAGE_WIDTH  IMAGE_HEIGHT
 
+#define SHARE_BUTTON_HEIGHT 30
+#define SHARE_BUTTON_WIDTH  SHARE_BUTTON_HEIGHT
+#define NO_SHARE_ALPHA      0.25f;
+
 static NSString *NoteContentCellIdentifier = @"NoteConentCell";
 static NSString *RecordCellIdentifier      = @"RecordCell";
+static NSString *ShareCellIdentifier       = @"ShareCell";
 static NSString *TagCellIdentifier         = @"TagCell";
 static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
@@ -59,6 +64,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     __weak IBOutlet UITableView *editNoteTableView;
     AsyncMediaTouchableImageView *imageView;
     UITextView *captionTextView;
+    
+    BOOL shareToFacebook;
+    BOOL shareToTwitter;
+    InnovPopOverSocialContentView *socialView;
+    
     ProgressButton *recordButton;
     UIButton *deleteAudioButton;
     UIButton *deleteNoteButton;
@@ -68,6 +78,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     Note *note;
     
     BOOL newNote;
+    BOOL noteCompleted;
     BOOL isEditing;
     BOOL cameraHasBeenPresented;
     
@@ -101,8 +112,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if (self)
+    {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
@@ -260,9 +271,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewWillDisappear:animated];
     
-#warning Called twice
-    
-    if(!self.note || (newNote && !isEditing))
+    if(!self.note || (newNote && !isEditing) || !noteCompleted)
         return;
     
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
@@ -316,6 +325,24 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
     
     [[InnovNoteModel sharedNoteModel] updateNote:note];
+    
+    if(shareToFacebook)
+    {
+        NSString *title = ([self.note.tags count] > 0) ? ((Tag *)[self.note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
+        NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
+#warning fix url to be web notebook url
+        NSString *url  = HOME_URL;
+        
+        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
+    }
+    
+    if(shareToTwitter)
+    {
+        NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
+        NSString *url  = HOME_URL;
+#warning fix url to be web notebook url        
+        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareText:text withImage:nil andURL:url fromNote:self.note.noteId automatically:YES];
+    }
     
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
@@ -398,10 +425,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     if((!isEditing || newNote || deletePressed) && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
     {
-        [[AppServices sharedAppServices] deleteNoteWithNoteId:self.note.noteId];
+        [[AppServices sharedAppServices]  deleteNoteWithNoteId:self.note.noteId];
         [[InnovNoteModel sharedNoteModel] removeNote:note];
         self.note = nil;
     }
+    else
+        noteCompleted = YES;
     
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
@@ -661,6 +690,28 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [self recordButtonPressed:nil];
 }
 
+#pragma mark Sharing Methods
+
+- (void)facebookButtonPressed:(UIButton *) sender
+{
+    shareToFacebook = !shareToFacebook;
+    
+    if(shareToFacebook)
+        socialView.facebookButton.alpha = 1.0f;
+    else
+        socialView.facebookButton.alpha = NO_SHARE_ALPHA;
+}
+
+- (void)twitterButtonPressed:(UIButton *) sender
+{
+    shareToTwitter = !shareToTwitter;
+    
+    if(shareToTwitter)
+        socialView.twitterButton.alpha = 1.0f;
+    else
+        socialView.twitterButton.alpha = NO_SHARE_ALPHA;
+}
+
 /*
  - (void)updateMeter {
  [soundRecorder updateMeters];
@@ -701,7 +752,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [editNoteTableView reloadSections:[NSIndexSet indexSetWithIndex:TagSection] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
     return NumSections;
 }
 
@@ -712,6 +764,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         case NoteContentSection:
             return 1;
         case RecordSection:
+            return 1;
+        case ShareSection:
             return 1;
         case TagSection:
             if(tagList.count > 0)
@@ -726,13 +780,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 }
 #warning Check if Still has blank space
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    switch (section)
-    {
-        case TagSection:
-            return @"Categories";
-        default:
-            return nil;
-    }
+    if(section == TagSection)
+        return @"Categories";
+   
+    return nil;
 }
 #warning Eliminate Redundancy with Default
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -742,6 +793,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             return IMAGE_HEIGHT + 2 * NOTE_CONTENT_CELL_Y_MARGIN;
         case RecordSection:
             return 44;
+        case ShareSection:
+            return 2 * SHARE_BUTTON_HEIGHT;
         case TagSection:
             return 44;
         case DeleteSection:
@@ -789,6 +842,50 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 //                cell.userInteractionEnabled = NO;
 #warning Add in above
             }
+            
+            return cell;
+        }
+        case ShareSection:
+        {
+            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:ShareCellIdentifier];
+            if(!cell)
+            {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShareCellIdentifier];
+#warning FIX
+                socialView = [[InnovPopOverSocialContentView alloc] init];
+                socialView.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - tableView.frame.size.width/16.0*15.0)/2, 0, tableView.frame.size.width/16.0*15.0, 2 * SHARE_BUTTON_HEIGHT);
+                socialView.note = self.note;
+                [[NSNotificationCenter defaultCenter] removeObserver:socialView name:@"NoteModelUpdate:Notes" object:nil];
+                [socialView.shareLabel     removeFromSuperview];
+                [socialView.facebookBadge  removeFromSuperview];
+                [socialView.twitterBadge   removeFromSuperview];
+                [socialView.pinterestBadge removeFromSuperview];
+                [socialView.emailBadge     removeFromSuperview];
+                socialView.facebookButton.frame  = CGRectMake(     socialView.frame.size.width /4-SHARE_BUTTON_WIDTH/2, 0,                   SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);
+                socialView.twitterButton.frame   = CGRectMake((3 * socialView.frame.size.width)/4-SHARE_BUTTON_WIDTH/2, 0,                   SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);
+                socialView.pinterestButton.frame = CGRectMake(     socialView.frame.size.width /4-SHARE_BUTTON_WIDTH/2, SHARE_BUTTON_HEIGHT, SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);
+                socialView.emailButton.frame     = CGRectMake((3 * socialView.frame.size.width)/4-SHARE_BUTTON_WIDTH/2, SHARE_BUTTON_HEIGHT, SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);
+                [socialView.facebookButton removeTarget:socialView action:@selector(facebookButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                [socialView.twitterButton  removeTarget:socialView action:@selector(twitterButtonPressed:)  forControlEvents:UIControlEventTouchUpInside];
+                [socialView.facebookButton addTarget:   self       action:@selector(facebookButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                [socialView.twitterButton  addTarget:   self       action:@selector(twitterButtonPressed:)  forControlEvents:UIControlEventTouchUpInside];
+                socialView.layer.masksToBounds = YES;
+                socialView.layer.cornerRadius  = 8.0f;
+                cell.backgroundView = [UIView new];
+                [cell addSubview:socialView];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+#warning Add in above
+            }
+            
+            if(shareToFacebook)
+                socialView.facebookButton.alpha = 1.0f;
+            else
+                socialView.facebookButton.alpha = NO_SHARE_ALPHA;
+            
+            if(shareToTwitter)
+                socialView.twitterButton.alpha = 1.0f;
+            else
+                socialView.twitterButton.alpha = NO_SHARE_ALPHA;
             
             return cell;
         }

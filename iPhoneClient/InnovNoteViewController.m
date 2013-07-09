@@ -342,7 +342,7 @@
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
     CGRect newFrame = socialContent.frame;
     newFrame.origin.y -= NAV_BAR_HEIGHT;
-    socialContent.frame = newFrame;
+    [popOver adjustContentFrame:newFrame];
     [self.view addSubview:popOver];
 }
 
