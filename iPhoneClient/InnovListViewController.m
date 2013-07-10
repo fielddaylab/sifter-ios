@@ -73,19 +73,6 @@ static NSString * const CELL_ID = @"Cell";
     [quiltView reloadData];
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    localNotification.alertBody = [NSString stringWithFormat:@"There is a note nearby that you may be interested in viewing."];
-    localNotification.alertAction = nil;
-    localNotification.hasAction = YES;
-    localNotification.userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:((Note *)[notes objectAtIndex:0]).noteId] forKey:@"noteId"];
-    localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow: 15];
-    [[UIApplication sharedApplication] scheduleLocalNotification: localNotification];
-}
-
 - (void) animateInNote:(Note *) newNote
 {
     NSMutableArray *mutableNotes = [NSMutableArray arrayWithArray:notes];
@@ -116,7 +103,7 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-    if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];
