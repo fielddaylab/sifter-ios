@@ -277,7 +277,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
     else self.note.text = captionTextView.text;
     
-    
     int textContentId = 0;
     for(NSObject <NoteContentProtocol> *contentObject in note.contents)
     {
@@ -314,9 +313,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
     
 #warning point where added to map may change
-    if(!self.note.dropped)
+    if(newNote)
     {
-        self.note.dropped = YES;
         [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
         [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
         
