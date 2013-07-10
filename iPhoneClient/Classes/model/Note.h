@@ -20,6 +20,7 @@ extern NSString *const kNoteContentTypeText;
 @property(nonatomic, strong) NSString *title;
 @property(nonatomic, strong) NSString *username;
 @property(nonatomic, strong) NSString *displayname;
+@property(nonatomic, strong) NSString *created;
 @property(nonatomic, strong) NSMutableArray *comments;
 @property(nonatomic, strong) NSMutableArray *contents;
 @property(nonatomic, strong) NSMutableArray *tags;

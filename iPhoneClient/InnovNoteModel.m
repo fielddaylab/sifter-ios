@@ -206,7 +206,8 @@
         {
             int currentNoteCount = [[arrayOfArraysByType objectAtIndex:specifiedContent] count];
             [AppServices sharedAppServices].shouldIgnoreResults = NO;
-            [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH more: specifiedContent NotesStartingFrom: currentNoteCount];
+            NSString *date = (specifiedContent == kRecent && currentNoteCount > 0) ? ((Note *)[allNotes objectForKey:[[arrayOfArraysByType objectAtIndex:specifiedContent] objectAtIndex:currentNoteCount-1]]).created : nil;
+            [[AppServices sharedAppServices] fetch: NOTES_PER_FETCH more: specifiedContent NotesStartingFromLocation: currentNoteCount andDate:date];
         }
     }
 }

@@ -763,7 +763,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 #pragma mark Async Fetch selectors
 
-- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFrom: (int) lastLocation
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFromLocation: (int) lastLocation andDate: (NSString *) date
 {
     NSString *method;
     switch (selectedContent)
@@ -791,6 +791,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
                                  [NSString stringWithFormat:@"%d",lastLocation],
                                  [NSString stringWithFormat:@"%d",noteCount],nil];
+    if(selectedContent == kRecent && date)
+        [arguments addObject:date];
 	
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
@@ -980,11 +982,12 @@ BOOL currentlyUpdatingServerWithMapViewed;
     aNote.longitude        = [self validDoubleForKey:@"lon"              inDictionary:noteDictionary];
     aNote.username         = [self validObjectForKey:@"username"         inDictionary:noteDictionary];
     aNote.displayname      = [self validStringForKey:@"displayname"      inDictionary:noteDictionary];
+    aNote.created          = [self validStringForKey:@"created"          inDictionary:noteDictionary];
     aNote.title            = [self validObjectForKey:@"title"            inDictionary:noteDictionary];
-    aNote.facebookShareCount   = [self validIntForKey:@"facebook_shares" inDictionary:noteDictionary];
-    aNote.twitterShareCount     = [self validIntForKey:@"twitter_shares" inDictionary:noteDictionary];
+    aNote.facebookShareCount  = [self validIntForKey:@"facebook_shares"  inDictionary:noteDictionary];
+    aNote.twitterShareCount   = [self validIntForKey:@"twitter_shares"   inDictionary:noteDictionary];
     aNote.pinterestShareCount = [self validIntForKey:@"pinterest_shares" inDictionary:noteDictionary];
-    aNote.emailShareCount         = [self validIntForKey:@"email_shares" inDictionary:noteDictionary];
+    aNote.emailShareCount     = [self validIntForKey:@"email_shares"     inDictionary:noteDictionary];
     
     NSArray *contents = [self validObjectForKey:@"contents" inDictionary:noteDictionary];
     for (NSDictionary *content in contents)
