@@ -117,6 +117,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
         
         tagList = [[NSArray alloc]init];
@@ -510,7 +511,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 	switch (mode) {
 		case kInnovAudioRecorderNoAudio:
         {
-            
+            mode = kInnovAudioRecorderRecording;
 			NSDictionary *recordSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
 											[NSNumber numberWithInt:kAudioFormatAppleIMA4],     AVFormatIDKey,
 											[NSNumber numberWithInt:16000.0],                   AVSampleRateKey,
@@ -545,13 +546,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                                                                      selector:@selector(playOrRecordTimerResponse)
                                                                      userInfo:nil
                                                                       repeats:YES];
-            
-			mode = kInnovAudioRecorderRecording;
         }
             break;
 			
 		case kInnovAudioRecorderPlaying:
         {
+            mode = kInnovAudioRecorderAudio;
             if (soundPlayer != nil)
                 [soundPlayer stop];
             else
@@ -562,14 +562,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             secondsRecordingOrPlaying = 0.0;
             recordButton.percentDone = 0.0;
             [recordButton setNeedsDisplay];
-            
-            mode = kInnovAudioRecorderAudio;
         }
             break;
 			
 		case kInnovAudioRecorderAudio:
         {
-            
+            mode = kInnovAudioRecorderPlaying;
             if(hasAudioToUpload)
             {
                 if (soundPlayer == nil)
@@ -590,12 +588,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                                                                                     selector:@selector(playOrRecordTimerResponse)
                                                                                     userInfo:nil
                                                                                      repeats:YES];
-			mode = kInnovAudioRecorderPlaying;
         }
             break;
 			
 		case kInnovAudioRecorderRecording:
         {
+            mode = kInnovAudioRecorderAudio;
             [recordLengthCutoffAndPlayProgressTimer invalidate];
 			
             secondsRecordingOrPlaying = 0.0;
@@ -606,8 +604,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 			soundRecorder = nil;
             
             hasAudioToUpload = YES;
-            
-			mode = kInnovAudioRecorderAudio;
         }
             break;
 			
@@ -680,6 +676,15 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     if ((ARISMoviePlayer.moviePlayer.loadState & MPMovieLoadStatePlaythroughOK) == MPMovieLoadStatePlaythroughOK)
        audioLength = ARISMoviePlayer.moviePlayer.duration;
+}
+
+- (void)MPMoviePlayerPlaybackStateDidChange:(NSNotification *)notification
+{
+    if (ARISMoviePlayer.moviePlayer.playbackState == MPMoviePlaybackStatePlaying)
+    {
+        if (mode != kInnovAudioRecorderPlaying)
+            [self recordButtonPressed:nil];
+    }
 }
 
 - (void)MPMoviePlayerPlaybackDidFinishNotification:(NSNotification *)notif

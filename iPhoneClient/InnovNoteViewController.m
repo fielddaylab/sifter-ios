@@ -253,14 +253,14 @@
 		case kInnovAudioPlayerNoAudio:
             break;
 		case kInnovAudioPlayerPlaying:
-            [ARISMoviePlayer.moviePlayer stop];
             mode = kInnovAudioPlayerAudio;
+            [ARISMoviePlayer.moviePlayer stop];
             [self updatePlayButtonForCurrentMode];
             break;
 			
 		case kInnovAudioPlayerAudio:
+            mode = kInnovAudioPlayerPlaying;
             [ARISMoviePlayer.moviePlayer play];
-			mode = kInnovAudioPlayerPlaying;
 			[self updatePlayButtonForCurrentMode];
             break;
 		default:
