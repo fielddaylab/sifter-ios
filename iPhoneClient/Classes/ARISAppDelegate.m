@@ -137,7 +137,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     [[[AppModel sharedAppModel]uploadManager] checkForFailedContent];
     
-    //[[InnovNoteModel sharedNoteModel] clearAllData];
+    [[InnovNoteModel sharedNoteModel] clearAllData];
     
     [simpleFacebookShare handleDidBecomeActive];
     [[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
@@ -151,7 +151,14 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         NSDictionary *localNotifOptions = notification.userInfo;
         if([localNotifOptions objectForKey:@"noteId"])
-            [innov animateInNote: [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]]];
+        {
+            Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+            if(note)
+            {
+                [innov animateInNote: note];
+                [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
+            }
+        }
         //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
         //If the visible view controller in your view controller stack isn't the one you need then show the right one.
     }

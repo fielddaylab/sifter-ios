@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 
 #import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
@@ -31,8 +32,6 @@
 #define MADISON_LAT     43.07
 #define MADISON_LONG    -89.40
 #define MAX_DISTANCE    20000
-
-#define MAX_NOTES_COUNT    50
 
 @interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
 
@@ -180,7 +179,7 @@
 {
     for(Note *note in unshownNotesQueue)
     {
-        if(shownNotesCount < MAX_NOTES_COUNT)
+        if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
@@ -200,7 +199,7 @@
     
     for(Note *note in newNotes)
     {
-        if(shownNotesCount < MAX_NOTES_COUNT)
+        if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];

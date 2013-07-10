@@ -50,30 +50,29 @@
 
 - (void) refreshFromModel
 {
-    if ([InnovNoteModel sharedNoteModel].notifNotesCounts != nil)
-    {
-        topNotesSlider.value      = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kTop] intValue];
-        popularNotesSlider.value  = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kPopular] intValue];
-        recentNotesSlider.value   = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kRecent] intValue];
-        myRecentNotesSlider.value = [[[InnovNoteModel sharedNoteModel].notifNotesCounts objectAtIndex:kMine] intValue];
-        [self updateLabels];
-    }
+    NSArray *notifNotesCounts = [[InnovNoteModel sharedNoteModel] getNotifNoteCounts];
+    
+    topNotesSlider.value      = [[notifNotesCounts objectAtIndex:kTop]     intValue];
+    popularNotesSlider.value  = [[notifNotesCounts objectAtIndex:kPopular] intValue];
+    recentNotesSlider.value   = [[notifNotesCounts objectAtIndex:kRecent]  intValue];
+    myRecentNotesSlider.value = [[notifNotesCounts objectAtIndex:kMine]    intValue];
+    [self updateLabels];
 }
 
 - (IBAction)sliderValueChanged:(UISlider *)sender
 {
     if(sender != myRecentNotesSlider || [AppModel sharedAppModel].playerId != 0)
     {
-    [sender setValue:((int)(sender.value + 0.5)) animated:NO];
-    
-    if(sender == topNotesSlider)
-        [self decrementIndexesOtherThan:kTop];
-    else if (sender == popularNotesSlider)
-        [self decrementIndexesOtherThan:kPopular];
-    else if (sender == recentNotesSlider)
-        [self decrementIndexesOtherThan:kRecent];
-    else if (sender == myRecentNotesSlider)
-        [self decrementIndexesOtherThan:kMine];
+        [sender setValue:((int)(sender.value + 0.5)) animated:NO];
+        
+        if(sender == topNotesSlider)
+            [self decrementIndexesOtherThan:kTop];
+        else if (sender == popularNotesSlider)
+            [self decrementIndexesOtherThan:kPopular];
+        else if (sender == recentNotesSlider)
+            [self decrementIndexesOtherThan:kRecent];
+        else if (sender == myRecentNotesSlider)
+            [self decrementIndexesOtherThan:kMine];
     }
     else
     {

@@ -140,6 +140,7 @@
     [defaults setInteger: [AppModel sharedAppModel].playerMediaId   forKey:@"playerMediaId"];
     [defaults setObject:  [AppModel sharedAppModel].userName        forKey:@"userName"];
     [defaults setObject:  [AppModel sharedAppModel].displayName     forKey:@"displayName"];
+    [defaults synchronize];
     
     [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare logOut];
     

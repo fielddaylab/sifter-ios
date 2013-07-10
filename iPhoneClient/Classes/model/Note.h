@@ -48,4 +48,5 @@ extern NSString *const kNoteContentTypeText;
 
 -(BOOL)isUploading;
 -(BOOL)compareTo: (Note *) note;
+
 @end

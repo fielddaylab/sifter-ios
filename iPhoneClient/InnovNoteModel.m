@@ -16,9 +16,13 @@
 #import "NoteContent.h"
 #import "Tag.h"
 
+#define PREV_DISPLAYED_NOTES_KEY @"PrevDispNotes"
+#define NOTIF_NOTE_COUNT_KEY     @"NotifNoteCount"
+
 @interface InnovNoteModel()
 {
     NSMutableDictionary *allNotes;
+    NSMutableDictionary *notifNotes;
     NSMutableArray *availableNotes;
     NSMutableArray *arrayOfArraysByType;
     NSArray *allTags;
@@ -34,7 +38,7 @@
 
 @implementation InnovNoteModel
 
-@synthesize availableNotes, allTags, selectedTags, notifNotesCounts;
+@synthesize availableNotes, allTags, selectedTags;
 
 + (id)sharedNoteModel
 {
@@ -52,6 +56,7 @@
     if(self)
     {
         allNotes        = [[NSMutableDictionary alloc] init];
+        notifNotes      = [[NSMutableDictionary alloc] initWithCapacity:20];
         availableNotes  = [[NSMutableArray alloc] init];
         arrayOfArraysByType             = [[NSMutableArray alloc] initWithCapacity:kNumContents];
         NSMutableArray *topNotes        = [[NSMutableArray alloc] init];
@@ -97,8 +102,10 @@
     selectedTags = [allTags mutableCopy];
     [self sendSelectedTagsUpdateNotification];
     [searchTerms removeAllObjects];
-    [self setUpNotificationsForTopNotes:0 popularNotes:0 recentNotes:0 andMyRecentNotes:0];
+    [allNotes addEntriesFromDictionary:notifNotes];
+    [notifNotes removeAllObjects];
     [self clearAvailableData];
+    [self setUpNotifications];
 }
 
 -(void) clearAvailableData
@@ -112,13 +119,16 @@
 
 - (void) setUpNotificationsForTopNotes: (int) topNotes popularNotes: (int) popularNotes recentNotes: (int) recentNotes andMyRecentNotes: (int) myRecentNotes
 {
-    notifNotesCounts = [NSArray arrayWithObjects:[NSNumber numberWithInt:topNotes], [NSNumber numberWithInt:popularNotes],
-                       [NSNumber numberWithInt:recentNotes], [NSNumber numberWithInt:myRecentNotes], nil];
+    NSArray *notifNotesCounts = [NSArray arrayWithObjects:[NSNumber numberWithInt:topNotes], [NSNumber numberWithInt:popularNotes],
+                        [NSNumber numberWithInt:recentNotes], [NSNumber numberWithInt:myRecentNotes], nil];
+    [[NSUserDefaults standardUserDefaults] setObject:notifNotesCounts forKey:NOTIF_NOTE_COUNT_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [self setUpNotifications];
 }
 
 - (void) setUpNotifications
 {
+    NSArray *notifNotesCounts = [self getNotifNoteCounts];
     
     if([[notifNotesCounts objectAtIndex:kTop] intValue] > [[arrayOfArraysByType objectAtIndex:kTop] count] && ([[arrayOfArraysByType objectAtIndex:kTop] count] % NOTES_PER_FETCH == 0))
     {
@@ -150,23 +160,22 @@
     
     for(int i = 0; i < kNumContents; ++i)
     {
-        for(int j = 0; j < MIN([[notifNotesCounts objectAtIndex:i] intValue], [[arrayOfArraysByType objectAtIndex:i] count]); ++j)
+        int indexInArray = 0;
+        while (([[notifNotesCounts objectAtIndex:i] intValue]-[notifNoteIds count]) > 0 && indexInArray < [[arrayOfArraysByType objectAtIndex:i] count])
         {
-            [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:j]];
+            Note* currentNote = [allNotes objectForKey: [[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
+            if([self noteShouldBeAvailable:currentNote] && ![self noteHasBeenDisplayedByNotif:currentNote])
+                [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
+            ++indexInArray;
         }
-        /*
-         int numLeftToAdd = [[notifNotesCounts objectAtIndex:i] intValue];
-         int indexInArray = 0;
-         while (numLeftToAdd > 0 && indexInArray < [[arrayOfArraysByType objectAtIndex:i] count])
-         {
-         if(
-         [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
-         }
-         */
+        if([[notifNotesCounts objectAtIndex:i] intValue] != [notifNoteIds count])
+            unprocessedNotifs = YES;
     }
     
-    NSArray *notifNotes = [allNotes objectsForKeys:notifNoteIds notFoundMarker:[[Note alloc] init]];
-    [[MyCLController sharedMyCLController] prepareNotificationsForNotes: notifNotes];
+    notifNotes = [NSMutableDictionary dictionaryWithObjects:[allNotes objectsForKeys:notifNoteIds notFoundMarker:[[Note alloc] init]] forKeys:notifNoteIds];
+    [[MyCLController sharedMyCLController] prepareNotificationsForNotes: [notifNotes allValues]];
+    
+    
 }
 
 #pragma mark Fetch More Notes
@@ -210,7 +219,12 @@
     [allNotes addEntriesFromDictionary:newNotes];
     ContentSelector updatedNotes = [[notification.userInfo objectForKey:@"ContentSelector"] intValue];
     NSMutableArray *selectedArray = [arrayOfArraysByType objectAtIndex:updatedNotes];
-    [selectedArray addObjectsFromArray:[newNotes allKeys]];
+    
+    for(id object in [newNotes allKeys]) // [selectedArray addObjectsFromArray:[newNotes allKeys]]; replaced to prevent duplicates
+    {
+        if(![selectedArray containsObject:object])
+            [selectedArray addObject:object];
+    }
     
     if(unprocessedNotifs)
         [self setUpNotifications];
@@ -219,7 +233,11 @@
     {
         [self updateAvailableNotes];
         [self sendNotesUpdateNotification];
+        
+        if([availableNotes count] < MAX_MAP_NOTES_COUNT && ([[arrayOfArraysByType objectAtIndex:selectedContent] count] % NOTES_PER_FETCH == 0))
+            [self fetchMoreNotesOfType:selectedContent];
     }
+    
 }
 
 
@@ -281,6 +299,7 @@
         if([newlyUnavailableNotes count] > 0)
             [self sendLostNotesNotif:newlyUnavailableNotes];
     }
+    
 }
 
 -(void) updateNoteContents:(NSNotification *)notification
@@ -363,16 +382,37 @@
     }
 }
 
+-(void) setNoteAsPreviouslyDisplayed:(Note *) note
+{
+    NSMutableArray *previouslyDisplayedNotes = [[NSUserDefaults standardUserDefaults] objectForKey:PREV_DISPLAYED_NOTES_KEY];
+    if(!previouslyDisplayedNotes)
+        previouslyDisplayedNotes = [[NSMutableArray alloc] init];
+    
+    [previouslyDisplayedNotes addObject:[NSNumber numberWithInt:note.noteId]];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:previouslyDisplayedNotes forKey:PREV_DISPLAYED_NOTES_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 -(Note *) noteForNoteId:(int) noteId
 {
     Note *note = [allNotes objectForKey:[NSNumber numberWithInt:noteId]];
+    if(!note)
+        note = [notifNotes objectForKey:[NSNumber numberWithInt:noteId]];
     
     if(!note && note.noteId != 0)
         [[AppServices sharedAppServices] fetchNote:note.noteId];
-    //else
-    //    [self updateNoteContentsWithNote:note];
-#warning Consider
+    
     return note;
+}
+
+-(NSArray *) getNotifNoteCounts
+{
+    NSArray *notifNoteCounts = [[NSUserDefaults standardUserDefaults] objectForKey:NOTIF_NOTE_COUNT_KEY];
+    if(!notifNoteCounts)
+        notifNoteCounts = [NSArray arrayWithObjects:[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0],[NSNumber numberWithInt:0], nil];
+    
+    return notifNoteCounts;
 }
 
 #pragma mark Available Notes
@@ -455,6 +495,19 @@
         [self fetchMoreNotes];
     else
         [self updateAvailableNotes];
+}
+
+-(BOOL) noteHasBeenDisplayedByNotif: (Note *) note
+{
+    NSMutableArray *previouslyDisplayedNotes = [[NSUserDefaults standardUserDefaults] objectForKey:PREV_DISPLAYED_NOTES_KEY];
+    
+    for(Note *displayedNote in previouslyDisplayedNotes)
+    {
+        if(displayedNote.noteId == note.noteId)
+            return YES;
+    }
+    
+    return NO;
 }
 
 #pragma mark Notifications

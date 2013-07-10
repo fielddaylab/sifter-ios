@@ -187,7 +187,7 @@
     //  if ([region containsCoordinate:[AppModel sharedAppModel].playerLocation.coordinate])
     //  {
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[region.identifier intValue]];
-    NSString *tagName = ((Tag *)[note.tags objectAtIndex:0]).tagName;
+    NSString *tagName = ([note.tags count] > 0) ? ((Tag *)[note.tags objectAtIndex:0]).tagName : @"Madison";
     
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];
     localNotification.alertBody = [NSString stringWithFormat:@"There is a note nearby about %@ that you may be interested in viewing.", tagName];
