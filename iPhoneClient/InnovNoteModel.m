@@ -245,11 +245,17 @@
 -(void) newTagsReceived:(NSNotification *)notification
 {
     allTags = [notification.userInfo objectForKey:@"tags"];
-    if([selectedTags count] == 0) selectedTags = [allTags mutableCopy];
     
     NSNotification *notif  = [NSNotification notificationWithName:@"NoteModelUpdate:Tags" object:self];
     [[Logger sharedLogger] logNotification: notif];
     [[NSNotificationCenter defaultCenter] postNotification: notif];
+    
+    if([selectedTags count] == 0)
+    {
+        selectedTags = [allTags mutableCopy];
+        [self sendSelectedTagsUpdateNotification];
+        [self updateAvailableNotes];
+    }
 }
 
 -(void) updateAvailableNotes
@@ -451,8 +457,8 @@
         if(currentTag.tagId == addTag.tagId) return;
     
     [selectedTags addObject: addTag];
-    [self updateAvailableNotes];
     [self sendSelectedTagsUpdateNotification];
+    [self updateAvailableNotes];
 }
 
 -(void) removeTag: (Tag *) removeTag
@@ -463,8 +469,8 @@
         if(tag.tagId == removeTag.tagId)
         {
             [selectedTags removeObject: tag];
-            [self updateAvailableNotes];
             [self sendSelectedTagsUpdateNotification];
+            [self updateAvailableNotes];
             return;
         }
     }
