@@ -280,8 +280,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
 #warning magic number
     dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
-    dropOnMapVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width, 60);
-    [self addChildViewController:dropOnMapVC];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -296,10 +294,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
     [[Logger sharedLogger] logError:error];
-    
-#warning GET RID OF THIS IF THIS VC NOT RETAINED
-    newNote = NO;
-    self.note = nil;
 }
 
 #pragma mark UIImageView methods
@@ -828,7 +822,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     {
         case NoteContentSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:NoteContentCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NoteContentCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NoteContentCellIdentifier];
@@ -843,7 +837,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case RecordSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:RecordCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:RecordCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:RecordCellIdentifier];
@@ -862,7 +856,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case ShareSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:ShareCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ShareCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShareCellIdentifier];
@@ -928,10 +922,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case DropOnMapSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:DropOnMapCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:DropOnMapCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DropOnMapCellIdentifier];
+                dropOnMapVC.view.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height+2);
+                [self addChildViewController:dropOnMapVC];
                 [cell addSubview:dropOnMapVC.view];
                 [dropOnMapVC didMoveToParentViewController:self];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -940,7 +936,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case DeleteSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DeleteCellIdentifier];
