@@ -9,7 +9,6 @@
 #import "Note.h"
 #import "ARISAppDelegate.h"
 #import "AppModel.h"
-#import "NearbyObjectsViewController.h"
 #import "NoteContent.h"
 
  NSString *const kNoteContentTypeAudio = @"AUDIO";

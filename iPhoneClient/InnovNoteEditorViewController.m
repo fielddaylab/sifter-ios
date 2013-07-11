@@ -11,6 +11,7 @@ typedef enum {
     RecordSection,
     ShareSection,
     TagSection,
+    DropOnMapSection,
     DeleteSection,
     NumSections
 } SectionLabel;
@@ -32,6 +33,7 @@ typedef enum {
 #import "InnovPopOverSocialContentView.h"
 #import "AsyncMediaTouchableImageView.h"
 #import "ARISMoviePlayerViewController.h"
+#import "DropOnMapViewController.h"
 #import "InnovViewController.h"
 #import "InnovNoteEditorViewController.h"
 #import "CameraViewController.h"
@@ -53,6 +55,10 @@ typedef enum {
 #define SHARE_BUTTON_WIDTH  SHARE_BUTTON_HEIGHT
 #define NO_SHARE_ALPHA      0.25f;
 
+#define CELL_BUTTON_HEIGHT 46
+
+#define DROP_ON_MAP_HEIGHT 120
+
 #define CANCEL_BUTTON_TITLE @"Cancel"
 #define SHARE_BUTTON_TITLE  @"Share"
 
@@ -60,42 +66,37 @@ static NSString *NoteContentCellIdentifier = @"NoteConentCell";
 static NSString *RecordCellIdentifier      = @"RecordCell";
 static NSString *ShareCellIdentifier       = @"ShareCell";
 static NSString *TagCellIdentifier         = @"TagCell";
+static NSString *DropOnMapCellIdentifier   = @"DropOnMapCell";
 static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 @interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate> {
     
+    UIBarButtonItem *cancelButton;
+    
+    Note *note;
+    BOOL newNote;
+    BOOL cameraHasBeenPresented;
     __weak IBOutlet UITableView *editNoteTableView;
+    
     AsyncMediaTouchableImageView *imageView;
     UITextView *captionTextView;
+    
+    ProgressButton *recordButton;
+    UIButton *deleteAudioButton;
     
     BOOL shareToFacebook;
     BOOL shareToTwitter;
     InnovPopOverSocialContentView *socialView;
-    
-    ProgressButton *recordButton;
-    UIButton *deleteAudioButton;
-    UIButton *deleteNoteButton;
-    
-    UIBarButtonItem *cancelButton;
-    
-    Note *note;
-    
-    BOOL newNote;
-    BOOL noteCompleted;
-    BOOL isEditing;
-    BOOL cameraHasBeenPresented;
-    
+
     int originalTagId;
     NSString  *originalTagName;
     int selectedIndex;
     NSString  *newTagName;
     NSArray *tagList;
     
-    BOOL deletePressed;
     BOOL hasAudioToUpload;
     
     ARISMoviePlayerViewController *ARISMoviePlayer;
-    
     //AudioMeter *meter;
 	AVAudioRecorder *soundRecorder;
 	AVAudioPlayer *soundPlayer;
@@ -104,6 +105,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 	NSTimer *recordLengthCutoffAndPlayProgressTimer;
     double secondsRecordingOrPlaying;
     double audioLength;
+    
+    DropOnMapViewController *dropOnMapVC;
+    
+    UIButton *deleteNoteButton;
 }
 
 @end
@@ -137,13 +142,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     cancelButton = [[UIBarButtonItem alloc] initWithTitle: CANCEL_BUTTON_TITLE
                                                     style: UIBarButtonItemStyleDone
                                                    target:self
-                                                   action:@selector(backButtonTouchAction:)];
+                                                   action:@selector(cancelButtonPressed:)];
     self.navigationItem.leftBarButtonItem = cancelButton;
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle: SHARE_BUTTON_TITLE
                                                                    style: UIBarButtonItemStyleDone
                                                                   target:self
-                                                                  action:@selector(backButtonTouchAction:)];
+                                                                  action:@selector(shareButtonPressed:)];
     self.navigationItem.rightBarButtonItem = doneButton;
     
     imageView = [[AsyncMediaTouchableImageView alloc] initWithFrame:CGRectMake(NOTE_CONTENT_CELL_X_MARGIN, NOTE_CONTENT_CELL_Y_MARGIN, IMAGE_WIDTH, IMAGE_HEIGHT)];
@@ -152,13 +157,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(NOTE_CONTENT_CELL_X_MARGIN + imageView.frame.size.width + NOTE_CONTENT_IMAGE_TEXT_MARGIN, NOTE_CONTENT_CELL_Y_MARGIN, 196, IMAGE_HEIGHT)];
     captionTextView.delegate = self;
     
-    recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, 46)];
+    recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, CELL_BUTTON_HEIGHT)];
     [recordButton addTarget:self action:@selector(recordButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    deleteAudioButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 46)];
+    deleteAudioButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, CELL_BUTTON_HEIGHT)];
     [deleteAudioButton addTarget:self action:@selector(deleteAudioButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    deleteNoteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 46)];
+    deleteNoteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, CELL_BUTTON_HEIGHT)];
     [deleteNoteButton addTarget:self action:@selector(deleteNoteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     deleteNoteButton.backgroundColor = [UIColor redColor];
     [deleteNoteButton setTitle:@"Delete" forState:UIControlStateNormal];
@@ -193,12 +198,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     originalTagName = @"";
     newTagName = @"";
+    CLLocationCoordinate2D coordinate = [AppModel sharedAppModel].playerLocation.coordinate;
     
     if(self.note.noteId != 0)
     {
-#warning when do we edit
-        isEditing = YES;
-        
         captionTextView.text = note.text;
         
         if([note.text length] > 0 && ![note.text isEqualToString:DEFAULT_TEXT])
@@ -230,6 +233,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         else
             [self tableView:editNoteTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:TagSection]];
         
+        if(self.note.latitude != 0 && self.note.longitude != 0)
+            coordinate = CLLocationCoordinate2DMake(self.note.latitude, self.note.longitude);        
+        
         NSError *error;
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
         [[Logger sharedLogger] logError:error];
@@ -251,17 +257,18 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         self.note.username    = [AppModel sharedAppModel].userName;
         self.note.displayname = [AppModel sharedAppModel].displayName;
         self.note.noteId      = [[AppServices sharedAppServices] createNoteStartIncomplete];
-        isEditing = NO;
+        self.note.latitude    = [AppModel sharedAppModel].playerLocation.coordinate.latitude;
+        self.note.longitude   = [AppModel sharedAppModel].playerLocation.coordinate.longitude;
         newNote = YES;
-#warning should allows show on List and Map?
         if(self.note.noteId == 0)
         {
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:self.delegate cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:nil cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
             [alert show];
             self.note = nil;
             [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
             return;
         }
+        
         captionTextView.text = DEFAULT_TEXT;
         captionTextView.textColor = [UIColor lightGrayColor];
         
@@ -271,7 +278,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         [self cameraButtonTouchAction];
     }
-    
+#warning magic number
+    dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -283,85 +291,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification  object:ARISMoviePlayer.moviePlayer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification       object:ARISMoviePlayer.moviePlayer];
     
-    if(!self.note || (newNote && !isEditing) || !noteCompleted)
-        return;
-    
-    if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
-    else self.note.text = captionTextView.text;
-    
-    int textContentId = 0;
-    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
-    {
-        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString:kNoteContentTypeText])
-        {
-            textContentId = [contentObject getContentId];
-            ((NoteContent *)contentObject).text = self.note.text;
-        }
-    }
-    
-    if(textContentId == 0)
-    {
-        NSString *urlString = [NSString stringWithFormat:@"%@.txt",[NSDate date]];
-        urlString = [NSString stringWithFormat:@"%d.txt",urlString.hash];
-        NSURL *url = [NSURL URLWithString:urlString];
-        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:self.note.text withType:@"TEXT" withFileURL:url];
-    }
-    else
-        [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
-#warning must be forced to yes due to the forced refresh after the camera, so facebook can have the image url in time
-    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:YES publicToList:YES];
-    
-    if(mode == kInnovAudioRecorderRecording) [self recordButtonPressed:nil];
-    if(hasAudioToUpload) [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
-    
-    if([newTagName length] > 0 && ![originalTagName isEqualToString:newTagName])
-    {
-        if(originalTagId != 0) [[AppServices sharedAppServices] deleteTagFromNote:self.note.noteId tagId:originalTagId];
-        [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
-        
-        Tag *tag = [[Tag alloc] init];
-        tag.tagName = newTagName;
-        [self.note.tags addObject:tag];
-    }
-    
-#warning point where added to map may change
-    if(newNote)
-    {
-        [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:[AppModel sharedAppModel].playerLocation.coordinate];
-        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
-        
-        self.note.latitude  = [AppModel sharedAppModel].playerLocation.coordinate.latitude;
-        self.note.longitude = [AppModel sharedAppModel].playerLocation.coordinate.longitude;
-    }
-    
-    [[InnovNoteModel sharedNoteModel] updateNote:note];
-    
-    if(shareToFacebook)
-    {
-        NSString *title = ([self.note.tags count] > 0) ? ((Tag *)[self.note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
-        NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
-#warning fix url to be web notebook url
-        NSString *url  = HOME_URL;
-        
-        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
-    }
-    
-    if(shareToTwitter)
-    {
-        NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
-        NSString *url  = HOME_URL;
-#warning fix url to be web notebook url        
-        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareText:text withImage:nil andURL:url fromNote:self.note.noteId automatically:YES];
-    }
-    
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
     [[Logger sharedLogger] logError:error];
-    
-    [self.delegate prepareToDisplayNote: self.note];
-    
-    newNote = NO;
-    self.note = nil;
 }
 
 #pragma mark UIImageView methods
@@ -431,23 +363,85 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 #pragma mark Button Methods
 
-- (void)backButtonTouchAction: (id) sender
+- (void)cancelButtonPressed: (id) sender
 {
-    BOOL cancelPressed = [sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:CANCEL_BUTTON_TITLE];
-    if((!isEditing || newNote || deletePressed) && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:SHARE_BUTTON_TITLE]))
+    if(newNote)
     {
         [[AppServices sharedAppServices]  deleteNoteWithNoteId:self.note.noteId];
         [[InnovNoteModel sharedNoteModel] removeNote:note];
-        noteCompleted = NO;
+    }
+    [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
+}
+
+- (void)shareButtonPressed: (id) sender
+{
+    if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
+    else self.note.text = captionTextView.text;
+    
+    int textContentId = 0;
+    for(NSObject <NoteContentProtocol> *contentObject in note.contents)
+    {
+        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString:kNoteContentTypeText])
+        {
+            textContentId = [contentObject getContentId];
+            ((NoteContent *)contentObject).text = self.note.text;
+        }
+    }
+    
+    if(textContentId == 0)
+    {
+        NSString *urlString = [NSString stringWithFormat:@"%@.txt",[NSDate date]];
+        urlString = [NSString stringWithFormat:@"%d.txt",urlString.hash];
+        NSURL *url = [NSURL URLWithString:urlString];
+        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:self.note.text withType:@"TEXT" withFileURL:url];
     }
     else
-        noteCompleted = YES;
+        [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
+
+    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:YES publicToList:YES];
     
-    noteCompleted = noteCompleted && !cancelPressed;
+    if(mode == kInnovAudioRecorderRecording)
+        [self recordButtonPressed:nil];
+    if(hasAudioToUpload)
+        [[[AppModel sharedAppModel]uploadManager] uploadContentForNoteId:self.note.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypeAudio withFileURL:soundFileURL];
     
-    NSError *error;
-    [[AVAudioSession sharedInstance] setActive: NO error: &error];
-    [[Logger sharedLogger] logError:error];
+    if([newTagName length] > 0 && ![originalTagName isEqualToString:newTagName])
+    {
+        if(originalTagId != 0) [[AppServices sharedAppServices] deleteTagFromNote:self.note.noteId tagId:originalTagId];
+        [[AppServices sharedAppServices] addTagToNote:self.note.noteId tagName:newTagName];
+        
+        Tag *tag = [[Tag alloc] init];
+        tag.tagName = newTagName;
+        [self.note.tags addObject:tag];
+    }
+    
+    if(newNote)
+        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
+    
+    if(dropOnMapVC.locationMoved)
+        [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:dropOnMapVC.currentCoordinate];
+    
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    
+    if(shareToFacebook)
+    {
+        NSString *title = ([self.note.tags count] > 0) ? ((Tag *)[self.note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
+        NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
+#warning fix url to be web notebook url
+        NSString *url  = HOME_URL;
+        
+        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
+    }
+    
+    if(shareToTwitter)
+    {
+        NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
+        NSString *url  = HOME_URL;
+#warning fix url to be web notebook url
+        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareText:text withImage:nil andURL:url fromNote:self.note.noteId automatically:YES];
+    }
+    
+    [self.delegate prepareToDisplayNote: self.note];
     
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
 }
@@ -456,7 +450,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     CameraViewController *cameraVC = [[CameraViewController alloc] init];
     
-    if(isEditing) cameraVC.backView = self;
+    if(!newNote) cameraVC.backView = self;
     else cameraVC.backView = self.delegate;
     cameraVC.editView = self;
     cameraVC.noteId = self.note.noteId;
@@ -468,8 +462,18 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (void)deleteNoteButtonPressed:(id)sender
 {
-    deletePressed = YES;
-    [self backButtonTouchAction:nil];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Are You Sure?" message: @"Are you sure you want to delete this note?" delegate:self cancelButtonTitle: @"Cancel" otherButtonTitles: @"Delete", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex)
+    {
+        [[AppServices sharedAppServices]  deleteNoteWithNoteId:self.note.noteId];
+        [[InnovNoteModel sharedNoteModel] removeNote:note];
+        [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
+    }
 }
 
 #pragma mark Audio Methods
@@ -505,7 +509,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 			[recordButton setTitle: NSLocalizedString(@"PlayKey", @"") forState: UIControlStateNormal];
 			[recordButton setTitle: NSLocalizedString(@"PlayKey", @"") forState: UIControlStateHighlighted];
 			deleteAudioButton.hidden = NO;
-             frame.size.width = [UIScreen mainScreen].bounds.size.width/2;//cell.frame.size.width;
+            frame.size.width = [UIScreen mainScreen].bounds.size.width/2;//cell.frame.size.width;
 			break;
 		case kInnovAudioRecorderPlaying:
 			[recordButton setTitle: NSLocalizedString(@"StopKey", @"") forState: UIControlStateNormal];
@@ -548,7 +552,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 										   message: NSLocalizedString(@"NoAudioHardwareAvailableMessageKey", @"")
 										  delegate: nil
 								 cancelButtonTitle: NSLocalizedString(@"OkKey",@"")
-								 otherButtonTitles:nil];
+								 otherButtonTitles: nil];
 				[cantRecordAlert show];
 				return;
 			}
@@ -556,10 +560,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 			[soundRecorder record];
             
 			recordLengthCutoffAndPlayProgressTimer = [NSTimer scheduledTimerWithTimeInterval:PROGRESS_UPDATE_INTERVAL
-                                                                       target:self
-                                                                     selector:@selector(playOrRecordTimerResponse)
-                                                                     userInfo:nil
-                                                                      repeats:YES];
+                                                                                      target:self
+                                                                                    selector:@selector(playOrRecordTimerResponse)
+                                                                                    userInfo:nil
+                                                                                     repeats:YES];
         }
             break;
 			
@@ -569,7 +573,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             if (soundPlayer != nil)
                 [soundPlayer stop];
             else
-			[ARISMoviePlayer.moviePlayer stop];
+                [ARISMoviePlayer.moviePlayer stop];
             
             [recordLengthCutoffAndPlayProgressTimer invalidate];
 			
@@ -689,7 +693,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 - (void)MPMoviePlayerLoadStateDidChange:(NSNotification *)notification
 {
     if ((ARISMoviePlayer.moviePlayer.loadState & MPMovieLoadStatePlaythroughOK) == MPMovieLoadStatePlaythroughOK)
-       audioLength = ARISMoviePlayer.moviePlayer.duration;
+        audioLength = ARISMoviePlayer.moviePlayer.duration;
 }
 
 - (void)MPMoviePlayerPlaybackStateDidChange:(NSNotification *)notification
@@ -746,21 +750,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
  }
  */
 
-/*
- [[AppServices sharedAppServices]deleteNoteLocationWithNoteId:self.note.noteId];
- 
- DropOnMapViewController *mapVC = [[DropOnMapViewController alloc] initWithNibName:@"DropOnMapViewController" bundle:nil] ;
- mapVC.noteId = self.note.noteId;
- mapVC.delegate = self;
- self.noteValid = YES;
- self.mapButton.selected = YES;
- 
- [self.navigationController pushViewController:mapVC animated:NO];
- 
- 
- [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.textField.text publicToMap:self.note.showOnMap publicToList:self.note.showOnList];
- */
-
 #pragma mark Table view methods
 
 -(void)updateTags
@@ -789,21 +778,25 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 return [tagList count];
             else
                 return 1;
+        case DropOnMapSection:
+            return 1;
         case DeleteSection:
             return 1;
         default:
             return 1;
     }
 }
-#warning Check if Still has blank space
--(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
     if(section == TagSection)
         return @"Categories";
-   
+    
     return nil;
 }
 #warning Eliminate Redundancy with Default
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     switch (indexPath.section)
     {
         case NoteContentSection:
@@ -814,6 +807,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             return 2 * SHARE_BUTTON_HEIGHT;
         case TagSection:
             return 44;
+        case DropOnMapSection:
+            return DROP_ON_MAP_HEIGHT;
         case DeleteSection:
             return 44;
         default:
@@ -821,13 +816,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{    
     switch (indexPath.section)
     {
         case NoteContentSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:NoteContentCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NoteContentCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:NoteContentCellIdentifier];
@@ -842,7 +837,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case RecordSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:RecordCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:RecordCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:RecordCellIdentifier];
@@ -861,7 +856,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case ShareSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:ShareCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ShareCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShareCellIdentifier];
@@ -925,9 +920,23 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             
             return cell;
         }
+        case DropOnMapSection:
+        {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:DropOnMapCellIdentifier];
+            if(!cell)
+            {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DropOnMapCellIdentifier];
+                dropOnMapVC.view.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height+2);
+                [self addChildViewController:dropOnMapVC];
+                [cell addSubview:dropOnMapVC.view];
+                [dropOnMapVC didMoveToParentViewController:self];
+                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+            }
+            return cell;
+        }
         case DeleteSection:
         {
-            UITableViewCell *cell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier];
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier];
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DeleteCellIdentifier];
@@ -971,7 +980,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
 }
 
-
 #pragma mark Dealloc, and Other Necessary Methods
 
 - (void)dealloc
@@ -985,7 +993,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [super didReceiveMemoryWarning];
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload
+{
     imageView = nil;
     captionTextView = nil;
     recordButton = nil;
