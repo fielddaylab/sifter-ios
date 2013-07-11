@@ -9,10 +9,13 @@
 #import "InnovMapViewController.h"
 #import <MapKit/MapKit.h>
 
+#import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
 #import "Tag.h"
+#import "WildcardGestureRecognizer.h"
 
 #import "Annotation.h"
 #import "AnnotationView.h"
@@ -29,8 +32,6 @@
 #define MADISON_LAT     43.07
 #define MADISON_LONG    -89.40
 #define MAX_DISTANCE    20000
-
-#define MAX_NOTES_COUNT    50
 
 @interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
 
@@ -79,6 +80,20 @@
     notePopUp.hidden   = YES;
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
+    
+    
+    NSString *reqSysVer = @"6.0";
+    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+    if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedDescending)
+    {        
+        WildcardGestureRecognizer * tapInterceptor = [[WildcardGestureRecognizer alloc] init];
+        __weak InnovMapViewController *weakSelf = self;
+        tapInterceptor.touchesBeganCallback = ^(NSSet * touches, UIEvent * event) {
+            [weakSelf touchesBegan:nil withEvent:nil];
+            [[weakSelf.navigationController.viewControllers objectAtIndex:0] touchesBegan:nil withEvent:nil];
+        };
+        [mapView addGestureRecognizer:tapInterceptor];
+    } 
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -164,7 +179,7 @@
 {
     for(Note *note in unshownNotesQueue)
     {
-        if(shownNotesCount < MAX_NOTES_COUNT)
+        if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
@@ -184,7 +199,7 @@
     
     for(Note *note in newNotes)
     {
-        if(shownNotesCount < MAX_NOTES_COUNT)
+        if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];

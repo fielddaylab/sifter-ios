@@ -6,7 +6,11 @@
 //
 //
 
+#define NAV_BAR_HEIGHT 44
+
 @interface InnovPopOverView : UIView
 
 - (id)initWithFrame:(CGRect)frame andContentView: (UIView *) contentView;
+- (void)adjustContentFrame:(CGRect)frame;
+
 @end

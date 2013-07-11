@@ -71,10 +71,13 @@
 		4AD5C41514E0704F00081B20 /* UploadMan.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD5C41414E0704F00081B20 /* UploadMan.m */; };
 		4ADE919C13CB7CB80009F4AF /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */; };
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
+		8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8902C52017874A580071373E /* InnovPopOverNotifContentView.m */; };
+		8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */; };
 		89D8B25517820182002A53CA /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B25317820182002A53CA /* CustomBadge.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B261178228F7002A53CA /* InnovCommentViewController.m */; };
 		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
 		89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F99AF017866A7900DEB46F /* ProgressButton.m */; };
+		89FFAF32178B3BF800A0F589 /* WildcardGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FFAF31178B3BF800A0F589 /* WildcardGestureRecognizer.m */; };
 		A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7149F9C0FB89DC8008BAB5D /* Settings.bundle */; };
 		A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */ = {isa = PBXBuildFile; fileRef = A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */; };
 		A722C8C60FBCD92E009432DB /* SelfRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */; };
@@ -339,6 +342,9 @@
 		4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
 		4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+Hardware.h"; sourceTree = "<group>"; };
 		4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
+		8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverNotifContentView.h; sourceTree = "<group>"; };
+		8902C52017874A580071373E /* InnovPopOverNotifContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverNotifContentView.m; sourceTree = "<group>"; };
+		8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverNotifContentView.xib; sourceTree = "<group>"; };
 		89D8B25317820182002A53CA /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		89D8B25417820182002A53CA /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
 		89D8B260178228F7002A53CA /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
@@ -346,6 +352,8 @@
 		89D8B262178228F7002A53CA /* InnovCommentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovCommentViewController.xib; sourceTree = "<group>"; };
 		89F99AEF17866A7900DEB46F /* ProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressButton.h; sourceTree = "<group>"; };
 		89F99AF017866A7900DEB46F /* ProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressButton.m; sourceTree = "<group>"; };
+		89FFAF30178B3BF800A0F589 /* WildcardGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WildcardGestureRecognizer.h; sourceTree = "<group>"; };
+		89FFAF31178B3BF800A0F589 /* WildcardGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WildcardGestureRecognizer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A7149F9C0FB89DC8008BAB5D /* Settings.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Settings.bundle; sourceTree = "<group>"; };
 		A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelfRegistration.xib; sourceTree = "<group>"; };
@@ -1128,6 +1136,8 @@
 		DB0743951754FE060068A1DB /* Extern Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				89FFAF30178B3BF800A0F589 /* WildcardGestureRecognizer.h */,
+				89FFAF31178B3BF800A0F589 /* WildcardGestureRecognizer.m */,
 				4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */,
 				4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */,
 				89D8B25417820182002A53CA /* CustomBadge.h */,
@@ -1179,6 +1189,9 @@
 				89F99AF017866A7900DEB46F /* ProgressButton.m */,
 				DB0F405E1772175E00F19934 /* InnovPopOverView.h */,
 				DB0F405F1772175E00F19934 /* InnovPopOverView.m */,
+				8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */,
+				8902C52017874A580071373E /* InnovPopOverNotifContentView.m */,
+				8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */,
 				DB0F406117721A3B00F19934 /* InnovPopOverSocialContentView.h */,
 				DB0F406217721A3B00F19934 /* InnovPopOverSocialContentView.m */,
 				DB0F406417721B6F00F19934 /* InnovPopOverSocialContentView.xib */,
@@ -1458,6 +1471,7 @@
 				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
 				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
+				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1584,6 +1598,8 @@
 				89D8B25517820182002A53CA /* CustomBadge.m in Sources */,
 				89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */,
 				89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */,
+				8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */,
+				89FFAF32178B3BF800A0F589 /* WildcardGestureRecognizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

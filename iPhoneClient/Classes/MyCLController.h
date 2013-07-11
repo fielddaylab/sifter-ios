@@ -47,8 +47,6 @@
  */
 #import <CoreLocation/CoreLocation.h>
 #import <CoreLocation/CLLocationManagerDelegate.h>
-#import "AppModel.h"
-
 
 // Class definition
 @interface MyCLController : NSObject <CLLocationManagerDelegate> {
@@ -66,5 +64,6 @@
 - (void)locationManager:(CLLocationManager *)manager
 	   didFailWithError:(NSError *)error;
 
-@end
+- (void)prepareNotificationsForNotes:(NSArray *) notes;
 
+@end

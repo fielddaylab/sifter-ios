@@ -85,7 +85,7 @@
 {
     note = aNote;
     
-    usernameLabel.text = note.username;
+    usernameLabel.text = ([note.displayname length] > 0) ? note.displayname : note.username;
     deleteButton.tag = index;
     [flagButton setSelected:note.userFlagged];
     [self updateLikeButton];

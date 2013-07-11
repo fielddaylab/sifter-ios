@@ -6,7 +6,8 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-@interface JSONResult : NSObject {
+@interface JSONResult : NSObject
+{
 	int returnCode;
 	NSString *returnCodeDescription;
 	NSObject *data;
@@ -20,12 +21,7 @@
 @property(copy, readwrite) NSDictionary *userInfo;
 @property(copy, readwrite) NSString *hash;
 
-
 - (JSONResult*)initWithJSONString:(NSString *)JSONString andUserData:(NSDictionary *)userData;
 - (NSObject*) parseJSONData:(NSObject *)dictionary;
 
-
-
 @end
-
-

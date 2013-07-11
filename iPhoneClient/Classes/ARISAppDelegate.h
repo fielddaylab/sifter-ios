@@ -6,9 +6,6 @@
 //  Copyright University of Wisconsin 2009. All rights reserved.
 //
 
-#import "AppModel.h"
-#import "AppServices.h"
-
 #import <AVFoundation/AVAudioPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMotion/CoreMotion.h>
@@ -24,7 +21,7 @@
 
 #define SERVER                       @"http://dev.arisgames.org/server"
 #define HOME_URL                     @"www.arisgames.org/yoi-server"
-#define GAME_ID                      3434   //3434 for dev.arisgames.org/server    3371 for arisgames.org/yoi-server                  
+#define GAME_ID                      3435   //3435 for dev.arisgames.org/server    3371 for arisgames.org/yoi-server                  
 
 @interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {

@@ -17,6 +17,8 @@
 #import "InnovPresentNoteDelegate.h"
 
 #import "InnovSettingsView.h"
+#import "InnovPopOverView.h"
+#import "InnovPopOverNotifContentView.h"
 #import "LoginViewController.h"
 #import "InnovMapViewController.h"
 #import "InnovListViewController.h"
@@ -26,7 +28,7 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPopOverNotifContentViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -42,6 +44,7 @@
     InnovListViewController *listVC;
     InnovSettingsView *settingsView;
     InnovSelectedTagsViewController *selectedTagsVC;
+    InnovPopOverView *popOver;
     
     Note *noteToAdd;
     NSString *currentSearchTerm;
@@ -55,7 +58,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInFailed) name:@"LogInFailed" object:nil];
     return self;
 }
 
@@ -143,7 +146,10 @@
     [super viewDidAppear:animated];
     
     if(noteToAdd != nil)
-        [self animateInNote];
+    {
+        [self animateInNote:noteToAdd];
+        noteToAdd = nil;
+    }
 }
 
 #pragma mark Display New Note
@@ -157,13 +163,12 @@
     [selectedTagsVC updateSelectedContent:kMine];
 }
 
-- (void) animateInNote
+- (void) animateInNote: (Note *) note
 {
     if ([contentView.subviews containsObject:mapVC.view])
-        [mapVC showNotePopUpForNote:noteToAdd];
+        [mapVC showNotePopUpForNote:note];
     else
-        [listVC animateInNote:noteToAdd];
-    noteToAdd = nil;
+        [listVC animateInNote:note];
 }
 
 #pragma mark Search Bar Delegate Methods
@@ -254,6 +259,20 @@
 
 #pragma mark Settings Delegate Methods
 
+- (void) showNotifications
+{
+    InnovPopOverNotifContentView *notifView = [[InnovPopOverNotifContentView alloc] init];
+    notifView.delegate = self;
+    [notifView refreshFromModel];
+    popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:notifView];
+    [self.view addSubview:popOver];
+}
+
+- (void) dismiss
+{
+    [popOver removeFromSuperview];
+}
+
 - (void) showAbout
 {
 #warning unimplemented
@@ -267,13 +286,10 @@
 
 #pragma mark Login and Game Selection
 
-- (void)checkForLogInFail
+- (void)logInFailed
 {
-    if([AppModel sharedAppModel].playerId == 0)
-    {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
         [alert show];
-    }
 }
 
 #pragma mark Present Note Delegate Method

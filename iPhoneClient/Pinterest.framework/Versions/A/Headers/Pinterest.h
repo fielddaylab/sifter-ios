@@ -6,9 +6,6 @@
 //  Copyright (c) 2013 Pinterest. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-
 @interface Pinterest : NSObject
 
 - (id)initWithClientId:(NSString *)clientId;

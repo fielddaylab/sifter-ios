@@ -103,7 +103,7 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-    if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];
@@ -175,7 +175,7 @@ static NSString * const CELL_ID = @"Cell";
     float totalContentHeight = aScrollView.contentSize.height;
     float bottomInset        = aScrollView.contentInset.bottom;
     
-    if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && [notes count] > NOTES_PER_FETCH)
+    if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && ([notes count] % NOTES_PER_FETCH == 0))
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 /*

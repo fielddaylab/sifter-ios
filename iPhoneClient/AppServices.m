@@ -79,6 +79,17 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseLoginResponseFromJSON:)];
 }
 
+- (void)loginWithFacebookEmail:(NSString *) email displayName:(NSString *) displayName andId:(NSString *) idString
+{
+	NSArray *arguments = [NSArray arrayWithObjects:email, displayName, idString, nil];
+	JSONConnection *jsonConnection = [[JSONConnection alloc] initWithServer:[AppModel sharedAppModel].serverURL
+                                                             andServiceName: @"players"
+                                                              andMethodName:@"getFacebookLoginPlayerObject"
+                                                               andArguments:arguments
+                                                                andUserInfo:nil];
+	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseLoginResponseFromJSON:)];
+}
+
 - (void)registerNewUser:(NSString*)userName password:(NSString*)pass
 			  firstName:(NSString*)firstName lastName:(NSString*)lastName email:(NSString*)email
 {
@@ -94,17 +105,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                 andUserInfo:nil];
 	
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseSelfRegistrationResponseFromJSON:)];
-}
-
-- (void)createUserAndLoginWithGroup:(NSString *)groupName
-{
-	NSArray *arguments = [NSArray arrayWithObjects:groupName, nil];
-	JSONConnection *jsonConnection = [[JSONConnection alloc] initWithServer:[AppModel sharedAppModel].serverURL
-                                                             andServiceName: @"players"
-                                                              andMethodName:@"createPlayerAndGetLoginPlayerObject"
-                                                               andArguments:arguments
-                                                                andUserInfo:nil];
-	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseLoginResponseFromJSON:)];
 }
 
 -(void) uploadPlayerPicMediaWithFileURL:(NSURL *)fileURL
@@ -610,10 +610,15 @@ BOOL currentlyUpdatingServerWithMapViewed;
     //Call server service
     
     NSString *newFileName = [uploader responseString];
-    
-	NSArray *arguments = [NSArray arrayWithObjects:
+    [self setPlayerPicToUrl:newFileName];
+    [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
+}
+
+- (void)setPlayerPicToUrl:(NSString *) urlString
+{
+    NSArray *arguments = [NSArray arrayWithObjects:
                           [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-						  newFileName,
+						  urlString,
                           nil];
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"players"
@@ -621,7 +626,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                               andArguments:arguments
                                                                andUserInfo:nil];
     [jsonConnection performAsynchronousRequestWithHandler:@selector(parseNewPlayerMediaResponseFromJSON:)];
-    [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
 }
 
 -(void)parseNewPlayerMediaResponseFromJSON: (JSONResult *)jsonResult{
@@ -759,7 +763,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 #pragma mark Async Fetch selectors
 
-- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFrom: (int) lastLocation
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFromLocation: (int) lastLocation andDate: (NSString *) date
 {
     NSString *method;
     switch (selectedContent)
@@ -787,6 +791,8 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                  [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
                                  [NSString stringWithFormat:@"%d",lastLocation],
                                  [NSString stringWithFormat:@"%d",noteCount],nil];
+    if(selectedContent == kRecent && date)
+        [arguments addObject:date];
 	
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
@@ -976,11 +982,12 @@ BOOL currentlyUpdatingServerWithMapViewed;
     aNote.longitude        = [self validDoubleForKey:@"lon"              inDictionary:noteDictionary];
     aNote.username         = [self validObjectForKey:@"username"         inDictionary:noteDictionary];
     aNote.displayname      = [self validStringForKey:@"displayname"      inDictionary:noteDictionary];
+    aNote.created          = [self validStringForKey:@"created"          inDictionary:noteDictionary];
     aNote.title            = [self validObjectForKey:@"title"            inDictionary:noteDictionary];
-    aNote.facebookShareCount   = [self validIntForKey:@"facebook_shares" inDictionary:noteDictionary];
-    aNote.twitterShareCount     = [self validIntForKey:@"twitter_shares" inDictionary:noteDictionary];
+    aNote.facebookShareCount  = [self validIntForKey:@"facebook_shares"  inDictionary:noteDictionary];
+    aNote.twitterShareCount   = [self validIntForKey:@"twitter_shares"   inDictionary:noteDictionary];
     aNote.pinterestShareCount = [self validIntForKey:@"pinterest_shares" inDictionary:noteDictionary];
-    aNote.emailShareCount         = [self validIntForKey:@"email_shares" inDictionary:noteDictionary];
+    aNote.emailShareCount     = [self validIntForKey:@"email_shares"     inDictionary:noteDictionary];
     
     NSArray *contents = [self validObjectForKey:@"contents" inDictionary:noteDictionary];
     for (NSDictionary *content in contents)
@@ -1084,11 +1091,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
         [AppModel sharedAppModel].displayName = [self validObjectForKey:@"display_name" inDictionary:((NSDictionary*)jsonResult.data) ];
         [[AppModel sharedAppModel] saveUserDefaults];
         
-        //Subscribe to player channel
-        //[RootViewController sharedRootViewController].playerChannel = [[RootViewController sharedRootViewController].client subscribeToPrivateChannelNamed:[NSString stringWithFormat:@"%d-player-channel",[AppModel sharedAppModel].playerId]];
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"LogInSucceeded" object:nil]];
     }
 	else
+    {
         [AppModel sharedAppModel].playerId = 0;
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"LogInFailed" object:nil]];
+    }
     
     NSLog(@"NSNotification: NewLoginResponseReady");
 	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewLoginResponseReady" object:nil]];

@@ -15,7 +15,7 @@ typedef enum {
 } ContentSelector;
 
 #define NOTES_PER_FETCH 50
-#define MAX_NOTIFCATIONS_PER_CONTENT 20
+#define MAX_MAP_NOTES_COUNT    50
 
 @class Note, Tag;
 
@@ -28,13 +28,19 @@ typedef enum {
 +(InnovNoteModel *) sharedNoteModel;
 -(void) clearAllData;
 -(void) clearAvailableData;
+
+-(void) setUpNotificationsForTopNotes: (int) topNotes popularNotes: (int) popularNotes recentNotes: (int) recentNotes andMyRecentNotes: (int) myRecentNotes;
+
 -(void) fetchMoreNotes;
 -(void) fetchMoreNotesOfType:(ContentSelector) specifiedContent;
 
 -(void) addNote:(Note *) note;
 -(void) updateNote:(Note *) note;
 -(void) removeNote:(Note *) note;
+-(void) setNoteAsPreviouslyDisplayed:(Note *) note;
 -(Note *) noteForNoteId:(int) noteId;
+
+-(NSArray *) getNotifNoteCounts;
 
 -(void) addTag: (Tag *) tag;
 -(void) removeTag: (Tag *) tag;

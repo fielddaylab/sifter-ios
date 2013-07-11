@@ -64,8 +64,6 @@
     if (self)
     {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
     return self;
 }
@@ -85,6 +83,7 @@
     noteView.bounces = NO;
     [self.view addSubview:noteView];
     
+    UIGraphicsBeginImageContext(CGSizeMake(1,1));
     ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
     ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
     ARISMoviePlayer.moviePlayer.view.hidden    = YES;
@@ -93,6 +92,7 @@
     ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
     [noteView addSubview:ARISMoviePlayer.view];
+    UIGraphicsEndImageContext();
     
     imageView = [[AsyncMediaImageView alloc] init];
     imageView.frame = CGRectMake(IMAGE_X_MARGIN,
@@ -187,6 +187,9 @@
 {
     [super viewWillAppear: animated];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:)        name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];
+    
     if([AppModel sharedAppModel].playerId == self.note.creatorId)
         self.navigationItem.rightBarButtonItem = editButton;
     else
@@ -197,13 +200,21 @@
     else
         self.title = @"Note";
     
-    usernameLabel.text = note.username;
+    usernameLabel.text = ([note.displayname length] > 0) ? note.displayname : note.username;
     
     mode = kInnovAudioPlayerNoAudio;
     [self updatePlayButtonForCurrentMode];
     
     [self refreshViewFromModel];
     [[AppServices sharedAppServices] fetchNote:self.note.noteId];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];
 }
 
 #pragma mark Refresh
@@ -253,14 +264,14 @@
 		case kInnovAudioPlayerNoAudio:
             break;
 		case kInnovAudioPlayerPlaying:
-            [ARISMoviePlayer.moviePlayer stop];
             mode = kInnovAudioPlayerAudio;
+            [ARISMoviePlayer.moviePlayer stop];
             [self updatePlayButtonForCurrentMode];
             break;
 			
 		case kInnovAudioPlayerAudio:
+            mode = kInnovAudioPlayerPlaying;
             [ARISMoviePlayer.moviePlayer play];
-			mode = kInnovAudioPlayerPlaying;
 			[self updatePlayButtonForCurrentMode];
             break;
 		default:
@@ -340,6 +351,9 @@
     socialContent.note = self.note;
     [socialContent refreshBadges];
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
+    CGRect newFrame = socialContent.frame;
+    newFrame.origin.y -= NAV_BAR_HEIGHT;
+    [popOver adjustContentFrame:newFrame];
     [self.view addSubview:popOver];
 }
 
