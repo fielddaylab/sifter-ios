@@ -148,10 +148,6 @@
 		AB6484971187842B00261315 /* ticktick.wav in Resources */ = {isa = PBXBuildFile; fileRef = AB6484961187842B00261315 /* ticktick.wav */; };
 		AB6484B51187860E00261315 /* drop.wav in Resources */ = {isa = PBXBuildFile; fileRef = AB6484B41187860E00261315 /* drop.wav */; };
 		AB70F39413153BB500BD06CD /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB70F39313153BB500BD06CD /* MessageUI.framework */; };
-		AB79D5BC1307E6EB004AE1C7 /* NearbyObjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB79D5BA1307E6EB004AE1C7 /* NearbyObjectsViewController.m */; };
-		AB79D5BD1307E6EB004AE1C7 /* NearbyObjectsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB79D5BB1307E6EB004AE1C7 /* NearbyObjectsViewController.xib */; };
-		AB79D79A1308299E004AE1C7 /* NearbyObjectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AB79D7991308299E004AE1C7 /* NearbyObjectCell.m */; };
-		AB79D7A61308311C004AE1C7 /* NearbyObjectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AB79D7A51308311C004AE1C7 /* NearbyObjectCell.xib */; };
 		AB7D277813C7556100F10AD5 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB7D277713C7556100F10AD5 /* AddressBookUI.framework */; };
 		AB7D277A13C7559800F10AD5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB7D277913C7559800F10AD5 /* CoreMedia.framework */; };
 		AB82F79011F0EAA300B8E3DC /* microphoneForeground.png in Resources */ = {isa = PBXBuildFile; fileRef = AB82F78F11F0EAA300B8E3DC /* microphoneForeground.png */; };
@@ -459,12 +455,6 @@
 		AB6484961187842B00261315 /* ticktick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ticktick.wav; sourceTree = "<group>"; };
 		AB6484B41187860E00261315 /* drop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drop.wav; sourceTree = "<group>"; };
 		AB70F39313153BB500BD06CD /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		AB79D5B91307E6EB004AE1C7 /* NearbyObjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbyObjectsViewController.h; sourceTree = "<group>"; };
-		AB79D5BA1307E6EB004AE1C7 /* NearbyObjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NearbyObjectsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		AB79D5BB1307E6EB004AE1C7 /* NearbyObjectsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NearbyObjectsViewController.xib; sourceTree = "<group>"; };
-		AB79D7981308299E004AE1C7 /* NearbyObjectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbyObjectCell.h; sourceTree = "<group>"; };
-		AB79D7991308299E004AE1C7 /* NearbyObjectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NearbyObjectCell.m; sourceTree = "<group>"; };
-		AB79D7A51308311C004AE1C7 /* NearbyObjectCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NearbyObjectCell.xib; sourceTree = "<group>"; };
 		AB7D277713C7556100F10AD5 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		AB7D277913C7559800F10AD5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		AB82F78F11F0EAA300B8E3DC /* microphoneForeground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = microphoneForeground.png; sourceTree = "<group>"; };
@@ -744,12 +734,6 @@
 			isa = PBXGroup;
 			children = (
 				A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */,
-				AB79D7981308299E004AE1C7 /* NearbyObjectCell.h */,
-				AB79D7991308299E004AE1C7 /* NearbyObjectCell.m */,
-				AB79D7A51308311C004AE1C7 /* NearbyObjectCell.xib */,
-				AB79D5B91307E6EB004AE1C7 /* NearbyObjectsViewController.h */,
-				AB79D5BA1307E6EB004AE1C7 /* NearbyObjectsViewController.m */,
-				AB79D5BB1307E6EB004AE1C7 /* NearbyObjectsViewController.xib */,
 			);
 			name = NearbyObjects;
 			sourceTree = "<group>";
@@ -1383,8 +1367,6 @@
 				AB82F79011F0EAA300B8E3DC /* microphoneForeground.png in Resources */,
 				AB0A5BA5120365420065CE68 /* Localizable.strings in Resources */,
 				AB2FE579120A154B00758F8C /* LogoutButton.png in Resources */,
-				AB79D5BD1307E6EB004AE1C7 /* NearbyObjectsViewController.xib in Resources */,
-				AB79D7A61308311C004AE1C7 /* NearbyObjectCell.xib in Resources */,
 				1147E15913F32260000E4BC2 /* noteicon.png in Resources */,
 				118866441406B54C0009E36F /* notebook.png in Resources */,
 				118866461406B69B0009E36F /* notebook2.png in Resources */,
@@ -1544,8 +1526,6 @@
 				AB15EC1510B49F8A00EEC11F /* AsyncMediaImageView.m in Sources */,
 				ABC399CF116B9EBC002185D4 /* AudioMeter.m in Sources */,
 				AB42A66911D69F1500FD6D4B /* ARISMoviePlayerViewController.m in Sources */,
-				AB79D5BC1307E6EB004AE1C7 /* NearbyObjectsViewController.m in Sources */,
-				AB79D79A1308299E004AE1C7 /* NearbyObjectCell.m in Sources */,
 				AB18AEBA137B249A00382826 /* AppServices.m in Sources */,
 				4A92FB0B139EDFEA00B41218 /* Comment.m in Sources */,
 				4ADE919C13CB7CB80009F4AF /* UIImage+Scale.m in Sources */,
