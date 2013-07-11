@@ -53,6 +53,9 @@ typedef enum {
 #define SHARE_BUTTON_WIDTH  SHARE_BUTTON_HEIGHT
 #define NO_SHARE_ALPHA      0.25f;
 
+#define CANCEL_BUTTON_TITLE @"Cancel"
+#define SHARE_BUTTON_TITLE  @"Share"
+
 static NSString *NoteContentCellIdentifier = @"NoteConentCell";
 static NSString *RecordCellIdentifier      = @"RecordCell";
 static NSString *ShareCellIdentifier       = @"ShareCell";
@@ -116,9 +119,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:) name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
         
         tagList = [[NSArray alloc]init];
     }
@@ -134,13 +134,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     frame.size.height -= self.navigationController.navigationBar.frame.size.height;
     self.view.frame = frame;
     
-    cancelButton = [[UIBarButtonItem alloc] initWithTitle: @"Cancel"
+    cancelButton = [[UIBarButtonItem alloc] initWithTitle: CANCEL_BUTTON_TITLE
                                                     style: UIBarButtonItemStyleDone
                                                    target:self
                                                    action:@selector(backButtonTouchAction:)];
     self.navigationItem.leftBarButtonItem = cancelButton;
     
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle: @"Share"
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle: SHARE_BUTTON_TITLE
                                                                    style: UIBarButtonItemStyleDone
                                                                   target:self
                                                                   action:@selector(backButtonTouchAction:)];
@@ -171,6 +171,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     [self updateTags];
     
+    UIGraphicsBeginImageContext(CGSizeMake(1,1));
     ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
     ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
     ARISMoviePlayer.moviePlayer.view.hidden = YES;
@@ -179,11 +180,16 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     [self.view addSubview:ARISMoviePlayer.view];
+    UIGraphicsEndImageContext();
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear: animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:)             name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:)         name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:)  name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     
     originalTagName = @"";
     newTagName = @"";
@@ -271,6 +277,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
+    [recordLengthCutoffAndPlayProgressTimer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification      object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification  object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification       object:ARISMoviePlayer.moviePlayer];
     
     if(!self.note || (newNote && !isEditing) || !noteCompleted)
         return;
@@ -422,14 +433,17 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (void)backButtonTouchAction: (id) sender
 {
-    if((!isEditing || newNote || deletePressed) && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:@"Share"]))
+    BOOL cancelPressed = [sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:CANCEL_BUTTON_TITLE];
+    if((!isEditing || newNote || deletePressed) && !([sender isKindOfClass: [UIBarButtonItem class]] && [((UIBarButtonItem *) sender).title isEqualToString:SHARE_BUTTON_TITLE]))
     {
         [[AppServices sharedAppServices]  deleteNoteWithNoteId:self.note.noteId];
         [[InnovNoteModel sharedNoteModel] removeNote:note];
-        self.note = nil;
+        noteCompleted = NO;
     }
     else
         noteCompleted = YES;
+    
+    noteCompleted = noteCompleted && !cancelPressed;
     
     NSError *error;
     [[AVAudioSession sharedInstance] setActive: NO error: &error];
@@ -468,8 +482,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     return (__bridge_transfer NSString *)string;
 }
 
-- (void)updateButtonsForCurrentMode{
-    
+- (void)updateButtonsForCurrentMode
+{
     deleteAudioButton.hidden = YES;
 	[deleteAudioButton setTitle: NSLocalizedString(@"DiscardKey", @"") forState: UIControlStateNormal];
 	[deleteAudioButton setTitle: NSLocalizedString(@"DiscardKey", @"") forState: UIControlStateHighlighted];

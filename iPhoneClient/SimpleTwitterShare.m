@@ -22,6 +22,7 @@
 #import <Social/Social.h>
 #import "SimpleTwitterShare.h"
 #import "AppServices.h"
+#import "ARISAppDelegate.h"
 #import "ViewControllerHelper.h"
 #import "SVProgressHUD.h"
 
@@ -57,22 +58,7 @@
         if(!autoShare)
         {
             NSURL* url = [NSURL URLWithString:urlString];
-            /*
-             NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.twitter.com/1.1/help/configuration.json"]
-             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-             timeoutInterval:10];
-             [request setHTTPMethod: @"GET"];
-             NSError *requestError;
-             NSURLResponse *urlResponse = nil;
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-             NSData *resultData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
-             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-             NSString *resultString = [[NSString alloc] initWithData:resultData encoding:NSUTF8StringEncoding];
-             JSONResult *jsonResult = [[JSONResult alloc] initWithJSONString:resultString andUserData:nil];
-             NSArray *resultArray = (NSArray *)jsonResult.data;
-             
-             //    NSDictionary *jsonResult = [NSJSONSerialization JSONObjectWithData:resultData options:kNilOptions error:&requestError];
-             */
+
             UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
             
             Class socialClass = NSClassFromString(@"SLComposeViewController");
@@ -146,7 +132,7 @@
             
             [self autoTweetWithText:text image:image andURL:urlString fromNote:noteId];
         }
-
+        
     }
     else
     {
@@ -161,7 +147,7 @@
     
     // Create an account type that ensures Twitter accounts are retrieved.
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    
+    __weak id weakSelfForBlock = self;
     // Request access from the user to use their Twitter accounts.
     [accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
         if(granted) {
@@ -179,7 +165,6 @@
                 // Set the account used to post the tweet.
                 [postRequest setAccount:twitterAccount];
                 
-                __weak id weakSelfForBlock = self;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
                     [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
                         dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -200,10 +185,49 @@
             }
             else
             {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
+                [weakSelfForBlock twitterAlert];
             }
         }
+        else
+        {
+            [weakSelfForBlock twitterAlert];
+        }
     }];
+}
+
+-(void) twitterAlert
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+    UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
+    
+    Class socialClass = NSClassFromString(@"SLComposeViewController");
+    if (socialClass != nil)
+    {
+        SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        __weak SLComposeViewController *twitterControllerForBlock = twitterController;
+        twitterController.view.hidden = YES;
+        
+        twitterController.completionHandler = ^(SLComposeViewControllerResult result)
+        {
+            [twitterControllerForBlock dismissViewControllerAnimated:NO completion:nil];
+        };
+        [viewController presentViewController:twitterController animated:NO completion:nil];
+        [twitterController.view endEditing:YES];
+    }
+    else
+    {
+        TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+        __weak TWTweetComposeViewController *tweetControllerForBlock = tweetViewController;
+        tweetViewController.view.hidden = YES;
+        
+        tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result)
+        {
+                [tweetControllerForBlock dismissViewControllerAnimated:NO completion:nil];
+        };
+        [viewController presentViewController:tweetViewController animated:NO completion:nil];
+        [tweetViewController.view endEditing:YES];
+    }
+    });
 }
 
 @end

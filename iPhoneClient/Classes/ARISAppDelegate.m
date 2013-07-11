@@ -6,12 +6,12 @@
 //  Copyright University of Wisconsin 2009. All rights reserved.
 //
 
-#import "InnovViewController.h"
+#import "ARISAppDelegate.h"
 
 #import "AppModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
 #import "InnovNoteModel.h"
+#import "InnovViewController.h"
 
 @interface ARISAppDelegate()
 {
