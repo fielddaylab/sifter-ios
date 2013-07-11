@@ -388,7 +388,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super touchesBegan:touches withEvent:event];
     
-    [captionTextView resignFirstResponder];
+    [self.view endEditing:YES];
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
@@ -836,8 +836,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 frame.size.width = cell.frame.size.width - 2 * NOTE_CONTENT_CELL_X_MARGIN - IMAGE_WIDTH - NOTE_CONTENT_IMAGE_TEXT_MARGIN;
                 captionTextView.frame = frame;
                 [cell addSubview:captionTextView];
-                //                cell.userInteractionEnabled = NO;
-#warning Add in above
+                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             return cell;
         }
@@ -855,9 +854,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 deleteAudioButton.frame = frame;
                 deleteAudioButton.backgroundColor = [UIColor blueColor];
                 [cell addSubview:deleteAudioButton];
-                cell.clipsToBounds = YES;
-                //                cell.userInteractionEnabled = NO;
-#warning Add in above
+                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             
             return cell;
@@ -890,8 +887,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 socialView.layer.cornerRadius  = 8.0f;
                 cell.backgroundView = [UIView new];
                 [cell addSubview:socialView];
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-#warning Add in above
+                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             
             if(shareToFacebook)
@@ -939,8 +935,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 frame.size.width = cell.frame.size.width;
                 deleteNoteButton.frame = frame;
                 [cell addSubview:deleteNoteButton];
-                //                cell.userInteractionEnabled = NO;
-#warning Add in above
+                [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             return cell;
         }
