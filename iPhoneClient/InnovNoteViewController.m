@@ -83,17 +83,6 @@
     noteView.bounces = NO;
     [self.view addSubview:noteView];
     
-    UIGraphicsBeginImageContext(CGSizeMake(1,1));
-    ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
-    ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
-    ARISMoviePlayer.moviePlayer.view.hidden    = YES;
-    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
-    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
-    ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
-    [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
-    [noteView addSubview:ARISMoviePlayer.view];
-    UIGraphicsEndImageContext();
-    
     imageView = [[AsyncMediaImageView alloc] init];
     imageView.frame = CGRectMake(IMAGE_X_MARGIN,
                                  IMAGE_Y_MARGIN,
@@ -187,6 +176,17 @@
 {
     [super viewWillAppear: animated];
     
+    UIGraphicsBeginImageContext(CGSizeMake(1,1));
+    ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
+    ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
+    ARISMoviePlayer.moviePlayer.view.hidden    = YES;
+    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
+    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
+    ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
+    [noteView addSubview:ARISMoviePlayer.view];
+    UIGraphicsEndImageContext();
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:)        name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];
     
@@ -215,6 +215,7 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];
+    ARISMoviePlayer = nil;
 }
 
 #pragma mark Refresh

@@ -900,7 +900,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         case TagSection:
         {
             UITableViewCell *tempCell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:TagCellIdentifier];
-            if (![tempCell respondsToSelector:@selector(nameLabel)]) tempCell = nil;
+         //   if (![tempCell respondsToSelector:@selector(nameLabel)]) tempCell = nil;
             TagCell *cell = (TagCell *)tempCell;
             
 #warning Doesn't Re-use Cell. I'm re-using ARIS code, but should be refactored
@@ -909,7 +909,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 UIViewController *temporaryController = [[UIViewController alloc] initWithNibName:@"TagCell" bundle:nil];
                 // Grab a pointer to the custom cell.
                 cell = (TagCell *)temporaryController.view;
-                // Release the temporary UIViewController.
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             
