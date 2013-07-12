@@ -30,7 +30,7 @@
 #define COMMENT_BAR_Y_MARGIN        6
 #define COMMENT_BAR_BUTTON_WIDTH    58
 
-#define DEFAULT_MAX_VISIBLE_COMMENTS 7
+#define DEFAULT_MAX_VISIBLE_COMMENTS 5
 #define EXPAND_INDEX                 ((int)DEFAULT_MAX_VISIBLE_COMMENTS/2)
 #define EXPAND_TEXT                  @". . ."
 
