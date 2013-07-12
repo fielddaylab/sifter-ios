@@ -27,7 +27,6 @@ typedef enum {
 #import "Note.h"
 #import "NoteContent.h"
 #import "Tag.h"
-#import "TagCell.h"
 
 #import "ProgressButton.h"
 #import "InnovPopOverSocialContentView.h"
@@ -211,24 +210,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         [editNoteTableView reloadData];
         
-        if([self.note.tags count] > 0)
+        if([self.note.tags count] != 0)
         {
             originalTagId = ((Tag *)[self.note.tags objectAtIndex:0]).tagId;
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
             self.title = originalTagName;
-            int index = [tagList indexOfObject:((Tag *)[self.note.tags objectAtIndex:0])];
-            if(index == NSNotFound)
-            {
-                for(int i = 0; i < [tagList count]; ++i)
-                {
-                    if(((Tag *)[tagList objectAtIndex:i]).tagId == ((Tag *)[self.note.tags objectAtIndex:0]).tagId)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-            [editNoteTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:TagSection]].accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else
             [self tableView:editNoteTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:TagSection]];
@@ -278,8 +264,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         [self cameraButtonTouchAction];
     }
-#warning magic number
+
     dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
+    [self addChildViewController:dropOnMapVC];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -419,7 +406,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
     if(dropOnMapVC.locationMoved)
+    {
+        self.note.latitude = dropOnMapVC.currentCoordinate.latitude;
+        self.note.longitude = dropOnMapVC.currentCoordinate.longitude;
         [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:dropOnMapVC.currentCoordinate];
+    }
     
     [[InnovNoteModel sharedNoteModel] updateNote:note];
     
@@ -899,22 +890,15 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case TagSection:
         {
-            UITableViewCell *tempCell = (TagCell *)[tableView dequeueReusableCellWithIdentifier:TagCellIdentifier];
-            if (![tempCell respondsToSelector:@selector(nameLabel)]) tempCell = nil;
-            TagCell *cell = (TagCell *)tempCell;
-            
-#warning Doesn't Re-use Cell. I'm re-using ARIS code, but should be refactored
-            if (cell == nil) {
-                // Create a temporary UIViewController to instantiate the custom cell.
-                UIViewController *temporaryController = [[UIViewController alloc] initWithNibName:@"TagCell" bundle:nil];
-                // Grab a pointer to the custom cell.
-                cell = (TagCell *)temporaryController.view;
-                // Release the temporary UIViewController.
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:TagCellIdentifier];
+            if (cell == nil)
+            {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TagCellIdentifier];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             
-            if([tagList count] == 0) cell.nameLabel.text = @"No Categories in Application";
-            else cell.nameLabel.text = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
+            if([tagList count] == 0) cell.textLabel.text = @"No Categories in Application";
+            else cell.textLabel.text = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
             
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
@@ -927,9 +911,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:DropOnMapCellIdentifier];
                 dropOnMapVC.view.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height+2);
-                [self addChildViewController:dropOnMapVC];
                 [cell addSubview:dropOnMapVC.view];
                 [dropOnMapVC didMoveToParentViewController:self];
+                [dropOnMapVC showAnnotation];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             return cell;
@@ -971,10 +955,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     if(indexPath.section == TagSection)
     {
-        TagCell *cell = (TagCell *)[tableView cellForRowAtIndexPath:indexPath];
+         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         
-        newTagName = cell.nameLabel.text;
+        newTagName = cell.textLabel.text;
         
         self.title = newTagName;
     }

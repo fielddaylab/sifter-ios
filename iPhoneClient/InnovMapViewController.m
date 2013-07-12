@@ -63,6 +63,7 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)               name:@"NoteModelUpdate:Notes"                    object:nil];
     }
     return self;
 }
@@ -80,7 +81,6 @@
     notePopUp.hidden   = YES;
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
-    
     
     NSString *reqSysVer = @"6.0";
     NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
@@ -152,7 +152,7 @@
     CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
     isLocal = (distance <= MAX_DISTANCE);
     [mapView setShowsUserLocation:isLocal];
-    if (mapView && (tracking || !isLocal)) [self zoomAndCenterMapAnimated:YES];
+    if (mapView && (tracking || !isLocal) && notePopUp.hidden) [self zoomAndCenterMapAnimated:YES];
 }
 
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
@@ -174,6 +174,26 @@
 }
 
 #pragma mark update from model
+
+- (void) refreshNotes
+{
+    for(Annotation *annotation in mapView.annotations)
+    {
+        if((id <MKAnnotation>)annotation == mapView.userLocation || !([annotation respondsToSelector:@selector(title)]))
+            continue;
+        Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:annotation.note.noteId];
+        CLLocationCoordinate2D oldCoord = annotation.coordinate;
+        annotation.coordinate = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+        annotation.title = note.text;
+        annotation.kind = NearbyObjectNote;
+        annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+        if(oldCoord.latitude != annotation.coordinate.latitude || oldCoord.longitude != annotation.coordinate.longitude)
+        {
+            [mapView removeAnnotation:annotation];
+            [mapView addAnnotation:annotation];
+        }
+    }
+}
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
 {

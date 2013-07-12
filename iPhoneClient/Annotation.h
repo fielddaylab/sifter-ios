@@ -12,22 +12,14 @@
 
 @class Note;
 
-@interface Annotation : NSObject <MKAnnotation> {
-	CLLocationCoordinate2D coordinate;
-	NSString *title;
-	NSString *subtitle;
-	int iconMediaId;
-    UIImage *icon;
-	nearbyObjectKind kind;
-	Note *note;
-}
+@interface Annotation : NSObject <MKAnnotation>
 
-@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *subtitle;
-@property(readwrite, assign) int iconMediaId;
+@property (readwrite, assign) int iconMediaId;
 @property (nonatomic) UIImage *icon;
-@property(readwrite, assign) nearbyObjectKind kind;
+@property (readwrite, assign) nearbyObjectKind kind;
 @property (nonatomic) Note *note;
 
 - (id)initWithCoordinate:(CLLocationCoordinate2D) coordinate;

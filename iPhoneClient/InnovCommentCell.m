@@ -90,7 +90,7 @@
     [flagButton setSelected:note.userFlagged];
     [self updateLikeButton];
     
-    textView.text = note.text;
+    textView.text = note.title;
     CGRect frame = textView.frame;
     frame.size.height = textView.contentSize.height;
     textView.frame = frame;

@@ -69,17 +69,12 @@
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
     [self addChildViewController:mapVC];
-    CGRect contentVCFrame = contentView.frame;
-    contentVCFrame.origin.x = 0;
-    contentVCFrame.origin.y = 0;
-    mapVC.view.frame = contentVCFrame;
     [contentView addSubview:mapVC.view];
     [mapVC didMoveToParentViewController:self];
     
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
     [self addChildViewController:listVC];
-    listVC.view.frame = contentVCFrame;
 #warning Possibly add  [self addChildViewController:listVC];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -113,11 +108,7 @@
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     selectedTagsVC.view.layer.anchorPoint = CGPointMake(0, 1);
-    CGRect selectedTagsFrame = selectedTagsVC.view.frame;
-    selectedTagsFrame.origin.x = 0;
-    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
-    selectedTagsVC.view.frame = selectedTagsFrame;
-    
+
 	trackingButton.selected = YES;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -139,6 +130,21 @@
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
     if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
         [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
+    
+    CGRect contentVCFrame = contentView.frame;
+    contentVCFrame.origin.x = 0;
+    contentVCFrame.origin.y = 0;
+    mapVC.view.frame = contentVCFrame;
+    mapVC.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+    
+    listVC.view.frame = contentVCFrame;
+    listVC.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+    
+    CGRect selectedTagsFrame = selectedTagsVC.view.frame;
+    selectedTagsFrame.origin.x = 0;
+    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
+    selectedTagsVC.view.frame = selectedTagsFrame;
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -348,6 +354,7 @@
     [going.view removeFromSuperview];
     [going removeFromParentViewController];
     
+    coming.view.frame = going.view.frame;
     [contentView addSubview:coming.view];
     [coming didMoveToParentViewController:self];
     
