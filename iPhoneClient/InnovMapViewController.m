@@ -152,7 +152,7 @@
     CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
     isLocal = (distance <= MAX_DISTANCE);
     [mapView setShowsUserLocation:isLocal];
-    if (mapView && (tracking || !isLocal)) [self zoomAndCenterMapAnimated:YES];
+    if (mapView && (tracking || !isLocal) && notePopUp.hidden) [self zoomAndCenterMapAnimated:YES];
 }
 
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
@@ -179,15 +179,19 @@
 {
     for(Annotation *annotation in mapView.annotations)
     {
-        if ((id <MKAnnotation>)annotation == mapView.userLocation)
+        if((id <MKAnnotation>)annotation == mapView.userLocation || !([annotation respondsToSelector:@selector(title)]))
             continue;
-        [mapView removeAnnotation:annotation];
         Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:annotation.note.noteId];
+        CLLocationCoordinate2D oldCoord = annotation.coordinate;
         annotation.coordinate = CLLocationCoordinate2DMake(note.latitude, note.longitude);
         annotation.title = note.text;
         annotation.kind = NearbyObjectNote;
         annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
-        [mapView addAnnotation:annotation];
+        if(oldCoord.latitude != annotation.coordinate.latitude || oldCoord.longitude != annotation.coordinate.longitude)
+        {
+            [mapView removeAnnotation:annotation];
+            [mapView addAnnotation:annotation];
+        }
     }
 }
 

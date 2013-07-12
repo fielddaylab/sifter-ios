@@ -14,5 +14,6 @@
 @property (nonatomic) CLLocationCoordinate2D currentCoordinate;
 
 - (id)initWithCoordinate: (CLLocationCoordinate2D) initialCoordinate;
+- (void)showAnnotation;
 
 @end

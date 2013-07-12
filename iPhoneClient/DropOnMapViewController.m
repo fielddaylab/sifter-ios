@@ -36,10 +36,8 @@
 
 #pragma mark - View lifecycle
 
--(void)viewWillAppear:(BOOL)animated
+-(void)showAnnotation
 {
-    [super viewWillAppear:animated];
-    
     DDAnnotation *annotation = [[DDAnnotation alloc] initWithCoordinate:currentCoordinate addressDictionary:nil];
 	annotation.title    = @"Drag to Move Note";
 	annotation.subtitle = [NSString stringWithFormat:@"%f %f", annotation.coordinate.latitude, annotation.coordinate.longitude];

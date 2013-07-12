@@ -1253,12 +1253,12 @@
 				DB02C62C173AE6FD00A31D55 /* InnovNoteViewController.h */,
 				DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */,
 				DB02C62E173AE6FD00A31D55 /* InnovNoteViewController.xib */,
-				89D8B260178228F7002A53CA /* InnovCommentViewController.h */,
-				89D8B261178228F7002A53CA /* InnovCommentViewController.m */,
-				89D8B262178228F7002A53CA /* InnovCommentViewController.xib */,
 				DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */,
 				DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */,
 				DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */,
+				89D8B260178228F7002A53CA /* InnovCommentViewController.h */,
+				89D8B261178228F7002A53CA /* InnovCommentViewController.m */,
+				89D8B262178228F7002A53CA /* InnovCommentViewController.xib */,
 			);
 			name = InnovationViewControllers;
 			sourceTree = "<group>";
