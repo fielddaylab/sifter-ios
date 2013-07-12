@@ -46,6 +46,7 @@ static NSString * const CELL_ID = @"Cell";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteList:) name:@"NotesAvailableChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)    name:@"NoteModelUpdate:Notes" object:nil];
     return self;
 }
 
@@ -116,6 +117,11 @@ static NSString * const CELL_ID = @"Cell";
 - (void) updateNoteList: (NSNotification *) notification
 {
     notes = (NSArray *)[notification.userInfo objectForKey:@"availableNotes"];
+    [quiltView reloadData];
+}
+
+- (void) refreshNotes
+{
     [quiltView reloadData];
 }
 

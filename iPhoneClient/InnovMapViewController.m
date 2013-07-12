@@ -63,6 +63,7 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)               name:@"NoteModelUpdate:Notes"                    object:nil];
     }
     return self;
 }
@@ -80,7 +81,6 @@
     notePopUp.hidden   = YES;
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
-    
     
     NSString *reqSysVer = @"6.0";
     NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
@@ -174,6 +174,22 @@
 }
 
 #pragma mark update from model
+
+- (void) refreshNotes
+{
+    for(Annotation *annotation in mapView.annotations)
+    {
+        if ((id <MKAnnotation>)annotation == mapView.userLocation)
+            continue;
+        [mapView removeAnnotation:annotation];
+        Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:annotation.note.noteId];
+        annotation.coordinate = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+        annotation.title = note.text;
+        annotation.kind = NearbyObjectNote;
+        annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+        [mapView addAnnotation:annotation];
+    }
+}
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
 {

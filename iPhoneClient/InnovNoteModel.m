@@ -174,8 +174,6 @@
     
     notifNotes = [NSMutableDictionary dictionaryWithObjects:[allNotes objectsForKeys:notifNoteIds notFoundMarker:[[Note alloc] init]] forKeys:notifNoteIds];
     [[MyCLController sharedMyCLController] prepareNotificationsForNotes: [notifNotes allValues]];
-    
-    
 }
 
 #pragma mark Fetch More Notes
@@ -241,7 +239,6 @@
     
 }
 
-
 -(void) newTagsReceived:(NSNotification *)notification
 {
     allTags = [notification.userInfo objectForKey:@"tags"];
@@ -306,7 +303,6 @@
         if([newlyUnavailableNotes count] > 0)
             [self sendLostNotesNotif:newlyUnavailableNotes];
     }
-    
 }
 
 -(void) updateNoteContents:(NSNotification *)notification
