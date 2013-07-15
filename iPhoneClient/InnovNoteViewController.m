@@ -226,6 +226,7 @@
     [self updateLikeButton];
     [flagButton setSelected:self.note.userFlagged];
     
+    [imageView setSpinnerColor:[UIColor blackColor]];
     [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
     
     if(note.audioMediaId)

@@ -45,6 +45,7 @@
 
 - (void) startSpinner;
 - (void) stopSpinner;
+- (void) setSpinnerColor: (UIColor *) color;
 
 @end
 
