@@ -143,6 +143,11 @@
     [spinner stopAnimating];
 }
 
+- (void)setSpinnerColor: (UIColor *) color
+{
+    spinner.color = color;
+}
+
 - (void)loadImageFromMedia:(Media *) aMedia
 {
     //put a spinner in the view
