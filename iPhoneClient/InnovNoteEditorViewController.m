@@ -29,6 +29,8 @@ typedef enum {
 #import "Tag.h"
 
 #import "ProgressButton.h"
+#import "InnovPopOverView.h"
+#import "InnovPopOverTwitterAccountContentView.h"
 #import "InnovPopOverSocialContentView.h"
 #import "AsyncMediaTouchableImageView.h"
 #import "ARISMoviePlayerViewController.h"
@@ -68,7 +70,7 @@ static NSString *TagCellIdentifier         = @"TagCell";
 static NSString *DropOnMapCellIdentifier   = @"DropOnMapCell";
 static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
-@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate> {
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate> {
     
     UIBarButtonItem *cancelButton;
     
@@ -85,8 +87,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     BOOL shareToFacebook;
     BOOL shareToTwitter;
+    NSArray *allTwitterAccounts;
+    NSArray *selectedTwitterAccounts;
+    InnovPopOverView *popOver;
     InnovPopOverSocialContentView *socialView;
-
+    
     int originalTagId;
     NSString  *originalTagName;
     int selectedIndex;
@@ -121,8 +126,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags) name:@"NoteModelUpdate:Tags"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel)    name:@"NoteModelUpdate:Notes"    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTags)              name:@"NoteModelUpdate:Tags"     object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectTwitterButton)   name:@"NoTwitterAccounts"  object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectTwitterAccounts:)  name:@"TwitterAccountListReady"  object:nil];
         
         tagList = [[NSArray alloc]init];
     }
@@ -221,7 +228,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             [self tableView:editNoteTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:TagSection]];
         
         if(self.note.latitude != 0 && self.note.longitude != 0)
-            coordinate = CLLocationCoordinate2DMake(self.note.latitude, self.note.longitude);        
+            coordinate = CLLocationCoordinate2DMake(self.note.latitude, self.note.longitude);
         
         NSError *error;
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
@@ -265,7 +272,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         [self cameraButtonTouchAction];
     }
-
+    
     dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
     [self addChildViewController:dropOnMapVC];
 }
@@ -275,6 +282,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [super viewWillDisappear:animated];
     
     [recordLengthCutoffAndPlayProgressTimer invalidate];
+    
+    if(mode == kInnovAudioRecorderPlaying || mode == kInnovAudioRecorderRecording)
+        [self recordButtonPressed:nil];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerLoadStateDidChangeNotification      object:ARISMoviePlayer.moviePlayer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification  object:ARISMoviePlayer.moviePlayer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification       object:ARISMoviePlayer.moviePlayer];
@@ -385,7 +396,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
     else
         [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
-
+    
     [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:YES publicToList:YES];
     
     if(mode == kInnovAudioRecorderRecording)
@@ -421,7 +432,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
 #warning fix url to be web notebook url
         NSString *url  = HOME_URL;
-        
         [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
     }
     
@@ -430,7 +440,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
         NSString *url  = HOME_URL;
 #warning fix url to be web notebook url
-        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareText:text withImage:nil andURL:url fromNote:self.note.noteId automatically:YES];
+        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
     }
     
     [self.delegate prepareToDisplayNote: self.note];
@@ -710,7 +720,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     shareToFacebook = !shareToFacebook;
     
     if(shareToFacebook)
+    {
         socialView.facebookButton.alpha = 1.0f;
+        if(![((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare isLoggedIn])
+            [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare openSession];
+    }
     else
         socialView.facebookButton.alpha = NO_SHARE_ALPHA;
 }
@@ -720,9 +734,56 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     shareToTwitter = !shareToTwitter;
     
     if(shareToTwitter)
+    {
         socialView.twitterButton.alpha = 1.0f;
+        if(![allTwitterAccounts count])
+            [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare getAvailableTwitterAccounts];
+        else
+            [self presentTwitterAccountSelectionView];
+    }
     else
-        socialView.twitterButton.alpha = NO_SHARE_ALPHA;
+        [self deselectTwitterButton];
+}
+
+- (void)selectTwitterAccounts:(NSNotification *) notif
+{
+    allTwitterAccounts = [notif.userInfo objectForKey:@"TwitterAccounts"];
+    if([allTwitterAccounts count] > 0)
+        [self presentTwitterAccountSelectionView];
+    else
+        [self deselectTwitterButton];
+}
+
+- (void) presentTwitterAccountSelectionView
+{
+    InnovPopOverTwitterAccountContentView *twitterView = [[InnovPopOverTwitterAccountContentView alloc] init];
+    twitterView.delegate = self;
+    [twitterView setInitialTwitterAccounts:allTwitterAccounts];
+    popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:twitterView];
+    popOver.delegate = self;
+    [self.view addSubview:popOver];
+}
+
+- (void) deselectTwitterButton
+{
+    shareToTwitter = NO;
+    socialView.twitterButton.alpha = NO_SHARE_ALPHA;
+}
+
+#pragma mark PopOver View Delegate methods
+
+- (void) popOverCancelled
+{
+    [self deselectTwitterButton];
+}
+
+#pragma mark Twitter Account Content View Delegate methods
+
+- (void) setAvailableTwitterAccounts:(NSArray *) aTwitterAccounts
+{
+    selectedTwitterAccounts = aTwitterAccounts;
+    if([selectedTwitterAccounts count] == 0)
+        [self deselectTwitterButton];
 }
 
 /*
@@ -809,7 +870,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{    
+{
     switch (indexPath.section)
     {
         case NoteContentSection:
@@ -955,7 +1016,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     if(indexPath.section == TagSection)
     {
-         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         
         newTagName = cell.textLabel.text;

@@ -28,7 +28,7 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPopOverNotifContentViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
     
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -268,15 +268,9 @@
 - (void) showNotifications
 {
     InnovPopOverNotifContentView *notifView = [[InnovPopOverNotifContentView alloc] init];
-    notifView.delegate = self;
     [notifView refreshFromModel];
     popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:notifView];
     [self.view addSubview:popOver];
-}
-
-- (void) dismiss
-{
-    [popOver removeFromSuperview];
 }
 
 - (void) showAbout

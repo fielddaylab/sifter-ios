@@ -28,6 +28,7 @@
 - (void) logOut;
 - (void) close;
 - (void) handleDidBecomeActive;
+- (void) openSession;
 - (void) shareUrl:(NSURL *)theUrl;
 - (void) shareText:(NSString *)theText DEPRECATED_ATTRIBUTE;
 - (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId automatically:(BOOL) autoShare;

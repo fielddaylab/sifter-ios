@@ -112,7 +112,7 @@
     NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
     NSString *url  = HOME_URL;
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId automatically:NO];
+    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId];
 }
 
 - (IBAction)pinterestButtonPressed:(id)sender

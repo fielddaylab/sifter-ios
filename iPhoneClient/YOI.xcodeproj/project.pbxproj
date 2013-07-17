@@ -73,6 +73,9 @@
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
 		8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8902C52017874A580071373E /* InnovPopOverNotifContentView.m */; };
 		8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */; };
+		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
+		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
+		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
 		89D8B25517820182002A53CA /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B25317820182002A53CA /* CustomBadge.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B261178228F7002A53CA /* InnovCommentViewController.m */; };
 		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
@@ -341,6 +344,11 @@
 		8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverNotifContentView.h; sourceTree = "<group>"; };
 		8902C52017874A580071373E /* InnovPopOverNotifContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverNotifContentView.m; sourceTree = "<group>"; };
 		8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverNotifContentView.xib; sourceTree = "<group>"; };
+		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
+		891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverContentView.m; sourceTree = "<group>"; };
+		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
+		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
+		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
 		89D8B25317820182002A53CA /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		89D8B25417820182002A53CA /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
 		89D8B260178228F7002A53CA /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
@@ -1173,9 +1181,14 @@
 				89F99AF017866A7900DEB46F /* ProgressButton.m */,
 				DB0F405E1772175E00F19934 /* InnovPopOverView.h */,
 				DB0F405F1772175E00F19934 /* InnovPopOverView.m */,
+				891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */,
+				891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */,
 				8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */,
 				8902C52017874A580071373E /* InnovPopOverNotifContentView.m */,
 				8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */,
+				89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */,
+				89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */,
+				89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */,
 				DB0F406117721A3B00F19934 /* InnovPopOverSocialContentView.h */,
 				DB0F406217721A3B00F19934 /* InnovPopOverSocialContentView.m */,
 				DB0F406417721B6F00F19934 /* InnovPopOverSocialContentView.xib */,
@@ -1235,9 +1248,9 @@
 			children = (
 				DBFEDCE0176115FB009C080A /* AppMedia */,
 				DB0743951754FE060068A1DB /* Extern Libraries */,
-				DBFEDCDA176102E9009C080A /* Models */,
 				DB0743971754FE680068A1DB /* Header Files */,
 				DB1A8AE8174D55570052DDC6 /* Views */,
+				DBFEDCDA176102E9009C080A /* Models */,
 				DD235FC91700DCCB00795077 /* InnovViewController.h */,
 				DD235FCA1700DCCB00795077 /* InnovViewController.m */,
 				DD235FCB1700DCCB00795077 /* InnovViewController.xib */,
@@ -1454,6 +1467,7 @@
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
 				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
+				89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1580,6 +1594,8 @@
 				89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */,
 				8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */,
 				89FFAF32178B3BF800A0F589 /* WildcardGestureRecognizer.m in Sources */,
+				89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */,
+				891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

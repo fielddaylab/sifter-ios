@@ -50,87 +50,75 @@
     return NO;
 }
 
-- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId automatically: (BOOL) autoShare
+- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId
 {
     if ([self canSendTweet])
     {
         int characterCountRemaining = TWEET_SIZE;
-        if(!autoShare)
-        {
-            NSURL* url = [NSURL URLWithString:urlString];
-
-            UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
-            
-            Class socialClass = NSClassFromString(@"SLComposeViewController");
-            if (socialClass != nil) {
-                SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-                __weak SLComposeViewController *twitterControllerForBlock = twitterController;
-                twitterController.completionHandler = ^(SLComposeViewControllerResult result) {
-                    [twitterControllerForBlock dismissViewControllerAnimated:YES completion:nil];
-                    if (result == SLComposeViewControllerResultDone) {
-                        [SVProgressHUD showSuccessWithStatus:@"Success"];
-                        [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
-                    }
-                    
-                };
-                if(url)
-                {
-                    [twitterController addURL:url];
-                    characterCountRemaining -= URL_SIZE;
+        NSURL* url = [NSURL URLWithString:urlString];
+        
+        UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
+        
+        Class socialClass = NSClassFromString(@"SLComposeViewController");
+        if (socialClass != nil) {
+            SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+            __weak SLComposeViewController *twitterControllerForBlock = twitterController;
+            twitterController.completionHandler = ^(SLComposeViewControllerResult result) {
+                [twitterControllerForBlock dismissViewControllerAnimated:YES completion:nil];
+                if (result == SLComposeViewControllerResultDone) {
+                    [SVProgressHUD showSuccessWithStatus:@"Success"];
+                    [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
                 }
-                if(text)
-                {
-                    if(text.length > characterCountRemaining) text = [text substringToIndex:characterCountRemaining];
-                    while (![twitterController setInitialText:text])
-                    {
-                        --characterCountRemaining;
-                        text = [text substringToIndex:characterCountRemaining];
-                    }
-                }
-                if(image) [twitterController addImage:image];
-                [viewController presentViewController:twitterController animated:YES completion:nil];
                 
-            }
-            else
+            };
+            if(url)
             {
-                TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
-                if(url)
-                {
-                    [tweetViewController addURL:url];
-                    characterCountRemaining -= URL_SIZE;
-                }
-                if(text)
-                {
-                    if(text.length > characterCountRemaining) text = [text substringToIndex:characterCountRemaining];
-                    while (![tweetViewController setInitialText:text])
-                    {
-                        --characterCountRemaining;
-                        text = [text substringToIndex:characterCountRemaining];
-                    }
-                }
-                if(image) [tweetViewController addImage:image];
-                tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result) {
-                    if (result == TWTweetComposeViewControllerResultDone)
-                    {
-                        [SVProgressHUD showSuccessWithStatus:@"Success"];
-                        [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
-                    }
-                    else if (result == TWTweetComposeViewControllerResultCancelled) {
-                    }
-                    [viewController dismissViewControllerAnimated:YES completion:nil];
-                };
-                
-                [viewController presentViewController:tweetViewController animated:YES completion:nil];
+                [twitterController addURL:url];
+                characterCountRemaining -= URL_SIZE;
             }
+            if(text)
+            {
+                if(text.length > characterCountRemaining) text = [text substringToIndex:characterCountRemaining];
+                while (![twitterController setInitialText:text])
+                {
+                    --characterCountRemaining;
+                    text = [text substringToIndex:characterCountRemaining];
+                }
+            }
+            if(image) [twitterController addImage:image];
+            [viewController presentViewController:twitterController animated:YES completion:nil];
+            
         }
         else
         {
-            if(urlString)
+            TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+            if(url)
+            {
+                [tweetViewController addURL:url];
                 characterCountRemaining -= URL_SIZE;
-            if(text && text.length > characterCountRemaining)
-                text = [text substringToIndex:characterCountRemaining];
+            }
+            if(text)
+            {
+                if(text.length > characterCountRemaining) text = [text substringToIndex:characterCountRemaining];
+                while (![tweetViewController setInitialText:text])
+                {
+                    --characterCountRemaining;
+                    text = [text substringToIndex:characterCountRemaining];
+                }
+            }
+            if(image) [tweetViewController addImage:image];
+            tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result) {
+                if (result == TWTweetComposeViewControllerResultDone)
+                {
+                    [SVProgressHUD showSuccessWithStatus:@"Success"];
+                    [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
+                }
+                else if (result == TWTweetComposeViewControllerResultCancelled) {
+                }
+                [viewController dismissViewControllerAnimated:YES completion:nil];
+            };
             
-            [self autoTweetWithText:text image:image andURL:urlString fromNote:noteId];
+            [viewController presentViewController:tweetViewController animated:YES completion:nil];
         }
         
     }
@@ -140,7 +128,48 @@
     }
 }
 
-- (void) autoTweetWithText:(NSString *)text image:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId
+- (void) autoTweetWithText:(NSString *)text image:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId toAccounts:(NSArray *) accounts
+{
+    
+    for(ACAccount *twitterAccount in accounts)
+    {
+        int characterCountRemaining = TWEET_SIZE;
+        if(urlString)
+            characterCountRemaining -= URL_SIZE;
+        if(text && text.length > characterCountRemaining)
+            text = [text substringToIndex:characterCountRemaining];
+        [self recursiveAutoTweetWithText:text image:image andURL:urlString fromNote:noteId toAccount:twitterAccount];
+    }
+}
+
+- (void) recursiveAutoTweetWithText:(NSString *)text image:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId toAccount:(ACAccount *) account
+{
+    NSDictionary *params = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@ %@", text, urlString] forKey:@"status"];
+    TWRequest *postRequest = [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1.1/statuses/update.json"] parameters:params requestMethod:TWRequestMethodPOST];
+    [postRequest setAccount:account];
+    
+    __weak id weakSelfForBlock = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+        [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if ([urlResponse statusCode] == 200)
+                {
+                    //[SVProgressHUD showSuccessWithStatus:@"Success"];
+                    [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
+                }
+                else
+                {
+                    if([text length] > 0)
+                        [weakSelfForBlock recursiveAutoTweetWithText:[text substringToIndex:text.length-1] image:image andURL:urlString fromNote:noteId toAccount:account];
+                }
+            });
+        }];
+    });
+}
+
+#pragma mark Get Accounts
+
+- (void) getAvailableTwitterAccounts
 {
     // Create an account store object.
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
@@ -154,79 +183,58 @@
             // Get the list of Twitter accounts.
             NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
             
-            if ([accountsArray count] > 0) {
-                // Grab the initial Twitter account to tweet from.
-                ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
-                TWRequest *postRequest = nil;
-                
-                NSDictionary *params = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@ %@", text, urlString] forKey:@"status"];
-                postRequest = [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1.1/statuses/update.json"] parameters: params requestMethod:TWRequestMethodPOST];
-                
-                // Set the account used to post the tweet.
-                [postRequest setAccount:twitterAccount];
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-                    [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                        dispatch_async(dispatch_get_main_queue(), ^(void) {
-                            if ([urlResponse statusCode] == 200)
-                            {
-                                [SVProgressHUD showSuccessWithStatus:@"Success"];
-                                [[AppServices sharedAppServices] sharedNoteToTwitter:noteId];
-                            }
-                            else
-                            {
-                                if([text length] > 0)
-                                    [weakSelfForBlock autoTweetWithText:[text substringToIndex:text.length-1] image:image andURL:urlString fromNote:noteId];
-                            }
-                        });
-                    }];
+            if ([accountsArray count] > 0)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:accountsArray forKey:@"TwitterAccounts"];
+                    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"TwitterAccountListReady"  object:nil userInfo:userInfo]];
                 });
-                
             }
             else
-            {
                 [weakSelfForBlock twitterAlert];
-            }
         }
         else
         {
             [weakSelfForBlock twitterAlert];
         }
     }];
+    
 }
 
 -(void) twitterAlert
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-    UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
-    
-    Class socialClass = NSClassFromString(@"SLComposeViewController");
-    if (socialClass != nil)
-    {
-        SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        __weak SLComposeViewController *twitterControllerForBlock = twitterController;
-        twitterController.view.hidden = YES;
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NoTwitterAccounts"  object:nil userInfo:nil]];
         
-        twitterController.completionHandler = ^(SLComposeViewControllerResult result)
-        {
-            [twitterControllerForBlock dismissViewControllerAnimated:NO completion:nil];
-        };
-        [viewController presentViewController:twitterController animated:NO completion:nil];
-        [twitterController.view endEditing:YES];
-    }
-    else
-    {
-        TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
-        __weak TWTweetComposeViewController *tweetControllerForBlock = tweetViewController;
-        tweetViewController.view.hidden = YES;
+        UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
         
-        tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result)
+        Class socialClass = NSClassFromString(@"SLComposeViewController");
+        if (socialClass != nil)
         {
+            SLComposeViewController *twitterController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+            __weak SLComposeViewController *twitterControllerForBlock = twitterController;
+            twitterController.view.hidden = YES;
+            
+            twitterController.completionHandler = ^(SLComposeViewControllerResult result)
+            {
+                [twitterControllerForBlock dismissViewControllerAnimated:NO completion:nil];
+            };
+            [viewController presentViewController:twitterController animated:NO completion:nil];
+            [twitterController.view endEditing:YES];
+        }
+        else
+        {
+            TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+            __weak TWTweetComposeViewController *tweetControllerForBlock = tweetViewController;
+            tweetViewController.view.hidden = YES;
+            
+            tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult result)
+            {
                 [tweetControllerForBlock dismissViewControllerAnimated:NO completion:nil];
-        };
-        [viewController presentViewController:tweetViewController animated:NO completion:nil];
-        [tweetViewController.view endEditing:YES];
-    }
+            };
+            [viewController presentViewController:tweetViewController animated:NO completion:nil];
+            [tweetViewController.view endEditing:YES];
+        }
     });
 }
 

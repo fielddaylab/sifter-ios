@@ -9,6 +9,7 @@
 @class Note;
 
 #import "CustomBadge.h"
+#import "InnovPopOverContentView.h"
 
 #warning CHANGE TWITTER HANDLE
 #define DEFAULT_TITLE                @"Note"
@@ -22,7 +23,7 @@
 - (void) pinterestButtonPressed: (id) sender;
 @end
 
-@interface InnovPopOverSocialContentView : UIView
+@interface InnovPopOverSocialContentView : InnovPopOverContentView
 
 @property(nonatomic) Note *note;
 

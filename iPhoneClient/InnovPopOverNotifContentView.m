@@ -31,8 +31,6 @@
 
 @implementation InnovPopOverNotifContentView
 
-@synthesize delegate;
-
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -135,7 +133,7 @@
                                                        popularNotes: ((UISlider *)[allSliders objectAtIndex:kPopular]).value
                                                         recentNotes: ((UISlider *)[allSliders objectAtIndex:kRecent]).value
                                                    andMyRecentNotes: ((UISlider *)[allSliders objectAtIndex:kMine]).value];
-    [delegate dismiss];
+    [self.dismissDelegate dismiss];
 }
 
 /*
