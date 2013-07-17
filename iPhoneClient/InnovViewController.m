@@ -28,8 +28,8 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
-    
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
+{    
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
     
@@ -75,7 +75,6 @@
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
     [self addChildViewController:listVC];
-#warning Possibly add  [self addChildViewController:listVC];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
@@ -144,7 +143,6 @@
     selectedTagsFrame.origin.x = 0;
     selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
     selectedTagsVC.view.frame = selectedTagsFrame;
-    
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -204,6 +202,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
 {
     [aSearchBar resignFirstResponder];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 
 #pragma mark Buttons Pressed
@@ -249,11 +248,13 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex) [self presentLogIn];
+    if(buttonIndex)
+        [self presentLogIn];
 }
 
 - (IBAction)trackingButtonPressed:(id)sender
 {
+    trackingButton.selected = YES;
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
     [mapVC toggleTracking];
 }
@@ -296,7 +297,7 @@
 
 - (void) presentNote:(Note *) note
 {
-    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
     
     InnovNoteViewController *noteVC = [[InnovNoteViewController alloc] init];
     noteVC.note = note;
@@ -310,7 +311,7 @@
 {
     [super touchesBegan:touches withEvent:event];
     
-    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
     [settingsView hide];
     [selectedTagsVC hide];
 }

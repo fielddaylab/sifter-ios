@@ -113,6 +113,7 @@
             [self willMoveToParentViewController:nil];
             [self.view removeFromSuperview];
             [self removeFromParentViewController];
+            [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
         }
     }
 }
