@@ -155,6 +155,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(NOTE_CONTENT_CELL_X_MARGIN + imageView.frame.size.width + NOTE_CONTENT_IMAGE_TEXT_MARGIN, NOTE_CONTENT_CELL_Y_MARGIN, 196, IMAGE_HEIGHT)];
     captionTextView.delegate = self;
+    captionTextView.returnKeyType = UIReturnKeyDone;
     
     recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, CELL_BUTTON_HEIGHT)];
     [recordButton addTarget:self action:@selector(recordButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -851,7 +852,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             if(!cell)
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ShareCellIdentifier];
-#warning FIX
                 socialView = [[InnovPopOverSocialContentView alloc] init];
                 socialView.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - tableView.frame.size.width/16.0*15.0)/2, 0, tableView.frame.size.width/16.0*15.0, 2 * SHARE_BUTTON_HEIGHT);
                 socialView.note = self.note;
