@@ -366,7 +366,7 @@
 		A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelfRegistration.xib; sourceTree = "<group>"; };
 		A722C8C40FBCD92E009432DB /* SelfRegistrationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = SelfRegistrationViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SelfRegistrationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NearbyObjectProtocol.h; path = Classes/model/NearbyObjectProtocol.h; sourceTree = "<group>"; };
+		A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbyObjectProtocol.h; sourceTree = "<group>"; };
 		A763B5230F4E283100FDCC55 /* MyCLController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = MyCLController.h; path = Classes/MyCLController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A763B5240F4E283100FDCC55 /* MyCLController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MyCLController.m; path = Classes/MyCLController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A78FD8AF0F4B7E9400820FEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -671,7 +671,6 @@
 			children = (
 				DD5C6AA71700D6FE00717031 /* InnovationViewControllers */,
 				A7986D6A0F8FEC7200A5469F /* Core App */,
-				A760473F0FC0AA1E00219A53 /* NearbyObjects */,
 				A7986D650F8FEC1100A5469F /* Login */,
 				A7986D670F8FEC3900A5469F /* Account */,
 				1147E15C13F32273000E4BC2 /* Notes */,
@@ -686,6 +685,7 @@
 		2B3D17040F49C9920067FD3A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */,
 				ABDA40B010506AF400823A94 /* Annotation.h */,
 				ABDA40B110506AF400823A94 /* Annotation.m */,
 				4A92FB09139EDF1B00B41218 /* Comment.h */,
@@ -733,14 +733,6 @@
 				2D73EA26160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m */,
 			);
 			name = "Public Name and Image";
-			sourceTree = "<group>";
-		};
-		A760473F0FC0AA1E00219A53 /* NearbyObjects */ = {
-			isa = PBXGroup;
-			children = (
-				A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */,
-			);
-			name = NearbyObjects;
 			sourceTree = "<group>";
 		};
 		A7986D650F8FEC1100A5469F /* Login */ = {

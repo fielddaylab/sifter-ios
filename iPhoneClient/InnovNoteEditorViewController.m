@@ -282,12 +282,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [self addChildViewController:dropOnMapVC];
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [editNoteTableView reloadData];
-}
-
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -973,22 +967,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             
             if([tagList count] == 0) [cell.textLabel setText: @"No Categories in Application"];
             else [cell.textLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
-            
-            CGSize labelSize = [cell.textLabel.text sizeWithFont:cell.textLabel.font constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
-            
-            if(labelSize.width == 0)
-                labelSize.width += 100;
-            
-            cell.mediaImageView.frame = CGRectMake( cell.textLabel.frame.origin.x + labelSize.width + SPACING,
-                                                   (cell.frame.size.height - IMAGEHEIGHT)/2,
-                                                   IMAGEWIDTH,
-                                                   IMAGEHEIGHT);
-
-            int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
-            if(mediaId != 0)
-                [cell.mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
-            else
-                [cell.mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
           
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
@@ -1025,6 +1003,31 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         default:
             return nil;
     }
+}
+
+-(NSIndexPath *)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section == TagSection)
+    {
+        CGSize labelSize = [cell.textLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:17.0] constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
+        
+        int defaultTextLabelXMargin = cell.textLabel.frame.origin.x;
+        if(defaultTextLabelXMargin == 0)
+            defaultTextLabelXMargin = 10;
+        
+        ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake( defaultTextLabelXMargin + labelSize.width + SPACING,
+                                               (cell.frame.size.height - IMAGEHEIGHT)/2,
+                                               IMAGEWIDTH,
+                                               IMAGEHEIGHT);
+        
+        int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
+        if(mediaId != 0)
+            [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+        else
+            [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
+    }
+    
+    return indexPath;
 }
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
