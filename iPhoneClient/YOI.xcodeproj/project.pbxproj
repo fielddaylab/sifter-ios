@@ -71,6 +71,7 @@
 		4AD5C41514E0704F00081B20 /* UploadMan.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD5C41414E0704F00081B20 /* UploadMan.m */; };
 		4ADE919C13CB7CB80009F4AF /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */; };
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
+		71FE1CDE1798952B00EB5A04 /* YOIToolbar1.png in Resources */ = {isa = PBXBuildFile; fileRef = 71FE1CDD1798952B00EB5A04 /* YOIToolbar1.png */; };
 		8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8902C52017874A580071373E /* InnovPopOverNotifContentView.m */; };
 		8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */; };
 		890621A1179883510086463C /* InnovTagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 890621A0179883510086463C /* InnovTagCell.m */; };
@@ -340,6 +341,7 @@
 		4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
 		4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+Hardware.h"; sourceTree = "<group>"; };
 		4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
+		71FE1CDD1798952B00EB5A04 /* YOIToolbar1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = YOIToolbar1.png; sourceTree = "<group>"; };
 		8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverNotifContentView.h; sourceTree = "<group>"; };
 		8902C52017874A580071373E /* InnovPopOverNotifContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverNotifContentView.m; sourceTree = "<group>"; };
 		8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverNotifContentView.xib; sourceTree = "<group>"; };
@@ -364,7 +366,7 @@
 		A722C8BF0FBCD8D0009432DB /* SelfRegistration.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SelfRegistration.xib; sourceTree = "<group>"; };
 		A722C8C40FBCD92E009432DB /* SelfRegistrationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = SelfRegistrationViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A722C8C50FBCD92E009432DB /* SelfRegistrationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SelfRegistrationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NearbyObjectProtocol.h; path = Classes/model/NearbyObjectProtocol.h; sourceTree = "<group>"; };
+		A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NearbyObjectProtocol.h; sourceTree = "<group>"; };
 		A763B5230F4E283100FDCC55 /* MyCLController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = MyCLController.h; path = Classes/MyCLController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A763B5240F4E283100FDCC55 /* MyCLController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MyCLController.m; path = Classes/MyCLController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A78FD8AF0F4B7E9400820FEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -669,7 +671,6 @@
 			children = (
 				DD5C6AA71700D6FE00717031 /* InnovationViewControllers */,
 				A7986D6A0F8FEC7200A5469F /* Core App */,
-				A760473F0FC0AA1E00219A53 /* NearbyObjects */,
 				A7986D650F8FEC1100A5469F /* Login */,
 				A7986D670F8FEC3900A5469F /* Account */,
 				1147E15C13F32273000E4BC2 /* Notes */,
@@ -684,6 +685,7 @@
 		2B3D17040F49C9920067FD3A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */,
 				ABDA40B010506AF400823A94 /* Annotation.h */,
 				ABDA40B110506AF400823A94 /* Annotation.m */,
 				4A92FB09139EDF1B00B41218 /* Comment.h */,
@@ -731,14 +733,6 @@
 				2D73EA26160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m */,
 			);
 			name = "Public Name and Image";
-			sourceTree = "<group>";
-		};
-		A760473F0FC0AA1E00219A53 /* NearbyObjects */ = {
-			isa = PBXGroup;
-			children = (
-				A722CB5A0FBDFEA6009432DB /* NearbyObjectProtocol.h */,
-			);
-			name = NearbyObjects;
 			sourceTree = "<group>";
 		};
 		A7986D650F8FEC1100A5469F /* Login */ = {
@@ -920,6 +914,7 @@
 		AB1EF609175FDE180073DBF4 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				71FE1CDD1798952B00EB5A04 /* YOIToolbar1.png */,
 				DB01B1021774E6B1005E1784 /* cropBox.png */,
 				AB39C81F117E4009007AD31F /* microphone.png */,
 				AB82F78F11F0EAA300B8E3DC /* microphoneForeground.png */,
@@ -1464,6 +1459,7 @@
 				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
 				89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */,
+				71FE1CDE1798952B00EB5A04 /* YOIToolbar1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
