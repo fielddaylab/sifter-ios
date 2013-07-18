@@ -29,6 +29,7 @@ typedef enum {
 #import "Tag.h"
 
 #import "ProgressButton.h"
+#import "InnovTagCell.h"
 #import "InnovPopOverView.h"
 #import "InnovPopOverTwitterAccountContentView.h"
 #import "InnovPopOverSocialContentView.h"
@@ -62,6 +63,10 @@ typedef enum {
 
 #define CANCEL_BUTTON_TITLE @"Cancel"
 #define SHARE_BUTTON_TITLE  @"Share"
+
+#define IMAGEHEIGHT 35
+#define IMAGEWIDTH 35
+#define SPACING 10
 
 static NSString *NoteContentCellIdentifier = @"NoteConentCell";
 static NSString *RecordCellIdentifier      = @"RecordCell";
@@ -275,6 +280,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
     [self addChildViewController:dropOnMapVC];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [editNoteTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -951,16 +962,34 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
         case TagSection:
         {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:TagCellIdentifier];
+            InnovTagCell *cell = [tableView dequeueReusableCellWithIdentifier:TagCellIdentifier];
             if (cell == nil)
             {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TagCellIdentifier];
+                cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TagCellIdentifier];
+                [cell.textLabel setNumberOfLines:1];
+                [cell.textLabel setLineBreakMode:UILineBreakModeTailTruncation];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
             }
             
-            if([tagList count] == 0) cell.textLabel.text = @"No Categories in Application";
-            else cell.textLabel.text = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
+            if([tagList count] == 0) [cell.textLabel setText: @"No Categories in Application"];
+            else [cell.textLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
             
+            CGSize labelSize = [cell.textLabel.text sizeWithFont:cell.textLabel.font constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
+            
+            if(labelSize.width == 0)
+                labelSize.width += 100;
+            
+            cell.mediaImageView.frame = CGRectMake( cell.textLabel.frame.origin.x + labelSize.width + SPACING,
+                                                   (cell.frame.size.height - IMAGEHEIGHT)/2,
+                                                   IMAGEWIDTH,
+                                                   IMAGEHEIGHT);
+
+            int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
+            if(mediaId != 0)
+                [cell.mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+            else
+                [cell.mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
+          
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
             return cell;

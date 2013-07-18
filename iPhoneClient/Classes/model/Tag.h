@@ -6,13 +6,9 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-
-@interface Tag : NSObject{
-    NSString *tagName;
-    BOOL playerCreated;
-    int tagId;
-}
+@interface Tag : NSObject
 @property (readwrite)        int tagId;
 @property (nonatomic)        NSString *tagName;
 @property (readwrite,assign) BOOL playerCreated;
+@property (readwrite)        int mediaId;
 @end
