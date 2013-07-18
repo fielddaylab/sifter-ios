@@ -12,11 +12,12 @@
 #import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "Tag.h"
+#import "InnovTagCell.h"
 #import "Logger.h"
 
 #define IMAGEHEIGHT 35
 #define IMAGEWIDTH 35
-#define SPACING 20
+#define SPACING 10
 #define ANIMATION_DURATION 0.15
 
 
@@ -59,6 +60,13 @@
     [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
     
     [self updateTags];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [tagTableView reloadData];
 }
 
 # pragma  mark Display Methods
@@ -154,29 +162,28 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    InnovTagCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        CGSize textSize = [((Tag *)[tags objectAtIndex:indexPath.row]).tagName
-                           sizeWithFont:[UIFont boldSystemFontOfSize:16]
-                           constrainedToSize:CGSizeMake(cell.frame.size.width - IMAGEWIDTH - 2 * SPACING, cell.frame.size.height)
-                           lineBreakMode:UILineBreakModeTailTruncation];
-        cell.textLabel.frame = CGRectMake(0,0,textSize.width, textSize.height);
+        cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [cell.textLabel setNumberOfLines:1];
         [cell.textLabel setLineBreakMode:UILineBreakModeTailTruncation];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
     [cell.textLabel setText:((Tag *)[tags objectAtIndex:indexPath.row]).tagName];
+    CGSize labelSize = [cell.textLabel.text sizeWithFont:cell.textLabel.font constrainedToSize:CGSizeMake(cell.textLabel.frame.size.width, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
     
-    
-    cell.imageView.frame = CGRectMake( cell.textLabel.frame.origin.x + cell.textLabel.frame.size.width + SPACING,
+    cell.mediaImageView.frame = CGRectMake( cell.textLabel.frame.origin.x + labelSize.width + SPACING,
                                       (cell.frame.size.height - IMAGEHEIGHT)/2,
                                       IMAGEWIDTH,
                                       IMAGEHEIGHT);
 #warning comment back in
-    // cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"tag%d.png", ((Tag *)[tagList  objectAtIndex:indexPath.row]).tagId]];
+    int mediaId = ((Tag *)[tags  objectAtIndex:indexPath.row]).mediaId;
+    if(mediaId != 0)
+        [cell.mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+    else
+        [cell.mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
     
     BOOL match = NO;
     for(int i = 0; i < [selectedTags count]; ++i)

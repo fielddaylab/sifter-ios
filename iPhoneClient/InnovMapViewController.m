@@ -186,7 +186,7 @@
         annotation.coordinate = CLLocationCoordinate2DMake(note.latitude, note.longitude);
         annotation.title = note.text;
         annotation.kind = NearbyObjectNote;
-        annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+        annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
         if(oldCoord.latitude != annotation.coordinate.latitude || oldCoord.longitude != annotation.coordinate.longitude)
         {
             [mapView removeAnnotation:annotation];
@@ -206,7 +206,7 @@
             annotation.note = note;
             annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
-            annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+            annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
 #warning this needs to be implemented in AnnotationView.m
             
             [mapView addAnnotation:annotation];
@@ -226,7 +226,7 @@
             annotation.note = note;
             annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
-            annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+            annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
 #warning this needs to be implemented in AnnotationView.m
             
             ++shownNotesCount;

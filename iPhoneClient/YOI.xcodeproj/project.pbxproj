@@ -73,6 +73,7 @@
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
 		8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8902C52017874A580071373E /* InnovPopOverNotifContentView.m */; };
 		8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */; };
+		890621A1179883510086463C /* InnovTagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 890621A0179883510086463C /* InnovTagCell.m */; };
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
@@ -229,8 +230,6 @@
 		DBFE825F174E758600E4496B /* InnovListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBFE825D174E758500E4496B /* InnovListViewController.m */; };
 		DBFE8260174E758600E4496B /* InnovListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBFE825E174E758600E4496B /* InnovListViewController.xib */; };
 		DBFEDCD41760EEC9009C080A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DBFEDCD31760EEC9009C080A /* Default-568h@2x.png */; };
-		DBFEDCE717611939009C080A /* TagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DBFEDCE417611939009C080A /* TagCell.m */; };
-		DBFEDCE917611939009C080A /* TagCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DBFEDCE617611939009C080A /* TagCell.xib */; };
 		DD235FCC1700DCCB00795077 /* InnovViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD235FCA1700DCCB00795077 /* InnovViewController.m */; };
 		DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD235FCB1700DCCB00795077 /* InnovViewController.xib */; };
 		DD3C285116F3BF0D00CBC085 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C285016F3BF0D00CBC085 /* Logger.m */; };
@@ -344,6 +343,8 @@
 		8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverNotifContentView.h; sourceTree = "<group>"; };
 		8902C52017874A580071373E /* InnovPopOverNotifContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverNotifContentView.m; sourceTree = "<group>"; };
 		8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverNotifContentView.xib; sourceTree = "<group>"; };
+		8906219F179883510086463C /* InnovTagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovTagCell.h; sourceTree = "<group>"; };
+		890621A0179883510086463C /* InnovTagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovTagCell.m; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
 		891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverContentView.m; sourceTree = "<group>"; };
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
@@ -569,9 +570,6 @@
 		DBFE825D174E758500E4496B /* InnovListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovListViewController.m; sourceTree = "<group>"; };
 		DBFE825E174E758600E4496B /* InnovListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovListViewController.xib; sourceTree = "<group>"; };
 		DBFEDCD31760EEC9009C080A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		DBFEDCE317611939009C080A /* TagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagCell.h; sourceTree = "<group>"; };
-		DBFEDCE417611939009C080A /* TagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagCell.m; sourceTree = "<group>"; };
-		DBFEDCE617611939009C080A /* TagCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagCell.xib; sourceTree = "<group>"; };
 		DD235FC91700DCCB00795077 /* InnovViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovViewController.h; sourceTree = "<group>"; };
 		DD235FCA1700DCCB00795077 /* InnovViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovViewController.m; sourceTree = "<group>"; };
 		DD235FCB1700DCCB00795077 /* InnovViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovViewController.xib; sourceTree = "<group>"; };
@@ -650,9 +648,6 @@
 		1147E15C13F32273000E4BC2 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
-				DBFEDCE317611939009C080A /* TagCell.h */,
-				DBFEDCE417611939009C080A /* TagCell.m */,
-				DBFEDCE617611939009C080A /* TagCell.xib */,
 				A7986D690F8FEC6300A5469F /* Camera */,
 				AB0DE7FE11559CCA00A6EC3E /* Audio Recorder */,
 				ABE3CFFC14DDC4670085C6D8 /* Note Editor */,
@@ -1200,6 +1195,8 @@
 				DB1A8AE3174D4DC80052DDC6 /* InnovSettingsView.xib */,
 				ABDA40B210506AF400823A94 /* AnnotationView.h */,
 				ABDA40B310506AF400823A94 /* AnnotationView.m */,
+				8906219F179883510086463C /* InnovTagCell.h */,
+				890621A0179883510086463C /* InnovTagCell.m */,
 				DB071204176F80220069E15A /* InnovCommentCell.h */,
 				DB071205176F80220069E15A /* InnovCommentCell.m */,
 				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
@@ -1454,7 +1451,6 @@
 				AB8552CC17609A990027F1F5 /* settingsIcon.png in Resources */,
 				AB8552CD17609A990027F1F5 /* settingsIcon@2x.png in Resources */,
 				DBFEDCD41760EEC9009C080A /* Default-568h@2x.png in Resources */,
-				DBFEDCE917611939009C080A /* TagCell.xib in Resources */,
 				DB071217176F8CEC0069E15A /* SVProgressHUD.bundle in Resources */,
 				DB0F406517721B6F00F19934 /* InnovPopOverSocialContentView.xib in Resources */,
 				DB0F406717721CCD00F19934 /* FB-f-Logo__blue.png in Resources */,
@@ -1580,7 +1576,6 @@
 				DBFE825F174E758600E4496B /* InnovListViewController.m in Sources */,
 				DB0773C8174FE10C002D71ED /* InnovNoteModel.m in Sources */,
 				DB05E41C1753F7FA00FB3BB4 /* DAKeyboardControl.m in Sources */,
-				DBFEDCE717611939009C080A /* TagCell.m in Sources */,
 				DB071206176F80230069E15A /* InnovCommentCell.m in Sources */,
 				DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */,
 				DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */,
@@ -1596,6 +1591,7 @@
 				89FFAF32178B3BF800A0F589 /* WildcardGestureRecognizer.m in Sources */,
 				89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */,
 				891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */,
+				890621A1179883510086463C /* InnovTagCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

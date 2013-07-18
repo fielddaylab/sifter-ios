@@ -855,9 +855,10 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	while ((tagDictionary = [gameTagEnumerator nextObject]))
     {
         Tag *t = [[Tag alloc]init];
-        t.tagName = [self validObjectForKey:@"tag" inDictionary:tagDictionary];
+        t.tagName       = [self validObjectForKey:@"tag" inDictionary:tagDictionary];
         t.playerCreated = [self validBoolForKey:@"player_created" inDictionary:tagDictionary];
-        t.tagId = [self validIntForKey:@"tag_id" inDictionary:tagDictionary];
+        t.tagId         = [self validIntForKey:@"tag_id" inDictionary:tagDictionary];
+        t.mediaId       = [self validIntForKey:@"media_id" inDictionary:tagDictionary];
 		[tempTagsList addObject:t];
 	}
     
