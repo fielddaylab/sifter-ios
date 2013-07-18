@@ -125,8 +125,6 @@
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     
-    if([[InnovNoteModel sharedNoteModel].availableNotes count] == 0)
-        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
     if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
         [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
     
