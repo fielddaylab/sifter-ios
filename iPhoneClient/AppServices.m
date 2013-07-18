@@ -763,41 +763,30 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 #pragma mark Async Fetch selectors
 
-- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFromLocation: (int) lastLocation andDate: (NSString *) date
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date
 {
-    NSString *method;
-    switch (selectedContent)
-    {
-        case kTop:
-            method = @"getNextSetOfTopNotesForGame";
-            break;
-        case kPopular:
-            method = @"getNextSetOfPopularNotesForGame";
-            break;
-        case kRecent:
-            method = @"getNextSetOfRecentNotesForGame";
-            break;
-        case kMine:
-            method = @"getNextSetOfPlayerNotesForGame";
-            break;
-        default:
-            break;
-    }
+    NSError *error;
+    NSMutableDictionary *argumentsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                          [NSString stringWithFormat:@"%d", [AppModel sharedAppModel].currentGame.gameId], @"gameId",
+                                          [NSString stringWithFormat:@"%d", [AppModel sharedAppModel].playerId],           @"playerId",
+                                          [NSString stringWithFormat:@"%d", selectedContent],                              @"searchType",
+                                          searchTerms,                                                                     @"searchTerms",
+                                          tagIds,                                                                          @"tagIds",
+                                          [NSString stringWithFormat:@"%d", lastLocation],                                 @"lastLocation",
+                                          [NSString stringWithFormat:@"%d", noteCount],                                    @"noteCount",
+                                          nil];
     
+    if(date)
+        [argumentsDict setObject: date forKey:@"date"];
     
-    isCurrentlyFetchingGameNoteList = YES;
-	NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
-                                 [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-                                 [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
-                                 [NSString stringWithFormat:@"%d",lastLocation],
-                                 [NSString stringWithFormat:@"%d",noteCount],nil];
-    if(selectedContent == kRecent && date)
-        [arguments addObject:date];
-	
-	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:argumentsDict options:nil error:&error];
+    [[Logger sharedLogger] logError:error];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
-                                                             andMethodName:method
-                                                              andArguments:arguments
+                                                             andMethodName:@"getNotesWithAttributes"
+                                                              andArguments:[NSArray arrayWithObject:jsonString]
                                                                andUserInfo:nil];
     
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSNumber numberWithInt:selectedContent], @"ContentSelector", nil];

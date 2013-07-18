@@ -44,6 +44,7 @@ extern NSString *const kARISServerServicePackage;
 - (void)fetchMedia:(int)mediaId;
 - (void)fetchNote:(int)noteId;
 
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date;
 - (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFromLocation: (int) lastLocation andDate: (NSString *) date;
 
 //Note Stuff

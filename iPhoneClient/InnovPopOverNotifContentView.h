@@ -6,14 +6,9 @@
 //
 //
 
-@protocol InnovPopOverNotifContentViewDelegate <NSObject>
-@required
-- (void) dismiss;
-@end
+#import "InnovPopOverContentView.h"
 
-@interface InnovPopOverNotifContentView : UIView
-
-@property(nonatomic) id<InnovPopOverNotifContentViewDelegate> delegate;
+@interface InnovPopOverNotifContentView : InnovPopOverContentView
 
 - (void) refreshFromModel;
 - (IBAction)sliderValueChanged:(id)sender;

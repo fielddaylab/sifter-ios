@@ -100,11 +100,30 @@
 }
 
 - (void)_shareInitalParams:(NSDictionary *)params automatically: (BOOL) autoShare {
-    if (FBSession.activeSession.isOpen) {
-        [self _shareAndReauthorize:params automatically: autoShare];
+    if (!(FBSession.activeSession.isOpen))
+        [self openSession];
+    
+    [self _shareAndReauthorize:params automatically: autoShare];
+}
+
+- (void) openSession
+{
+    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
+    {
+        [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
+         {
+             [[Logger sharedLogger] logError:error];
+             [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
+         }];
     }
     else {
-        [self _shareAndOpenSession:params automatically: autoShare];
+        [FBSession openActiveSessionWithPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+            if (error)
+            {
+                [[Logger sharedLogger] logError:error];
+                [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
+            }
+        }];
     }
 }
 
@@ -131,7 +150,9 @@
         [self _shareParams:params automatically: autoShare];
 }
 
-- (void)_shareAndOpenSession:(NSDictionary *)params automatically: (BOOL) autoShare {
+/*
+- (void)_shareAndOpenSession:(NSDictionary *)params automatically: (BOOL) autoShare
+{
     __weak SimpleFacebookShare *selfForBlock = self;
     if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
     {
@@ -151,7 +172,7 @@
                 [selfForBlock _shareAndReauthorize:params automatically: autoShare];
         }];
     }
-}
+} */
 //MODIFIED METHOD
 - (void)_shareParams:(NSDictionary *)params automatically: (BOOL) autoShare {
     if(!autoShare)
@@ -173,7 +194,8 @@
                  }
                  else if ([resultParams valueForKey:@"post_id"])
                  {
-                     [SVProgressHUD showSuccessWithStatus:@"Success"];
+                     if(!autoShare)
+                         [SVProgressHUD showSuccessWithStatus:@"Success"];
                      [[AppServices sharedAppServices] sharedNoteToFacebook: selfForBlock.noteId];
                  }
              }
@@ -205,8 +227,8 @@
                  
              }];
         }
-        else
-            [self _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
+  //      else
+   //         [self _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
 #warning Else wasn't here before
     }
 }
@@ -235,17 +257,18 @@
     return NO;
 }
 
-- (void)close
-{
-    [FBSession.activeSession close];
-}
-
 - (void)handleDidBecomeActive
 {
     [FBSession.activeSession handleDidBecomeActive];
 }
 
-- (NSDictionary *) _parseURLParams:(NSString *)query {
+- (void)close
+{
+    [FBSession.activeSession close];
+}
+
+- (NSDictionary *) _parseURLParams:(NSString *)query
+{
     NSArray *pairs = [query componentsSeparatedByString:@"&"];
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     for (NSString *pair in pairs) {
@@ -278,8 +301,8 @@
     // [((UINavigationController *)[ViewControllerHelper getCurrentRootViewController]) popToRootViewControllerAnimated:YES];
 }
 
-- (void)loginView:(FBLoginView *)loginView
-      handleError:(NSError *)error {
+- (void)loginView:(FBLoginView *)loginView handleError:(NSError *)error
+{
     NSString *alertMessage, *alertTitle;
     if (error.fberrorShouldNotifyUser) {
         // If the SDK has a message for the user, surface it. This conveniently
