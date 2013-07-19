@@ -22,9 +22,6 @@
 
 #import "AsyncMediaImageView.h"
 
-#define ICON_WIDTH  35
-#define ICON_HEIGHT 35
-
 @implementation TMPhotoQuiltViewCell
 
 @synthesize photoView = _photoView;
