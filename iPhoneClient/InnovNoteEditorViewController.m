@@ -64,10 +64,6 @@ typedef enum {
 #define CANCEL_BUTTON_TITLE @"Cancel"
 #define SHARE_BUTTON_TITLE  @"Share"
 
-#define IMAGEHEIGHT 35
-#define IMAGEWIDTH 35
-#define SPACING 10
-
 static NSString *NoteContentCellIdentifier = @"NoteConentCell";
 static NSString *RecordCellIdentifier      = @"RecordCell";
 static NSString *ShareCellIdentifier       = @"ShareCell";
@@ -967,6 +963,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             
             if([tagList count] == 0) [cell.textLabel setText: @"No Categories in Application"];
             else [cell.textLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
+            
+            int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
+            if(mediaId != 0)
+                [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+            else
+                [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
           
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
@@ -1003,31 +1005,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         default:
             return nil;
     }
-}
-
--(NSIndexPath *)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if(indexPath.section == TagSection)
-    {
-        CGSize labelSize = [cell.textLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:17.0] constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
-        
-        int defaultTextLabelXMargin = cell.textLabel.frame.origin.x;
-        if(defaultTextLabelXMargin == 0)
-            defaultTextLabelXMargin = 10;
-        
-        ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake( defaultTextLabelXMargin + labelSize.width + SPACING,
-                                               (cell.frame.size.height - IMAGEHEIGHT)/2,
-                                               IMAGEWIDTH,
-                                               IMAGEHEIGHT);
-        
-        int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
-        if(mediaId != 0)
-            [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
-        else
-            [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
-    }
-    
-    return indexPath;
 }
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath

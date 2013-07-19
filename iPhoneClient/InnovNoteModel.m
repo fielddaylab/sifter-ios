@@ -256,7 +256,7 @@
     
     clearOnNotesReceived = NO;
     
-    if([[newNotes allKeys] count] < NOTES_PER_FETCH)
+    if([[newNotes allKeys] count] < NOTES_PER_FETCH && !(updatedNotes == kMine))
         [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:YES] atIndexedSubscript:updatedNotes];
     
     if(updatedNotes == selectedContent)
