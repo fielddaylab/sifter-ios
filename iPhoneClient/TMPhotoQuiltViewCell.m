@@ -22,8 +22,8 @@
 
 #import "AsyncMediaImageView.h"
 
-#define ICON_WIDTH  40
-#define ICON_HEIGHT 40
+#define ICON_WIDTH  35
+#define ICON_HEIGHT 35
 
 @implementation TMPhotoQuiltViewCell
 
@@ -61,7 +61,7 @@
 {
     if (!_categoryIconView)
     {
-        _categoryIconView = [[UIImageView alloc] init];
+        _categoryIconView = [[AsyncMediaImageView alloc] init];
         _categoryIconView.clipsToBounds = YES;
         [self addSubview:_categoryIconView];
     }

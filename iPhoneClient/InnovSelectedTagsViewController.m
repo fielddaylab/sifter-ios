@@ -15,11 +15,7 @@
 #import "InnovTagCell.h"
 #import "Logger.h"
 
-#define IMAGEHEIGHT 35
-#define IMAGEWIDTH 35
-#define SPACING 10
 #define ANIMATION_DURATION 0.15
-
 
 @interface InnovSelectedTagsViewController ()<UITableViewDataSource, UITableViewDelegate>
 {
@@ -159,12 +155,18 @@
     if (!cell)
     {
         cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        [cell.textLabel setNumberOfLines:1];
-        [cell.textLabel setLineBreakMode:UILineBreakModeTailTruncation];
+        [cell.tagLabel setNumberOfLines:1];
+        [cell.tagLabel setLineBreakMode:UILineBreakModeTailTruncation];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
-    [cell.textLabel setText:((Tag *)[tags objectAtIndex:indexPath.row]).tagName];
+    [cell.tagLabel setText:((Tag *)[tags objectAtIndex:indexPath.row]).tagName];
+    
+    int mediaId = ((Tag *)[tags  objectAtIndex:indexPath.row]).mediaId;
+    if(mediaId != 0)
+        [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+    else
+        [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
     
     BOOL match = NO;
     for(int i = 0; i < [selectedTags count]; ++i)
@@ -174,28 +176,6 @@
     else cell.accessoryType = UITableViewCellAccessoryNone;
     
     return cell;
-}
-
--(NSIndexPath *)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-        CGSize labelSize = [cell.textLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:20.0] constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
-        
-        int defaultTextLabelXMargin = cell.textLabel.frame.origin.x;
-        if(defaultTextLabelXMargin == 0)
-            defaultTextLabelXMargin = 10;
-        
-        ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake( defaultTextLabelXMargin + labelSize.width + SPACING,
-                                                                 (cell.frame.size.height - IMAGEHEIGHT)/2,
-                                                                 IMAGEWIDTH,
-                                                                 IMAGEHEIGHT);
-    
-    int mediaId = ((Tag *)[tags  objectAtIndex:indexPath.row]).mediaId;
-    if(mediaId != 0)
-        [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
-    else
-        [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
-    
-    return indexPath;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

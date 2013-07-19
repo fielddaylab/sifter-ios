@@ -106,7 +106,6 @@
     [allNotes removeAllObjects];
     for(int i = 0; i < kNumContents; ++i)
         [[arrayOfArraysByType objectAtIndex:i] removeAllObjects];
-    selectedTags = [allTags mutableCopy];
     [self sendSelectedTagsUpdateNotification];
     [searchTerms removeAllObjects];
     [allNotes addEntriesFromDictionary:notifNotes];
@@ -491,19 +490,24 @@
 
 -(void) removeTag: (Tag *) removeTag
 {
-    for(int i = 0; i < [selectedTags count]; ++i)
+    if([selectedTags count] > 1)
     {
-        Tag *tag = [selectedTags objectAtIndex:i];
-        if(tag.tagId == removeTag.tagId)
+        for(int i = 0; i < [selectedTags count]; ++i)
         {
-            clearOnNotesReceived = YES;
-            [selectedTags removeObject: tag];
-            [self sendSelectedTagsUpdateNotification];
-            [self clearAllNotesFetched];
-            [self updateAvailableNotes];
-            return;
+            Tag *tag = [selectedTags objectAtIndex:i];
+            if(tag.tagId == removeTag.tagId)
+            {
+                clearOnNotesReceived = YES;
+                [selectedTags removeObject: tag];
+                [self sendSelectedTagsUpdateNotification];
+                [self clearAllNotesFetched];
+                [self updateAvailableNotes];
+                return;
+            }
         }
     }
+    else
+        [self sendSelectedTagsUpdateNotification];
 }
 
 -(void) addSearchTerm: (NSString *) term
@@ -537,7 +541,7 @@
     [AppServices sharedAppServices].shouldIgnoreResults = YES;
     [self clearAvailableData];
     
-    if([[arrayOfArraysByType objectAtIndex:selectedContent] count] < MAX_MAP_NOTES_COUNT)
+    if([[arrayOfArraysByType objectAtIndex:selectedContent] count] < MAX_MAP_NOTES_COUNT && ![[allNotesFetchedInCategory objectAtIndex:selectedContent] boolValue])
         [self fetchMoreNotes];
     else
         [self updateAvailableNotes];

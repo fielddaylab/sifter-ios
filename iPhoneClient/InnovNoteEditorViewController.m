@@ -64,10 +64,6 @@ typedef enum {
 #define CANCEL_BUTTON_TITLE @"Cancel"
 #define SHARE_BUTTON_TITLE  @"Share"
 
-#define IMAGEHEIGHT 35
-#define IMAGEWIDTH 35
-#define SPACING 10
-
 static NSString *NoteContentCellIdentifier = @"NoteConentCell";
 static NSString *RecordCellIdentifier      = @"RecordCell";
 static NSString *ShareCellIdentifier       = @"ShareCell";
@@ -280,6 +276,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
     [self addChildViewController:dropOnMapVC];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [editNoteTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -960,13 +963,20 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             if (cell == nil)
             {
                 cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TagCellIdentifier];
-                [cell.textLabel setNumberOfLines:1];
-                [cell.textLabel setLineBreakMode:UILineBreakModeTailTruncation];
+                [cell.tagLabel setNumberOfLines:1];
+                [cell.tagLabel setLineBreakMode:UILineBreakModeTailTruncation];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+                cell.backgroundView = nil;
             }
             
-            if([tagList count] == 0) [cell.textLabel setText: @"No Categories in Application"];
-            else [cell.textLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
+            if([tagList count] == 0) [cell.tagLabel setText: @"No Categories in Application"];
+            else [cell.tagLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
+            
+            int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
+            if(mediaId != 0)
+                [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+            else
+                [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
           
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
@@ -1009,22 +1019,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     if(indexPath.section == TagSection)
     {
-        CGSize labelSize = [cell.textLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:17.0] constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:UILineBreakModeTailTruncation];
-        
-        int defaultTextLabelXMargin = cell.textLabel.frame.origin.x;
-        if(defaultTextLabelXMargin == 0)
-            defaultTextLabelXMargin = 10;
-        
-        ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake( defaultTextLabelXMargin + labelSize.width + SPACING,
-                                               (cell.frame.size.height - IMAGEHEIGHT)/2,
-                                               IMAGEWIDTH,
-                                               IMAGEHEIGHT);
-        
-        int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
-        if(mediaId != 0)
-            [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
-        else
-            [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
+        ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake(SPACING, (cell.frame.size.height - TAG_CELL_IMAGE_HEIGHT)/2, TAG_CELL_IMAGE_WIDTH, TAG_CELL_IMAGE_HEIGHT);
+        ((InnovTagCell *)cell).tagLabel.frame = CGRectMake(SPACING + TAG_CELL_IMAGE_WIDTH + SPACING, 0, cell.frame.size.width - (SPACING + TAG_CELL_IMAGE_WIDTH + SPACING), cell.frame.size.height);
     }
     
     return indexPath;
@@ -1051,7 +1047,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         
-        newTagName = cell.textLabel.text;
+        newTagName = ((InnovTagCell *)cell).tagLabel.text;
         
         self.title = newTagName;
     }

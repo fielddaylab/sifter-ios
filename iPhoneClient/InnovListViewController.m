@@ -10,6 +10,7 @@
 #import "InnovNoteModel.h"
 
 #import "Note.h"
+#import "Tag.h"
 #import "NoteContent.h"
 
 #import "TMQuiltView.h"
@@ -46,7 +47,7 @@ static NSString * const CELL_ID = @"Cell";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteList:) name:@"NotesAvailableChanged" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)    name:@"NoteModelUpdate:Notes" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)    name:@"NoteModelUpdate:Notes" object:nil];
     return self;
 }
 
@@ -71,6 +72,13 @@ static NSString * const CELL_ID = @"Cell";
     quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:quiltView];
     
+    [quiltView reloadData];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+#warning fix to prevent reload
     [quiltView reloadData];
 }
 
@@ -154,7 +162,15 @@ static NSString * const CELL_ID = @"Cell";
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
     [cell.photoView reset];
     [cell.photoView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
-    [cell.categoryIconView setImage:[UIImage imageNamed:@"newBanner.png"]];
+    
+    if([note.tags count] > 0)
+    {
+        int mediaId = ((Tag *)[note.tags  objectAtIndex:0]).mediaId;
+        if(mediaId != 0)
+            [cell.categoryIconView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+        else
+            [cell.categoryIconView setImage:[UIImage imageNamed:@"noteicon.png"]];
+    }
     
     return cell;
 }
