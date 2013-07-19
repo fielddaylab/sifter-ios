@@ -32,7 +32,6 @@ static NSString * const CELL_ID = @"Cell";
 @interface InnovListViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate>
 {
     TMQuiltView *quiltView;
-    
     NSArray *notes;
 }
 
@@ -75,13 +74,6 @@ static NSString * const CELL_ID = @"Cell";
     [quiltView reloadData];
 }
 
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-#warning fix to prevent reload
-    [quiltView reloadData];
-}
-
 - (void) animateInNote:(Note *) newNote
 {
     NSMutableArray *mutableNotes = [NSMutableArray arrayWithArray:notes];
@@ -112,7 +104,8 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
+#warning count > 4 is patch fix
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height && [notes count] > 4)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];
@@ -157,6 +150,7 @@ static NSString * const CELL_ID = @"Cell";
         cell.yMargin = CELL_Y_MARGIN;
         cell.photoView.frame = frame;
         cell.photoView.dontUseImage = YES;
+        cell.categoryIconView.frame = CGRectMake(cell.xMargin+cell.photoView.frame.size.width-ICON_WIDTH, cell.yMargin, ICON_WIDTH, ICON_HEIGHT);
     }
     
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
@@ -200,6 +194,7 @@ static NSString * const CELL_ID = @"Cell";
     if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT))
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
+
 /*
  - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
  {
