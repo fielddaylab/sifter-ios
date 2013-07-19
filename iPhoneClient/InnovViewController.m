@@ -34,6 +34,7 @@
     __weak IBOutlet UIButton *trackingButton;
     
     __weak IBOutlet UIView *contentView;
+    __weak IBOutlet UIImageView *toolBarImageView;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;
@@ -221,7 +222,7 @@
     if(![self.view.subviews containsObject:selectedTagsVC.view])
     {
         [self addChildViewController:selectedTagsVC];
-        [self.view addSubview:selectedTagsVC.view];
+        [self.view insertSubview:selectedTagsVC.view belowSubview:toolBarImageView];
         [selectedTagsVC didMoveToParentViewController:self];
         [selectedTagsVC show];
     }
@@ -381,6 +382,7 @@
     trackingButton = nil;
     switchViewsBarButton = nil;
     settingsView = nil;
+    toolBarImageView = nil;
     [super viewDidUnload];
 }
 

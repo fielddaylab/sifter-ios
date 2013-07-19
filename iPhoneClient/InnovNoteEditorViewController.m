@@ -278,6 +278,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [self addChildViewController:dropOnMapVC];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [editNoteTableView reloadData];
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -956,13 +963,14 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             if (cell == nil)
             {
                 cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TagCellIdentifier];
-                [cell.textLabel setNumberOfLines:1];
-                [cell.textLabel setLineBreakMode:UILineBreakModeTailTruncation];
+                [cell.tagLabel setNumberOfLines:1];
+                [cell.tagLabel setLineBreakMode:UILineBreakModeTailTruncation];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+                cell.backgroundView = nil;
             }
             
-            if([tagList count] == 0) [cell.textLabel setText: @"No Categories in Application"];
-            else [cell.textLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
+            if([tagList count] == 0) [cell.tagLabel setText: @"No Categories in Application"];
+            else [cell.tagLabel setText:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName];
             
             int mediaId = ((Tag *)[tagList  objectAtIndex:indexPath.row]).mediaId;
             if(mediaId != 0)
@@ -1007,6 +1015,17 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
 }
 
+-(NSIndexPath *)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section == TagSection)
+    {
+        ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake(SPACING, (cell.frame.size.height - TAG_CELL_IMAGE_HEIGHT)/2, TAG_CELL_IMAGE_WIDTH, TAG_CELL_IMAGE_HEIGHT);
+        ((InnovTagCell *)cell).tagLabel.frame = CGRectMake(SPACING + TAG_CELL_IMAGE_WIDTH + SPACING, 0, cell.frame.size.width - (SPACING + TAG_CELL_IMAGE_WIDTH + SPACING), cell.frame.size.height);
+    }
+    
+    return indexPath;
+}
+
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //Not considered selected when auto set to first row, so clear first row
@@ -1028,7 +1047,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         
-        newTagName = cell.textLabel.text;
+        newTagName = ((InnovTagCell *)cell).tagLabel.text;
         
         self.title = newTagName;
     }

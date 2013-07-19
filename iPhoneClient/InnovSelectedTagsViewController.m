@@ -17,7 +17,6 @@
 
 #define ANIMATION_DURATION 0.15
 
-
 @interface InnovSelectedTagsViewController ()<UITableViewDataSource, UITableViewDelegate>
 {
     __weak IBOutlet UISegmentedControl *contentSelectorSegCntrl;
@@ -156,12 +155,12 @@
     if (!cell)
     {
         cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        [cell.textLabel setNumberOfLines:1];
-        [cell.textLabel setLineBreakMode:UILineBreakModeTailTruncation];
+        [cell.tagLabel setNumberOfLines:1];
+        [cell.tagLabel setLineBreakMode:UILineBreakModeTailTruncation];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
-    [cell.textLabel setText:((Tag *)[tags objectAtIndex:indexPath.row]).tagName];
+    [cell.tagLabel setText:((Tag *)[tags objectAtIndex:indexPath.row]).tagName];
     
     int mediaId = ((Tag *)[tags  objectAtIndex:indexPath.row]).mediaId;
     if(mediaId != 0)
