@@ -114,12 +114,9 @@
                                                              BUTTON_HEIGHT)];
     
     flagButton.backgroundColor = [UIColor blackColor];
-    [flagButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
-    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-    [flagButton setTitle:@"F" forState:UIControlStateNormal];
-    [flagButton setTitle:@"F" forState:UIControlStateSelected];
-    [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
+    [flagButton setImage:[UIImage imageNamed:@"59-flag.png"] forState:UIControlStateNormal];
+    [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateSelected];
+    [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:flagButton];
     
@@ -131,9 +128,12 @@
     [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
+  /*  [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
     [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heart.png"] forState:UIControlStateNormal];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:likeButton];
     
@@ -142,8 +142,9 @@
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
-    [shareButton setTitle:@"S" forState:UIControlStateNormal];
-    [shareButton setTitle:@"S" forState:UIControlStateHighlighted];
+    [shareButton setImage:[UIImage imageNamed:@"ShareWhite.png"] forState:UIControlStateNormal];
+    [shareButton setImage:[UIImage imageNamed:@"Share.png"] forState:UIControlStateSelected];
+    [shareButton setImage:[UIImage imageNamed:@"Share.png"] forState:UIControlStateHighlighted];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:shareButton];
     
@@ -152,8 +153,9 @@
                                                                BUTTON_WIDTH,
                                                                BUTTON_HEIGHT)];
     commentButton.backgroundColor = [UIColor blackColor];
-    [commentButton setTitle:@"C" forState:UIControlStateNormal];
-    [commentButton setTitle:@"C" forState:UIControlStateHighlighted];
+    [commentButton setImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+    [commentButton setImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateSelected];
+    [commentButton setImage:[UIImage imageNamed:@"08-chatt.png"] forState:UIControlStateHighlighted];
 	[commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:commentButton];
     
