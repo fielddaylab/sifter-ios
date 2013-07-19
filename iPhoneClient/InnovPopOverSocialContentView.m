@@ -13,37 +13,23 @@
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "AsyncMediaImageView.h"
-#import "CustomBadge.h"
 #import "Note.h"
 #import "NoteContent.h"
 #import "Tag.h"
 
-#warning CHANGE TWITTER HANDLE
-#define TWITTER_HANDLE               @"@y_o_i"
 #define PINTEREST_CLIENT_ID          @"1432066"
-#define DEFAULT_TITLE                @"Note"
 
 @interface InnovPopOverSocialContentView()<AsyncMediaImageViewDelegate>
 {
     AsyncMediaImageView *imageView;
-    Media *media;
-    
     BOOL usersNote;
-    __weak IBOutlet UIButton *facebookButton;
-    CustomBadge *facebookBadge;
-    __weak IBOutlet UIButton *twitterButton;
-    CustomBadge *twitterBadge;
-    __weak IBOutlet UIButton *pinterestButton;
-    CustomBadge *pinterestBadge;
-    __weak IBOutlet UIButton *emailButton;
-    CustomBadge *emailBadge;
 }
 
 @end
 
 @implementation InnovPopOverSocialContentView
 
-@synthesize note;
+@synthesize note, facebookButton, facebookBadge, twitterButton, twitterBadge, pinterestButton, pinterestBadge, emailButton, emailBadge;
 
 - (id)init
 {
@@ -62,6 +48,7 @@
         facebookBadge = [CustomBadge customBadgeWithString:@"0"];
         facebookBadge.center = CGPointMake(facebookButton.frame.size.width, 0);
         facebookButton.clipsToBounds = NO;
+        facebookButton.tag = 0;
         [facebookButton addSubview:facebookBadge];
         
         twitterBadge = [CustomBadge customBadgeWithString:@"0"];
@@ -116,7 +103,7 @@
 #warning fix url to be web notebook url
     NSString *url  = HOME_URL;
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId];
+    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:NO];
 }
 
 - (IBAction)twitterButtonPressed:(id)sender
@@ -124,6 +111,7 @@
 #warning fix url to be web notebook url
     NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
     NSString *url  = HOME_URL;
+    
     [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId];
 }
 

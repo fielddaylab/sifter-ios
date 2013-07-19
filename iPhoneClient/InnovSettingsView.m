@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
+#import "ARISAppDelegate.h"
 
 #define ANIMATION_DURATION 0.15
 
@@ -98,7 +99,7 @@
 
 - (IBAction)notificationsButtonPressed:(id)sender
 {
-#warning unimplemented
+    [delegate showNotifications];
 }
 
 - (IBAction)aboutButtonPressed:(id)sender
@@ -108,10 +109,7 @@
 - (IBAction)logInOutButtonPressed:(id)sender
 {
     if([AppModel sharedAppModel].playerId != 0)
-    {
         [self performLogout:nil];
-        [self updateLogInOutButtonTitle];
-    }
     else
         [delegate presentLogIn];
 }
@@ -142,6 +140,13 @@
     [defaults setInteger: [AppModel sharedAppModel].playerMediaId   forKey:@"playerMediaId"];
     [defaults setObject:  [AppModel sharedAppModel].userName        forKey:@"userName"];
     [defaults setObject:  [AppModel sharedAppModel].displayName     forKey:@"displayName"];
+    [defaults synchronize];
+    
+    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare logOut];
+    
+    [self updateLogInOutButtonTitle];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"LogOutSucceeded" object:nil];
 }
 
 @end

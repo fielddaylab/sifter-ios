@@ -9,21 +9,25 @@
 #import "InnovPopOverView.h"
 #import <QuartzCore/QuartzCore.h>
 
+#import "InnovPopOverContentView.h"
+
 #define CORNER_RADIUS  9.0
 #define BUTTON_HEIGHT  40
 #define BUTTON_WIDTH   40
-#define NAV_BAR_HEIGHT 44
 
-@interface InnovPopOverView()
+@interface InnovPopOverView() <InnovPopOverContentViewDelegate>
 {
-    UIView *contentView;
+    InnovPopOverContentView *contentView;
+    UIButton *exitButton;
 }
 
 @end
 
 @implementation InnovPopOverView
 
-- (id)initWithFrame:(CGRect)frame andContentView: (UIView *) inputContentView
+@synthesize delegate;
+
+- (id)initWithFrame:(CGRect)frame andContentView: (InnovPopOverContentView *) inputContentView
 {
     self = [super initWithFrame:frame];
     if (self)
@@ -33,11 +37,10 @@
         contentView.layer.masksToBounds = YES;
         contentView.layer.cornerRadius  = CORNER_RADIUS;
         contentView.center = self.center;
-        CGRect newFrame = contentView.frame;
-        newFrame.origin.y -= NAV_BAR_HEIGHT;
-        contentView.frame = newFrame;
+        contentView.dismissDelegate = self;
+        
         [self addSubview:contentView];
-        UIButton *exitButton = [[UIButton alloc] initWithFrame:CGRectMake(0,
+        exitButton = [[UIButton alloc] initWithFrame:CGRectMake(0,
                                                                           0,
                                                                           BUTTON_WIDTH,
                                                                           BUTTON_HEIGHT)];
@@ -52,8 +55,17 @@
     return self;
 }
 
+- (void) adjustContentFrame:(CGRect)frame
+{
+    contentView.frame = frame;
+    exitButton.center = CGPointMake(self.frame.origin.x + contentView.frame.origin.x + contentView.frame.size.width,
+                                    self.frame.origin.y + contentView.frame.origin.y);
+}
+
 - (void) exitButtonPressed: (id) sender
 {
+    if(delegate)
+        [delegate popOverCancelled];
     [self removeFromSuperview];
 }
 
@@ -65,9 +77,18 @@
     {
         CGPoint point = [touch locationInView:self];
          if(!CGRectContainsPoint(contentView.frame, point))
+         {
+             if(delegate)
+                 [delegate popOverCancelled];
              [self removeFromSuperview];
+         }
     }
    
+}
+
+- (void) dismiss
+{
+    [self removeFromSuperview];
 }
 
 @end

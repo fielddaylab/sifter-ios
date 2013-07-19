@@ -18,8 +18,9 @@
 //  limitations under the License.
 
 #import <Foundation/Foundation.h>
+#import <FacebookSDK/FacebookSDK.h>
 
-@interface SimpleFacebookShare : NSObject
+@interface SimpleFacebookShare : NSObject <FBLoginViewDelegate>
 
 - (id)initWithAppName:(NSString *)theAppName appUrl:(NSString *)theAppUrl;
 - (BOOL) handleOpenURL:(NSURL *)theUrl;
@@ -27,9 +28,10 @@
 - (void) logOut;
 - (void) close;
 - (void) handleDidBecomeActive;
+- (void) openSession;
 - (void) shareUrl:(NSURL *)theUrl;
 - (void) shareText:(NSString *)theText DEPRECATED_ATTRIBUTE;
-- (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId;
+- (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId automatically:(BOOL) autoShare;
 - (void) getUsernameWithCompletionHandler:(void (^)(NSString *username, NSError *error))completionHandler;
 
 @end

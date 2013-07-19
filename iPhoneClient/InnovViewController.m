@@ -17,6 +17,8 @@
 #import "InnovPresentNoteDelegate.h"
 
 #import "InnovSettingsView.h"
+#import "InnovPopOverView.h"
+#import "InnovPopOverNotifContentView.h"
 #import "LoginViewController.h"
 #import "InnovMapViewController.h"
 #import "InnovListViewController.h"
@@ -26,12 +28,13 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate> {
-    
+@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
+{    
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
     
     __weak IBOutlet UIView *contentView;
+    __weak IBOutlet UIImageView *toolBarImageView;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;
@@ -42,6 +45,7 @@
     InnovListViewController *listVC;
     InnovSettingsView *settingsView;
     InnovSelectedTagsViewController *selectedTagsVC;
+    InnovPopOverView *popOver;
     
     Note *noteToAdd;
     NSString *currentSearchTerm;
@@ -55,7 +59,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkForLogInFail) name:@"NewLoginResponseReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logInFailed) name:@"LogInFailed" object:nil];
     return self;
 }
 
@@ -66,18 +70,12 @@
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
     [self addChildViewController:mapVC];
-    CGRect contentVCFrame = contentView.frame;
-    contentVCFrame.origin.x = 0;
-    contentVCFrame.origin.y = 0;
-    mapVC.view.frame = contentVCFrame;
     [contentView addSubview:mapVC.view];
     [mapVC didMoveToParentViewController:self];
     
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
     [self addChildViewController:listVC];
-    listVC.view.frame = contentVCFrame;
-#warning Possibly add  [self addChildViewController:listVC];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
@@ -110,11 +108,7 @@
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     selectedTagsVC.view.layer.anchorPoint = CGPointMake(0, 1);
-    CGRect selectedTagsFrame = selectedTagsVC.view.frame;
-    selectedTagsFrame.origin.x = 0;
-    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
-    selectedTagsVC.view.frame = selectedTagsFrame;
-    
+
 	trackingButton.selected = YES;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -132,10 +126,22 @@
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     
-    if([[InnovNoteModel sharedNoteModel].availableNotes count] == 0)
-        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
     if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
         [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
+    
+    CGRect contentVCFrame = contentView.frame;
+    contentVCFrame.origin.x = 0;
+    contentVCFrame.origin.y = 0;
+    mapVC.view.frame = contentVCFrame;
+    mapVC.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+    
+    listVC.view.frame = contentVCFrame;
+    listVC.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
+    
+    CGRect selectedTagsFrame = selectedTagsVC.view.frame;
+    selectedTagsFrame.origin.x = 0;
+    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
+    selectedTagsVC.view.frame = selectedTagsFrame;
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -143,7 +149,10 @@
     [super viewDidAppear:animated];
     
     if(noteToAdd != nil)
-        [self animateInNote];
+    {
+        [self animateInNote:noteToAdd];
+        noteToAdd = nil;
+    }
 }
 
 #pragma mark Display New Note
@@ -157,13 +166,12 @@
     [selectedTagsVC updateSelectedContent:kMine];
 }
 
-- (void) animateInNote
+- (void) animateInNote: (Note *) note
 {
     if ([contentView.subviews containsObject:mapVC.view])
-        [mapVC showNotePopUpForNote:noteToAdd];
+        [mapVC showNotePopUpForNote:note];
     else
-        [listVC animateInNote:noteToAdd];
-    noteToAdd = nil;
+        [listVC animateInNote:note];
 }
 
 #pragma mark Search Bar Delegate Methods
@@ -193,6 +201,7 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
 {
     [aSearchBar resignFirstResponder];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 
 #pragma mark Buttons Pressed
@@ -213,7 +222,7 @@
     if(![self.view.subviews containsObject:selectedTagsVC.view])
     {
         [self addChildViewController:selectedTagsVC];
-        [self.view addSubview:selectedTagsVC.view];
+        [self.view insertSubview:selectedTagsVC.view belowSubview:toolBarImageView];
         [selectedTagsVC didMoveToParentViewController:self];
         [selectedTagsVC show];
     }
@@ -238,11 +247,13 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex) [self presentLogIn];
+    if(buttonIndex)
+        [self presentLogIn];
 }
 
 - (IBAction)trackingButtonPressed:(id)sender
 {
+    trackingButton.selected = YES;
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
     [mapVC toggleTracking];
 }
@@ -253,6 +264,14 @@
 }
 
 #pragma mark Settings Delegate Methods
+
+- (void) showNotifications
+{
+    InnovPopOverNotifContentView *notifView = [[InnovPopOverNotifContentView alloc] init];
+    [notifView refreshFromModel];
+    popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:notifView];
+    [self.view addSubview:popOver];
+}
 
 - (void) showAbout
 {
@@ -267,20 +286,17 @@
 
 #pragma mark Login and Game Selection
 
-- (void)checkForLogInFail
+- (void)logInFailed
 {
-    if([AppModel sharedAppModel].playerId == 0)
-    {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
         [alert show];
-    }
 }
 
 #pragma mark Present Note Delegate Method
 
 - (void) presentNote:(Note *) note
 {
-    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
     
     InnovNoteViewController *noteVC = [[InnovNoteViewController alloc] init];
     noteVC.note = note;
@@ -294,7 +310,7 @@
 {
     [super touchesBegan:touches withEvent:event];
     
-    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
     [settingsView hide];
     [selectedTagsVC hide];
 }
@@ -320,7 +336,7 @@
         coming = listVC;
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
-        newButtonImageName = @"mapModeIcon.png";
+        newButtonImageName = @"103-mapWhite";
     }
     
     [UIView beginAnimations:@"View Flip" context:nil];
@@ -332,6 +348,7 @@
     [going.view removeFromSuperview];
     [going removeFromParentViewController];
     
+    coming.view.frame = going.view.frame;
     [contentView addSubview:coming.view];
     [coming didMoveToParentViewController:self];
     
@@ -365,6 +382,7 @@
     trackingButton = nil;
     switchViewsBarButton = nil;
     settingsView = nil;
+    toolBarImageView = nil;
     [super viewDidUnload];
 }
 

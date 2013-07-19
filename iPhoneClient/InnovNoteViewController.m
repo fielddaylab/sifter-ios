@@ -64,8 +64,6 @@
     if (self)
     {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
     }
     return self;
 }
@@ -84,15 +82,6 @@
     noteView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     noteView.bounces = NO;
     [self.view addSubview:noteView];
-    
-    ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
-    ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
-    ARISMoviePlayer.moviePlayer.view.hidden    = YES;
-    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
-    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
-    ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
-    [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
-    [noteView addSubview:ARISMoviePlayer.view];
     
     imageView = [[AsyncMediaImageView alloc] init];
     imageView.frame = CGRectMake(IMAGE_X_MARGIN,
@@ -125,12 +114,9 @@
                                                              BUTTON_HEIGHT)];
     
     flagButton.backgroundColor = [UIColor blackColor];
-    [flagButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
-    [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-    [flagButton setTitle:@"F" forState:UIControlStateNormal];
-    [flagButton setTitle:@"F" forState:UIControlStateSelected];
-    [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
+    [flagButton setImage:[UIImage imageNamed:@"59-flag.png"] forState:UIControlStateNormal];
+    [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateSelected];
+    [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:flagButton];
     
@@ -142,9 +128,12 @@
     [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
+  /*  [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
     [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heart.png"] forState:UIControlStateNormal];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:likeButton];
     
@@ -153,8 +142,9 @@
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
-    [shareButton setTitle:@"S" forState:UIControlStateNormal];
-    [shareButton setTitle:@"S" forState:UIControlStateHighlighted];
+    [shareButton setImage:[UIImage imageNamed:@"ShareWhite.png"] forState:UIControlStateNormal];
+    [shareButton setImage:[UIImage imageNamed:@"Share.png"] forState:UIControlStateSelected];
+    [shareButton setImage:[UIImage imageNamed:@"Share.png"] forState:UIControlStateHighlighted];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:shareButton];
     
@@ -163,8 +153,9 @@
                                                                BUTTON_WIDTH,
                                                                BUTTON_HEIGHT)];
     commentButton.backgroundColor = [UIColor blackColor];
-    [commentButton setTitle:@"C" forState:UIControlStateNormal];
-    [commentButton setTitle:@"C" forState:UIControlStateHighlighted];
+    [commentButton setImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
+    [commentButton setImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateSelected];
+    [commentButton setImage:[UIImage imageNamed:@"08-chatt.png"] forState:UIControlStateHighlighted];
 	[commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:commentButton];
     
@@ -187,6 +178,20 @@
 {
     [super viewWillAppear: animated];
     
+    UIGraphicsBeginImageContext(CGSizeMake(1,1));
+    ARISMoviePlayer = [[ARISMoviePlayerViewController alloc] init];
+    ARISMoviePlayer.view.frame = CGRectMake(0, 0, 1, 1);
+    ARISMoviePlayer.moviePlayer.view.hidden    = YES;
+    ARISMoviePlayer.moviePlayer.shouldAutoplay = YES;
+    [ARISMoviePlayer.moviePlayer setFullscreen:NO];
+    ARISMoviePlayer.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    [ARISMoviePlayer.moviePlayer setControlStyle:MPMovieControlStyleNone];
+    [noteView addSubview:ARISMoviePlayer.view];
+    UIGraphicsEndImageContext();
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:)        name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:) name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];
+    
     if([AppModel sharedAppModel].playerId == self.note.creatorId)
         self.navigationItem.rightBarButtonItem = editButton;
     else
@@ -197,13 +202,22 @@
     else
         self.title = @"Note";
     
-    usernameLabel.text = note.username;
+    usernameLabel.text = ([note.displayname length] > 0) ? note.displayname : note.username;
     
     mode = kInnovAudioPlayerNoAudio;
     [self updatePlayButtonForCurrentMode];
     
     [self refreshViewFromModel];
     [[AppServices sharedAppServices] fetchNote:self.note.noteId];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];
+    ARISMoviePlayer = nil;
 }
 
 #pragma mark Refresh
@@ -214,6 +228,7 @@
     [self updateLikeButton];
     [flagButton setSelected:self.note.userFlagged];
     
+    [imageView setSpinnerColor:[UIColor blackColor]];
     [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
     
     if(note.audioMediaId)
@@ -253,14 +268,14 @@
 		case kInnovAudioPlayerNoAudio:
             break;
 		case kInnovAudioPlayerPlaying:
-            [ARISMoviePlayer.moviePlayer stop];
             mode = kInnovAudioPlayerAudio;
+            [ARISMoviePlayer.moviePlayer stop];
             [self updatePlayButtonForCurrentMode];
             break;
 			
 		case kInnovAudioPlayerAudio:
+            mode = kInnovAudioPlayerPlaying;
             [ARISMoviePlayer.moviePlayer play];
-			mode = kInnovAudioPlayerPlaying;
 			[self updatePlayButtonForCurrentMode];
             break;
 		default:
@@ -340,6 +355,9 @@
     socialContent.note = self.note;
     [socialContent refreshBadges];
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
+    CGRect newFrame = socialContent.frame;
+    newFrame.origin.y -= NAV_BAR_HEIGHT;
+    [popOver adjustContentFrame:newFrame];
     [self.view addSubview:popOver];
 }
 

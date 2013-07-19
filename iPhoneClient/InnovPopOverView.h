@@ -6,7 +6,20 @@
 //
 //
 
+#define NAV_BAR_HEIGHT 44
+
+@class InnovPopOverContentView;
+
+@protocol InnovPopOverViewDelegate <NSObject>
+@required
+- (void) popOverCancelled;
+@end
+
 @interface InnovPopOverView : UIView
 
-- (id)initWithFrame:(CGRect)frame andContentView: (UIView *) contentView;
+@property(nonatomic, weak) id<InnovPopOverViewDelegate> delegate;
+
+- (id)initWithFrame:(CGRect)frame andContentView: (InnovPopOverContentView *) inputContentView;
+- (void)adjustContentFrame:(CGRect)frame;
+
 @end

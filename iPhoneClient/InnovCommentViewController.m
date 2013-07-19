@@ -30,7 +30,7 @@
 #define COMMENT_BAR_Y_MARGIN        6
 #define COMMENT_BAR_BUTTON_WIDTH    58
 
-#define DEFAULT_MAX_VISIBLE_COMMENTS 7
+#define DEFAULT_MAX_VISIBLE_COMMENTS 5
 #define EXPAND_INDEX                 ((int)DEFAULT_MAX_VISIBLE_COMMENTS/2)
 #define EXPAND_TEXT                  @". . ."
 
@@ -84,6 +84,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
                                                                            addCommentBar.bounds.size.width - (2 * COMMENT_BAR_X_MARGIN)  - (COMMENT_BAR_BUTTON_WIDTH + COMMENT_BAR_X_MARGIN),
                                                                            COMMENT_BAR_HEIGHT-COMMENT_BAR_Y_MARGIN*2)];
     addCommentTextView.delegate            = self;
+    addCommentTextView.layer.masksToBounds = YES;
     addCommentTextView.layer.cornerRadius  = 9.0f;
     addCommentTextView.font                = DEFAULT_FONT;
     addCommentTextView.contentInset        = UIEdgeInsetsMake(-8,-4,-8,-4);
@@ -211,6 +212,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         commentNote.parentNoteId = self.note.noteId;
         commentNote.creatorId = [AppModel sharedAppModel].playerId;
         commentNote.username = [AppModel sharedAppModel].userName;
+        commentNote.displayname = [AppModel sharedAppModel].displayName;
 #warning probably unnecessary to do this second call
         [[AppServices sharedAppServices]updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:YES];
         

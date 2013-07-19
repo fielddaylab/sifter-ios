@@ -24,12 +24,12 @@
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
     self = [super initWithNibName:nibName bundle:nibBundle];
-    if (self) {
+    if (self)
+    {
         self.title = NSLocalizedString(@"SelfRegistrationTitleKey", @"");
 
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selfRegistrationFailure)  name:@"SelfRegistrationFailed" object:nil];  
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selfRegistrationSuccess)  name:@"SelfRegistrationSucceeded" object:nil];  
-    
 	}
 	
     return self;
@@ -39,7 +39,7 @@
 - (void)viewDidLoad {
 	userName.placeholder = NSLocalizedString(@"UsernameKey",@"");
 	password.placeholder = NSLocalizedString(@"PasswordKey",@"");
-	email.placeholder = NSLocalizedString(@"EmailKey",@"");
+	email.placeholder    = NSLocalizedString(@"EmailKey",@"");
 	[createAccountButton setTitle:NSLocalizedString(@"CreateAccountKey",@"") forState:UIControlStateNormal];
 	
 	[userName becomeFirstResponder];
@@ -79,38 +79,32 @@
 //	[[RootViewController sharedRootViewController] removeWaitingIndicator];
     
     [delegate attemptLoginWithUserName:[AppModel sharedAppModel].userName andPassword:[AppModel sharedAppModel].password andGameId:0 inMuseumMode:true];
-	[userName resignFirstResponder];
-	[password resignFirstResponder];
-	[email resignFirstResponder];
+	[self.view endEditing:YES];
 
-	
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 	
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	if (textField == userName) {
+	if (textField == userName)
 		[password becomeFirstResponder];
-	}	
-	if(textField == password) {
+	if(textField == password)
 		[email becomeFirstResponder];
-	}
-	if(textField == email) {
+	if(textField == email)
 		[self submitButtonTouched:self];
-	}
+    
     return YES;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview
-    // Release anything that's not essential, such as cached data
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
 }
 
 
-- (void)dealloc {
-    
+- (void)dealloc
+{    
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
 
 @end

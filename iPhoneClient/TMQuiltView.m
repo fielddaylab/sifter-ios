@@ -577,6 +577,4 @@ NSString *const kDefaultReusableIdentifier = @"kTMQuiltViewDefaultReusableIdenti
     
 }
 
-
-
 @end

@@ -10,6 +10,7 @@
 #import "InnovNoteModel.h"
 
 #import "Note.h"
+#import "Tag.h"
 #import "NoteContent.h"
 
 #import "TMQuiltView.h"
@@ -31,7 +32,6 @@ static NSString * const CELL_ID = @"Cell";
 @interface InnovListViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate>
 {
     TMQuiltView *quiltView;
-    
     NSArray *notes;
 }
 
@@ -46,6 +46,7 @@ static NSString * const CELL_ID = @"Cell";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteList:) name:@"NotesAvailableChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)    name:@"NoteModelUpdate:Notes" object:nil];
     return self;
 }
 
@@ -103,7 +104,8 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-    if(desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
+#warning count > 4 is patch fix
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height && [notes count] > 4)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];
@@ -116,6 +118,11 @@ static NSString * const CELL_ID = @"Cell";
 - (void) updateNoteList: (NSNotification *) notification
 {
     notes = (NSArray *)[notification.userInfo objectForKey:@"availableNotes"];
+    [quiltView reloadData];
+}
+
+- (void) refreshNotes
+{
     [quiltView reloadData];
 }
 
@@ -143,12 +150,21 @@ static NSString * const CELL_ID = @"Cell";
         cell.yMargin = CELL_Y_MARGIN;
         cell.photoView.frame = frame;
         cell.photoView.dontUseImage = YES;
+        cell.categoryIconView.frame = CGRectMake(cell.xMargin+cell.photoView.frame.size.width-ICON_WIDTH, cell.yMargin, ICON_WIDTH, ICON_HEIGHT);
     }
     
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
     [cell.photoView reset];
     [cell.photoView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
-    [cell.categoryIconView setImage:[UIImage imageNamed:@"newBanner.png"]];
+    
+    if([note.tags count] > 0)
+    {
+        int mediaId = ((Tag *)[note.tags  objectAtIndex:0]).mediaId;
+        if(mediaId != 0)
+            [cell.categoryIconView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+        else
+            [cell.categoryIconView setImage:[UIImage imageNamed:@"noteicon.png"]];
+    }
     
     return cell;
 }
@@ -175,9 +191,10 @@ static NSString * const CELL_ID = @"Cell";
     float totalContentHeight = aScrollView.contentSize.height;
     float bottomInset        = aScrollView.contentInset.bottom;
     
-    if(((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT)) && [notes count] > NOTES_PER_FETCH)
+    if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT))
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
+
 /*
  - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
  {

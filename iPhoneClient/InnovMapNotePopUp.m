@@ -84,7 +84,7 @@
 {
     hiding = NO;
     self.hidden = NO;
-    self.userInteractionEnabled = NO;
+    self.userInteractionEnabled = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NotesAvailableChanged" object:nil];
     
     [self refreshViewFromModel];
@@ -118,8 +118,8 @@
 -(void)animationDidStop:(NSString *)animationID finished:(BOOL)finished context:(void *)context{
     if(finished)
     {
-        if ([animationID isEqualToString:@"animationExpandNote"] && !hiding) self.userInteractionEnabled=YES;
-        else if ([animationID isEqualToString:@"animationShrinkNote"] && hiding)
+        //if ([animationID isEqualToString:@"animationExpandNote"] && !hiding) self.userInteractionEnabled=YES;
+        if ([animationID isEqualToString:@"animationShrinkNote"] && hiding)
         {
             self.hidden = YES;
             [self removeFromSuperview];

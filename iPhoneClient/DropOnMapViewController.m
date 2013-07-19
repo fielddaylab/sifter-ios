@@ -7,216 +7,83 @@
 //
 
 #import "DropOnMapViewController.h"
+
+#import "AppServices.h"
 #import "ARISAppDelegate.h"
-#import "AnnotationView.h"
 #import "DDAnnotation.h"
 #import "DDAnnotationView.h"
-#import "AppServices.h"
+#import "AnnotationView.h"
 
-static float INITIAL_SPAN = 0.001;
+#define INITIAL_SPAN 0.001
+
+@interface DropOnMapViewController()
+{
+    __weak IBOutlet MKMapView *mapView;
+}
+@end
 
 @implementation DropOnMapViewController
-@synthesize mapView,mapTypeButton,locations,tracking,toolBar,noteId,myAnnotation,delegate,pickupButton,note;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+@synthesize locationMoved, currentCoordinate;
+
+- (id)initWithCoordinate: (CLLocationCoordinate2D) initialCoordinate
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super init];
     if (self)
-    {
-        // Custom initialization
-        self.title = NSLocalizedString(@"DropOnMapTitleKey", @"");
-        self.hidesBottomBarWhenPushed = YES;
-        tracking = YES;
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"PlayerMoved" object:nil];
-    }
+        currentCoordinate = initialCoordinate;
     return self;
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+-(void)showAnnotation
 {
-    [super viewDidLoad];
-	
-	NSLog(@"Begin Loading DropOnMap View");
-	mapView.showsUserLocation = YES;
-	[mapView setDelegate:self];
-	[self.view addSubview:mapView];
-	NSLog(@"DropOnMapViewController: Mapview inited and added to view");
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"DoneKey", @"")
-                                                                   style: UIBarButtonItemStyleDone
-                                                                  target:self 
-                                                                  action:@selector(backButtonTouchAction:)];
-    self.navigationItem.leftBarButtonItem = doneButton;
-
-	DDAnnotation *annotation;
-    note = [[AppModel sharedAppModel] noteForNoteId:self.noteId playerListYesGameListNo:YES];
-    if(note.latitude == 0 && note.longitude == 0)
-        annotation= [[DDAnnotation alloc] initWithCoordinate:[AppModel sharedAppModel].playerLocation.coordinate addressDictionary:nil];
-    else
-    {
-        CLLocationCoordinate2D coord;
-        coord.latitude  = note.latitude;
-        coord.longitude = note.longitude;
-        annotation= [[DDAnnotation alloc] initWithCoordinate:coord addressDictionary:nil];
-    }
-	annotation.title = @"Drag to Move Note";
-	annotation.subtitle = [NSString	stringWithFormat:@"%f %f", annotation.coordinate.latitude, annotation.coordinate.longitude];
-	self.myAnnotation = annotation;
-	[self.mapView addAnnotation:annotation];	
-
-    //Setup the buttons
-	mapTypeButton.target = self; 
-	mapTypeButton.action = @selector(changeMapType:);
-	
-    pickupButton.target = self; 
-	pickupButton.action = @selector(pickupButtonAction:);
-}
-
--(void)viewDidAppear:(BOOL)animated
-{    
-    if ([AppModel sharedAppModel].playerId == 0 || [AppModel sharedAppModel].currentGame.gameId==0)
-    {
-        NSLog(@"DropOnMapViewController: Player is not logged in, don't refresh");
-        return;
-    }
-    	
-	[self refresh];		
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	if (refreshTimer)
-    {
-		[refreshTimer invalidate];
-		refreshTimer = nil;
-	}
-}
-
-- (void)refresh
-{
-    if(mapView && tracking) [self zoomAndCenterMap];
+    DDAnnotation *annotation = [[DDAnnotation alloc] initWithCoordinate:currentCoordinate addressDictionary:nil];
+	annotation.title    = @"Drag to Move Note";
+	annotation.subtitle = [NSString stringWithFormat:@"%f %f", annotation.coordinate.latitude, annotation.coordinate.longitude];
+	[mapView addAnnotation:annotation];
+    
+    [self zoomAndCenterMap];
 }
 
 -(void) zoomAndCenterMap
 {
-	appSetNextRegionChange = YES;
-	
 	MKCoordinateRegion region = mapView.region;
-	region.center = [AppModel sharedAppModel].playerLocation.coordinate;
+	region.center = currentCoordinate;
 	region.span = MKCoordinateSpanMake(INITIAL_SPAN, INITIAL_SPAN);
     
-	[mapView setRegion:region animated:YES];
-}
-
-- (IBAction)changeMapType:(id)sender
-{
-	ARISAppDelegate* appDelegate = (ARISAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[appDelegate playAudioAlert:@"ticktick" shouldVibrate:NO];
-	
-	switch (mapView.mapType)
-    {
-		case MKMapTypeStandard:
-			mapView.mapType=MKMapTypeSatellite;
-			break;
-		case MKMapTypeSatellite:
-			mapView.mapType=MKMapTypeHybrid;
-			break;
-		case MKMapTypeHybrid:
-			mapView.mapType=MKMapTypeStandard;
-			break;
-	}
-}
-
--(void)pickupButtonAction:(id)sender
-{
-    [[self.delegate note] setDropped:NO];
-        
-    [note setDropped:NO];
-    note.latitude = 0;
-    note.longitude = 0;
-    [[AppServices sharedAppServices]deleteNoteLocationWithNoteId:self.noteId];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
--(void)backButtonTouchAction:(id)sender{
-    [[AppServices sharedAppServices] dropNote:self.noteId atCoordinate:self.myAnnotation.coordinate];
-        [note setDropped:YES];
-    note.latitude = myAnnotation.coordinate.latitude;
-    note.longitude = myAnnotation.coordinate.longitude;
-    [[self.delegate note] setDropped:YES];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
--(BOOL)shouldAutorotate{
-    return YES;
-}
-
--(NSInteger)supportedInterfaceOrientations{
-    NSInteger mask = 0;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
-        mask |= UIInterfaceOrientationMaskLandscapeLeft;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
-        mask |= UIInterfaceOrientationMaskLandscapeRight;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
-        mask |= UIInterfaceOrientationMaskPortrait;
-    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
-        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
-    return mask;
+	[mapView setRegion:region animated:NO];
 }
 
 #pragma mark MKMapViewDelegate
 
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
-	//User must have moved the map. Turn off Tracking
-	NSLog(@"GPSVC: regionDidChange delegate metohd fired");
-    
-	if (!appSetNextRegionChange) {
-		NSLog(@"GPSVC: regionDidChange without appSetNextRegionChange, it must have been the user");
-		tracking = NO;
-	}
-	appSetNextRegionChange = NO;
-}
-
-/*- (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view {
-	Location *location = ((Annotation*)view.annotation).location;
-    if(view.annotation == aMapView.userLocation) return;
-	NSLog(@"GPSViewController: didSelectAnnotationView for location: %@",location.name);
-}*/
-
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
-	
-	if (oldState == MKAnnotationViewDragStateDragging) {
+- (void)mapView:(MKMapView *)aMapView annotationView:(MKAnnotationView *)annotationView didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState
+{
+	if (oldState == MKAnnotationViewDragStateDragging)
+    {
 		DDAnnotation *annotation = (DDAnnotation *)annotationView.annotation;
-		annotation.subtitle = [NSString	stringWithFormat:@"%f %f", annotation.coordinate.latitude, annotation.coordinate.longitude];		
+		annotation.subtitle = [NSString	stringWithFormat:@"%f %f", annotation.coordinate.latitude, annotation.coordinate.longitude];
+        currentCoordinate = CLLocationCoordinate2DMake(annotation.coordinate.latitude, annotation.coordinate.longitude);
+        locationMoved = YES;
 	}
 }
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
-{	
-    if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
+- (MKAnnotationView *)mapView:(MKMapView *)aMapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[MKUserLocation class]])
+        return nil;
 	
 	static NSString * const kPinAnnotationIdentifier = @"PinIdentifier";
-	MKAnnotationView *draggablePinView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:kPinAnnotationIdentifier];
+	MKAnnotationView *draggablePinView = [aMapView dequeueReusableAnnotationViewWithIdentifier:kPinAnnotationIdentifier];
 	
 	if (draggablePinView)
 		draggablePinView.annotation = annotation;
     else
-		draggablePinView = [DDAnnotationView annotationViewWithAnnotation:annotation reuseIdentifier:kPinAnnotationIdentifier mapView:self.mapView];
-
+		draggablePinView = [DDAnnotationView annotationViewWithAnnotation:annotation reuseIdentifier:kPinAnnotationIdentifier mapView:aMapView];
+    
 	return draggablePinView;
 }
+
 - (void)mapView:(MKMapView *)mv didAddAnnotationViews:(NSArray *)views
 {
 	MKAnnotationView *annotationView = [views objectAtIndex:0];

@@ -8,7 +8,17 @@
 
 #import "ARISAppDelegate.h"
 
+#import "AppModel.h"
+#import "AppServices.h"
+#import "InnovNoteModel.h"
 #import "InnovViewController.h"
+
+@interface ARISAppDelegate()
+{
+    InnovViewController *innov;
+}
+
+@end
 
 @implementation ARISAppDelegate
 
@@ -34,7 +44,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSLog(@"Call Stack: %@", exception.callStackSymbols);
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
@@ -78,8 +88,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     //Init keys in UserDefaults in case the user has not visited the ARIS Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
 	[[AppModel sharedAppModel] initUserDefaults];
-
-    InnovViewController *innov = [[InnovViewController alloc] init];
+    
+    innov = [[InnovViewController alloc] init];
+    
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
     if([window respondsToSelector:@selector(setRootViewController:)])
         [window setRootViewController:nav];
@@ -87,12 +98,20 @@ void uncaughtExceptionHandler(NSException *exception) {
         [window addSubview:nav.view];
     
     [Crittercism enableWithAppID: @"5101a46d59e1bd498c000002"];
+    
+    NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if([localNotifOptions objectForKey:@"noteId"])
+        [innov animateInNote: [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]]];
+    
+    return YES;
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
+    BOOL facebook = [simpleFacebookShare handleOpenURL:url];
+    
     if (!url)
-        return NO;
+        return facebook;
     
     NSString *strPath = [[url host] lowercaseString];
     if ([strPath isEqualToString:@"games"] || [strPath isEqualToString:@"game"])
@@ -101,7 +120,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[AppServices sharedAppServices] fetchOneGameGameList:[gameID intValue]];
     }
     return YES;
-    //return [simpleFacebookShare handleOpenURL:url];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
@@ -113,21 +131,50 @@ void uncaughtExceptionHandler(NSException *exception) {
 	NSLog(@"ARIS: Application Became Active");
 	[[AppModel sharedAppModel]       loadUserDefaults];
     [[AppServices sharedAppServices] resetCurrentlyFetchingVars];
-
+    
     if([AppModel sharedAppModel].fallbackGameId != 0 && ![AppModel sharedAppModel].currentGame)
         [[AppServices sharedAppServices] fetchOneGameGameList:[AppModel sharedAppModel].fallbackGameId];
-        
+    
     [[[AppModel sharedAppModel]uploadManager] checkForFailedContent];
     
     [[InnovNoteModel sharedNoteModel] clearAllData];
+    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
     
     [simpleFacebookShare handleDidBecomeActive];
+    [[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    if (application.applicationState == UIApplicationStateInactive )
+    {
+        [innov.navigationController popToRootViewControllerAnimated:YES];
+        
+        NSDictionary *localNotifOptions = notification.userInfo;
+        if([localNotifOptions objectForKey:@"noteId"])
+        {
+            Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+            if(note)
+            {
+                [innov animateInNote: note];
+                [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
+            }
+        }
+        //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
+        //If the visible view controller in your view controller stack isn't the one you need then show the right one.
+    }
+    
+    if(application.applicationState == UIApplicationStateActive )
+    {
+        //The application received a notification in the active state, so you can display an alert view or do something appropriate.
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
 	NSLog(@"ARIS: Resigning Active Application");
 	[[AppModel sharedAppModel] saveUserDefaults];
+    [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 }
 
 -(void) applicationWillTerminate:(UIApplication *)application
@@ -143,14 +190,14 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void) playAudioAlert:(NSString*)wavFileName shouldVibrate:(BOOL)shouldVibrate
 {
-	if (shouldVibrate == YES) [NSThread detachNewThreadSelector:@selector(vibrate) toTarget:self withObject:nil];	
+	if (shouldVibrate == YES) [NSThread detachNewThreadSelector:@selector(vibrate) toTarget:self withObject:nil];
 	[NSThread detachNewThreadSelector:@selector(playAudio:) toTarget:self withObject:wavFileName];
 }
 
 - (void)playAudio:(NSString*)wavFileName
 {
 	NSURL* url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:wavFileName ofType:@"wav"]];
-
+    
     [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategorySoloAmbient error: nil];
     [[AVAudioSession sharedInstance] setActive: YES error: nil];
     
@@ -174,7 +221,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)vibrate
 {
-	AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);  
+	AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
 #pragma mark Memory Management

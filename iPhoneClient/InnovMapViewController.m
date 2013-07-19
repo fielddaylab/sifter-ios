@@ -9,10 +9,13 @@
 #import "InnovMapViewController.h"
 #import <MapKit/MapKit.h>
 
+#import "AppModel.h"
+#import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
 #import "Note.h"
 #import "Tag.h"
+#import "WildcardGestureRecognizer.h"
 
 #import "Annotation.h"
 #import "AnnotationView.h"
@@ -29,8 +32,6 @@
 #define MADISON_LAT     43.07
 #define MADISON_LONG    -89.40
 #define MAX_DISTANCE    20000
-
-#define MAX_NOTES_COUNT    50
 
 @interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
 
@@ -62,6 +63,7 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAnnotationsForNotes:) name:@"NewlyUnavailableNotesAvailable"           object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)               name:@"NoteModelUpdate:Notes"                    object:nil];
     }
     return self;
 }
@@ -79,6 +81,19 @@
     notePopUp.hidden   = YES;
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
+    
+    NSString *reqSysVer = @"6.0";
+    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+    if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedDescending)
+    {        
+        WildcardGestureRecognizer * tapInterceptor = [[WildcardGestureRecognizer alloc] init];
+        __weak InnovMapViewController *weakSelf = self;
+        tapInterceptor.touchesBeganCallback = ^(NSSet * touches, UIEvent * event) {
+            [weakSelf touchesBegan:nil withEvent:nil];
+            [[weakSelf.navigationController.viewControllers objectAtIndex:0] touchesBegan:nil withEvent:nil];
+        };
+        [mapView addGestureRecognizer:tapInterceptor];
+    } 
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -137,7 +152,7 @@
     CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
     isLocal = (distance <= MAX_DISTANCE);
     [mapView setShowsUserLocation:isLocal];
-    if (mapView && (tracking || !isLocal)) [self zoomAndCenterMapAnimated:YES];
+    if (mapView && (tracking || !isLocal) && notePopUp.hidden) [self zoomAndCenterMapAnimated:YES];
 }
 
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
@@ -160,18 +175,38 @@
 
 #pragma mark update from model
 
+- (void) refreshNotes
+{
+    for(Annotation *annotation in mapView.annotations)
+    {
+        if((id <MKAnnotation>)annotation == mapView.userLocation || !([annotation respondsToSelector:@selector(title)]))
+            continue;
+        Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:annotation.note.noteId];
+        CLLocationCoordinate2D oldCoord = annotation.coordinate;
+        annotation.coordinate = CLLocationCoordinate2DMake(note.latitude, note.longitude);
+        annotation.title = note.text;
+        annotation.kind = NearbyObjectNote;
+        annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
+        if(oldCoord.latitude != annotation.coordinate.latitude || oldCoord.longitude != annotation.coordinate.longitude)
+        {
+            [mapView removeAnnotation:annotation];
+            [mapView addAnnotation:annotation];
+        }
+    }
+}
+
 - (void) addAnnotationsForNotes:(NSNotification *)notification
 {
     for(Note *note in unshownNotesQueue)
     {
-        if(shownNotesCount < MAX_NOTES_COUNT)
+        if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
             annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
-            annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+            annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
 #warning this needs to be implemented in AnnotationView.m
             
             [mapView addAnnotation:annotation];
@@ -184,14 +219,14 @@
     
     for(Note *note in newNotes)
     {
-        if(shownNotesCount < MAX_NOTES_COUNT)
+        if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
             annotation.note = note;
             annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
-            annotation.iconMediaId = -((Tag *)[note.tags objectAtIndex:0]).tagId;
+            annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
 #warning this needs to be implemented in AnnotationView.m
             
             ++shownNotesCount;

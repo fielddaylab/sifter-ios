@@ -19,12 +19,15 @@
 
 #import "TMQuiltViewCell.h"
 
+#define ICON_WIDTH  35
+#define ICON_HEIGHT 35
+
 @class AsyncMediaImageView;
 
 @interface TMPhotoQuiltViewCell : TMQuiltViewCell
 
 @property (nonatomic, retain) AsyncMediaImageView *photoView;
-@property (nonatomic, retain) UIImageView         *categoryIconView;
+@property (nonatomic, retain) AsyncMediaImageView *categoryIconView;
 @property (nonatomic)         CGFloat xMargin;
 @property (nonatomic)         CGFloat yMargin;
 

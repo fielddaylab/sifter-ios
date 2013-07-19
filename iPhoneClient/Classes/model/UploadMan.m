@@ -7,6 +7,8 @@
 //
 
 #import "UploadMan.h"
+
+#import "AppModel.h"
 #import "AppServices.h"
 #import "Reachability.h"
 

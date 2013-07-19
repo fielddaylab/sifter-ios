@@ -24,13 +24,14 @@ extern NSString *const kARISServerServicePackage;
 
 //Player
 - (void)login;
+- (void)loginWithFacebookEmail:(NSString *) email displayName:(NSString *) displayName andId:(NSString *) idString;
 - (void)registerNewUser:(NSString*)userName
                password:(NSString*)pass
 			  firstName:(NSString*)firstName
                lastName:(NSString*)lastName
                   email:(NSString*)email;
-- (void)createUserAndLoginWithGroup:(NSString *)groupName;
 - (void)uploadPlayerPicMediaWithFileURL:(NSURL *)fileURL;
+- (void)setPlayerPicToUrl:(NSString *) urlString;
 - (void)updatePlayer:(int)playerId withName:(NSString *)name andImage:(int)mid;
 - (void)resetAndEmailNewPassword:(NSString *)email;
 - (void)fetchOneGameGameList:(int)gameId;
@@ -43,7 +44,8 @@ extern NSString *const kARISServerServicePackage;
 - (void)fetchMedia:(int)mediaId;
 - (void)fetchNote:(int)noteId;
 
-- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFrom: (int) lastLocation ;
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date;
+- (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesStartingFromLocation: (int) lastLocation andDate: (NSString *) date;
 
 //Note Stuff
 - (int)createNote;

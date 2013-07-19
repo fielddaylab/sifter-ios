@@ -7,7 +7,6 @@
 //
 
 #import "Tag.h"
-
 @implementation Tag
-@synthesize tagName,playerCreated,tagId;
+@synthesize tagName,playerCreated,tagId, mediaId;
 @end

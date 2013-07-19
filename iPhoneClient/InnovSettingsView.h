@@ -10,6 +10,7 @@
 
 @protocol InnovSettingsViewDelegate <NSObject>
 @required
+- (void) showNotifications;
 - (void) showAbout;
 - (void) presentLogIn;
 @end
