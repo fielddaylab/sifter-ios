@@ -50,12 +50,9 @@
         
         flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(deleteButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [flagButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
-        [flagButton setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
-        [flagButton setTitle:@"F" forState:UIControlStateNormal];
-        [flagButton setTitle:@"F" forState:UIControlStateSelected];
-        [flagButton setTitle:@"F" forState:UIControlStateHighlighted];
+        [flagButton setImage:[UIImage imageNamed:@"59-flag.png"] forState:UIControlStateNormal];
+        [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateSelected];
+        [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateHighlighted];
         [self addSubview:flagButton];
         
         likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
@@ -63,9 +60,12 @@
         [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
+    /*    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heart.png"] forState:UIControlStateNormal];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
         [self addSubview:likeButton];
         
         textView = [[UITextView alloc] initWithFrame:CGRectMake(0, BUTTON_HEIGHT, self.frame.size.width, self.frame.size.height-BUTTON_HEIGHT)];
