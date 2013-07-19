@@ -335,7 +335,7 @@
         coming = listVC;
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
-        newButtonImageName = @"mapModeIcon.png";
+        newButtonImageName = @"103-mapWhite";
     }
     
     [UIView beginAnimations:@"View Flip" context:nil];

@@ -71,6 +71,8 @@
 		4AD5C41514E0704F00081B20 /* UploadMan.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD5C41414E0704F00081B20 /* UploadMan.m */; };
 		4ADE919C13CB7CB80009F4AF /* UIImage+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */; };
 		4ADE919F13CB84B80009F4AF /* UIDevice+Hardware.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */; };
+		719661691799A15C00605767 /* 103-mapWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 719661671799A15C00605767 /* 103-mapWhite.png */; };
+		7196616A1799A15C00605767 /* 103-mapWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 719661681799A15C00605767 /* 103-mapWhite@2x.png */; };
 		71FE1CDE1798952B00EB5A04 /* YOIToolbar1.png in Resources */ = {isa = PBXBuildFile; fileRef = 71FE1CDD1798952B00EB5A04 /* YOIToolbar1.png */; };
 		8902C52117874A580071373E /* InnovPopOverNotifContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8902C52017874A580071373E /* InnovPopOverNotifContentView.m */; };
 		8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8902C52217874A750071373E /* InnovPopOverNotifContentView.xib */; };
@@ -341,6 +343,8 @@
 		4ADE919B13CB7CB80009F4AF /* UIImage+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Scale.m"; sourceTree = "<group>"; };
 		4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+Hardware.h"; sourceTree = "<group>"; };
 		4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+Hardware.m"; sourceTree = "<group>"; };
+		719661671799A15C00605767 /* 103-mapWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "103-mapWhite.png"; sourceTree = "<group>"; };
+		719661681799A15C00605767 /* 103-mapWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "103-mapWhite@2x.png"; sourceTree = "<group>"; };
 		71FE1CDD1798952B00EB5A04 /* YOIToolbar1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = YOIToolbar1.png; sourceTree = "<group>"; };
 		8902C51F17874A580071373E /* InnovPopOverNotifContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverNotifContentView.h; sourceTree = "<group>"; };
 		8902C52017874A580071373E /* InnovPopOverNotifContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverNotifContentView.m; sourceTree = "<group>"; };
@@ -914,6 +918,8 @@
 		AB1EF609175FDE180073DBF4 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				719661671799A15C00605767 /* 103-mapWhite.png */,
+				719661681799A15C00605767 /* 103-mapWhite@2x.png */,
 				71FE1CDD1798952B00EB5A04 /* YOIToolbar1.png */,
 				DB01B1021774E6B1005E1784 /* cropBox.png */,
 				AB39C81F117E4009007AD31F /* microphone.png */,
@@ -1460,6 +1466,8 @@
 				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
 				89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */,
 				71FE1CDE1798952B00EB5A04 /* YOIToolbar1.png in Resources */,
+				719661691799A15C00605767 /* 103-mapWhite.png in Resources */,
+				7196616A1799A15C00605767 /* 103-mapWhite@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
