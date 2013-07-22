@@ -21,7 +21,7 @@
 
 #define SERVER                       @"http://arisgames.org/server"  //dev.
 #define HOME_URL                     @"www.arisgames.org/yoi"
-#define GAME_ID                      10690            // 3437 on dev     
+#define GAME_ID                      10690            // 3437 on dev      10690 on prod
 
 @interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {

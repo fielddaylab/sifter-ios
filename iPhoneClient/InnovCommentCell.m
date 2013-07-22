@@ -63,7 +63,7 @@
     /*    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateNormal];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartNBorderBlack.png"] forState:UIControlStateNormal];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
         [self addSubview:likeButton];
