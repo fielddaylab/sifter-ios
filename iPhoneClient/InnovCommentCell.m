@@ -57,7 +57,7 @@
         
         likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
     /*    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
