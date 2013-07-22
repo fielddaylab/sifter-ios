@@ -19,9 +19,9 @@
 #import "SimpleTwitterShare.h"
 #import "SimpleFacebookShare.h"
 
-#define SERVER                       @"http://arisgames.org/server"
+#define SERVER                       @"http://arisgames.org/server"  //dev.
 #define HOME_URL                     @"www.arisgames.org/yoi"
-#define GAME_ID                      10690                  
+#define GAME_ID                      10690            // 3437 on dev     
 
 @interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {
