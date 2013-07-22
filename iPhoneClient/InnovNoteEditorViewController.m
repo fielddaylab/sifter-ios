@@ -71,8 +71,8 @@ static NSString *TagCellIdentifier         = @"TagCell";
 static NSString *DropOnMapCellIdentifier   = @"DropOnMapCell";
 static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
-@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate> {
-    
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate>
+{
     UIBarButtonItem *cancelButton;
     
     Note *note;
@@ -274,8 +274,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [self cameraButtonTouchAction];
     }
     
-    dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
-    [self addChildViewController:dropOnMapVC];
+    if(!dropOnMapVC)
+    {
+        dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
+        [self addChildViewController:dropOnMapVC];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -423,7 +426,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
     
     if(newNote)
+    {
         [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
+        [[InnovNoteModel sharedNoteModel] clearAllNotesFetched];
+    }
     
     if(dropOnMapVC.locationMoved)
     {
@@ -977,7 +983,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
             else
                 [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
-          
+            
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
             return cell;

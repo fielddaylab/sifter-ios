@@ -14,7 +14,7 @@
  NSString *const kNoteContentTypeAudio = @"AUDIO";
  NSString *const kNoteContentTypeVideo = @"VIDEO";
  NSString *const kNoteContentTypePhoto = @"PHOTO";
- NSString *const kNoteContentTypeText = @"TEXT";
+ NSString *const kNoteContentTypeText  = @"TEXT";
 
 @implementation Note
 @synthesize comments,contents, creatorId,noteId,parentNoteId,parentRating,shared,kind,numRatings,delegate,dropped,showOnMap,showOnList,userLiked,tags,latitude,longitude, username, displayname, userFlagged, facebookShareCount, twitterShareCount, pinterestShareCount, emailShareCount, text, audioMediaId, imageMediaId, title, created;

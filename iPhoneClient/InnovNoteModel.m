@@ -31,7 +31,7 @@
     NSMutableArray *searchTerms;
     
     BOOL unprocessedNotifs;
-    BOOL clearOnNotesReceived;
+    BOOL clearBeforeFetching;
     
     ContentSelector selectedContent;
 }
@@ -90,6 +90,7 @@
 
 -(void) logInSucceeded
 {
+    [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:NO] atIndexedSubscript:kMine];
     [self fetchMoreNotesOfType:kMine];
 }
 
@@ -211,6 +212,13 @@
     }
     else
     {
+        if(clearBeforeFetching)
+        {
+            [self clearAllData];
+            unprocessedNotifs = YES;
+            clearBeforeFetching = NO;
+        }
+        
         if((specifiedContent != kMine || [AppModel sharedAppModel].playerId != 0) && ![[allNotesFetchedInCategory objectAtIndex:specifiedContent] boolValue])
         {
             int currentNoteCount = [[arrayOfArraysByType objectAtIndex:specifiedContent] count];
@@ -232,9 +240,6 @@
 
 -(void) newNotesReceived:(NSNotification *)notification
 {
-    if(clearOnNotesReceived)
-        [self clearAllData];
-    
     NSDictionary *newNotes = [notification.userInfo objectForKey:@"notes"];
     [allNotes addEntriesFromDictionary:newNotes];
     ContentSelector updatedNotes = [[notification.userInfo objectForKey:@"ContentSelector"] intValue];
@@ -246,10 +251,8 @@
             [selectedArray addObject:object];
     }
     
-    if(unprocessedNotifs || clearOnNotesReceived)
+    if(unprocessedNotifs)
         [self setUpNotifications];
-    
-    clearOnNotesReceived = NO;
     
     if([[newNotes allKeys] count] < NOTES_PER_FETCH)
         [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:YES] atIndexedSubscript:updatedNotes];
@@ -468,7 +471,7 @@
     for(Tag *currentTag in selectedTags)
         if(currentTag.tagId == addTag.tagId) return;
     
-    clearOnNotesReceived = YES;
+    clearBeforeFetching = YES;
     [selectedTags addObject: addTag];
     [self sendSelectedTagsUpdateNotification];
     [self updateAvailableNotes];
@@ -483,7 +486,7 @@
             Tag *tag = [selectedTags objectAtIndex:i];
             if(tag.tagId == removeTag.tagId)
             {
-                clearOnNotesReceived = YES;
+                clearBeforeFetching = YES;
                 [selectedTags removeObject: tag];
                 [self sendSelectedTagsUpdateNotification];
                 [self clearAllNotesFetched];
@@ -500,7 +503,7 @@
 {
     if([term length] > 0 && ![searchTerms containsObject:term])
     {
-        clearOnNotesReceived = YES;
+        clearBeforeFetching = YES;
         [searchTerms addObject: term];
         [self updateAvailableNotes];
     }
@@ -512,7 +515,7 @@
     {
         if([term isEqualToString:currentTerm])
         {
-            clearOnNotesReceived = YES;
+            clearBeforeFetching = YES;
             [searchTerms removeObject: currentTerm];
             [self clearAllNotesFetched];
             [self updateAvailableNotes];

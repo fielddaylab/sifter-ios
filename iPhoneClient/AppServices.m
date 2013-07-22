@@ -436,6 +436,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:[self validIntForKey:@"noteId"      inDictionary:result.userInfo]
                                                               andFileURL:[self validObjectForKey:@"localURL" inDictionary:result.userInfo]];
+    #warning above likely is just the cause of an error
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [self fetchNote:[self validIntForKey:@"noteId" inDictionary:result.userInfo]];
@@ -444,13 +445,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
 -(void) addContentToNoteWithText:(NSString *)text type:(NSString *) type mediaId:(int) mediaId andNoteId:(int)noteId andFileURL:(NSURL *)fileURL
 {
 	NSArray *arguments = [NSArray arrayWithObjects:
-						  [NSString stringWithFormat:@"%d",noteId],
+                          [NSString stringWithFormat:@"%d",noteId],
                           [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
                           [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-						  [NSString stringWithFormat:@"%d",mediaId],
+                          [NSString stringWithFormat:@"%d",mediaId],
                           type,
-						  text,
-						  nil];
+                          text,
+                          nil];
     
     NSMutableDictionary* userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", fileURL, @"localURL", nil];
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
@@ -550,7 +551,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     NSString *type = [self validObjectForKey:@"type" inDictionary:[uploader userInfo]];
     NSURL *localUrl = [self validObjectForKey:@"url" inDictionary:[uploader userInfo]];
     NSString *newFileName = [uploader responseString];
-
+    
     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:noteId andFileURL:localUrl];
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     
