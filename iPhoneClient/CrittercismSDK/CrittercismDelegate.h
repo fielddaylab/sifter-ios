@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 Crittercism. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
 @protocol CrittercismDelegate <NSObject>
 
 @optional
