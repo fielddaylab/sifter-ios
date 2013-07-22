@@ -1020,6 +1020,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
         tag.tagName       = [self validObjectForKey:@"tag"          inDictionary:tagOb];
         tag.playerCreated = [self validBoolForKey:@"player_created" inDictionary:tagOb];
         tag.tagId         = [self validIntForKey:@"tag_id"          inDictionary:tagOb];
+        tag.mediaId       = [self validIntForKey:@"media_id"        inDictionary:tagOb];
         [aNote.tags addObject:tag];
     }
     NSArray *comments = [self validObjectForKey:@"comments" inDictionary:noteDictionary];

@@ -93,6 +93,8 @@
 		8906DE591799C32500B2D7BF /* 59-flagN.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE4B1799C32500B2D7BF /* 59-flagN.png */; };
 		8906DE5A1799C32500B2D7BF /* 59-flag.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE4C1799C32500B2D7BF /* 59-flag.png */; };
 		8906DE5B1799C32500B2D7BF /* 08-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE4D1799C32500B2D7BF /* 08-chat.png */; };
+		8906DE5E179D86E800B2D7BF /* 29-heartNBorderBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE5C179D86E800B2D7BF /* 29-heartNBorderBlack@2x.png */; };
+		8906DE5F179D86E800B2D7BF /* 29-heartNBorderBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE5D179D86E800B2D7BF /* 29-heartNBorderBlack.png */; };
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
@@ -383,6 +385,8 @@
 		8906DE4B1799C32500B2D7BF /* 59-flagN.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "59-flagN.png"; sourceTree = "<group>"; };
 		8906DE4C1799C32500B2D7BF /* 59-flag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "59-flag.png"; sourceTree = "<group>"; };
 		8906DE4D1799C32500B2D7BF /* 08-chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat.png"; sourceTree = "<group>"; };
+		8906DE5C179D86E800B2D7BF /* 29-heartNBorderBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "29-heartNBorderBlack@2x.png"; sourceTree = "<group>"; };
+		8906DE5D179D86E800B2D7BF /* 29-heartNBorderBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "29-heartNBorderBlack.png"; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
 		891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverContentView.m; sourceTree = "<group>"; };
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
@@ -778,6 +782,8 @@
 				719661741799D63400605767 /* 59-flagBlack@2x.png */,
 				7196616B1799D12D00605767 /* 29-heart.png */,
 				7196616C1799D12D00605767 /* 29-heart@2x.png */,
+				8906DE5C179D86E800B2D7BF /* 29-heartNBorderBlack@2x.png */,
+				8906DE5D179D86E800B2D7BF /* 29-heartNBorderBlack.png */,
 				7196616D1799D12E00605767 /* 29-heartN.png */,
 				7196616E1799D12E00605767 /* 29-heartN@2x.png */,
 				8906DE401799C32500B2D7BF /* ShareWhite.png */,
@@ -1540,6 +1546,8 @@
 				719661721799D12E00605767 /* 29-heartN@2x.png in Resources */,
 				719661751799D63400605767 /* 59-flagBlack.png in Resources */,
 				719661761799D63400605767 /* 59-flagBlack@2x.png in Resources */,
+				8906DE5E179D86E800B2D7BF /* 29-heartNBorderBlack@2x.png in Resources */,
+				8906DE5F179D86E800B2D7BF /* 29-heartNBorderBlack.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -207,10 +207,8 @@
             annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
             annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
-#warning this needs to be implemented in AnnotationView.m
-            
-            [mapView addAnnotation:annotation];
             ++shownNotesCount;
+            [mapView addAnnotation:annotation];
         }
         else break;
     }
@@ -227,8 +225,6 @@
             annotation.title = note.text;
             annotation.kind = NearbyObjectNote;
             annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
-#warning this needs to be implemented in AnnotationView.m
-            
             ++shownNotesCount;
             [mapView addAnnotation:annotation];
         }
