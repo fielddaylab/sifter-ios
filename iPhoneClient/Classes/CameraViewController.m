@@ -44,7 +44,7 @@
     UIButton *libraryButton;
     UIImagePickerController *picker;
     
-    BOOL bringUpCamera;	
+    BOOL bringUpCamera;
 }
 
 @property(nonatomic) NSData *mediaData;
@@ -95,6 +95,14 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    //Fixes missing status bar when cancelling picture pick from library
+    if([UIApplication sharedApplication].statusBarHidden)
+    {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
+    }
     
     if(bringUpCamera){
         bringUpCamera = NO;
@@ -154,24 +162,25 @@
     
     [self.editView startSpinner];
     
-    UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
-    image = [self cropImage:image];
-    self.mediaData = UIImageJPEGRepresentation(image, 0.02);
-    
-    [self.editView updateImageView:self.mediaData];
-    
-    self.mediaData = [self dataWithEXIFUsingData:self.mediaData];
-    
-    NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
-    NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-    [mediaData writeToURL:imageURL atomically:YES];
-    
-    [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
-    
     __weak CameraViewController *selfForBlock = self;
-    if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
-    {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
+        UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
+        image = [self cropImage:image];
+        selfForBlock.mediaData = UIImageJPEGRepresentation(image, 0.02);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [selfForBlock.editView updateImageView:self.mediaData];
+        });
+        selfForBlock.mediaData = [selfForBlock dataWithEXIFUsingData:selfForBlock.mediaData];
+        
+        NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
+        NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
+        [selfForBlock.mediaData writeToURL:imageURL atomically:YES];
+        
+        [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:selfForBlock.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+        
+        if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
+        {
+            // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
             // If image not selected from camera roll
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
             [al writeImageDataToSavedPhotosAlbum:selfForBlock.mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
@@ -184,8 +193,9 @@
                   }
                   ];
              }];
-        });
-    }
+            
+        }
+    });
     
     [self.navigationController popViewControllerAnimated:YES];
 }
