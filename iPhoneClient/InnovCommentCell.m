@@ -50,7 +50,7 @@
         
         flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(deleteButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [flagButton setImage:[UIImage imageNamed:@"59-flag.png"] forState:UIControlStateNormal];
+        [flagButton setImage:[UIImage imageNamed:@"59-flagBlack.png"] forState:UIControlStateNormal];
         [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateSelected];
         [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateHighlighted];
         [self addSubview:flagButton];
@@ -63,7 +63,7 @@
     /*    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heart.png"] forState:UIControlStateNormal];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateNormal];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
         [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
         [self addSubview:likeButton];
