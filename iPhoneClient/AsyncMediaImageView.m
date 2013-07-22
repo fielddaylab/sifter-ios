@@ -155,11 +155,6 @@
     {
         spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         spinner.hidesWhenStopped = YES;
-#warning look into this
-        if(self.backgroundColor == [UIColor whiteColor])
-        {
-            spinner.color = [UIColor blackColor];
-        }
         [self addSubview:spinner];
     }
     

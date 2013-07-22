@@ -135,6 +135,5 @@
 - (void)clearGameLists;
 
 - (Media *)mediaForMediaId:(int)mId;
-- (Note *)noteForNoteId:(int)mId playerListYesGameListNo:(BOOL)playerorGame;
 
 @end

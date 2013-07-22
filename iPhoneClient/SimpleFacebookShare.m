@@ -227,9 +227,6 @@
                  
              }];
         }
-  //      else
-   //         [self _getUserNameWithCompletionHandlerOnActiveSession:completionHandler];
-#warning Else wasn't here before
     }
 }
 

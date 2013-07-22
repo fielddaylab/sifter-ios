@@ -111,6 +111,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     self.view.keyboardTriggerOffset = addCommentBar.bounds.size.height;
     
+    __weak InnovCommentViewController *weakSelf = self;
+    
     [self.view addKeyboardPanningWithActionHandler:^(CGRect keyboardFrameInView) {
         /*
          Try not to call "self" inside this block (retain cycle).
@@ -119,17 +121,21 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
          [self.view removeKeyboardControl];
          */
 #warning check if necessary now that is loaded and released with view visibile
-        if (self.isViewLoaded && self.view.window)
+        if (weakSelf.isViewLoaded && weakSelf.view.window)
         {
-            CGRect addCommentBarFrame = addCommentBar.frame;
-            addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
-            addCommentBar.frame = addCommentBarFrame;
-            
-            CGRect tableViewFrame = commentTableView.frame;
-            tableViewFrame.size.height = addCommentBarFrame.origin.y;
-            commentTableView.frame = tableViewFrame;
-            if([commentTableView numberOfRowsInSection:0] > 0)
-                [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            if(weakSelf != nil)
+            {
+                InnovCommentViewController *strongSelf = weakSelf;
+                CGRect addCommentBarFrame = strongSelf->addCommentBar.frame;
+                addCommentBarFrame.origin.y = keyboardFrameInView.origin.y - addCommentBarFrame.size.height;
+                strongSelf->addCommentBar.frame = addCommentBarFrame;
+                
+                CGRect tableViewFrame = strongSelf->commentTableView.frame;
+                tableViewFrame.size.height = addCommentBarFrame.origin.y;
+                strongSelf->commentTableView.frame = tableViewFrame;
+                if([strongSelf->commentTableView numberOfRowsInSection:0] > 0)
+                    [strongSelf->commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([strongSelf->commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            }
         }
     }];
     
@@ -161,7 +167,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 }
 
 - (BOOL )textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{    
+{
     if([[textView text] length] - range.length + text.length > MAX_COMMENT_LENGTH)
         return NO;
     

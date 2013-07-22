@@ -550,17 +550,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     NSString *type = [self validObjectForKey:@"type" inDictionary:[uploader userInfo]];
     NSURL *localUrl = [self validObjectForKey:@"url" inDictionary:[uploader userInfo]];
     NSString *newFileName = [uploader responseString];
-    
-    //TODO: Check that the response string is actually a new filename that was made on the server, not an error
-#warning Don't know use of this
-    /*
-     NoteContent *newContent = [[NoteContent alloc] init];
-     newContent.noteId = noteId;
-     newContent.title = @"Refreshing From Server...";
-     newContent.type = type;
-     newContent.contentId = 0;
-     
-     [[[[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:noteId]] contents] addObject:newContent]; */
+
     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:noteId andFileURL:localUrl];
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     
