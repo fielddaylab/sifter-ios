@@ -165,9 +165,9 @@
     UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
     image = [self cropImage:image];
     self.mediaData = UIImageJPEGRepresentation(image, 0.02);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.editView updateImageView:self.mediaData];
-    });
+    
+    [self.editView updateImageView:self.mediaData];
+    
     self.mediaData = [self dataWithEXIFUsingData:self.mediaData];
     
     NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
