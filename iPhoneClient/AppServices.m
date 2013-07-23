@@ -546,10 +546,10 @@ BOOL currentlyUpdatingServerWithMapViewed;
 - (void)noteContentUploadDidfinish:(ARISUploader*)uploader {
 	NSLog(@"Model: Upload Note Content Request Finished. Response: %@", [uploader responseString]);
 	
-    int noteId = [self validObjectForKey:@"noteId" inDictionary:[uploader userInfo]] ? [self validIntForKey:@"noteId" inDictionary:[uploader userInfo]] : 0;
-    NSString *title = [self validObjectForKey:@"title" inDictionary:[uploader userInfo]];
-    NSString *type = [self validObjectForKey:@"type" inDictionary:[uploader userInfo]];
-    NSURL *localUrl = [self validObjectForKey:@"url" inDictionary:[uploader userInfo]];
+    int noteId =        [self validObjectForKey:@"noteId" inDictionary:[uploader userInfo]] ? [self validIntForKey:@"noteId" inDictionary:[uploader userInfo]] : 0;
+    NSString *title =   [self validObjectForKey:@"title"  inDictionary:[uploader userInfo]];
+    NSString *type =    [self validObjectForKey:@"type"   inDictionary:[uploader userInfo]];
+    NSURL *localUrl =   [self validObjectForKey:@"url"    inDictionary:[uploader userInfo]];
     NSString *newFileName = [uploader responseString];
     
     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:noteId andFileURL:localUrl];
@@ -1040,22 +1040,12 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if(!shouldIgnoreResults){
         JSONResult *jsonResult = [userInfo objectForKey:@"JSON"];
         [userInfo removeObjectForKey:@"JSON"];
+        
         NSArray *noteListArray = (NSArray *)jsonResult.data;
-        NSLog(@"NSNotification: ReceivedNoteList");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
-        NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
+        [userInfo setObject:noteListArray   forKey:@"notesJSON"];
         
-        NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
-        NSDictionary *dict;
-        while ((dict = [enumerator nextObject])) {
-            Note *tmpNote = [self parseNoteFromDictionary:dict];
-            [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
-        }
-        
-        NSMutableDictionary *info  = [[NSMutableDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
-        [info addEntriesFromDictionary:userInfo];
         NSLog(@"NSNotification: NewNoteListReady");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:info]];
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:userInfo]];
     }
     isCurrentlyFetchingGameNoteList = NO;
 }

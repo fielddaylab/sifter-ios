@@ -435,10 +435,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
     
     if(newNote)
-    {
         [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
-        
-    }
     
     if(shareToFacebook)
     {

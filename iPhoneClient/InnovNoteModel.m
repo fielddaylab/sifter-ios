@@ -240,21 +240,26 @@
 
 -(void) newNotesReceived:(NSNotification *)notification
 {
-    NSDictionary *newNotes = [notification.userInfo objectForKey:@"notes"];
-    [allNotes addEntriesFromDictionary:newNotes];
+    NSArray * noteListArray = [notification.userInfo objectForKey:@"notesJSON"];
     ContentSelector updatedNotes = [[notification.userInfo objectForKey:@"ContentSelector"] intValue];
     NSMutableArray *selectedArray = [arrayOfArraysByType objectAtIndex:updatedNotes];
     
-    for(id object in [newNotes allKeys]) // [selectedArray addObjectsFromArray:[newNotes allKeys]]; replaced to prevent duplicates
+    NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
+    NSDictionary *dict;
+    while ((dict = [enumerator nextObject]))
     {
-        if(![selectedArray containsObject:object])
-            [selectedArray addObject:object];
+        Note *tmpNote = [[AppServices sharedAppServices] parseNoteFromDictionary:dict];
+        
+        [allNotes setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
+        
+        if(![selectedArray containsObject:[NSNumber numberWithInt:tmpNote.noteId]])
+            [selectedArray addObject:[NSNumber numberWithInt:tmpNote.noteId]];
     }
     
     if(unprocessedNotifs)
         [self setUpNotifications];
     
-    if([[newNotes allKeys] count] < NOTES_PER_FETCH)
+    if([noteListArray count] < NOTES_PER_FETCH)
         [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:YES] atIndexedSubscript:updatedNotes];
     
     if(updatedNotes == selectedContent)
