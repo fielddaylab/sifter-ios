@@ -27,7 +27,6 @@ typedef enum {
 
 +(InnovNoteModel *) sharedNoteModel;
 -(void) clearAllData;
--(void) clearAllNotesFetched;
 
 -(void) setUpNotificationsForTopNotes: (int) topNotes popularNotes: (int) popularNotes recentNotes: (int) recentNotes andMyRecentNotes: (int) myRecentNotes;
 

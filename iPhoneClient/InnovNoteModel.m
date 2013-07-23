@@ -108,7 +108,6 @@
     for(int i = 0; i < kNumContents; ++i)
         [[arrayOfArraysByType objectAtIndex:i] removeAllObjects];
     [self sendSelectedTagsUpdateNotification];
-    [searchTerms removeAllObjects];
     [allNotes addEntriesFromDictionary:notifNotes];
     [notifNotes removeAllObjects];
     [self clearAllNotesFetched];
@@ -231,6 +230,7 @@
                 for(Tag *tag in selectedTags)
                     [tagIds addObject:[NSString stringWithFormat:@"%d", tag.tagId]];
             }
+            
             [[AppServices sharedAppServices] fetch:NOTES_PER_FETCH more: specifiedContent NotesContainingSearchTerms: searchTerms withTagIds: tagIds StartingFromLocation: currentNoteCount andDate: date];
         }
     }
@@ -358,6 +358,8 @@
 -(void) addNote:(Note *) note
 {
     [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+    [[arrayOfArraysByType objectAtIndex:kRecent] insertObject:[NSNumber numberWithInt:note.noteId] atIndex:0];
+    [[arrayOfArraysByType objectAtIndex:kMine]   insertObject:[NSNumber numberWithInt:note.noteId] atIndex:0];
     if([self noteShouldBeAvailable:note])
         [availableNotes addObject:note];
 }

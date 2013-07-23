@@ -92,8 +92,8 @@ static NSString * const CELL_ID = @"Cell";
     }
     if(index == -1)
     {
-        index = [mutableNotes count];
-        [mutableNotes addObject:note];
+        index = 0;
+        [mutableNotes insertObject:note atIndex:index];
         notes = [mutableNotes copy];
         [quiltView reloadData];
     }
@@ -104,7 +104,7 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)// && [notes count] > 4)
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];

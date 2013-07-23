@@ -427,12 +427,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [self.note.tags addObject:tag];
     }
     
-    if(newNote)
-    {
-        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
-        [[InnovNoteModel sharedNoteModel] clearAllNotesFetched];
-    }
-    
     if(dropOnMapVC.locationMoved)
     {
         self.note.latitude = dropOnMapVC.currentCoordinate.latitude;
@@ -440,7 +434,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:dropOnMapVC.currentCoordinate];
     }
     
-    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    if(newNote)
+    {
+        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
+        
+    }
     
     if(shareToFacebook)
     {
@@ -459,6 +457,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
     }
     
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
     [self.delegate prepareToDisplayNote: self.note];
     
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
