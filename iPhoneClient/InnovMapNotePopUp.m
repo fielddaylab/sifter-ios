@@ -59,12 +59,11 @@
 - (void) refreshViewFromModel
 {
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-        
-#warning SHould be unnecessary. Made for new notes
-        if([note.contents count] > 0)
+        textLabel.text = note.text;
+
+        if(note.imageMediaId)
         {
             [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
-            textLabel.text = note.text;
         }
         else
         {

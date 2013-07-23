@@ -71,8 +71,8 @@ static NSString *TagCellIdentifier         = @"TagCell";
 static NSString *DropOnMapCellIdentifier   = @"DropOnMapCell";
 static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
-@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate> {
-    
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate>
+{
     UIBarButtonItem *cancelButton;
     
     Note *note;
@@ -247,6 +247,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     {
         self.note = [[Note alloc] init];
         self.note.text =  DEFAULT_TEXT;
+        self.note.showOnMap = YES;
+        self.note.showOnList = YES;
         self.note.creatorId   = [AppModel sharedAppModel].playerId;
 #warning Probably useless to put in user/display name
         self.note.username    = [AppModel sharedAppModel].userName;
@@ -274,8 +276,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [self cameraButtonTouchAction];
     }
     
-    dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
-    [self addChildViewController:dropOnMapVC];
+    if(!dropOnMapVC)
+    {
+        dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
+        [self addChildViewController:dropOnMapVC];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -380,19 +385,35 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
 }
 
-- (void)shareButtonPressed: (id) sender
+- (void) shareButtonPressed: (id) sender
 {
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
     else self.note.text = captionTextView.text;
     
     int textContentId = 0;
+    BOOL imageUploaded = NO;
     for(NSObject <NoteContentProtocol> *contentObject in note.contents)
     {
-        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString:kNoteContentTypeText])
+        if([contentObject isKindOfClass:[NoteContent class]])
         {
-            textContentId = [contentObject getContentId];
-            ((NoteContent *)contentObject).text = self.note.text;
+            if([[contentObject getType] isEqualToString:kNoteContentTypePhoto])
+            {
+                if(((NoteContent *)contentObject).mediaId != 0)
+                    imageUploaded = YES;
+            }
+            else if([[contentObject getType] isEqualToString:kNoteContentTypeText])
+            {
+                textContentId = [contentObject getContentId];
+                ((NoteContent *)contentObject).text = self.note.text;
+            }
         }
+    }
+    
+    if(!imageUploaded && shareToFacebook)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please Wait" message:@"Please Wait for the Photo to Upload Before Sharing to Facebook" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
+        return;
     }
     
     if(textContentId == 0)
@@ -405,7 +426,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     else
         [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
     
-    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:YES publicToList:YES];
+    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:@"YOI Note" publicToMap:YES publicToList:YES];
     
     if(mode == kInnovAudioRecorderRecording)
         [self recordButtonPressed:nil];
@@ -422,9 +443,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [self.note.tags addObject:tag];
     }
     
-    if(newNote)
-        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
-    
     if(dropOnMapVC.locationMoved)
     {
         self.note.latitude = dropOnMapVC.currentCoordinate.latitude;
@@ -432,7 +450,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [[AppServices sharedAppServices] dropNote:self.note.noteId atCoordinate:dropOnMapVC.currentCoordinate];
     }
     
-    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    if(newNote)
+        [[AppServices sharedAppServices] setNoteCompleteForNoteId:self.note.noteId];
     
     if(shareToFacebook)
     {
@@ -451,6 +470,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
     }
     
+    [[InnovNoteModel sharedNoteModel] updateNote:note];
     [self.delegate prepareToDisplayNote: self.note];
     
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
@@ -977,7 +997,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
             else
                 [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
-          
+            
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
             
             return cell;

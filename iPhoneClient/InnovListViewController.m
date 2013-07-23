@@ -33,6 +33,8 @@ static NSString * const CELL_ID = @"Cell";
 {
     TMQuiltView *quiltView;
     NSArray *notes;
+    
+    BOOL currentlyWaitingForMoreNotes;
 }
 
 @end
@@ -45,8 +47,10 @@ static NSString * const CELL_ID = @"Cell";
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
+    {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateNoteList:) name:@"NotesAvailableChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)    name:@"NoteModelUpdate:Notes" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNotes)    name:@"NoteModelUpdate:Notes" object:nil];
+    }
     return self;
 }
 
@@ -92,8 +96,8 @@ static NSString * const CELL_ID = @"Cell";
     }
     if(index == -1)
     {
-        index = [mutableNotes count];
-        [mutableNotes addObject:note];
+        index = 0;
+        [mutableNotes insertObject:note atIndex:index];
         notes = [mutableNotes copy];
         [quiltView reloadData];
     }
@@ -104,8 +108,7 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-#warning count > 4 is patch fix
-    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height && [notes count] > 4)
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];
@@ -117,12 +120,14 @@ static NSString * const CELL_ID = @"Cell";
 
 - (void) updateNoteList: (NSNotification *) notification
 {
+    currentlyWaitingForMoreNotes = NO;
     notes = (NSArray *)[notification.userInfo objectForKey:@"availableNotes"];
     [quiltView reloadData];
 }
 
 - (void) refreshNotes
 {
+    currentlyWaitingForMoreNotes = NO;
     [quiltView reloadData];
 }
 
@@ -133,8 +138,8 @@ static NSString * const CELL_ID = @"Cell";
     return [notes count];
 }
 
-- (TMQuiltViewCell *)quiltView:(TMQuiltView *)aQuiltView cellAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (TMQuiltViewCell *)quiltView:(TMQuiltView *)aQuiltView cellAtIndexPath:(NSIndexPath *)indexPath
+{
     TMPhotoQuiltViewCell *cell = (TMPhotoQuiltViewCell *)[aQuiltView dequeueReusableCellWithReuseIdentifier:CELL_ID];
     if (!cell)
     {
@@ -191,8 +196,11 @@ static NSString * const CELL_ID = @"Cell";
     float totalContentHeight = aScrollView.contentSize.height;
     float bottomInset        = aScrollView.contentInset.bottom;
     
-    if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT))
+    if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT) && !currentlyWaitingForMoreNotes)
+    {
+        currentlyWaitingForMoreNotes = YES;
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    }
 }
 
 /*

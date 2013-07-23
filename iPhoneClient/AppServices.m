@@ -436,6 +436,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:[self validIntForKey:@"noteId"      inDictionary:result.userInfo]
                                                               andFileURL:[self validObjectForKey:@"localURL" inDictionary:result.userInfo]];
+#warning above likely is just the cause of an error
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [self fetchNote:[self validIntForKey:@"noteId" inDictionary:result.userInfo]];
@@ -444,13 +445,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
 -(void) addContentToNoteWithText:(NSString *)text type:(NSString *) type mediaId:(int) mediaId andNoteId:(int)noteId andFileURL:(NSURL *)fileURL
 {
 	NSArray *arguments = [NSArray arrayWithObjects:
-						  [NSString stringWithFormat:@"%d",noteId],
+                          [NSString stringWithFormat:@"%d",noteId],
                           [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].currentGame.gameId],
                           [NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId],
-						  [NSString stringWithFormat:@"%d",mediaId],
+                          [NSString stringWithFormat:@"%d",mediaId],
                           type,
-						  text,
-						  nil];
+                          text,
+                          nil];
     
     NSMutableDictionary* userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", fileURL, @"localURL", nil];
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
@@ -523,12 +524,12 @@ BOOL currentlyUpdatingServerWithMapViewed;
 }
 
 -(void) uploadContentToNoteWithFileURL:(NSURL *)fileURL name:(NSString *)name noteId:(int) noteId type: (NSString *)type{
-    ARISUploader *uploader = [[ARISUploader alloc]initWithURLToUpload:fileURL gameSpecific:YES delegate:self doneSelector:@selector(noteContentUploadDidfinish: ) errorSelector:@selector(uploadNoteContentDidFail:)];
+    ARISUploader *uploader = [[ARISUploader alloc]initWithURLToUpload:fileURL gameSpecific:YES delegate:self doneSelector:@selector(noteContentUploadDidFinish: ) errorSelector:@selector(uploadNoteContentDidFail:)];
     NSNumber *nId = [[NSNumber alloc]initWithInt:noteId];
     
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc]initWithCapacity:4];
     [userInfo setValue:name forKey:@"title"];
-    [userInfo setValue:nId forKey:@"noteId"];
+    [userInfo setValue:nId  forKey:@"noteId"];
     [userInfo setValue:type forKey: @"type"];
     [userInfo setValue:fileURL forKey:@"url"];
 	[uploader setUserInfo:userInfo];
@@ -542,25 +543,15 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	[uploader upload];
 }
 
-- (void)noteContentUploadDidfinish:(ARISUploader*)uploader {
+- (void)noteContentUploadDidFinish:(ARISUploader*)uploader {
 	NSLog(@"Model: Upload Note Content Request Finished. Response: %@", [uploader responseString]);
 	
-    int noteId = [self validObjectForKey:@"noteId" inDictionary:[uploader userInfo]] ? [self validIntForKey:@"noteId" inDictionary:[uploader userInfo]] : 0;
-    NSString *title = [self validObjectForKey:@"title" inDictionary:[uploader userInfo]];
-    NSString *type = [self validObjectForKey:@"type" inDictionary:[uploader userInfo]];
-    NSURL *localUrl = [self validObjectForKey:@"url" inDictionary:[uploader userInfo]];
+    int noteId =        [self validObjectForKey:@"noteId" inDictionary:[uploader userInfo]] ? [self validIntForKey:@"noteId" inDictionary:[uploader userInfo]] : 0;
+    NSString *title =   [self validObjectForKey:@"title"  inDictionary:[uploader userInfo]];
+    NSString *type =    [self validObjectForKey:@"type"   inDictionary:[uploader userInfo]];
+    NSURL *localUrl =   [self validObjectForKey:@"url"    inDictionary:[uploader userInfo]];
     NSString *newFileName = [uploader responseString];
     
-    //TODO: Check that the response string is actually a new filename that was made on the server, not an error
-#warning Don't know use of this
-    /*
-     NoteContent *newContent = [[NoteContent alloc] init];
-     newContent.noteId = noteId;
-     newContent.title = @"Refreshing From Server...";
-     newContent.type = type;
-     newContent.contentId = 0;
-     
-     [[[[[AppModel sharedAppModel] gameNoteList] objectForKey:[NSNumber numberWithInt:noteId]] contents] addObject:newContent]; */
     [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:noteId andFileURL:localUrl];
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     
@@ -660,6 +651,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                           [NSString stringWithFormat:@"%d",publicToMap],
                           [NSString stringWithFormat:@"%d",publicToList],
 						  nil];
+    
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
                                                              andMethodName:@"updateNote"
@@ -753,18 +745,15 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 -(void) fetchNote:(int)noteId
 {
-    if(!shouldIgnoreResults)
-    {
-        NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
-        Note *note= [self fetchFromService:@"notes" usingMethod:@"getNoteById" withArgs:arguments usingParser:@selector(parseNoteFromDictionary:)];
-        [[InnovNoteModel sharedNoteModel] updateNote: note];
-    }
+    NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
+    Note *note= [self fetchFromService:@"notes" usingMethod:@"getNoteById" withArgs:arguments usingParser:@selector(parseNoteFromDictionary:)];
+    [[InnovNoteModel sharedNoteModel] updateNote: note];
 }
 
 #pragma mark Async Fetch selectors
 
 - (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date
-{
+{    
     NSError *error;
     NSMutableDictionary *argumentsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                           [NSString stringWithFormat:@"%d", [AppModel sharedAppModel].currentGame.gameId], @"gameId",
@@ -1048,22 +1037,12 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if(!shouldIgnoreResults){
         JSONResult *jsonResult = [userInfo objectForKey:@"JSON"];
         [userInfo removeObjectForKey:@"JSON"];
+        
         NSArray *noteListArray = (NSArray *)jsonResult.data;
-        NSLog(@"NSNotification: ReceivedNoteList");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedNoteList"      object:nil]];
-        NSMutableDictionary *tempNoteList = [[NSMutableDictionary alloc] init];
+        [userInfo setObject:noteListArray   forKey:@"notesJSON"];
         
-        NSEnumerator *enumerator = [((NSArray *)noteListArray) objectEnumerator];
-        NSDictionary *dict;
-        while ((dict = [enumerator nextObject])) {
-            Note *tmpNote = [self parseNoteFromDictionary:dict];
-            [tempNoteList setObject:tmpNote forKey:[NSNumber numberWithInt:tmpNote.noteId]];
-        }
-        
-        NSMutableDictionary *info  = [[NSMutableDictionary alloc] initWithObjectsAndKeys:tempNoteList,@"notes", nil];
-        [info addEntriesFromDictionary:userInfo];
         NSLog(@"NSNotification: NewNoteListReady");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:info]];
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:userInfo]];
     }
     isCurrentlyFetchingGameNoteList = NO;
 }
@@ -1198,6 +1177,15 @@ BOOL currentlyUpdatingServerWithMapViewed;
     return game;
 }
 
+-(void)parseOneGameGameListFromJSON: (JSONResult *)jsonResult
+{
+    currentlyFetchingOneGame = NO;
+    [AppModel sharedAppModel].oneGameGameList = [self parseGameListFromJSON:jsonResult];
+    Game * game = (Game *)[[AppModel sharedAppModel].oneGameGameList  objectAtIndex:0];
+    NSLog(@"NSNotification: NewOneGameGameListReady");
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewOneGameGameListReady" object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:game,@"game", nil]]];
+}
+
 -(NSMutableArray *)parseGameListFromJSON:(JSONResult *)jsonResult
 {
     NSArray *gameListArray = (NSArray *)jsonResult.data;
@@ -1215,15 +1203,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     
     return tempGameList;
-}
-
--(void)parseOneGameGameListFromJSON: (JSONResult *)jsonResult
-{
-    currentlyFetchingOneGame = NO;
-    [AppModel sharedAppModel].oneGameGameList = [self parseGameListFromJSON:jsonResult];
-    Game * game = (Game *)[[AppModel sharedAppModel].oneGameGameList  objectAtIndex:0];
-    NSLog(@"NSNotification: NewOneGameGameListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewOneGameGameListReady" object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:game,@"game", nil]]];
 }
 
 -(void)parseSingleMediaFromJSON: (JSONResult *)jsonResult

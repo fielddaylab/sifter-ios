@@ -36,14 +36,13 @@
 	self.methodName = method;	
 	self.arguments = args;
 	self.userInfo = auserInfo;
-
+    
 	//Compute the Arguments 
 	NSMutableString *requestParameters = [NSMutableString stringWithFormat:@"json.php/%@.%@.%@", kARISServerServicePackage, self.serviceName, self.methodName];	
 	NSEnumerator *argumentsEnumerator = [self.arguments objectEnumerator];
 	NSString *argument;
-	while (argument = [argumentsEnumerator nextObject]) {
-        
-        
+	while (argument = [argumentsEnumerator nextObject])
+    {
 		[requestParameters appendString:@"/"];
         // replace special characters
         argument = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes( kCFAllocatorDefault,
