@@ -524,12 +524,12 @@ BOOL currentlyUpdatingServerWithMapViewed;
 }
 
 -(void) uploadContentToNoteWithFileURL:(NSURL *)fileURL name:(NSString *)name noteId:(int) noteId type: (NSString *)type{
-    ARISUploader *uploader = [[ARISUploader alloc]initWithURLToUpload:fileURL gameSpecific:YES delegate:self doneSelector:@selector(noteContentUploadDidfinish: ) errorSelector:@selector(uploadNoteContentDidFail:)];
+    ARISUploader *uploader = [[ARISUploader alloc]initWithURLToUpload:fileURL gameSpecific:YES delegate:self doneSelector:@selector(noteContentUploadDidFinish: ) errorSelector:@selector(uploadNoteContentDidFail:)];
     NSNumber *nId = [[NSNumber alloc]initWithInt:noteId];
     
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc]initWithCapacity:4];
     [userInfo setValue:name forKey:@"title"];
-    [userInfo setValue:nId forKey:@"noteId"];
+    [userInfo setValue:nId  forKey:@"noteId"];
     [userInfo setValue:type forKey: @"type"];
     [userInfo setValue:fileURL forKey:@"url"];
 	[uploader setUserInfo:userInfo];
@@ -543,7 +543,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	[uploader upload];
 }
 
-- (void)noteContentUploadDidfinish:(ARISUploader*)uploader {
+- (void)noteContentUploadDidFinish:(ARISUploader*)uploader {
 	NSLog(@"Model: Upload Note Content Request Finished. Response: %@", [uploader responseString]);
 	
     int noteId =        [self validObjectForKey:@"noteId" inDictionary:[uploader userInfo]] ? [self validIntForKey:@"noteId" inDictionary:[uploader userInfo]] : 0;
@@ -745,12 +745,9 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 -(void) fetchNote:(int)noteId
 {
-    if(!shouldIgnoreResults)
-    {
-        NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
-        Note *note= [self fetchFromService:@"notes" usingMethod:@"getNoteById" withArgs:arguments usingParser:@selector(parseNoteFromDictionary:)];
-        [[InnovNoteModel sharedNoteModel] updateNote: note];
-    }
+    NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
+    Note *note= [self fetchFromService:@"notes" usingMethod:@"getNoteById" withArgs:arguments usingParser:@selector(parseNoteFromDictionary:)];
+    [[InnovNoteModel sharedNoteModel] updateNote: note];
 }
 
 #pragma mark Async Fetch selectors

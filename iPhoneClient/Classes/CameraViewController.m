@@ -44,7 +44,7 @@
     UIButton *libraryButton;
     UIImagePickerController *picker;
     
-    BOOL bringUpCamera;	
+    BOOL bringUpCamera;
 }
 
 @property(nonatomic) NSData *mediaData;
@@ -166,21 +166,23 @@
     NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
     [mediaData writeToURL:imageURL atomically:YES];
     
-    [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+    [[[AppModel sharedAppModel] uploadManager] uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
     
     __weak CameraViewController *selfForBlock = self;
     if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
-            // If image not selected from camera roll
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void)
+        {
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
             [al writeImageDataToSavedPhotosAlbum:selfForBlock.mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
              {
                  [al assetForURL:assetURL resultBlock:^(ALAsset *asset){}
                     failureBlock:^(NSError *error)
                   {
-                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-                      [alert show];
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                          [alert show];
+                      });
                   }
                   ];
              }];

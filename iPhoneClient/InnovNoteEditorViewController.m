@@ -385,19 +385,35 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
 }
 
-- (void)shareButtonPressed: (id) sender
+- (void) shareButtonPressed: (id) sender
 {
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
     else self.note.text = captionTextView.text;
     
     int textContentId = 0;
+    BOOL imageUploaded = NO;
     for(NSObject <NoteContentProtocol> *contentObject in note.contents)
     {
-        if([contentObject isKindOfClass:[NoteContent class]] && [[contentObject getType] isEqualToString:kNoteContentTypeText])
+        if([contentObject isKindOfClass:[NoteContent class]])
         {
-            textContentId = [contentObject getContentId];
-            ((NoteContent *)contentObject).text = self.note.text;
+            if([[contentObject getType] isEqualToString:kNoteContentTypePhoto])
+            {
+                if(((NoteContent *)contentObject).mediaId != 0)
+                    imageUploaded = YES;
+            }
+            else if([[contentObject getType] isEqualToString:kNoteContentTypeText])
+            {
+                textContentId = [contentObject getContentId];
+                ((NoteContent *)contentObject).text = self.note.text;
+            }
         }
+    }
+    
+    if(!imageUploaded && shareToFacebook)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please Wait" message:@"Please Wait for the Photo to Upload Before Sharing to Facebook" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
+        return;
     }
     
     if(textContentId == 0)
