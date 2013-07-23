@@ -180,7 +180,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 -(void) applicationWillTerminate:(UIApplication *)application
 {
 	NSLog(@"ARIS: Terminating Application");
-	[[AppModel sharedAppModel] saveUserDefaults];
+    [[AppModel sharedAppModel] saveUserDefaults];
     [[AppModel sharedAppModel] saveCOREData];
     
     [simpleFacebookShare close];

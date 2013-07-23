@@ -211,7 +211,7 @@
                                         repeats:NO];
     }
     else
-    {
+    {        
         if(clearBeforeFetching)
         {
             [self clearAllData];

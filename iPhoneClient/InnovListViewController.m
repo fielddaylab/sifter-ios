@@ -104,8 +104,7 @@ static NSString * const CELL_ID = @"Cell";
     float desiredLocation = topOfNewCell;
     if(offsetToCenter < topOfNewCell)
         desiredLocation += offsetToCenter;
-#warning count > 4 is patch fix
-    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height && [notes count] > 4)
+    if((quiltView.contentSize.height > quiltView.frame.size.height) && desiredLocation >= quiltView.contentSize.height - quiltView.frame.size.height)// && [notes count] > 4)
         desiredLocation = quiltView.contentSize.height - quiltView.frame.size.height;
     
     [UIView beginAnimations:@"animationInNote" context:NULL];

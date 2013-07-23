@@ -436,7 +436,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:[self validIntForKey:@"noteId"      inDictionary:result.userInfo]
                                                               andFileURL:[self validObjectForKey:@"localURL" inDictionary:result.userInfo]];
-    #warning above likely is just the cause of an error
+#warning above likely is just the cause of an error
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [self fetchNote:[self validIntForKey:@"noteId" inDictionary:result.userInfo]];
@@ -651,6 +651,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                           [NSString stringWithFormat:@"%d",publicToMap],
                           [NSString stringWithFormat:@"%d",publicToList],
 						  nil];
+    
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
                                                              andMethodName:@"updateNote"
@@ -755,7 +756,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 #pragma mark Async Fetch selectors
 
 - (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date
-{
+{    
     NSError *error;
     NSMutableDictionary *argumentsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                           [NSString stringWithFormat:@"%d", [AppModel sharedAppModel].currentGame.gameId], @"gameId",
@@ -1189,6 +1190,15 @@ BOOL currentlyUpdatingServerWithMapViewed;
     return game;
 }
 
+-(void)parseOneGameGameListFromJSON: (JSONResult *)jsonResult
+{
+    currentlyFetchingOneGame = NO;
+    [AppModel sharedAppModel].oneGameGameList = [self parseGameListFromJSON:jsonResult];
+    Game * game = (Game *)[[AppModel sharedAppModel].oneGameGameList  objectAtIndex:0];
+    NSLog(@"NSNotification: NewOneGameGameListReady");
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewOneGameGameListReady" object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:game,@"game", nil]]];
+}
+
 -(NSMutableArray *)parseGameListFromJSON:(JSONResult *)jsonResult
 {
     NSArray *gameListArray = (NSArray *)jsonResult.data;
@@ -1206,15 +1216,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     
     return tempGameList;
-}
-
--(void)parseOneGameGameListFromJSON: (JSONResult *)jsonResult
-{
-    currentlyFetchingOneGame = NO;
-    [AppModel sharedAppModel].oneGameGameList = [self parseGameListFromJSON:jsonResult];
-    Game * game = (Game *)[[AppModel sharedAppModel].oneGameGameList  objectAtIndex:0];
-    NSLog(@"NSNotification: NewOneGameGameListReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewOneGameGameListReady" object:nil userInfo:[NSDictionary dictionaryWithObjectsAndKeys:game,@"game", nil]]];
 }
 
 -(void)parseSingleMediaFromJSON: (JSONResult *)jsonResult

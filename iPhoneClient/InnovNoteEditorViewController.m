@@ -247,6 +247,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     {
         self.note = [[Note alloc] init];
         self.note.text =  DEFAULT_TEXT;
+        self.note.showOnMap = YES;
+        self.note.showOnList = YES;
         self.note.creatorId   = [AppModel sharedAppModel].playerId;
 #warning Probably useless to put in user/display name
         self.note.username    = [AppModel sharedAppModel].userName;
@@ -408,7 +410,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     else
         [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
     
-    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:self.note.title publicToMap:YES publicToList:YES];
+    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:@"YOI Note" publicToMap:YES publicToList:YES];
     
     if(mode == kInnovAudioRecorderRecording)
         [self recordButtonPressed:nil];
