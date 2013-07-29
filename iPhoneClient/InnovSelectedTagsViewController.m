@@ -23,6 +23,8 @@
     __weak IBOutlet UITableView *tagTableView;
     
     BOOL hiding;
+    CGSize originalSize;
+    CGSize hiddenSize;
     NSArray *tags;
     NSArray *selectedTags;
     
@@ -52,6 +54,13 @@
 {
     [super viewDidLoad];
     
+    originalSize = self.view.frame.size;
+    hiddenSize   = CGSizeMake(originalSize.width, 0);
+    
+    CGRect hiddenFrame = self.view.frame;
+    hiddenFrame.size = hiddenSize;
+    self.view.frame = hiddenFrame;
+    
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
     [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
     
@@ -72,14 +81,13 @@
     self.view.hidden = NO;
     self.view.userInteractionEnabled = NO;
     
-    CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    [scale setFromValue:[NSNumber numberWithFloat:0.0f]];
-    [scale setToValue:[NSNumber numberWithFloat:1.0f]];
-    [scale setDuration:ANIMATION_DURATION];
-    [scale setRemovedOnCompletion:NO];
-    [scale setFillMode:kCAFillModeForwards];
-    scale.delegate = self;
-    [self.view.layer addAnimation:scale forKey:@"transform.scaleUp"];
+    CGRect shownFrame = self.view.frame;
+    shownFrame.size = originalSize;
+    shownFrame.origin.y -= originalSize.height;
+    
+    __weak UIViewController *weakSelf = self;
+    [UIView animateWithDuration:ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseOut animations:^{ weakSelf.view.frame = shownFrame;}
+                     completion:^(BOOL finished) { weakSelf.view.userInteractionEnabled = YES;}];
 }
 
 - (void) hide
@@ -88,30 +96,19 @@
     {
         hiding = YES;
         
-        CABasicAnimation *scale = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-        [scale setFromValue:[NSNumber numberWithFloat:1.0f]];
-        [scale setToValue:[NSNumber numberWithFloat:0.0f]];
-        [scale setDuration:ANIMATION_DURATION];
-        [scale setRemovedOnCompletion:NO];
-        [scale setFillMode:kCAFillModeForwards];
-        scale.delegate = self;
-        [self.view.layer addAnimation:scale forKey:@"transform.scaleDown"];
-    }
-}
-
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
-    if(flag){
-        if (theAnimation == [[self.view layer] animationForKey:@"transform.scaleUp"] && !hiding)
-            self.view.userInteractionEnabled = YES;
-        else if(theAnimation == [[self.view layer] animationForKey:@"transform.scaleDown"] && hiding)
-        {
-            self.view.hidden = YES;
-            [self willMoveToParentViewController:nil];
-            [self.view removeFromSuperview];
-            [self removeFromParentViewController];
-            [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
-        }
+        CGRect hiddenFrame = self.view.frame;
+        hiddenFrame.size = hiddenSize;
+        hiddenFrame.origin.y += originalSize.height;
+        
+        __weak UIViewController *weakSelf = self;
+        [UIView animateWithDuration:ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseOut animations:^{ weakSelf.view.frame = hiddenFrame;}
+                         completion:^(BOOL finished) {
+                             weakSelf.view.hidden = YES;
+                             [weakSelf willMoveToParentViewController:nil];
+                             [weakSelf.view removeFromSuperview];
+                             [weakSelf removeFromParentViewController];
+                             [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+                         }];
     }
 }
 

@@ -29,7 +29,7 @@
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
 @interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
-{    
+{
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
     
@@ -107,8 +107,7 @@
     settingsView.hidden = YES;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
-    selectedTagsVC.view.layer.anchorPoint = CGPointMake(0, 1);
-
+    
 	trackingButton.selected = YES;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
@@ -288,8 +287,8 @@
 
 - (void)logInFailed
 {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
-        [alert show];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Failed" message:@"The attempt to log in failed. Please confirm your log in information and try again or create an account if you do not have one." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
+    [alert show];
 }
 
 #pragma mark Present Note Delegate Method
