@@ -697,8 +697,8 @@
 			children = (
 				719661731799D63400605767 /* flagBlack.png */,
 				719661741799D63400605767 /* flagBlack@2x.png */,
-				8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */,
 				8906DE5D179D86E800B2D7BF /* likeBlack.png */,
+				8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */,
 				AB2FE578120A154B00758F8C /* deleteComment.png */,
 			);
 			name = CommentView;
