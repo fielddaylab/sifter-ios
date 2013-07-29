@@ -112,8 +112,11 @@
     {
         [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
          {
-             [[Logger sharedLogger] logError:error];
-             [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
+             if(error)
+             {
+                 [[Logger sharedLogger] logError:error];
+                 [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
+             }
          }];
     }
     else {
@@ -151,28 +154,28 @@
 }
 
 /*
-- (void)_shareAndOpenSession:(NSDictionary *)params automatically: (BOOL) autoShare
-{
-    __weak SimpleFacebookShare *selfForBlock = self;
-    if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
-    {
-        [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
-         {
-             [selfForBlock _shareAndReauthorize:params automatically: autoShare];
-         }];
-    }
-    else {
-        [FBSession openActiveSessionWithPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-            if (error)
-            {
-                [[Logger sharedLogger] logError:error];
-                [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
-            }
-            else
-                [selfForBlock _shareAndReauthorize:params automatically: autoShare];
-        }];
-    }
-} */
+ - (void)_shareAndOpenSession:(NSDictionary *)params automatically: (BOOL) autoShare
+ {
+ __weak SimpleFacebookShare *selfForBlock = self;
+ if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
+ {
+ [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
+ {
+ [selfForBlock _shareAndReauthorize:params automatically: autoShare];
+ }];
+ }
+ else {
+ [FBSession openActiveSessionWithPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+ if (error)
+ {
+ [[Logger sharedLogger] logError:error];
+ [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
+ }
+ else
+ [selfForBlock _shareAndReauthorize:params automatically: autoShare];
+ }];
+ }
+ } */
 //MODIFIED METHOD
 - (void)_shareParams:(NSDictionary *)params automatically: (BOOL) autoShare {
     if(!autoShare)
