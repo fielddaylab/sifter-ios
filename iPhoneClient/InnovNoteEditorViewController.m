@@ -789,7 +789,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [twitterView setInitialTwitterAccounts:allTwitterAccounts];
     popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:twitterView];
     popOver.delegate = self;
+    popOver.alpha = 0.0f;
     [self.view addSubview:popOver];
+    
+    [UIView animateWithDuration:POP_OVER_ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseOut animations:^{ popOver.alpha = 1.0f; }
+                     completion:^(BOOL finished) { }];
+    
 }
 
 - (void) deselectTwitterButton
@@ -945,11 +950,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
                 socialView.frame = CGRectMake(([UIScreen mainScreen].bounds.size.width - tableView.frame.size.width/16.0*15.0)/2, 0, tableView.frame.size.width/16.0*15.0, 2 * SHARE_BUTTON_HEIGHT);
                 socialView.note = self.note;
                 [[NSNotificationCenter defaultCenter] removeObserver:socialView name:@"NoteModelUpdate:Notes" object:nil];
-                [socialView.shareLabel     removeFromSuperview];
-                [socialView.facebookBadge  removeFromSuperview];
-                [socialView.twitterBadge   removeFromSuperview];
-                [socialView.pinterestBadge removeFromSuperview];
-                [socialView.emailBadge     removeFromSuperview];
                 socialView.facebookButton.frame  = CGRectMake(     socialView.frame.size.width /4-SHARE_BUTTON_WIDTH/2, 0,                   SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);
                 socialView.twitterButton.frame   = CGRectMake((3 * socialView.frame.size.width)/4-SHARE_BUTTON_WIDTH/2, 0,                   SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);
                 socialView.pinterestButton.frame = CGRectMake(     socialView.frame.size.width /4-SHARE_BUTTON_WIDTH/2, SHARE_BUTTON_HEIGHT, SHARE_BUTTON_WIDTH, SHARE_BUTTON_HEIGHT);

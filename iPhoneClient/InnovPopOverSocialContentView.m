@@ -29,7 +29,7 @@
 
 @implementation InnovPopOverSocialContentView
 
-@synthesize note, facebookButton, facebookBadge, twitterButton, twitterBadge, pinterestButton, pinterestBadge, emailButton, emailBadge;
+@synthesize note, facebookButton, twitterButton, pinterestButton, emailButton;
 
 - (id)init
 {
@@ -45,28 +45,7 @@
         
         usersNote = ([AppModel sharedAppModel].playerId == self.note.creatorId);
         
-        facebookBadge = [CustomBadge customBadgeWithString:@"0"];
-        facebookBadge.center = CGPointMake(facebookButton.frame.size.width, 0);
-        facebookButton.clipsToBounds = NO;
-        facebookButton.tag = 0;
-        [facebookButton addSubview:facebookBadge];
-        
-        twitterBadge = [CustomBadge customBadgeWithString:@"0"];
-        twitterBadge.center = CGPointMake(twitterButton.frame.size.width, 0);
-        twitterButton.clipsToBounds = NO;
-        [twitterButton addSubview:twitterBadge];
-        
-        pinterestBadge = [CustomBadge customBadgeWithString:@"0"];
-        pinterestBadge.center = CGPointMake(pinterestButton.frame.size.width, 0);
-        pinterestButton.clipsToBounds = NO;
-        [pinterestButton addSubview:pinterestBadge];
-        
-        emailBadge = [CustomBadge customBadgeWithString:@"0"];
-        emailBadge.center = CGPointMake(emailButton.frame.size.width, 0);
-        emailButton.clipsToBounds = NO;
-        [emailButton addSubview:emailBadge];
-        
-         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshBadges) name:@"NoteModelUpdate:Notes" object:nil];
+         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshNote) name:@"NoteModelUpdate:Notes" object:nil];
         
     }
     return self;
@@ -77,22 +56,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void) refreshBadges
+- (void) refreshNote
 {
     self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-    
-    facebookBadge.badgeText  = [NSString stringWithFormat:@"%d", self.note.facebookShareCount];
-    [facebookBadge setNeedsDisplay];
-    [facebookBadge setNeedsLayout];
-    twitterBadge.badgeText   = [NSString stringWithFormat:@"%d", self.note.twitterShareCount];
-    [twitterBadge setNeedsDisplay];
-    [twitterBadge setNeedsLayout];
-    pinterestBadge.badgeText = [NSString stringWithFormat:@"%d", self.note.pinterestShareCount];
-    [pinterestBadge setNeedsDisplay];
-    [pinterestBadge setNeedsLayout];
-    emailBadge.badgeText     = [NSString stringWithFormat:@"%d", self.note.emailShareCount];
-    [emailBadge setNeedsDisplay];
-    [emailBadge setNeedsLayout];
 }
 
 - (IBAction)facebookButtonPressed:(id)sender

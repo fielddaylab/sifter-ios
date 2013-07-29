@@ -40,7 +40,7 @@
         contentView.dismissDelegate = self;
         
         [self addSubview:contentView];
-        exitButton = [[UIButton alloc] initWithFrame:CGRectMake(0,
+  /*    exitButton = [[UIButton alloc] initWithFrame:CGRectMake(0,
                                                                           0,
                                                                           BUTTON_WIDTH,
                                                                           BUTTON_HEIGHT)];
@@ -50,7 +50,7 @@
         [exitButton setImage:[UIImage imageNamed:@"298-circlex.png"] forState:UIControlStateNormal];
         [exitButton setImage:[UIImage imageNamed:@"298-circlex.png"] forState:UIControlStateHighlighted];
         [exitButton addTarget:self action:@selector(exitButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview: exitButton];
+        [self addSubview: exitButton]; */
     }
     return self;
 }
@@ -58,15 +58,15 @@
 - (void) adjustContentFrame:(CGRect)frame
 {
     contentView.frame = frame;
-    exitButton.center = CGPointMake(self.frame.origin.x + contentView.frame.origin.x + contentView.frame.size.width,
-                                    self.frame.origin.y + contentView.frame.origin.y);
+//    exitButton.center = CGPointMake(self.frame.origin.x + contentView.frame.origin.x + contentView.frame.size.width,
+//                                    self.frame.origin.y + contentView.frame.origin.y);
 }
 
 - (void) exitButtonPressed: (id) sender
 {
     if(delegate)
         [delegate popOverCancelled];
-    [self removeFromSuperview];
+    [self dismiss];
 }
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -80,7 +80,7 @@
          {
              if(delegate)
                  [delegate popOverCancelled];
-             [self removeFromSuperview];
+             [self dismiss];
          }
     }
    
@@ -88,7 +88,9 @@
 
 - (void) dismiss
 {
-    [self removeFromSuperview];
+    __weak UIView *weakSelf = self;
+    [UIView animateWithDuration:POP_OVER_ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseOut animations:^{ weakSelf.alpha = 0.0f; }
+                     completion:^(BOOL finished) { [weakSelf removeFromSuperview]; }];
 }
 
 @end

@@ -8,7 +8,6 @@
 
 @class Note;
 
-#import "CustomBadge.h"
 #import "InnovPopOverContentView.h"
 
 #warning CHANGE TWITTER HANDLE
@@ -27,16 +26,11 @@
 
 @property(nonatomic) Note *note;
 
-@property(weak, nonatomic) IBOutlet UILabel *shareLabel;
 @property(weak, nonatomic) IBOutlet UIButton *facebookButton;
-@property(nonatomic) CustomBadge *facebookBadge;
 @property(weak, nonatomic) IBOutlet UIButton *twitterButton;
-@property(nonatomic) CustomBadge *twitterBadge;
 @property(weak, nonatomic) IBOutlet UIButton *pinterestButton;
-@property(nonatomic) CustomBadge *pinterestBadge;
 @property(weak, nonatomic) IBOutlet UIButton *emailButton;
-@property(nonatomic) CustomBadge *emailBadge;
 
-- (void) refreshBadges;
+- (void) refreshNote;
 
 @end

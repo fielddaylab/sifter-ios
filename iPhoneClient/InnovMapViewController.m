@@ -130,7 +130,7 @@
 
 #pragma mark user location
 
-- (void) toggleTracking
+- (BOOL) toggleTracking
 {
     [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
@@ -145,6 +145,8 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PlayerMoved" object:nil];
     
     [self updatePlayerLocation];
+    
+    return tracking;
 }
 
 - (void) updatePlayerLocation
