@@ -19,7 +19,7 @@
 
 @property(nonatomic, weak) id<InnovMapViewDelegate, InnovPresentNoteDelegate> delegate;
 
-- (void) toggleTracking;
+- (BOOL) toggleTracking;
 - (void) updatePlayerLocation;
 - (void) zoomAndCenterMapAnimated:(BOOL) animated;
 - (void) showNotePopUpForNote: (Note *) note;

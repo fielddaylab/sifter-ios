@@ -41,6 +41,7 @@
 						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{320, 372}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="930929987"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -55,6 +56,7 @@
 						<int key="NSvFlags">265</int>
 						<string key="NSFrame">{{0, 344}, {320, 84}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="360333720"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -69,12 +71,17 @@
 						<int key="NSvFlags">268</int>
 						<string key="NSFrame">{{20, 382}, {30, 29}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="215259373"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
+						<object class="NSColor" key="IBUITintColor">
+							<int key="NSColorSpace">1</int>
+							<bytes key="NSRGB">MC4xNTk5NjQ1Njk0IDAuMTU5MzE0NTUzOCAxAA</bytes>
+						</object>
 						<object class="NSColor" key="IBUIHighlightedTitleColor" id="74592971">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
@@ -87,6 +94,11 @@
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MC41AA</bytes>
 						</object>
+						<object class="NSCustomResource" key="IBUIHighlightedImage" id="1070980839">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">showTagsIconBlue.png</string>
+						</object>
+						<reference key="IBUISelectedImage" ref="1070980839"/>
 						<object class="NSCustomResource" key="IBUINormalImage">
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">showTagsIcon.png</string>
@@ -106,6 +118,7 @@
 						<int key="NSvFlags">269</int>
 						<string key="NSFrame">{{132, 356}, {60, 60}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="905908060"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
@@ -130,6 +143,8 @@
 						<int key="NSvFlags">265</int>
 						<string key="NSFrame">{{270, 382}, {30, 29}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -141,6 +156,11 @@
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="645979224"/>
+						<object class="NSCustomResource" key="IBUIHighlightedImage" id="580184487">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">trackingIconBlue.png</string>
+						</object>
+						<reference key="IBUISelectedImage" ref="580184487"/>
 						<object class="NSCustomResource" key="IBUINormalImage">
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">trackingIcon.png</string>
@@ -151,6 +171,7 @@
 				</array>
 				<string key="NSFrame">{{0, 64}, {320, 416}}</string>
 				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="1008502759"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>
@@ -275,10 +296,10 @@
 						<reference key="object" ref="191373211"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="360333720"/>
-							<reference ref="905908060"/>
 							<reference ref="215259373"/>
 							<reference ref="1008502759"/>
 							<reference ref="930929987"/>
+							<reference ref="905908060"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -317,11 +338,11 @@
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="193.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<real value="0.0" key="193.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
+				<real value="2" key="193.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="200.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<real value="0.0" key="200.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="205.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<real value="0.0" key="205.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
+				<real value="2" key="205.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="209.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="22.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -331,7 +352,42 @@
 			<nil key="sourceID"/>
 			<int key="maxID">210</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">InnovViewController</string>
+					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="contentView">UIView</string>
+						<string key="showTagsButton">UIButton</string>
+						<string key="toolBarImageView">UIImageView</string>
+						<string key="trackingButton">UIButton</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="contentView">
+							<string key="name">contentView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="showTagsButton">
+							<string key="name">showTagsButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="toolBarImageView">
+							<string key="name">toolBarImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="trackingButton">
+							<string key="name">trackingButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/InnovViewController.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
@@ -340,7 +396,9 @@
 			<string key="YOIToolbar1.png">{640, 168}</string>
 			<string key="newNoteIcon@2x.png">{47, 36}</string>
 			<string key="showTagsIcon.png">{24, 25}</string>
+			<string key="showTagsIconBlue.png">{24, 25}</string>
 			<string key="trackingIcon.png">{20, 20}</string>
+			<string key="trackingIconBlue.png">{20, 20}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">2083</string>
 	</data>

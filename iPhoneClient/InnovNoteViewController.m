@@ -16,6 +16,7 @@
 #import "Tag.h"
 #import "Logger.h"
 
+#import "CustomBadge.h"
 #import "InnovPopOverView.h"
 #import "InnovPopOverSocialContentView.h"
 #import "LoginViewController.h"
@@ -42,6 +43,7 @@
     UIButton *flagButton;
     UIButton *likeButton;
     UIButton *shareButton;
+    CustomBadge *shareBadge;
     UIButton *commentButton;
     UITextView *captionTextView;
     
@@ -114,9 +116,9 @@
                                                              BUTTON_HEIGHT)];
     
     flagButton.backgroundColor = [UIColor blackColor];
-    [flagButton setImage:[UIImage imageNamed:@"59-flag.png"] forState:UIControlStateNormal];
-    [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateSelected];
-    [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateHighlighted];
+    [flagButton setImage:[UIImage imageNamed:@"flagWhite.png"] forState:UIControlStateNormal];
+    [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateSelected];
+    [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:flagButton];
     
@@ -131,9 +133,9 @@
   /*  [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
     [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
     [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heart.png"] forState:UIControlStateNormal];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"likeWhite.png"] forState:UIControlStateNormal];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateSelected];
+    [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateHighlighted];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:likeButton];
     
@@ -142,22 +144,29 @@
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
-    [shareButton setImage:[UIImage imageNamed:@"ShareWhite.png"] forState:UIControlStateNormal];
-    [shareButton setImage:[UIImage imageNamed:@"Share.png"] forState:UIControlStateSelected];
-    [shareButton setImage:[UIImage imageNamed:@"Share.png"] forState:UIControlStateHighlighted];
+    [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateNormal];
+ //   [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateSelected];
+//    [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateHighlighted];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [noteView addSubview:shareButton];
+    
+    shareBadge = [CustomBadge customBadgeWithString:@"0"];
+    shareBadge.center = CGPointMake(shareButton.frame.size.width, 0);
+    shareButton.clipsToBounds = NO;
+    [shareButton addSubview:shareBadge];
     
     commentButton = [[UIButton alloc] initWithFrame:CGRectMake(shareButton.frame.origin.x + BUTTON_WIDTH,
                                                                IMAGE_Y_MARGIN + imageView.frame.size.height,
                                                                BUTTON_WIDTH,
                                                                BUTTON_HEIGHT)];
     commentButton.backgroundColor = [UIColor blackColor];
-    [commentButton setImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateNormal];
-    [commentButton setImage:[UIImage imageNamed:@"08-chat.png"] forState:UIControlStateSelected];
-    [commentButton setImage:[UIImage imageNamed:@"08-chatt.png"] forState:UIControlStateHighlighted];
+    [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateNormal];
+  //  [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateSelected];
+  //  [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateHighlighted];
 	[commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:commentButton];
+    
+    //added after commentButton, so shareBadge appears on top
+    [noteView addSubview:shareButton];
     
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(0,
                                                                    IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT,
@@ -225,6 +234,11 @@
 - (void)refreshViewFromModel
 {
     self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+    
+    shareBadge.badgeText  = [NSString stringWithFormat:@"%d", (self.note.facebookShareCount + self.note.twitterShareCount + self.note.pinterestShareCount + self.note.emailShareCount)];
+    [shareBadge setNeedsDisplay];
+    [shareBadge setNeedsLayout];
+    
     [self updateLikeButton];
     [flagButton setSelected:self.note.userFlagged];
     
@@ -353,12 +367,15 @@
 {
     InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
     socialContent.note = self.note;
-    [socialContent refreshBadges];
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
     CGRect newFrame = socialContent.frame;
     newFrame.origin.y -= NAV_BAR_HEIGHT;
     [popOver adjustContentFrame:newFrame];
+    popOver.alpha = 0.0f;
     [self.view addSubview:popOver];
+    
+    [UIView animateWithDuration:POP_OVER_ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseOut animations:^{ popOver.alpha = 1.0f; }
+                     completion:^(BOOL finished) { }];
 }
 
 - (void)commentButtonPressed:(id)sender

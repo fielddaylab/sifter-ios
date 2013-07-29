@@ -44,15 +44,15 @@
         
         deleteButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [deleteButton addTarget:delegate action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [deleteButton setImage:[UIImage imageNamed:@"LogoutButton"] forState:UIControlStateNormal];
-        [deleteButton setImage:[UIImage imageNamed:@"LogoutButton"] forState:UIControlStateHighlighted];
+        [deleteButton setImage:[UIImage imageNamed:@"deleteComment.png"] forState:UIControlStateNormal];
+        [deleteButton setImage:[UIImage imageNamed:@"deleteComment.png"] forState:UIControlStateHighlighted];
         [self addSubview:deleteButton];
         
         flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(deleteButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [flagButton setImage:[UIImage imageNamed:@"59-flagBlack.png"] forState:UIControlStateNormal];
-        [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateSelected];
-        [flagButton setImage:[UIImage imageNamed:@"59-flagN.png"] forState:UIControlStateHighlighted];
+        [flagButton setImage:[UIImage imageNamed:@"flagBlack.png"] forState:UIControlStateNormal];
+        [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateSelected];
+        [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateHighlighted];
         [self addSubview:flagButton];
         
         likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
@@ -60,9 +60,9 @@
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartNBorderBlack.png"] forState:UIControlStateNormal];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateSelected];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"29-heartN.png"] forState:UIControlStateHighlighted];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"likeBlack.png"] forState:UIControlStateNormal];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateSelected];
+        [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateHighlighted];
         [self addSubview:likeButton];
         
         textView = [[UITextView alloc] initWithFrame:CGRectMake(0, BUTTON_HEIGHT, self.frame.size.width, self.frame.size.height-BUTTON_HEIGHT)];

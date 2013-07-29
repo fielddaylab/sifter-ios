@@ -7,6 +7,7 @@
 //
 
 #define NAV_BAR_HEIGHT 44
+#define POP_OVER_ANIMATION_DURATION 0.1f
 
 @class InnovPopOverContentView;
 

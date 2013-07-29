@@ -99,14 +99,15 @@
     
     settingsView = [[InnovSettingsView alloc] init];
     settingsView.delegate = self;
-    settingsView.layer.anchorPoint = CGPointMake(1, 0);
     CGRect settingsLocation = settingsView.frame;
     settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
     settingsLocation.origin.y = 0;
     settingsView.frame = settingsLocation;
-    settingsView.hidden = YES;
+    settingsView.alpha = 0.0f;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
+    
+    [showTagsButton setTintColor:[UIColor orangeColor]];
     
 	trackingButton.selected = YES;
     
@@ -218,15 +219,20 @@
 
 - (IBAction)showTagsPressed:(id)sender
 {
+    
     if(![self.view.subviews containsObject:selectedTagsVC.view])
     {
+        [showTagsButton setSelected:YES];
         [self addChildViewController:selectedTagsVC];
         [self.view insertSubview:selectedTagsVC.view belowSubview:toolBarImageView];
         [selectedTagsVC didMoveToParentViewController:self];
         [selectedTagsVC show];
     }
     else
+    {
+        [showTagsButton setSelected:NO];
         [selectedTagsVC hide];
+    }
 }
 
 - (IBAction)cameraPressed:(id)sender
@@ -252,9 +258,8 @@
 
 - (IBAction)trackingButtonPressed:(id)sender
 {
-    trackingButton.selected = YES;
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-    [mapVC toggleTracking];
+    trackingButton.selected = [mapVC toggleTracking];
 }
 
 - (void) stoppedTracking
@@ -269,7 +274,11 @@
     InnovPopOverNotifContentView *notifView = [[InnovPopOverNotifContentView alloc] init];
     [notifView refreshFromModel];
     popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:notifView];
+    popOver.alpha = 0.0f;
     [self.view addSubview:popOver];
+    
+    [UIView animateWithDuration:POP_OVER_ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseOut animations:^{ popOver.alpha = 1.0f; }
+                     completion:^(BOOL finished) { }];
 }
 
 - (void) showAbout
@@ -311,6 +320,7 @@
     
     [self.view endEditing:YES];
     [settingsView hide];
+    [showTagsButton setSelected:NO];
     [selectedTagsVC hide];
 }
 
