@@ -144,7 +144,6 @@
 						<string key="NSFrame">{{270, 382}, {30, 29}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -156,11 +155,6 @@
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="645979224"/>
-						<object class="NSCustomResource" key="IBUIHighlightedImage" id="580184487">
-							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">trackingIconBlue.png</string>
-						</object>
-						<reference key="IBUISelectedImage" ref="580184487"/>
 						<object class="NSCustomResource" key="IBUINormalImage">
 							<string key="NSClassName">NSImage</string>
 							<string key="NSResourceName">trackingIcon.png</string>
@@ -342,7 +336,7 @@
 				<string key="200.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<real value="0.0" key="200.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="205.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<real value="2" key="205.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
+				<real value="3" key="205.IBUIButtonInspectorSelectedStateConfigurationMetadataKey"/>
 				<string key="209.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="22.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -357,6 +351,25 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">InnovViewController</string>
 					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="cameraPressed:">id</string>
+						<string key="showTagsPressed:">id</string>
+						<string key="trackingButtonPressed:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="cameraPressed:">
+							<string key="name">cameraPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showTagsPressed:">
+							<string key="name">showTagsPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="trackingButtonPressed:">
+							<string key="name">trackingButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="contentView">UIView</string>
 						<string key="showTagsButton">UIButton</string>
@@ -398,7 +411,6 @@
 			<string key="showTagsIcon.png">{24, 25}</string>
 			<string key="showTagsIconBlue.png">{24, 25}</string>
 			<string key="trackingIcon.png">{20, 20}</string>
-			<string key="trackingIconBlue.png">{20, 20}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">2083</string>
 	</data>

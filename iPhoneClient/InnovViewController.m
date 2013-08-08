@@ -28,7 +28,7 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovMapViewDelegate, InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
+@interface InnovViewController () <InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
 {
     __weak IBOutlet UIButton *showTagsButton;
     __weak IBOutlet UIButton *trackingButton;
@@ -108,8 +108,6 @@
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     
     [showTagsButton setTintColor:[UIColor orangeColor]];
-    
-	trackingButton.selected = YES;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 }
@@ -237,16 +235,26 @@
 
 - (IBAction)cameraPressed:(id)sender
 {
-    if([AppModel sharedAppModel].playerId == 0)
+    Reachability *internetReach = [Reachability reachabilityForInternetConnection];
+    NetworkStatus internet = [internetReach currentReachabilityStatus];
+    if(internet == NotReachable)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Connection" message:@"You must be connected to the internet to create a note." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
     }
     else
     {
-        InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
-        editorVC.delegate = self;
-        [self.navigationController pushViewController:editorVC animated:NO];
+        if([AppModel sharedAppModel].playerId == 0)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to create a note." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log In", nil];
+            [alert show];
+        }
+        else
+        {
+            InnovNoteEditorViewController *editorVC = [[InnovNoteEditorViewController alloc] init];
+            editorVC.delegate = self;
+            [self.navigationController pushViewController:editorVC animated:NO];
+        }
     }
 }
 
@@ -259,12 +267,7 @@
 - (IBAction)trackingButtonPressed:(id)sender
 {
 	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-    trackingButton.selected = [mapVC toggleTracking];
-}
-
-- (void) stoppedTracking
-{
-    trackingButton.selected = NO;
+    [mapVC zoomAndCenterMapAnimated: YES];
 }
 
 #pragma mark Settings Delegate Methods

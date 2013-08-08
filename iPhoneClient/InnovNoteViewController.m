@@ -130,9 +130,6 @@
     [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-  /*  [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up.png"] forState:UIControlStateNormal];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateSelected];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"thumbs_up_selected.png"] forState:UIControlStateHighlighted]; */
     [likeButton setBackgroundImage:[UIImage imageNamed:@"likeWhite.png"] forState:UIControlStateNormal];
     [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateSelected];
     [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateHighlighted];
@@ -145,8 +142,6 @@
                                                              BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
     [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateNormal];
- //   [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateSelected];
-//    [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateHighlighted];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     shareBadge = [CustomBadge customBadgeWithString:@"0"];
@@ -160,8 +155,6 @@
                                                                BUTTON_HEIGHT)];
     commentButton.backgroundColor = [UIColor blackColor];
     [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateNormal];
-  //  [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateSelected];
-  //  [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateHighlighted];
 	[commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:commentButton];
     

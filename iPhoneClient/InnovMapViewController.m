@@ -38,11 +38,7 @@
 {
     IBOutlet MKMapView *mapView;
     InnovMapNotePopUp *notePopUp;
-    
-    BOOL isLocal;
-    BOOL tracking;
-    BOOL appSetNextRegionChange;
-    
+
     CLLocation *madisonCenter;
     
     int shownNotesCount;
@@ -57,8 +53,8 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        tracking = NO;
+    if (self)
+    {
         unshownNotesQueue    = [[NSMutableArray alloc] initWithCapacity:20];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addAnnotationsForNotes:)    name:@"NewlyAvailableNotesAvailable"             object:nil];
@@ -74,7 +70,6 @@
     
     madisonCenter = [[CLLocation alloc] initWithLatitude:MADISON_LAT longitude:MADISON_LONG];
     
-	isLocal = NO;
     [self zoomAndCenterMapAnimated:NO];
     
     notePopUp = [[InnovMapNotePopUp alloc] init];
@@ -93,7 +88,9 @@
             [[weakSelf.navigationController.viewControllers objectAtIndex:0] touchesBegan:nil withEvent:nil];
         };
         [mapView addGestureRecognizer:tapInterceptor];
-    } 
+    }
+    
+    [mapView setShowsUserLocation:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -104,7 +101,6 @@
     //   else                                                                                  mapView.mapType = MKMapTypeStandard;
     [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
-    [self updatePlayerLocation];
 }
 
 /*
@@ -130,48 +126,11 @@
 
 #pragma mark user location
 
-- (BOOL) toggleTracking
-{
-    [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
-	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
-    
-    tracking = !tracking;
-    if(tracking)
-    {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePlayerLocation) name:@"PlayerMoved" object:nil];
-        [delegate stoppedTracking];
-    }
-    else
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PlayerMoved" object:nil];
-    
-    [self updatePlayerLocation];
-    
-    return tracking;
-}
-
-- (void) updatePlayerLocation
-{
-    CLLocationDistance distance = [[AppModel sharedAppModel].playerLocation distanceFromLocation:madisonCenter];
-    isLocal = (distance <= MAX_DISTANCE);
-    [mapView setShowsUserLocation:isLocal];
-    if (mapView && (tracking || !isLocal) && notePopUp.hidden) [self zoomAndCenterMapAnimated:YES];
-}
-
 - (void) zoomAndCenterMapAnimated: (BOOL) animated
 {
-    appSetNextRegionChange = YES;
-    
     MKCoordinateRegion region = mapView.region;
-    if(isLocal)
-    {
-        region.center = [AppModel sharedAppModel].playerLocation.coordinate;
-        region.span = MKCoordinateSpanMake(ZOOM_SPAN, ZOOM_SPAN);
-    }
-    else
-    {
-        region.center = madisonCenter.coordinate;
-        region.span = MKCoordinateSpanMake(INITIAL_SPAN, INITIAL_SPAN);
-    }
+    region.center = madisonCenter.coordinate;
+    region.span = MKCoordinateSpanMake(INITIAL_SPAN, INITIAL_SPAN);
     [mapView setRegion:region animated:animated];
 }
 
@@ -267,15 +226,6 @@
 }
 
 #pragma mark MKMapViewDelegate
-- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
-{
-	if (!appSetNextRegionChange)
-    {
-        tracking = NO;
-        [delegate stoppedTracking];
-    }
-	appSetNextRegionChange = NO;
-}
 
 - (void)mapView:(MKMapView *)mV didAddAnnotationViews:(NSArray *)views
 {
