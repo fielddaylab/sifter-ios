@@ -20,27 +20,22 @@
 #import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
-#import "Logger.h"
-
 #import "NoteContent.h"
+
+#import "Logger.h"
 
 #define BUTTON_Y_OFFSET      10
 #define BUTTON_WIDTH         78
-#define BUTTON_HEIGHT        34
+#define BUTTON_HEIGHT        35
 #define BUTTON_CORNER_RADIUS 15.0f
 #define BUTTON_IMAGE_NAME    @"camera_roll.png"
 #define ANIMATE_DURATION     0.5
 #define ANIMATE_DELAY        1.0
 
-#define CROP_BOX_IMAGE_WIDTH     321
-#define CROP_BOX_IMAGE_HEIGHT    321
-
-#define CROP_IMAGE_WIDTH     320
-#define CROP_IMAGE_HEIGHT    320
+#define DegreesToRadians(x) ((x) * M_PI / 180.0)
 
 @interface CameraViewController()
 {
-    UIView *cameraOverlay;
     UIButton *libraryButton;
     UIImagePickerController *picker;
     
@@ -60,21 +55,27 @@
         self.title = NSLocalizedString(@"CameraTitleKey",@"");
         self.tabBarItem.image = [UIImage imageNamed:@"camera.png"];
         bringUpCamera = YES;
+        
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(didRotate:) name: UIDeviceOrientationDidChangeNotification object: nil];
     }
     return self;
 }
 
+- (void) dealloc
+{
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    cameraOverlay = [[UIView alloc] initWithFrame:self.view.frame];
 	
     libraryButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2-BUTTON_WIDTH/2, BUTTON_Y_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT)];
     libraryButton.layer.borderWidth   = 1.0f;
     libraryButton.layer.borderColor   = [UIColor darkGrayColor].CGColor;
-    libraryButton.backgroundColor     = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.25];
+    libraryButton.backgroundColor     = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3];
     libraryButton.layer.masksToBounds = YES;
     libraryButton.layer.cornerRadius  = BUTTON_CORNER_RADIUS;
     
@@ -82,14 +83,9 @@
     [libraryButton setImage: [UIImage imageNamed:BUTTON_IMAGE_NAME] forState: UIControlStateHighlighted];
     [libraryButton addTarget:self action:@selector(showLibraryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    [cameraOverlay addSubview:libraryButton];
-    
     picker = [[UIImagePickerController alloc]init];
     picker.delegate = self;
-    
-    UIImageView *cropBoxImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cropBox.png"]];
-    cropBoxImageView.center = cameraOverlay.center;
-    [cameraOverlay addSubview:cropBoxImageView];
+    picker.allowsEditing = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -117,7 +113,7 @@
 - (void)showCamera
 {
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.cameraOverlayView = cameraOverlay;
+    picker.cameraOverlayView = libraryButton;
     libraryButton.alpha = 0;
     [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
      {
@@ -165,8 +161,8 @@
     __weak CameraViewController *selfForBlock = self;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
-        UIImage *image = [[info objectForKey:UIImagePickerControllerOriginalImage] fixOrientation];
-        image = [selfForBlock cropImage:image];
+        UIImage *image = [[info objectForKey:UIImagePickerControllerEditedImage] fixOrientation];
+     //   image = [selfForBlock cropImage:image];
         selfForBlock.mediaData = UIImageJPEGRepresentation(image, 0.02);
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -245,9 +241,6 @@
     NSString *descript = [[NSString alloc] initWithFormat: @"%@ %@: %@. %@: %@", NSLocalizedString(@"CameraImageTakenKey", @""), NSLocalizedString(@"CameraGameKey", @""), gameName, NSLocalizedString(@"CameraPlayerKey", @""), nameToDisplay];
     [exifDict setDescription: descript];
     
-    //Ignore since it's nonsense
-    //	[exifDict setObject:@"X" forKey:@"Orientation"];
-    
     [locDict setObject:[AppModel sharedAppModel].playerLocation.timestamp forKey:(NSString*)kCGImagePropertyGPSTimeStamp];
 	
     if (exifLatitude <0.0){
@@ -278,40 +271,53 @@
 	
     return newJPEGData;
 }
-
+/*
 - (UIImage *)cropImage:(UIImage *)oldImage
 {
-    double xOffset = 0;
-    double yOffset = 0;
-    
-#warning  MAGIC NUMBER
-    int magicNumber = 8;
-    
-    double tabBarHeight = [[UITabBarController alloc] init].tabBar.frame.size.height;
-    double pictureTakingHeight = [[UIScreen mainScreen] bounds].size.height - tabBarHeight;
-    double imagePixelsPerScreenPixelWidth;
-    double imagePixelsPerScreenPixelHeight;
-    if(oldImage.size.width < oldImage.size.height)
-    {
-        imagePixelsPerScreenPixelWidth  = oldImage.size.width /[[UIScreen mainScreen] bounds].size.width;
-        imagePixelsPerScreenPixelHeight = oldImage.size.height/pictureTakingHeight;
-        xOffset = ([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_WIDTH/2) * imagePixelsPerScreenPixelWidth;
-        yOffset = (pictureTakingHeight/2-CROP_IMAGE_HEIGHT/2 - magicNumber)        * imagePixelsPerScreenPixelHeight;
-    }
+    CGRect rect;
+    if(oldImage.size.height > oldImage.size.width)
+        rect = CGRectMake(0, (oldImage.size.height - oldImage.size.width)/2, oldImage.size.width, oldImage.size.width);
     else
-    {
-        imagePixelsPerScreenPixelWidth  = oldImage.size.width /pictureTakingHeight;
-        imagePixelsPerScreenPixelHeight = oldImage.size.height/[[UIScreen mainScreen] bounds].size.width;
-        xOffset = (pictureTakingHeight/2-CROP_IMAGE_WIDTH/2 - magicNumber)          * imagePixelsPerScreenPixelWidth;
-        yOffset = ([[UIScreen mainScreen] bounds].size.width/2-CROP_IMAGE_HEIGHT/2) * imagePixelsPerScreenPixelHeight;
-    }
-    
-    CGRect rect = CGRectMake(xOffset, yOffset, CROP_IMAGE_WIDTH * imagePixelsPerScreenPixelWidth, CROP_IMAGE_HEIGHT * imagePixelsPerScreenPixelHeight);
+        rect = CGRectMake((oldImage.size.width - oldImage.size.height)/2, 0, oldImage.size.height, oldImage.size.height);
     
     CGImageRef imageRef = CGImageCreateWithImageInRect(oldImage.CGImage, rect);
     UIImage *result = [UIImage imageWithCGImage:imageRef scale:oldImage.scale orientation:oldImage.imageOrientation];
     CGImageRelease(imageRef);
     return result;
+}
+*/
+
+- (void)didRotate:(NSNotification *)notification
+{
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    
+    //Ignoring specific orientations
+    if (orientation == UIDeviceOrientationFaceUp || orientation == UIDeviceOrientationFaceDown || orientation == UIDeviceOrientationUnknown)
+        return;
+    
+    if (UIDeviceOrientationIsPortrait(orientation))
+    {
+        CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+        rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(0));
+        libraryButton.transform = rotationTransform;
+        libraryButton.frame = CGRectMake(self.view.frame.size.width/2-BUTTON_WIDTH/2, BUTTON_Y_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT);
+        rotationTransform = CGAffineTransformIdentity;
+        rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(0));
+        libraryButton.transform = rotationTransform;
+    }
+    else
+    {
+        CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+        rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(0));
+        libraryButton.transform = rotationTransform;
+        if (orientation == UIDeviceOrientationLandscapeLeft)
+            libraryButton.center = CGPointMake([UIScreen mainScreen].bounds.size.width - (BUTTON_Y_OFFSET + BUTTON_HEIGHT/2), [UIScreen mainScreen].bounds.size.height/2 - BUTTON_WIDTH/2);
+        else
+            libraryButton.center = CGPointMake(BUTTON_Y_OFFSET + BUTTON_HEIGHT/2, [UIScreen mainScreen].bounds.size.height/2 - BUTTON_WIDTH/2);
+        rotationTransform = CGAffineTransformIdentity;
+        rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(90));
+        libraryButton.transform = rotationTransform;
+    }
 }
 
 #pragma mark Memory Management
