@@ -81,8 +81,6 @@
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
-		89B7DAB017B41A680067D4E3 /* CameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B7DAAF17B41A680067D4E3 /* CameraOverlay.m */; };
-		89B7DAB417B43D0A0067D4E3 /* CustomImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89B7DAB317B43D0A0067D4E3 /* CustomImagePickerController.m */; };
 		89B9200D17A702AF0011ABFD /* shareWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9200B17A702AE0011ABFD /* shareWhite.png */; };
 		89B9200E17A702AF0011ABFD /* shareWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9200C17A702AE0011ABFD /* shareWhite@2x.png */; };
 		89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */; };
@@ -336,10 +334,6 @@
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
 		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
 		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
-		89B7DAAE17B41A680067D4E3 /* CameraOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraOverlay.h; sourceTree = "<group>"; };
-		89B7DAAF17B41A680067D4E3 /* CameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraOverlay.m; sourceTree = "<group>"; };
-		89B7DAB217B43D0A0067D4E3 /* CustomImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomImagePickerController.h; sourceTree = "<group>"; };
-		89B7DAB317B43D0A0067D4E3 /* CustomImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomImagePickerController.m; sourceTree = "<group>"; };
 		89B9200B17A702AE0011ABFD /* shareWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareWhite.png; sourceTree = "<group>"; };
 		89B9200C17A702AE0011ABFD /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "showTagsIconBlue@2x.png"; sourceTree = "<group>"; };
@@ -820,10 +814,6 @@
 				A7E39EAB0F5F60D000826198 /* CameraViewController.h */,
 				A7E39EAC0F5F60D000826198 /* CameraViewController.m */,
 				A7E39EC90F5F655E00826198 /* CameraViewController.xib */,
-				89B7DAAE17B41A680067D4E3 /* CameraOverlay.h */,
-				89B7DAAF17B41A680067D4E3 /* CameraOverlay.m */,
-				89B7DAB217B43D0A0067D4E3 /* CustomImagePickerController.h */,
-				89B7DAB317B43D0A0067D4E3 /* CustomImagePickerController.m */,
 			);
 			name = Camera;
 			sourceTree = "<group>";
@@ -1560,8 +1550,6 @@
 				89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */,
 				891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */,
 				890621A1179883510086463C /* InnovTagCell.m in Sources */,
-				89B7DAB017B41A680067D4E3 /* CameraOverlay.m in Sources */,
-				89B7DAB417B43D0A0067D4E3 /* CustomImagePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
