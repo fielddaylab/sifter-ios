@@ -10,6 +10,7 @@
 
 #import <AssetsLibrary/AssetsLibrary.h>
 
+#define ANIMATE_DURATION     0.5
 #define DegreesToRadians(x) ((x) * M_PI / 180.0)
 
 @interface CameraOverlayView()
@@ -34,8 +35,9 @@
         delegate = aDelegate;
         
         CGRect libraryFrame = frame;
-        libraryFrame.origin.x = 0;
+        libraryFrame.origin.x = frame.size.width - BUTTON_WIDTH - BUTTON_PADDING;
         libraryFrame.origin.y = 0;
+        libraryFrame.size.width = BUTTON_WIDTH;
         
         libraryButton = [UIButton buttonWithType:UIButtonTypeCustom];
         libraryButton.frame = libraryFrame;
@@ -74,6 +76,8 @@
                                                                           }
                                                                       }];
                                              }
+                                             //      else
+                                             //          [spinner removeFromSuperview];
                                          }
                                          
                                          *stop = NO;
@@ -105,29 +109,46 @@
     if (orientation == UIDeviceOrientationFaceUp || orientation == UIDeviceOrientationFaceDown || orientation == UIDeviceOrientationUnknown)
         return;
     
-    float degrees;
-    
-    if (orientation == UIDeviceOrientationPortrait)
-        degrees = 0;
-    else if(orientation == UIDeviceOrientationLandscapeLeft)
-        degrees = 90;
-    else if (orientation == UIDeviceOrientationLandscapeRight)
-        degrees = 270;
-    else
-        degrees = 180;
-    
-    CGAffineTransform rotationTransform = CGAffineTransformIdentity;
-    rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(degrees));
-    libraryButton.transform = rotationTransform;
+    [UIView animateWithDuration:ANIMATE_DURATION delay:0.0f options:UIViewAnimationCurveEaseIn animations:^
+     {
+         float degrees;
+         if(orientation == UIDeviceOrientationLandscapeLeft)
+         {
+             CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+             rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(0));
+             libraryButton.transform = rotationTransform;
+             libraryButton.frame = CGRectMake(BUTTON_PADDING, 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+             
+             degrees = 90;
+         }
+         else
+         {
+             CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+             rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(0));
+             libraryButton.transform = rotationTransform;
+             libraryButton.frame = CGRectMake(self.frame.size.width - BUTTON_WIDTH - BUTTON_PADDING, 0, BUTTON_WIDTH, BUTTON_HEIGHT);
+             
+             if (orientation == UIDeviceOrientationPortrait)
+                 degrees = 0;
+             else if (orientation == UIDeviceOrientationLandscapeRight)
+                 degrees = 270;
+             else
+                 degrees = 180;
+         }
+         
+         CGAffineTransform rotationTransform = CGAffineTransformIdentity;
+         rotationTransform = CGAffineTransformRotate(rotationTransform, DegreesToRadians(degrees));
+         libraryButton.transform = rotationTransform;
+     } completion:nil];
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end

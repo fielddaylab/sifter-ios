@@ -110,8 +110,6 @@
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     
     [showTagsButton setTintColor:[UIColor orangeColor]];
-    
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 }
 
 - (void) viewWillAppear:(BOOL)animated

@@ -11,6 +11,10 @@
 - (void)showLibraryButtonPressed:(id)sender;
 @end
 
+#define BUTTON_WIDTH         40
+#define BUTTON_HEIGHT        BUTTON_WIDTH
+#define BUTTON_PADDING       15
+
 @interface CameraOverlayView : UIView
 - (id)initWithFrame:(CGRect)frame andDelegate:(id<CameraOverlayViewDelegate>) delegate;
 @end

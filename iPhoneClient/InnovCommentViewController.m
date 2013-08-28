@@ -71,11 +71,16 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [super viewDidLoad];
     
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
+        commentTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
+        commentTableView.scrollIndicatorInsets = commentTableView.contentInset;
+    }
+    
     addCommentBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
                                                                 self.view.bounds.size.height - COMMENT_BAR_HEIGHT,
                                                                 self.view.bounds.size.width,
                                                                 COMMENT_BAR_HEIGHT)];
-    addCommentBar.barStyle = UIBarStyleBlackOpaque;
     addCommentBar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:addCommentBar];
     

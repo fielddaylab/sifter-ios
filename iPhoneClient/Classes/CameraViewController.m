@@ -25,9 +25,8 @@
 
 #import "Logger.h"
 
-#define BUTTON_WIDTH         40
-#define BUTTON_HEIGHT        BUTTON_WIDTH
-#define BUTTON_PADDING       15
+#define ANIMATE_DURATION     0.5
+#define ANIMATE_DELAY        1.0
 
 @interface CameraViewController() <CameraOverlayViewDelegate>
 {
@@ -87,15 +86,19 @@
 
 - (void)showCamera
 {
-    CGRect frame = CGRectMake(picker.view.frame.size.width - BUTTON_WIDTH - BUTTON_PADDING, 435, BUTTON_WIDTH, BUTTON_HEIGHT);
+    CGRect frame = CGRectMake(0, 355, picker.view.frame.size.width, BUTTON_HEIGHT);
     if (picker.view.bounds.size.height > 480.0f)
-        frame.origin.y = 535;
+        frame.origin.y = 422;
     
     overlay = [[CameraOverlayView alloc] initWithFrame:frame andDelegate:self];
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.view.clipsToBounds = NO;
-
-    [picker.view addSubview:overlay];
+    picker.cameraOverlayView = overlay;
+    
+    overlay.alpha = 0;
+    [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
+    {
+       overlay.alpha = 1;
+    } completion:nil];
     
 	[self presentModalViewController:picker animated:NO];
 }
