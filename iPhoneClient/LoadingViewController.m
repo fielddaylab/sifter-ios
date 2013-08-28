@@ -8,7 +8,7 @@
 
 #import "LoadingViewController.h"
 #import "AppModel.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 @interface LoadingViewController ()
 
 @end

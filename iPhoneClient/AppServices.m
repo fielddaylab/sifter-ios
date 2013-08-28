@@ -10,7 +10,7 @@
 
 #import "AppModel.h"
 #import "ARISUploader.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "Logger.h"
 
 #import "Tag.h"

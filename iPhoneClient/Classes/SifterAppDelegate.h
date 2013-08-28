@@ -1,6 +1,6 @@
 ﻿//
-//  ARISAppDelegate.h
-//  ARIS
+//  SifterAppDelegate.h
+//  Sifter
 //
 //  Created by Ben Longoria on 2/11/09.
 //  Copyright University of Wisconsin 2009. All rights reserved.
@@ -10,20 +10,18 @@
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMotion/CoreMotion.h>
 #import "AudioToolbox/AudioToolbox.h"
-
 #import "Reachability.h"
 
 #import "Crittercism.h"
-
 #import "SimpleMailShare.h"
 #import "SimpleTwitterShare.h"
 #import "SimpleFacebookShare.h"
 
-#define SERVER                       @"http://dev.arisgames.org/server"  //dev.
+#define SERVER                       @"http://arisgames.org/server"  //dev.
 #define HOME_URL                     @"www.arisgames.org/yoi"
-#define GAME_ID                      3438//10690//3438 //10690            // 3438 on dev      10690 on prod
+#define GAME_ID                      10690//3438 //10690            // 3438 on dev      10690 on prod
 
-@interface ARISAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
+@interface SifterAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {
 	UIWindow *window;
     AVAudioPlayer *player;
@@ -39,4 +37,5 @@
 - (void) playAudioAlert:(NSString*)wavFileName shouldVibrate:(BOOL)shouldVibrate;
 - (void) stopAudio;
 - (BOOL) application:(UIApplication *)application handleOpenURL:(NSURL *)url;
+- (void) makeNavBarTransparent: (UINavigationBar *) navBar;
 @end

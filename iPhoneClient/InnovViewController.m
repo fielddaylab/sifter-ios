@@ -11,7 +11,7 @@
 
 #import "AppModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "Note.h"
 #import "InnovNoteModel.h"
 #import "InnovPresentNoteDelegate.h"
@@ -67,6 +67,8 @@
 {
     [super viewDidLoad];
     
+    self.wantsFullScreenLayout = YES;
+    
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
     [self addChildViewController:mapVC];
@@ -87,10 +89,10 @@
     
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height)];
     searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    searchBar.barStyle = UIBarStyleBlack;
     UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.navigationController.navigationBar.frame.size.width-10, self.navigationController.navigationBar.frame.size.height)];
     searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     searchBar.delegate = self;
+    [searchBar setBackgroundImage:[UIImage new]];
     [searchBarView addSubview:searchBar];
     self.navigationItem.titleView = searchBarView;
     
@@ -145,6 +147,8 @@
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    [(SifterAppDelegate *)[[UIApplication sharedApplication] delegate] makeNavBarTransparent:self.navigationController.navigationBar];
     
     if(noteToAdd != nil)
     {
@@ -266,7 +270,7 @@
 
 - (IBAction)trackingButtonPressed:(id)sender
 {
-	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
+	[(SifterAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
     [mapVC zoomAndCenterMapAnimated: YES];
 }
 

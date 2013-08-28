@@ -11,7 +11,7 @@
 
 #import "AppModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "ForgotViewController.h"
 #import "SelfRegistrationViewController.h"
 
@@ -56,7 +56,7 @@
     loginView.readPermissions = @[@"email"];
     loginView.publishPermissions = @[@"publish_actions"];
     loginView.defaultAudience = FBSessionDefaultAudienceFriends;
-    loginView.delegate = ((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare;
+    loginView.delegate = ((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare;
     [self.view addSubview:loginView];
     [loginView sizeToFit];
 }

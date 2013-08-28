@@ -7,7 +7,7 @@
 //
 
 #import "AppModel.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "AsyncMediaImageView.h"
 #import "AnnotationView.h"
 #import "Annotation.h"

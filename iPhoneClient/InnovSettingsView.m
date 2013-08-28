@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "AppModel.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 
 #define ANIMATION_DURATION 0.1f
 #define POINTER_LENGTH 10
@@ -124,7 +124,7 @@
     [defaults setObject:  [AppModel sharedAppModel].displayName     forKey:@"displayName"];
     [defaults synchronize];
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare logOut];
+    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare logOut];
     
     [self updateLogInOutButtonTitle];
     

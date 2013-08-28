@@ -9,7 +9,7 @@
 #import "DropOnMapViewController.h"
 
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "DDAnnotation.h"
 #import "DDAnnotationView.h"
 #import "AnnotationView.h"

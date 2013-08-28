@@ -22,7 +22,7 @@
 #import <Social/Social.h>
 #import "SimpleTwitterShare.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "ViewControllerHelper.h"
 #import "SVProgressHUD.h"
 

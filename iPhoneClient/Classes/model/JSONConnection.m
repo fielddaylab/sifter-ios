@@ -8,7 +8,7 @@
 
 #import "JSONConnection.h"
 #import "AppModel.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "AppServices.h"
 #import "ARISURLConnection.h"
 

@@ -19,7 +19,4 @@ extern NSString *const kMediaTypeAudio;
 @property(nonatomic, strong) NSData *image;
 @property(nonatomic, strong) NSNumber *uid;
 
-
 @end
-
-

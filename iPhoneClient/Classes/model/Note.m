@@ -7,7 +7,7 @@
 //
 
 #import "Note.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "AppModel.h"
 #import "NoteContent.h"
 

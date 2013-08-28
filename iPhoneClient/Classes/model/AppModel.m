@@ -7,7 +7,7 @@
 //
 
 #import "AppModel.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "Media.h"
 #import "AppServices.h"
 
