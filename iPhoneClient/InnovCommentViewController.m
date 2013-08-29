@@ -21,7 +21,7 @@
 
 #define DEFAULT_TEXT                @"Add a comment..."
 #define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
-#define DEFAULT_TEXTVIEW_MARGIN     8
+#define DEFAULT_TEXTVIEW_MARGIN     0
 #define ADJUSTED_TEXTVIEW_MARGIN    0
 
 #define COMMENT_BAR_HEIGHT          46
@@ -70,6 +70,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.wantsFullScreenLayout = YES;
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
@@ -153,8 +155,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [super viewDidDisappear:animated];
     [self.view removeKeyboardControl];
 }
-
-
 
 #pragma mark Refresh
 

@@ -237,7 +237,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
         [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
-        
         [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
         [[UIBarButtonItem appearance]       setTintColor:[UIColor SifterColorBarButtonTint]];
         [[UISegmentedControl appearance]    setTintColor:[UIColor SifterColorSegmentedControlTint]];

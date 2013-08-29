@@ -74,7 +74,7 @@
     }
     else
     {
-        [myRecentNotesSlider setValue:((int)(sender.value + 0.5)) animated:NO];
+        [myRecentNotesSlider setValue:((int)0.0) animated:NO];
         
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Must Be Logged In" message:@"You must be logged in to receive notifications about notes you created." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
         [alert show];

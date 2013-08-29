@@ -15,6 +15,8 @@
 #import "ForgotViewController.h"
 #import "SelfRegistrationViewController.h"
 
+#define BUTTON_PADDING 20
+
 @interface LoginViewController() <SelfRegistrationDelegate>
 {
 	IBOutlet UITextField *usernameField;
@@ -53,6 +55,9 @@
     
     FBLoginView *loginView = [[FBLoginView alloc] init];
     loginView.center = self.view.center;
+    CGRect loginFrame = loginView.frame;
+    loginFrame.origin.y = loginButton.frame.origin.y + loginButton.frame.size.height + BUTTON_PADDING;
+    loginView.frame = loginFrame;
     loginView.readPermissions = @[@"email"];
     loginView.publishPermissions = @[@"publish_actions"];
     loginView.defaultAudience = FBSessionDefaultAudienceFriends;

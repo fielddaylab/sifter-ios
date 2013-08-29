@@ -78,11 +78,11 @@
 		8906DE5B1799C32500B2D7BF /* commentWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE4D1799C32500B2D7BF /* commentWhite.png */; };
 		8906DE5E179D86E800B2D7BF /* likeBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */; };
 		8906DE5F179D86E800B2D7BF /* likeBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE5D179D86E800B2D7BF /* likeBlack.png */; };
+		8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10017CFB2BA00AA6165 /* shareWhite.png */; };
+		8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */; };
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
-		89B9200D17A702AF0011ABFD /* shareWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9200B17A702AE0011ABFD /* shareWhite.png */; };
-		89B9200E17A702AF0011ABFD /* shareWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9200C17A702AE0011ABFD /* shareWhite@2x.png */; };
 		89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */; };
 		89B9201417A712C60011ABFD /* showTagsIconBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201217A712C60011ABFD /* showTagsIconBlue.png */; };
 		89B9201717A7141A0011ABFD /* trackingIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201517A7141A0011ABFD /* trackingIconBlue@2x.png */; };
@@ -92,6 +92,7 @@
 		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
 		89E1608617CBD7550014AF3C /* UIColor+SifterColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E1608517CBD7550014AF3C /* UIColor+SifterColors.m */; };
 		89E1608A17CBE36F0014AF3C /* CameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E1608917CBE36F0014AF3C /* CameraOverlayView.m */; };
+		89E6E10F17CFEEA100038658 /* CustomRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E6E10E17CFEEA100038658 /* CustomRefreshControl.m */; };
 		89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F99AF017866A7900DEB46F /* ProgressButton.m */; };
 		89FFAF32178B3BF800A0F589 /* WildcardGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FFAF31178B3BF800A0F589 /* WildcardGestureRecognizer.m */; };
 		A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7149F9C0FB89DC8008BAB5D /* Settings.bundle */; };
@@ -330,13 +331,13 @@
 		8906DE4D1799C32500B2D7BF /* commentWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commentWhite.png; sourceTree = "<group>"; };
 		8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "likeBlack@2x.png"; sourceTree = "<group>"; };
 		8906DE5D179D86E800B2D7BF /* likeBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = likeBlack.png; sourceTree = "<group>"; };
+		8918B10017CFB2BA00AA6165 /* shareWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareWhite.png; sourceTree = "<group>"; };
+		8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
 		891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverContentView.m; sourceTree = "<group>"; };
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
 		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
 		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
-		89B9200B17A702AE0011ABFD /* shareWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareWhite.png; sourceTree = "<group>"; };
-		89B9200C17A702AE0011ABFD /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "showTagsIconBlue@2x.png"; sourceTree = "<group>"; };
 		89B9201217A712C60011ABFD /* showTagsIconBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = showTagsIconBlue.png; sourceTree = "<group>"; };
 		89B9201517A7141A0011ABFD /* trackingIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trackingIconBlue@2x.png"; sourceTree = "<group>"; };
@@ -350,6 +351,8 @@
 		89E1608517CBD7550014AF3C /* UIColor+SifterColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SifterColors.m"; sourceTree = "<group>"; };
 		89E1608817CBE36F0014AF3C /* CameraOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraOverlayView.h; sourceTree = "<group>"; };
 		89E1608917CBE36F0014AF3C /* CameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraOverlayView.m; sourceTree = "<group>"; };
+		89E6E10D17CFEEA100038658 /* CustomRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshControl.h; sourceTree = "<group>"; };
+		89E6E10E17CFEEA100038658 /* CustomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshControl.m; sourceTree = "<group>"; };
 		89F99AEF17866A7900DEB46F /* ProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressButton.h; sourceTree = "<group>"; };
 		89F99AF017866A7900DEB46F /* ProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressButton.m; sourceTree = "<group>"; };
 		89FFAF30178B3BF800A0F589 /* WildcardGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WildcardGestureRecognizer.h; sourceTree = "<group>"; };
@@ -736,6 +739,8 @@
 		89B9201017A710B40011ABFD /* NoteView */ = {
 			isa = PBXGroup;
 			children = (
+				8918B10017CFB2BA00AA6165 /* shareWhite.png */,
+				8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */,
 				11B28B9814C4A49600759BCD /* play.png */,
 				11B28B9714C4A49500759BCD /* stop_button.png */,
 				8906DE4C1799C32500B2D7BF /* flagWhite.png */,
@@ -746,8 +751,6 @@
 				7196616C1799D12D00605767 /* likeWhite@2x.png */,
 				7196616D1799D12E00605767 /* likeRed.png */,
 				7196616E1799D12E00605767 /* likeRed@2x.png */,
-				89B9200B17A702AE0011ABFD /* shareWhite.png */,
-				89B9200C17A702AE0011ABFD /* shareWhite@2x.png */,
 				8906DE4D1799C32500B2D7BF /* commentWhite.png */,
 				8906DE491799C32500B2D7BF /* commentWhite@2x.png */,
 			);
@@ -1193,6 +1196,8 @@
 				DB071205176F80220069E15A /* InnovCommentCell.m */,
 				DBEDC716174BD02B004C8966 /* TMPhotoQuiltViewCell.h */,
 				DBEDC717174BD02B004C8966 /* TMPhotoQuiltViewCell.m */,
+				89E6E10D17CFEEA100038658 /* CustomRefreshControl.h */,
+				89E6E10E17CFEEA100038658 /* CustomRefreshControl.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1376,6 +1381,7 @@
 				11DD5435141E80D20007CD70 /* PinShadow.png in Resources */,
 				111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */,
 				ABAFBAC5145A0B810044491C /* Bascom Hill.gpx in Resources */,
+				8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */,
 				ABAFBAC6145A0B810044491C /* Engage Offices.gpx in Resources */,
 				ABAFBAC7145A0B810044491C /* Engineering Fountain.gpx in Resources */,
 				ABAFBAC8145A0B810044491C /* Institutes for Discovery.gpx in Resources */,
@@ -1417,6 +1423,7 @@
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
 				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
+				8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */,
 				89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */,
 				71FE1CDE1798952B00EB5A04 /* YOIToolbar1.png in Resources */,
 				719661691799A15C00605767 /* 103-mapWhite.png in Resources */,
@@ -1435,8 +1442,6 @@
 				719661761799D63400605767 /* flagBlack@2x.png in Resources */,
 				8906DE5E179D86E800B2D7BF /* likeBlack@2x.png in Resources */,
 				8906DE5F179D86E800B2D7BF /* likeBlack.png in Resources */,
-				89B9200D17A702AF0011ABFD /* shareWhite.png in Resources */,
-				89B9200E17A702AF0011ABFD /* shareWhite@2x.png in Resources */,
 				89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */,
 				89B9201417A712C60011ABFD /* showTagsIconBlue.png in Resources */,
 				89B9201717A7141A0011ABFD /* trackingIconBlue@2x.png in Resources */,
@@ -1488,6 +1493,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89E6E10F17CFEEA100038658 /* CustomRefreshControl.m in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.mm in Sources */,
 				1D3623260D0F684500981E51 /* SifterAppDelegate.m in Sources */,
 				2B3D11B10F4361940067FD3A /* LoginViewController.m in Sources */,

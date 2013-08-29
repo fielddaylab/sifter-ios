@@ -143,6 +143,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewDidLoad];
     
+    self.wantsFullScreenLayout = YES;
+    
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
         editNoteTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);

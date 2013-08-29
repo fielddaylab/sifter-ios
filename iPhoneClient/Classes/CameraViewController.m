@@ -71,6 +71,7 @@
     {
         [self.navigationController setNavigationBarHidden:YES animated:NO];
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleBlackTranslucent];
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     
@@ -86,7 +87,7 @@
 
 - (void)showCamera
 {
-    CGRect frame = CGRectMake(0, 355, picker.view.frame.size.width, BUTTON_HEIGHT);
+    CGRect frame = CGRectMake(0, 375, picker.view.frame.size.width, BUTTON_HEIGHT);
     if (picker.view.bounds.size.height > 480.0f)
         frame.origin.y = 422;
     

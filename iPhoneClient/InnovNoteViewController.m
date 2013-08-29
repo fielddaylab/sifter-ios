@@ -31,8 +31,6 @@
 #define BUTTON_WIDTH        36
 #define BUTTON_HEIGHT       36
 
-//#define DEFAULT_FONT        [UIFont fontWithName:@"Helvetica" size:14]
-
 @interface InnovNoteViewController ()<InnovNoteEditorViewDelegate>
 {
     UIScrollView *noteView;
@@ -65,6 +63,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
+        self.view.backgroundColor = [UIColor whiteColor];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshViewFromModel) name:@"NoteModelUpdate:Notes" object:nil];
     }
     return self;
@@ -86,9 +85,11 @@
     noteView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
-        noteView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
+#warning 44.0 SHOULD BE self.navigationController.navigationBar.frame.size.height change if we don't have a white nav on a white backround. Apple is taking over and setting what it wants
+        noteView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + 44.0,0.0,0.0,0.0);
         noteView.scrollIndicatorInsets = noteView.contentInset;
     }
+    
     noteView.bounces = NO;
     [self.view addSubview:noteView];
     
@@ -172,12 +173,8 @@
                                                                    IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT,
                                                                    self.view.frame.size.width,
                                                                    BUTTON_HEIGHT)];
-    // captionTextView.contentInset = UIEdgeInsetsMake(-8,-4,-8,-4);
     captionTextView.userInteractionEnabled = NO;
-    //captionTextView.font = DEFAULT_FONT;
     [noteView addSubview:captionTextView];
-    
-    noteView.contentOffset = CGPointMake(0, -self.navigationController.navigationBar.frame.size.height);
 }
 
 - (void)viewDidUnload
@@ -224,9 +221,24 @@
     [[AppServices sharedAppServices] fetchNote:self.note.noteId];
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    CGRect frame = captionTextView.frame;
+    frame.size.height = captionTextView.contentSize.height;
+    captionTextView.frame = frame;
+    if(!([captionTextView.text length] > 0))
+        captionTextView.hidden = YES;
+    
+    noteView.contentSize = CGSizeMake(self.view.frame.size.width, IMAGE_Y_MARGIN + imageView.frame.size.height + BUTTON_HEIGHT + captionTextView.frame.size.height);
+}
+
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
+    [ARISMoviePlayer.moviePlayer stop];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification      object:ARISMoviePlayer.moviePlayer];

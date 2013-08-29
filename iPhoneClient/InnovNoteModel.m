@@ -34,6 +34,7 @@
     BOOL clearBeforeFetching;
     
     ContentSelector selectedContent;
+    id<RefreshDelegate> refreshDelegate;
 }
 
 @end
@@ -105,9 +106,9 @@
 -(void) clearAllData
 {
     [allNotes removeAllObjects];
+    [self sendSelectedTagsUpdateNotification];
     for(int i = 0; i < kNumContents; ++i)
         [[arrayOfArraysByType objectAtIndex:i] removeAllObjects];
-    [self sendSelectedTagsUpdateNotification];
     [allNotes addEntriesFromDictionary:notifNotes];
     [notifNotes removeAllObjects];
     [self clearAllNotesFetched];
@@ -188,6 +189,22 @@
 }
 
 #pragma mark Fetch More Notes
+
+-(void) refreshCurrentNotesWithDelegate:(id<RefreshDelegate>) delegate
+{
+    refreshDelegate = delegate;
+    [AppServices sharedAppServices].shouldIgnoreResults = YES;
+    
+    [[arrayOfArraysByType objectAtIndex:selectedContent] removeAllObjects];
+    [allNotes addEntriesFromDictionary:notifNotes];
+    [notifNotes removeAllObjects];
+    [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:NO] atIndexedSubscript:selectedContent];
+    [self clearAvailableData];
+    [self setUpNotifications];
+    unprocessedNotifs = YES;
+    
+    [self fetchMoreNotes];
+}
 
 - (void) fetchMoreNotes
 {
@@ -270,6 +287,9 @@
         if([availableNotes count] < MAX_MAP_NOTES_COUNT && ![[allNotesFetchedInCategory objectAtIndex:updatedNotes] boolValue])
             [self fetchMoreNotesOfType:selectedContent];
     }
+    
+    if(refreshDelegate)
+        [refreshDelegate refreshCompleted];
 }
 
 -(void) newTagsReceived:(NSNotification *)notification

@@ -16,6 +16,7 @@
 #import "TMQuiltView.h"
 #import "TMPhotoQuiltViewCell.h"
 #import "AsyncMediaImageView.h"
+#import "CustomRefreshControl.h"
 
 #define NUM_COLUMNS 2
 
@@ -29,9 +30,10 @@
 
 static NSString * const CELL_ID = @"Cell";
 
-@interface InnovListViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate>
+@interface InnovListViewController () <TMQuiltViewDataSource, TMQuiltViewDelegate, RefreshDelegate>
 {
     TMQuiltView *quiltView;
+    CustomRefreshControl *refreshControl;
     NSArray *notes;
     
     BOOL currentlyWaitingForMoreNotes;
@@ -69,11 +71,16 @@ static NSString * const CELL_ID = @"Cell";
     quiltViewFrame.origin.x = 0;
     quiltViewFrame.origin.y = 0;
     quiltView = [[TMQuiltView alloc] initWithFrame:quiltViewFrame];
-    quiltView.bounces = NO;
+    quiltView.bounces = YES;
     quiltView.delegate = self;
     quiltView.dataSource = self;
     quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:quiltView];
+    
+    refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
+    refreshControl.tintColor = [UIColor whiteColor];
+    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [quiltView addSubview:refreshControl];
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
@@ -82,6 +89,16 @@ static NSString * const CELL_ID = @"Cell";
     }
     
     [quiltView reloadData];
+}
+
+-(void)refresh:(UIRefreshControl *)refreshControl
+{
+    [[InnovNoteModel sharedNoteModel] refreshCurrentNotesWithDelegate:self];
+}
+
+- (void) refreshCompleted
+{
+    [refreshControl endRefreshing];
 }
 
 - (void) animateInNote:(Note *) newNote
@@ -121,7 +138,6 @@ static NSString * const CELL_ID = @"Cell";
     [UIView setAnimationDuration:ANIMATION_TIME];
     quiltView.contentOffset = CGPointMake(0, desiredLocation);
     [UIView commitAnimations];
-    
 }
 
 - (void) updateNoteList: (NSNotification *) notification
