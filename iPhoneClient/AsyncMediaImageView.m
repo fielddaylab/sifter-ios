@@ -81,7 +81,7 @@
                 [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
                 
                 //put a spinner in the view
-                spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
                 spinner.hidesWhenStopped = YES;
                 [spinner startAnimating];
                 
@@ -128,7 +128,7 @@
 {
     if(!spinner)
     {
-        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinner.hidesWhenStopped = YES;
         [self addSubview:spinner];
     }
@@ -153,7 +153,7 @@
     //put a spinner in the view
     if(!spinner)
     {
-        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinner.hidesWhenStopped = YES;
         [self addSubview:spinner];
     }

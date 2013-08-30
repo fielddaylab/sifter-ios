@@ -17,14 +17,15 @@
 #import "TMPhotoQuiltViewCell.h"
 #import "AsyncMediaImageView.h"
 #import "CustomRefreshControl.h"
+#import "UIColor+SifterColors.h"
 
 #define NUM_COLUMNS 2
 
 #define CELL_HEIGHT 160
 #define CELL_WIDTH  160
 
-#define CELL_X_MARGIN 5
-#define CELL_Y_MARGIN 5
+#define CELL_X_MARGIN 3
+#define CELL_Y_MARGIN 3
 
 #define ANIMATION_TIME     0.5
 
@@ -76,9 +77,10 @@ static NSString * const CELL_ID = @"Cell";
     quiltView.dataSource = self;
     quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:quiltView];
+    quiltView.backgroundColor = [UIColor SifterColorWhite];
     
     refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
-    refreshControl.tintColor = [UIColor whiteColor];
+    //refreshControl.tintColor = [UIColor whiteColor];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
@@ -178,6 +180,7 @@ static NSString * const CELL_ID = @"Cell";
         cell.photoView.frame = frame;
         cell.photoView.dontUseImage = YES;
         cell.categoryIconView.frame = CGRectMake(cell.xMargin+cell.photoView.frame.size.width-ICON_WIDTH, cell.yMargin, ICON_WIDTH, ICON_HEIGHT);
+        cell.backgroundColor = [UIColor SifterColorWhite];
     }
     
     Note *note = [[InnovNoteModel sharedNoteModel] noteForNoteId:((Note *)[notes objectAtIndex:indexPath.row]).noteId];
