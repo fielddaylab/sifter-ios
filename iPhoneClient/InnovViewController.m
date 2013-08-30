@@ -16,7 +16,6 @@
 #import "InnovNoteModel.h"
 #import "InnovPresentNoteDelegate.h"
 
-#import "InnovSettingsView.h"
 #import "InnovPopOverView.h"
 #import "InnovPopOverNotifContentView.h"
 #import "LoginViewController.h"
@@ -28,22 +27,18 @@
 
 #define SWITCH_VIEWS_ANIMATION_DURATION 0.50
 
-@interface InnovViewController () <InnovSettingsViewDelegate, InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
+@interface InnovViewController () <InnovPresentNoteDelegate, InnovNoteEditorViewDelegate, UISearchBarDelegate>
 {
-    __weak IBOutlet UIButton *showTagsButton;
-    __weak IBOutlet UIButton *trackingButton;
-    
     __weak IBOutlet UIView *contentView;
-    __weak IBOutlet UIImageView *toolBarImageView;
+    __weak IBOutlet UIButton *cameraButton;
     
     UIButton *switchButton;
     UIBarButtonItem *switchViewsBarButton;
     UISearchBar *searchBar;
-    UIBarButtonItem *settingsBarButton;
+    UIBarButtonItem *tagsBarButton;
     
     InnovMapViewController  *mapVC;
     InnovListViewController *listVC;
-    InnovSettingsView *settingsView;
     InnovSelectedTagsViewController *selectedTagsVC;
     InnovPopOverView *popOver;
     
@@ -96,25 +91,15 @@
     [searchBarView addSubview:searchBar];
     self.navigationItem.titleView = searchBarView;
     
-    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    settingsButton.frame = CGRectMake(0, 0, 30, 30);
-    [settingsButton addTarget:self action:@selector(settingsPressed) forControlEvents:UIControlEventTouchUpInside];
-    [settingsButton setBackgroundImage: [UIImage imageNamed:@"settingsIcon.png"] forState:UIControlStateNormal];
-    [settingsButton setBackgroundImage: [UIImage imageNamed:@"settingsIcon.png"] forState:UIControlStateHighlighted];
-    settingsBarButton = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
-    self.navigationItem.rightBarButtonItem = settingsBarButton;
-    
-    settingsView = [[InnovSettingsView alloc] init];
-    settingsView.delegate = self;
-    CGRect settingsLocation = settingsView.frame;
-    settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
-    settingsLocation.origin.y = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
-    settingsView.frame = settingsLocation;
-    settingsView.alpha = 0.0f;
+    UIButton *tagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    tagsButton.frame = CGRectMake(0, 0, 30, 30);
+    [tagsButton addTarget:self action:@selector(showTagsPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [tagsButton setBackgroundImage: [UIImage imageNamed:@"horizLinesIcon.png"] forState:UIControlStateNormal];
+    [tagsButton setBackgroundImage: [UIImage imageNamed:@"horizLinesIcon.png"] forState:UIControlStateHighlighted];
+    tagsBarButton = [[UIBarButtonItem alloc] initWithCustomView:tagsButton];
+    self.navigationItem.rightBarButtonItem = tagsBarButton;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
-    
-    [showTagsButton setTintColor:[UIColor orangeColor]];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -210,33 +195,17 @@
 
 #pragma mark Buttons Pressed
 
-- (void)settingsPressed
+- (void)showTagsPressed:(id)sender
 {
-    if(![self.view.subviews containsObject:settingsView])
-    {
-        [self.view addSubview:settingsView];
-        [settingsView show];
-    }
-    else
-        [settingsView hide];
-}
-
-- (IBAction)showTagsPressed:(id)sender
-{
-    
     if(![self.view.subviews containsObject:selectedTagsVC.view])
     {
-        [showTagsButton setSelected:YES];
         [self addChildViewController:selectedTagsVC];
-        [self.view insertSubview:selectedTagsVC.view belowSubview:toolBarImageView];
+        [self.view insertSubview:selectedTagsVC.view belowSubview:cameraButton];
         [selectedTagsVC didMoveToParentViewController:self];
         [selectedTagsVC show];
     }
     else
-    {
-        [showTagsButton setSelected:NO];
         [selectedTagsVC hide];
-    }
 }
 
 - (IBAction)cameraPressed:(id)sender
@@ -268,12 +237,6 @@
 {
     if(buttonIndex)
         [self presentLogIn];
-}
-
-- (IBAction)trackingButtonPressed:(id)sender
-{
-	[(SifterAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
-    [mapVC zoomAndCenterMapAnimated: YES];
 }
 
 #pragma mark Settings Delegate Methods
@@ -330,8 +293,6 @@
 #warning SHOULD WORK and DID BEFORE Xcode 5
    // [self.view endEditing: YES];
     [searchBar resignFirstResponder];
-    [settingsView hide];
-    [showTagsButton setSelected:NO];
     [selectedTagsVC hide];
 }
 
@@ -398,11 +359,7 @@
 - (void)viewDidUnload
 {
     contentView = nil;
-    showTagsButton = nil;
-    trackingButton = nil;
     switchViewsBarButton = nil;
-    settingsView = nil;
-    toolBarImageView = nil;
     [super viewDidUnload];
 }
 

@@ -93,6 +93,7 @@
 		89E1608617CBD7550014AF3C /* UIColor+SifterColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E1608517CBD7550014AF3C /* UIColor+SifterColors.m */; };
 		89E1608A17CBE36F0014AF3C /* CameraOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E1608917CBE36F0014AF3C /* CameraOverlayView.m */; };
 		89E6E10F17CFEEA100038658 /* CustomRefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E6E10E17CFEEA100038658 /* CustomRefreshControl.m */; };
+		89E6E11117CFF8C900038658 /* horizLinesIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 89E6E11017CFF8C900038658 /* horizLinesIcon.png */; };
 		89F99AF117866A7900DEB46F /* ProgressButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F99AF017866A7900DEB46F /* ProgressButton.m */; };
 		89FFAF32178B3BF800A0F589 /* WildcardGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 89FFAF31178B3BF800A0F589 /* WildcardGestureRecognizer.m */; };
 		A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A7149F9C0FB89DC8008BAB5D /* Settings.bundle */; };
@@ -353,6 +354,7 @@
 		89E1608917CBE36F0014AF3C /* CameraOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraOverlayView.m; sourceTree = "<group>"; };
 		89E6E10D17CFEEA100038658 /* CustomRefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshControl.h; sourceTree = "<group>"; };
 		89E6E10E17CFEEA100038658 /* CustomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshControl.m; sourceTree = "<group>"; };
+		89E6E11017CFF8C900038658 /* horizLinesIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = horizLinesIcon.png; sourceTree = "<group>"; };
 		89F99AEF17866A7900DEB46F /* ProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressButton.h; sourceTree = "<group>"; };
 		89F99AF017866A7900DEB46F /* ProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressButton.m; sourceTree = "<group>"; };
 		89FFAF30178B3BF800A0F589 /* WildcardGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WildcardGestureRecognizer.h; sourceTree = "<group>"; };
@@ -714,6 +716,7 @@
 		89B9200F17A70EEE0011ABFD /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
+				89E6E11017CFF8C900038658 /* horizLinesIcon.png */,
 				AB8552C4176099D60027F1F5 /* listModeIcon.png */,
 				AB8552C5176099D60027F1F5 /* listModeIcon@2x.png */,
 				719661671799A15C00605767 /* 103-mapWhite.png */,
@@ -1423,6 +1426,7 @@
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
 				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
+				89E6E11117CFF8C900038658 /* horizLinesIcon.png in Resources */,
 				8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */,
 				89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */,
 				71FE1CDE1798952B00EB5A04 /* YOIToolbar1.png in Resources */,

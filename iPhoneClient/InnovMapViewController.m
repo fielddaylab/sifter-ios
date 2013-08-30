@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 
 #import "AppModel.h"
+#import "SifterAppDelegate.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "Logger.h"
@@ -36,7 +37,7 @@
 @interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
 
 {
-    IBOutlet MKMapView *mapView;
+    __weak IBOutlet MKMapView *mapView;
     InnovMapNotePopUp *notePopUp;
 
     CLLocation *madisonCenter;
@@ -93,6 +94,12 @@
     [mapView setShowsUserLocation:NO];
 }
 
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    mapView = nil;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
 #warning neccessary?
@@ -101,14 +108,6 @@
     //   else                                                                                  mapView.mapType = MKMapTypeStandard;
     [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
-    
-    UIView *legalView = nil;
-    for (UIView *subview in mapView.subviews) {
-        if ([subview isKindOfClass:[UILabel class]]) {
-            legalView = subview;
-        }
-    }
-    legalView.frame = CGRectMake(legalView.frame.origin.x, self.view.frame.size.height - 64, legalView.frame.size.width, legalView.frame.size.height);
 }
 
 /*
@@ -131,6 +130,11 @@
  }
  }
  */
+- (IBAction)trackingButtonPressed:(id)sender
+{
+	[(SifterAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
+    [self zoomAndCenterMapAnimated: YES];
+}
 
 #pragma mark user location
 
