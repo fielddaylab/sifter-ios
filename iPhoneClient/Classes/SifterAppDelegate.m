@@ -1,26 +1,28 @@
 //
-//  ARISAppDelegate.m
-//  ARIS
+//  SifterAppDelegate.m
+//  Sifter
 //
 //  Created by Ben Longoria on 2/11/09.
 //  Copyright University of Wisconsin 2009. All rights reserved.
 //
 
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 
 #import "AppModel.h"
 #import "AppServices.h"
 #import "InnovNoteModel.h"
 #import "InnovViewController.h"
 
-@interface ARISAppDelegate()
+#import "UIColor+SifterColors.h"
+
+@interface SifterAppDelegate()
 {
     InnovViewController *innov;
 }
 
 @end
 
-@implementation ARISAppDelegate
+@implementation SifterAppDelegate
 
 int readingCountUpToOneHundredThousand = 0;
 int steps = 0;
@@ -83,15 +85,18 @@ void uncaughtExceptionHandler(NSException *exception) {
 	NSLog(@"Current Locale: %@", [[NSLocale currentLocale] localeIdentifier]);
 	NSLog(@"Current language: %@", currentLanguage);
     
+    [self setUpWithDefaultAppearance];
     //[[UIAccelerometer sharedAccelerometer] setUpdateInterval:0.2];
     
-    //Init keys in UserDefaults in case the user has not visited the ARIS Settings page
+    //Init keys in UserDefaults in case the user has not visited the Sifter Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
 	[[AppModel sharedAppModel] initUserDefaults];
     
     innov = [[InnovViewController alloc] init];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
+    [self makeNavBarTransparent:nav.navigationBar];
+    
     if([window respondsToSelector:@selector(setRootViewController:)])
         [window setRootViewController:nav];
     else
@@ -128,7 +133,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-	NSLog(@"ARIS: Application Became Active");
+	NSLog(@"Sifter: Application Became Active");
 	[[AppModel sharedAppModel]       loadUserDefaults];
     [[AppServices sharedAppServices] resetCurrentlyFetchingVars];
     
@@ -172,14 +177,14 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-	NSLog(@"ARIS: Resigning Active Application");
+	NSLog(@"Sifter: Resigning Active Application");
 	[[AppModel sharedAppModel] saveUserDefaults];
     [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 }
 
 -(void) applicationWillTerminate:(UIApplication *)application
 {
-	NSLog(@"ARIS: Terminating Application");
+	NSLog(@"Sifter: Terminating Application");
     [[AppModel sharedAppModel] saveUserDefaults];
     [[AppModel sharedAppModel] saveCOREData];
     
@@ -222,6 +227,94 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)vibrate
 {
 	AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
+
+- (void)setUpWithDefaultAppearance
+{
+    
+    [[UINavigationBar appearance]       setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        // Load resources for iOS 6.1 or earlier
+        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+        [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
+        [[UIBarButtonItem appearance]       setTintColor:[UIColor SifterColorBarButtonTint]];
+        [[UISegmentedControl appearance]    setTintColor:[UIColor SifterColorSegmentedControlTint]];
+        [[UISearchBar appearance]           setTintColor:[UIColor SifterColorNavBarTint]];
+        [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
+        [[UITabBar appearance]              setTintColor:[UIColor SifterColorTabBarTint]];
+        [[UINavigationBar appearance]       setTintColor:[UIColor SifterColorNavBarTint]];
+        [[UINavigationBar appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIColor SifterColorNavBarText],                      UITextAttributeTextColor,
+          [UIColor clearColor],                               UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          nil]
+         ];
+        
+    } else {
+        // Load resources for iOS 7 or later
+        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleDefault];
+        [[UINavigationBar appearance] setBarTintColor:[UIColor SifterColorNavBarTint]];
+        [[UINavigationBar appearance] setTintColor:[UIColor SifterColorDarkGray]];
+        self.window.rootViewController.edgesForExtendedLayout = UIRectEdgeAll;
+        self.window.rootViewController.extendedLayoutIncludesOpaqueBars = NO;
+    }
+    
+    [[UILabel appearance] setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0]];
+    [[UILabel appearanceWhenContainedIn:[UIButton class],        nil] setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17]];
+    [[UILabel appearanceWhenContainedIn:[UITableViewCell class], nil] setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17]];
+    
+    [[UIBarButtonItem appearance] setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
+      [UIColor SifterColorDarkGray], UITextAttributeTextColor,
+      nil]
+                                                forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:
+     [UIImage imageNamed:@"1pxColorClear"]
+                                                      forState:UIControlStateNormal
+                                                    barMetrics:UIBarMetricsDefault];
+    
+    [[UISegmentedControl appearance] setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
+      [UIColor SifterColorWhite],                      UITextAttributeTextColor,
+      [UIColor clearColor],                               UITextAttributeTextShadowColor,
+      nil]
+                                                   forState:UIControlStateNormal];
+    
+    [[UISegmentedControl appearance]    setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIColor SifterColorBlack],                         UITextAttributeTextColor,
+      [UIColor clearColor],                               UITextAttributeTextShadowColor,
+      [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+      nil]
+                                                      forState:UIControlStateSelected];
+    
+    [[UINavigationBar appearance] setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIColor SifterColorNavBarText],                      UITextAttributeTextColor,
+      [UIColor clearColor],                               UITextAttributeTextShadowColor,
+      [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+      nil]
+     ];
+    
+    [[UITabBarItem appearance] setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIColor SifterColorTabBarText],                   UITextAttributeTextColor,
+      [UIFont fontWithName:@"HelveticaNeue-Light" size:0.0], UITextAttributeFont,
+      nil]
+                                             forState:UIControlStateNormal];
+}
+
+- (void) makeNavBarTransparent: (UINavigationBar *) navBar
+{
+    navBar.translucent = YES;
+    navBar.opaque = NO;
+    navBar.alpha = 0.8f;
+    if ([navBar respondsToSelector:@selector(shadowImage)])
+        [navBar setShadowImage:[[UIImage alloc] init]];
 }
 
 #pragma mark Memory Management

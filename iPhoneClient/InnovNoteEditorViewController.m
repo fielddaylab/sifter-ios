@@ -23,7 +23,7 @@ typedef enum {
 #import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "Note.h"
 #import "NoteContent.h"
 #import "Tag.h"
@@ -142,9 +142,14 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    CGRect frame = [UIScreen mainScreen].applicationFrame;
-    frame.size.height -= self.navigationController.navigationBar.frame.size.height;
-    self.view.frame = frame;
+    
+    self.wantsFullScreenLayout = YES;
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
+        editNoteTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
+        editNoteTableView.scrollIndicatorInsets = editNoteTableView.contentInset;
+    }
     
     cancelButton = [[UIBarButtonItem alloc] initWithTitle: CANCEL_BUTTON_TITLE
                                                     style: UIBarButtonItemStyleDone
@@ -459,7 +464,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
 #warning fix url to be web notebook url
         NSString *url  = HOME_URL;
-        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
+        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
     }
     
     if(shareToTwitter)
@@ -467,7 +472,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
         NSString *url  = HOME_URL;
 #warning fix url to be web notebook url
-        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
+        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
     }
     
     [[InnovNoteModel sharedNoteModel] updateNote:note];
@@ -750,8 +755,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     if(shareToFacebook)
     {
         socialView.facebookButton.alpha = 1.0f;
-        if(![((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare isLoggedIn])
-            [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare openSession];
+        if(![((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare isLoggedIn])
+            [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare openSession];
     }
     else
         socialView.facebookButton.alpha = NO_SHARE_ALPHA;
@@ -765,7 +770,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     {
         socialView.twitterButton.alpha = 1.0f;
         if(![allTwitterAccounts count])
-            [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare getAvailableTwitterAccounts];
+            [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare getAvailableTwitterAccounts];
         else
             [self presentTwitterAccountSelectionView];
     }

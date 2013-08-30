@@ -10,7 +10,7 @@
 
 #import "JSON.h"
 #import "AppModel.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 
 @implementation JSONResult
 

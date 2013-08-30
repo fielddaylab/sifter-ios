@@ -10,7 +10,7 @@
 
 @interface InnovNoteViewController : UIViewController 
 
-@property (nonatomic)                    Note *note;
+@property (nonatomic)       Note *note;
 @property (nonatomic, weak) id delegate;
 
 @end

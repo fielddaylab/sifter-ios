@@ -9,7 +9,7 @@
 #import "InnovPopOverSocialContentView.h"
 #import <Pinterest/Pinterest.h>
 
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "InnovNoteModel.h"
 #import "AppServices.h"
 #import "AsyncMediaImageView.h"
@@ -69,7 +69,7 @@
 #warning fix url to be web notebook url
     NSString *url  = HOME_URL;
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:NO];
+    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:NO];
 }
 
 - (IBAction)twitterButtonPressed:(id)sender
@@ -78,7 +78,7 @@
     NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
     NSString *url  = HOME_URL;
     
-    [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId];
+    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId];
 }
 
 - (IBAction)pinterestButtonPressed:(id)sender
@@ -109,7 +109,7 @@
         NSString *title  = [self getTitleOfCurrentNote];
         NSString *text   = [NSString stringWithFormat:@"Check out this interesting note about %@ I %@ on the UW-Madison Campus: %@ \n\n\nSee the whole note at: %@ or download the YOI app", title, creationIndication, self.note.text, url];
         NSString *subject = [NSString stringWithFormat:@"Interesting note on %@ from UW-Madison Campus", title];
-        [((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleMailShare shareText:text asHTML:NO withImage:image andSubject:subject toRecipients:nil fromNote:self.note.noteId];
+        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleMailShare shareText:text asHTML:NO withImage:image andSubject:subject toRecipients:nil fromNote:self.note.noteId];
     }
     else
         [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];

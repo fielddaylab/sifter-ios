@@ -8,7 +8,7 @@
 
 #import "SelfRegistrationViewController.h"
 
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "AppModel.h"
 #import "AppServices.h"
 

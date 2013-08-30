@@ -21,7 +21,7 @@
 
 #define DEFAULT_TEXT                @"Add a comment..."
 #define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
-#define DEFAULT_TEXTVIEW_MARGIN     8
+#define DEFAULT_TEXTVIEW_MARGIN     0
 #define ADJUSTED_TEXTVIEW_MARGIN    0
 
 #define COMMENT_BAR_HEIGHT          46
@@ -71,11 +71,18 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [super viewDidLoad];
     
+    self.wantsFullScreenLayout = YES;
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
+        commentTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
+        commentTableView.scrollIndicatorInsets = commentTableView.contentInset;
+    }
+    
     addCommentBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
                                                                 self.view.bounds.size.height - COMMENT_BAR_HEIGHT,
                                                                 self.view.bounds.size.width,
                                                                 COMMENT_BAR_HEIGHT)];
-    addCommentBar.barStyle = UIBarStyleBlackOpaque;
     addCommentBar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:addCommentBar];
     
@@ -148,8 +155,6 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [super viewDidDisappear:animated];
     [self.view removeKeyboardControl];
 }
-
-
 
 #pragma mark Refresh
 

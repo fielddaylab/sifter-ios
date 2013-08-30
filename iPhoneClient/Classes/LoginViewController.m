@@ -11,9 +11,11 @@
 
 #import "AppModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "ForgotViewController.h"
 #import "SelfRegistrationViewController.h"
+
+#define BUTTON_PADDING 20
 
 @interface LoginViewController() <SelfRegistrationDelegate>
 {
@@ -53,10 +55,13 @@
     
     FBLoginView *loginView = [[FBLoginView alloc] init];
     loginView.center = self.view.center;
+    CGRect loginFrame = loginView.frame;
+    loginFrame.origin.y = loginButton.frame.origin.y + loginButton.frame.size.height + BUTTON_PADDING;
+    loginView.frame = loginFrame;
     loginView.readPermissions = @[@"email"];
     loginView.publishPermissions = @[@"publish_actions"];
     loginView.defaultAudience = FBSessionDefaultAudienceFriends;
-    loginView.delegate = ((ARISAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare;
+    loginView.delegate = ((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare;
     [self.view addSubview:loginView];
     [loginView sizeToFit];
 }

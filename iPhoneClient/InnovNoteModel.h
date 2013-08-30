@@ -6,6 +6,11 @@
 //
 //
 
+@protocol RefreshDelegate <NSObject>
+@required
+- (void) refreshCompleted;
+@end
+
 typedef enum {
 	kTop,
     kPopular,
@@ -31,6 +36,7 @@ typedef enum {
 -(void) setUpNotificationsForTopNotes: (int) topNotes popularNotes: (int) popularNotes recentNotes: (int) recentNotes andMyRecentNotes: (int) myRecentNotes;
 
 -(void) fetchMoreNotes;
+-(void) refreshCurrentNotesWithDelegate:(id<RefreshDelegate>) delegate;
 
 -(void) addNote:(Note *) note;
 -(void) updateNote:(Note *) note;

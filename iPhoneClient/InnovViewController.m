@@ -11,7 +11,7 @@
 
 #import "AppModel.h"
 #import "AppServices.h"
-#import "ARISAppDelegate.h"
+#import "SifterAppDelegate.h"
 #import "Note.h"
 #import "InnovNoteModel.h"
 #import "InnovPresentNoteDelegate.h"
@@ -67,6 +67,8 @@
 {
     [super viewDidLoad];
     
+    self.wantsFullScreenLayout = YES;
+    
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
     [self addChildViewController:mapVC];
@@ -87,29 +89,32 @@
     
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height)];
     searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    searchBar.barStyle = UIBarStyleBlack;
     UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.navigationController.navigationBar.frame.size.width-10, self.navigationController.navigationBar.frame.size.height)];
     searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     searchBar.delegate = self;
+    [searchBar setBackgroundImage:[UIImage new]];
     [searchBarView addSubview:searchBar];
     self.navigationItem.titleView = searchBarView;
     
-    settingsBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingsIcon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsPressed)];
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    settingsButton.frame = CGRectMake(0, 0, 30, 30);
+    [settingsButton addTarget:self action:@selector(settingsPressed) forControlEvents:UIControlEventTouchUpInside];
+    [settingsButton setBackgroundImage: [UIImage imageNamed:@"settingsIcon.png"] forState:UIControlStateNormal];
+    [settingsButton setBackgroundImage: [UIImage imageNamed:@"settingsIcon.png"] forState:UIControlStateHighlighted];
+    settingsBarButton = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
     settingsView = [[InnovSettingsView alloc] init];
     settingsView.delegate = self;
     CGRect settingsLocation = settingsView.frame;
     settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
-    settingsLocation.origin.y = 0;
+    settingsLocation.origin.y = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
     settingsView.frame = settingsLocation;
     settingsView.alpha = 0.0f;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
     
     [showTagsButton setTintColor:[UIColor orangeColor]];
-    
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -138,7 +143,8 @@
     
     CGRect selectedTagsFrame = selectedTagsVC.view.frame;
     selectedTagsFrame.origin.x = 0;
-    selectedTagsFrame.origin.y = (contentView.frame.origin.y + contentView.frame.size.height) - selectedTagsVC.view.frame.size.height;
+    selectedTagsFrame.origin.y = self.view.frame.size.height;
+   // selectedTagsFrame.size.height = self.view.frame.size.height - selectedTagsFrame.origin.y;
     selectedTagsVC.view.frame = selectedTagsFrame;
 }
 
@@ -266,7 +272,7 @@
 
 - (IBAction)trackingButtonPressed:(id)sender
 {
-	[(ARISAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
+	[(SifterAppDelegate *)[[UIApplication sharedApplication] delegate] playAudioAlert:@"ticktick" shouldVibrate:NO];
     [mapVC zoomAndCenterMapAnimated: YES];
 }
 
@@ -321,7 +327,9 @@
 {
     [super touchesBegan:touches withEvent:event];
     
-    [self.view endEditing:YES];
+#warning SHOULD WORK and DID BEFORE Xcode 5
+   // [self.view endEditing: YES];
+    [searchBar resignFirstResponder];
     [settingsView hide];
     [showTagsButton setSelected:NO];
     [selectedTagsVC hide];
