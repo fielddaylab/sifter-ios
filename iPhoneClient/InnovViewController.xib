@@ -87,7 +87,6 @@
         <image name="newNoteIcon.png" width="24" height="18"/>
         <image name="showTagsIcon.png" width="24" height="25"/>
         <image name="showTagsIconBlue.png" width="24" height="25"/>
-        <image name="showTagsIconBlue.png" width="24" height="25"/>
         <image name="trackingIcon.png" width="20" height="20"/>
     </resources>
 </document>
