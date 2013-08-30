@@ -77,6 +77,10 @@ static NSString * const CELL_ID = @"Cell";
     quiltView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:quiltView];
     
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:gestureRecognizer];
+    
     refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
     refreshControl.tintColor = [UIColor whiteColor];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
@@ -223,6 +227,12 @@ static NSString * const CELL_ID = @"Cell";
         currentlyWaitingForMoreNotes = YES;
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
     }
+}
+
+- (void) hideKeyboard: (UIGestureRecognizer *) gesture
+{
+    [self touchesBegan:nil withEvent:nil];
+    [[self.navigationController.viewControllers objectAtIndex:0] touchesBegan:nil withEvent:nil];
 }
 
 /*
