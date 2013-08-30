@@ -82,8 +82,8 @@
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
     [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"listModeIcon.png"] forState:UIControlStateNormal];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"listModeIcon.png"] forState:UIControlStateHighlighted];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"40-dialpad"] forState:UIControlStateNormal];
+    [switchButton setBackgroundImage: [UIImage imageNamed:@"40-dialpad"] forState:UIControlStateHighlighted];
     switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
     self.navigationItem.leftBarButtonItem = switchViewsBarButton;
     
@@ -99,8 +99,8 @@
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     settingsButton.frame = CGRectMake(0, 0, 30, 30);
     [settingsButton addTarget:self action:@selector(settingsPressed) forControlEvents:UIControlEventTouchUpInside];
-    [settingsButton setBackgroundImage: [UIImage imageNamed:@"settingsIcon.png"] forState:UIControlStateNormal];
-    [settingsButton setBackgroundImage: [UIImage imageNamed:@"settingsIcon.png"] forState:UIControlStateHighlighted];
+    [settingsButton setBackgroundImage: [UIImage imageNamed:@"19-gear"] forState:UIControlStateNormal];
+    [settingsButton setBackgroundImage: [UIImage imageNamed:@"19-gear"] forState:UIControlStateHighlighted];
     settingsBarButton = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
@@ -349,14 +349,14 @@
         coming = mapVC;
         going = listVC;
         transition = UIViewAnimationTransitionFlipFromLeft;
-        newButtonImageName = @"listModeIcon.png";
+        newButtonImageName = @"40-dialpad";
     }
     else
     {
         coming = listVC;
         going = mapVC;
         transition = UIViewAnimationTransitionFlipFromRight;
-        newButtonImageName = @"103-mapWhite";
+        newButtonImageName = @"103-map";
     }
     
     [UIView beginAnimations:@"View Flip" context:nil];
