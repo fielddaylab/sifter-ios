@@ -71,7 +71,6 @@
     {
         [self.navigationController setNavigationBarHidden:YES animated:NO];
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
-        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleBlackTranslucent];
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
     

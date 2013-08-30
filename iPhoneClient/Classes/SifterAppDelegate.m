@@ -95,7 +95,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     innov = [[InnovViewController alloc] init];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:innov];
-    [self makeNavBarTransparent:nav.navigationBar];
+  //  [self makeNavBarTransparent:nav.navigationBar];
     
     if([window respondsToSelector:@selector(setRootViewController:)])
         [window setRootViewController:nav];
@@ -232,16 +232,16 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)setUpWithDefaultAppearance
 {
     
-    [[UINavigationBar appearance]       setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+  //  [[UINavigationBar appearance]       setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
-        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+      //  [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
         [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
         [[UIBarButtonItem appearance]       setTintColor:[UIColor SifterColorBarButtonTint]];
         [[UISegmentedControl appearance]    setTintColor:[UIColor SifterColorSegmentedControlTint]];
         [[UISearchBar appearance]           setTintColor:[UIColor SifterColorNavBarTint]];
-        [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
+    //    [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
         [[UITabBar appearance]              setTintColor:[UIColor SifterColorTabBarTint]];
         [[UINavigationBar appearance]       setTintColor:[UIColor SifterColorNavBarTint]];
         [[UINavigationBar appearance] setTitleTextAttributes:

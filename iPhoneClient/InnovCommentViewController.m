@@ -71,13 +71,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [super viewDidLoad];
     
-    self.wantsFullScreenLayout = YES;
+  /*  self.wantsFullScreenLayout = YES;
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
         commentTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
         commentTableView.scrollIndicatorInsets = commentTableView.contentInset;
-    }
+    }*/
     
     addCommentBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
                                                                 self.view.bounds.size.height - COMMENT_BAR_HEIGHT,
@@ -94,7 +94,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     addCommentTextView.layer.masksToBounds = YES;
     addCommentTextView.layer.cornerRadius  = 9.0f;
     addCommentTextView.font                = DEFAULT_FONT;
-    addCommentTextView.contentInset        = UIEdgeInsetsMake(-8,-4,-8,-4);
+    //addCommentTextView.contentInset        = UIEdgeInsetsMake(-8,-4,-8,-4);
     addCommentTextView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [addCommentBar addSubview:addCommentTextView];
     

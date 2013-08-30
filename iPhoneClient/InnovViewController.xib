@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4504" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1280" identifier="iOS"/>
+        <deployment defaultVersion="1536" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3734.1"/>
     </dependencies>
     <objects>
@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view clipsSubviews="YES" contentMode="scaleToFill" id="22">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" red="0.17699768299999999" green="1" blue="0.22206995600000001" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
@@ -86,6 +86,7 @@
         <image name="YOIToolbar1.png" width="640" height="168"/>
         <image name="newNoteIcon.png" width="24" height="18"/>
         <image name="showTagsIcon.png" width="24" height="25"/>
+        <image name="showTagsIconBlue.png" width="24" height="25"/>
         <image name="showTagsIconBlue.png" width="24" height="25"/>
         <image name="trackingIcon.png" width="20" height="20"/>
     </resources>

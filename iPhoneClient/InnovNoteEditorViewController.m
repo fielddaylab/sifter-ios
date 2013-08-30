@@ -143,13 +143,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewDidLoad];
     
-    self.wantsFullScreenLayout = YES;
+  /*  self.wantsFullScreenLayout = YES;
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
         editNoteTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
         editNoteTableView.scrollIndicatorInsets = editNoteTableView.contentInset;
-    }
+    } */
     
     cancelButton = [[UIBarButtonItem alloc] initWithTitle: CANCEL_BUTTON_TITLE
                                                     style: UIBarButtonItemStyleDone

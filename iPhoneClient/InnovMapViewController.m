@@ -102,13 +102,13 @@
     [[[MyCLController sharedMyCLController] locationManager] stopUpdatingLocation];
 	[[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
     
-    UIView *legalView = nil;
+  /*  UIView *legalView = nil;
     for (UIView *subview in mapView.subviews) {
         if ([subview isKindOfClass:[UILabel class]]) {
             legalView = subview;
         }
     }
-    legalView.frame = CGRectMake(legalView.frame.origin.x, self.view.frame.size.height - 64, legalView.frame.size.width, legalView.frame.size.height);
+    legalView.frame = CGRectMake(legalView.frame.origin.x, self.view.frame.size.height - 64, legalView.frame.size.width, legalView.frame.size.height); */
 }
 
 /*

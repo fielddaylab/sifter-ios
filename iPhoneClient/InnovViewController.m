@@ -108,7 +108,7 @@
     settingsView.delegate = self;
     CGRect settingsLocation = settingsView.frame;
     settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
-    settingsLocation.origin.y = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+   // settingsLocation.origin.y = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
     settingsView.frame = settingsLocation;
     settingsView.alpha = 0.0f;
     
