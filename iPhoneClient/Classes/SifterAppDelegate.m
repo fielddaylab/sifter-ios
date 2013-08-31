@@ -236,7 +236,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
-        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
+        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
         [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
         [[UIBarButtonItem appearance]       setTintColor:[UIColor SifterColorBarButtonTint]];
         [[UISegmentedControl appearance]    setTintColor:[UIColor SifterColorSegmentedControlTint]];
@@ -312,7 +312,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 {
     navBar.translucent = YES;
     navBar.opaque = NO;
-    navBar.alpha = 0.8f;
+    navBar.alpha = 0.9f;
     if ([navBar respondsToSelector:@selector(shadowImage)])
         [navBar setShadowImage:[[UIImage alloc] init]];
 }

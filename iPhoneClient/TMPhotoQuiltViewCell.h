@@ -19,8 +19,8 @@
 
 #import "TMQuiltViewCell.h"
 
-#define ICON_WIDTH  35
-#define ICON_HEIGHT 35
+#define ICON_WIDTH  20
+#define ICON_HEIGHT 20
 
 @class AsyncMediaImageView;
 
