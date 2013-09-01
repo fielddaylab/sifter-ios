@@ -19,7 +19,7 @@
                BlueprintIdentifier = "AB1660BA14E8754A002C6ACB"
                BuildableName = "UploadManager Tests.octest"
                BlueprintName = "UploadManager Tests"
-               ReferencedContainer = "container:Sifter.xcodeproj">
+               ReferencedContainer = "container:Siftr.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

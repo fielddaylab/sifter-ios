@@ -186,6 +186,8 @@
 		ABF1392B17D391A0000464BF /* sifter114.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392717D391A0000464BF /* sifter114.png */; };
 		ABF1392C17D391A0000464BF /* sifter57.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392817D391A0000464BF /* sifter57.png */; };
 		ABF1392D17D391A0000464BF /* sifter80.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392917D391A0000464BF /* sifter80.png */; };
+		ABF1393017D391A6000464BF /* sifter29.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392E17D391A6000464BF /* sifter29.png */; };
+		ABF1393117D391A6000464BF /* sifter58.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392F17D391A6000464BF /* sifter58.png */; };
 		ABF41CAA14744DAC00B60D05 /* camera_roll.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF41CA914744DAB00B60D05 /* camera_roll.png */; };
 		ABF4A3AD116847E50043EB1C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF4A3AC116847E40043EB1C /* SystemConfiguration.framework */; };
 		ABF4A3B1116847F50043EB1C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF4A3B0116847F50043EB1C /* MobileCoreServices.framework */; };
@@ -384,7 +386,7 @@
 		A78FD8B10F4B7EA200820FEA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		A79202630F8E717C0049F990 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		A7955B920F73E095005148E4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		A7A172720F4F26280017E865 /* ARIS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARIS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7A172720F4F26280017E865 /* Siftr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Siftr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7E32E9C0FD1CEFD0058EDB7 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		A7E32E9D0FD1CEFD0058EDB7 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		A7E39EAB0F5F60D000826198 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = CameraViewController.h; path = Classes/CameraViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -497,6 +499,8 @@
 		ABF1392717D391A0000464BF /* sifter114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter114.png; sourceTree = "<group>"; };
 		ABF1392817D391A0000464BF /* sifter57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter57.png; sourceTree = "<group>"; };
 		ABF1392917D391A0000464BF /* sifter80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter80.png; sourceTree = "<group>"; };
+		ABF1392E17D391A6000464BF /* sifter29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter29.png; sourceTree = "<group>"; };
+		ABF1392F17D391A6000464BF /* sifter58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter58.png; sourceTree = "<group>"; };
 		ABF41CA914744DAB00B60D05 /* camera_roll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_roll.png; sourceTree = "<group>"; };
 		ABF4A3AC116847E40043EB1C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		ABF4A3B0116847F50043EB1C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -648,7 +652,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A7A172720F4F26280017E865 /* ARIS.app */,
+				A7A172720F4F26280017E865 /* Siftr.app */,
 				AB1660BB14E8754A002C6ACB /* UploadManager Tests.octest */,
 			);
 			name = Products;
@@ -1235,6 +1239,8 @@
 		DBFEDCE0176115FB009C080A /* AppMedia */ = {
 			isa = PBXGroup;
 			children = (
+				ABF1392E17D391A6000464BF /* sifter29.png */,
+				ABF1392F17D391A6000464BF /* sifter58.png */,
 				ABF1392617D391A0000464BF /* sifter120.png */,
 				ABF1392717D391A0000464BF /* sifter114.png */,
 				ABF1392817D391A0000464BF /* sifter57.png */,
@@ -1299,9 +1305,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Sifter */ = {
+		1D6058900D05DD3D006BFB54 /* Siftr */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Sifter" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Siftr" */;
 			buildPhases = (
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
@@ -1312,9 +1318,9 @@
 			);
 			dependencies = (
 			);
-			name = Sifter;
+			name = Siftr;
 			productName = ARIS;
-			productReference = A7A172720F4F26280017E865 /* ARIS.app */;
+			productReference = A7A172720F4F26280017E865 /* Siftr.app */;
 			productType = "com.apple.product-type.application";
 		};
 		AB1660BA14E8754A002C6ACB /* UploadManager Tests */ = {
@@ -1344,11 +1350,11 @@
 				LastUpgradeCheck = 0460;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = QYWVT766UU;
+						DevelopmentTeam = 94WTN6924S;
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Sifter" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Siftr" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -1365,7 +1371,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Sifter */,
+				1D6058900D05DD3D006BFB54 /* Siftr */,
 				AB1660BA14E8754A002C6ACB /* UploadManager Tests */,
 			);
 		};
@@ -1401,12 +1407,14 @@
 				AB2FE579120A154B00758F8C /* deleteComment.png in Resources */,
 				1147E15913F32260000E4BC2 /* noteicon.png in Resources */,
 				11DD5423141E70D00007CD70 /* DropOnMapViewController.xib in Resources */,
+				ABF1393117D391A6000464BF /* sifter58.png in Resources */,
 				11DD5430141E80D20007CD70 /* Pin.png in Resources */,
 				AB5EEDA717D149AB00BF9A32 /* 86-camera.png in Resources */,
 				11DD5431141E80D20007CD70 /* PinDown1.png in Resources */,
 				11DD5432141E80D20007CD70 /* PinDown2.png in Resources */,
 				11DD5433141E80D20007CD70 /* PinDown3.png in Resources */,
 				11DD5434141E80D20007CD70 /* PinFloating.png in Resources */,
+				ABF1393017D391A6000464BF /* sifter29.png in Resources */,
 				11DD5435141E80D20007CD70 /* PinShadow.png in Resources */,
 				111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */,
 				8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */,
@@ -1695,8 +1703,8 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
-				PRODUCT_NAME = ARIS;
-				PROVISIONING_PROFILE = "CFF96F31-C0CE-4C73-A15A-25A02852B3EE";
+				PRODUCT_NAME = Siftr;
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CFF96F31-C0CE-4C73-A15A-25A02852B3EE";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
@@ -1826,8 +1834,8 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
-				PRODUCT_NAME = ARIS;
-				PROVISIONING_PROFILE = "CFF96F31-C0CE-4C73-A15A-25A02852B3EE";
+				PRODUCT_NAME = Siftr;
+				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CFF96F31-C0CE-4C73-A15A-25A02852B3EE";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
@@ -1860,7 +1868,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Sifter" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Siftr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -1878,7 +1886,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Sifter" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Siftr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

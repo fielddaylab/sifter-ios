@@ -71,7 +71,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     simpleMailShare     = [[SimpleMailShare alloc] init];
     simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
-    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"YOI" appUrl:HOME_URL];
+    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Sifter" appUrl:HOME_URL];
 #warning fix url and appname
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
@@ -234,7 +234,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     [[UINavigationBar appearance]       setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+    //if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
         // Load resources for iOS 6.1 or earlier
         [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
         [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
@@ -252,14 +252,14 @@ void uncaughtExceptionHandler(NSException *exception) {
           nil]
          ];
         
-    } else {
-        // Load resources for iOS 7 or later
-        [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleDefault];
-        [[UINavigationBar appearance] setBarTintColor:[UIColor SifterColorNavBarTint]];
-        [[UINavigationBar appearance] setTintColor:[UIColor SifterColorDarkGray]];
-        self.window.rootViewController.edgesForExtendedLayout = UIRectEdgeAll;
-        self.window.rootViewController.extendedLayoutIncludesOpaqueBars = NO;
-    }
+    //} else {
+    //    // Load resources for iOS 7 or later
+    //    [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleDefault];
+    //    [[UINavigationBar appearance] setBarTintColor:[UIColor SifterColorNavBarTint]];
+    //    [[UINavigationBar appearance] setTintColor:[UIColor SifterColorDarkGray]];
+    //    self.window.rootViewController.edgesForExtendedLayout = UIRectEdgeAll;
+    //    self.window.rootViewController.extendedLayoutIncludesOpaqueBars = NO;
+    //}
     
     [[UILabel appearance] setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0]];
     [[UILabel appearanceWhenContainedIn:[UIButton class],        nil] setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:17]];

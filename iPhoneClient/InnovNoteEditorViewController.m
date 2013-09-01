@@ -145,11 +145,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     self.wantsFullScreenLayout = YES;
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    {
+    //if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    //{
         editNoteTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
         editNoteTableView.scrollIndicatorInsets = editNoteTableView.contentInset;
-    }
+    //}
     
     cancelButton = [[UIBarButtonItem alloc] initWithTitle: CANCEL_BUTTON_TITLE
                                                     style: UIBarButtonItemStyleDone
@@ -431,7 +431,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     else
         [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
     
-    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:@"YOI Note" publicToMap:YES publicToList:YES];
+    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:@"Sifter Note" publicToMap:YES publicToList:YES];
     
     if(mode == kInnovAudioRecorderRecording)
         [self recordButtonPressed:nil];

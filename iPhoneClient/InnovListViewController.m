@@ -84,11 +84,11 @@ static NSString * const CELL_ID = @"Cell";
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    {
+    //if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    //{
         quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
         quiltView.scrollIndicatorInsets = quiltView.contentInset;
-    }
+    //}
     
     [quiltView reloadData];
 }
