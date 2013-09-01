@@ -182,6 +182,10 @@
 		ABDA40C110506AF400823A94 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA40B110506AF400823A94 /* Annotation.m */; };
 		ABDA40C210506AF400823A94 /* AnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA40B310506AF400823A94 /* AnnotationView.m */; };
 		ABDA40DE10506CB300823A94 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDA40DD10506CB300823A94 /* MapKit.framework */; };
+		ABF1392A17D391A0000464BF /* sifter120.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392617D391A0000464BF /* sifter120.png */; };
+		ABF1392B17D391A0000464BF /* sifter114.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392717D391A0000464BF /* sifter114.png */; };
+		ABF1392C17D391A0000464BF /* sifter57.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392817D391A0000464BF /* sifter57.png */; };
+		ABF1392D17D391A0000464BF /* sifter80.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392917D391A0000464BF /* sifter80.png */; };
 		ABF41CAA14744DAC00B60D05 /* camera_roll.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF41CA914744DAB00B60D05 /* camera_roll.png */; };
 		ABF4A3AD116847E50043EB1C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF4A3AC116847E40043EB1C /* SystemConfiguration.framework */; };
 		ABF4A3B1116847F50043EB1C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF4A3B0116847F50043EB1C /* MobileCoreServices.framework */; };
@@ -489,6 +493,10 @@
 		ABDA40B210506AF400823A94 /* AnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AnnotationView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		ABDA40B310506AF400823A94 /* AnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AnnotationView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABDA40DD10506CB300823A94 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		ABF1392617D391A0000464BF /* sifter120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter120.png; sourceTree = "<group>"; };
+		ABF1392717D391A0000464BF /* sifter114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter114.png; sourceTree = "<group>"; };
+		ABF1392817D391A0000464BF /* sifter57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter57.png; sourceTree = "<group>"; };
+		ABF1392917D391A0000464BF /* sifter80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter80.png; sourceTree = "<group>"; };
 		ABF41CA914744DAB00B60D05 /* camera_roll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_roll.png; sourceTree = "<group>"; };
 		ABF4A3AC116847E40043EB1C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		ABF4A3B0116847F50043EB1C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -1227,6 +1235,10 @@
 		DBFEDCE0176115FB009C080A /* AppMedia */ = {
 			isa = PBXGroup;
 			children = (
+				ABF1392617D391A0000464BF /* sifter120.png */,
+				ABF1392717D391A0000464BF /* sifter114.png */,
+				ABF1392817D391A0000464BF /* sifter57.png */,
+				ABF1392917D391A0000464BF /* sifter80.png */,
 				89B9201B17A715DD0011ABFD /* App LaunchScreen and Icons */,
 				AB37BC2E1184CDE600C5CE8B /* Sound Effects */,
 				AB1EF609175FDE180073DBF4 /* Icons */,
@@ -1287,9 +1299,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* YOI */ = {
+		1D6058900D05DD3D006BFB54 /* Sifter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "YOI" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Sifter" */;
 			buildPhases = (
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
@@ -1300,7 +1312,7 @@
 			);
 			dependencies = (
 			);
-			name = YOI;
+			name = Sifter;
 			productName = ARIS;
 			productReference = A7A172720F4F26280017E865 /* ARIS.app */;
 			productType = "com.apple.product-type.application";
@@ -1336,7 +1348,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "YOI" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Sifter" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -1353,7 +1365,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* YOI */,
+				1D6058900D05DD3D006BFB54 /* Sifter */,
 				AB1660BA14E8754A002C6ACB /* UploadManager Tests */,
 			);
 		};
@@ -1368,6 +1380,7 @@
 				AB16970217D155A000B53861 /* 86-camera-red@2x.png in Resources */,
 				28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */,
 				2B3D11AD0F4361380067FD3A /* LoginViewController.xib in Resources */,
+				ABF1392C17D391A0000464BF /* sifter57.png in Resources */,
 				2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */,
 				A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */,
 				A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */,
@@ -1399,6 +1412,7 @@
 				8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */,
 				ABF41CAA14744DAC00B60D05 /* camera_roll.png in Resources */,
 				11B28B9914C4A49600759BCD /* stop_button.png in Resources */,
+				ABF1392B17D391A0000464BF /* sifter114.png in Resources */,
 				11B28B9A14C4A49600759BCD /* play.png in Resources */,
 				11D7F9331537510D0046410F /* LoadingViewController.xib in Resources */,
 				4A7F910015B09FFC00988446 /* pingtone.wav in Resources */,
@@ -1416,6 +1430,7 @@
 				DBFE8260174E758600E4496B /* InnovListViewController.xib in Resources */,
 				AB8552AF176095230027F1F5 /* showTagsIcon.png in Resources */,
 				AB8552B0176095230027F1F5 /* showTagsIcon@2x.png in Resources */,
+				ABF1392D17D391A0000464BF /* sifter80.png in Resources */,
 				AB5EEDA817D149AB00BF9A32 /* 86-camera@2x.png in Resources */,
 				AB8552B3176095230027F1F5 /* newNoteIcon.png in Resources */,
 				AB8552B4176095230027F1F5 /* newNoteIcon@2x.png in Resources */,
@@ -1455,6 +1470,7 @@
 				8906DE571799C32500B2D7BF /* commentWhite@2x.png in Resources */,
 				AB5EEDA017D1499000BF9A32 /* 19-gear@2x.png in Resources */,
 				8906DE591799C32500B2D7BF /* flagRed.png in Resources */,
+				ABF1392A17D391A0000464BF /* sifter120.png in Resources */,
 				8906DE5A1799C32500B2D7BF /* flagWhite.png in Resources */,
 				8906DE5B1799C32500B2D7BF /* commentWhite.png in Resources */,
 				7196616F1799D12E00605767 /* likeWhite.png in Resources */,
@@ -1844,7 +1860,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "YOI" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Sifter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -1862,7 +1878,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "YOI" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Sifter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

@@ -15,7 +15,7 @@
 		<string>Icon.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>org.arisgames.YOI</string>
+	<string>org.arisgames.sifter</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -40,13 +40,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3723</string>
+	<string>09012013</string>
 	<key>Copyright (human-readable)</key>
 	<string></string>
 	<key>FacebookAppID</key>
 	<string>669647556383669</string>
 	<key>FacebookDisplayName</key>
-	<string>YOI</string>
+	<string>Sifter</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
