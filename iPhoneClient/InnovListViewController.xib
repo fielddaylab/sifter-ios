@@ -21,16 +21,16 @@
 			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
 			<integer value="1" key="NS.object.0"/>
 		</object>
-		<array class="NSMutableArray" key="IBDocument.RootObjects" id="606541097">
-			<object class="IBProxyObject" id="976231189">
+		<array class="NSMutableArray" key="IBDocument.RootObjects" id="623727469">
+			<object class="IBProxyObject" id="786252604">
 				<string key="IBProxiedObjectIdentifier">IBFilesOwner</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
-			<object class="IBProxyObject" id="510257045">
+			<object class="IBProxyObject" id="570987183">
 				<string key="IBProxiedObjectIdentifier">IBFirstResponder</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
-			<object class="IBUIView" id="23585416">
+			<object class="IBUIView" id="517044918">
 				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">1298</int>
 				<object class="NSPSMatrix" key="NSFrameMatrix"/>
@@ -52,8 +52,8 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">view</string>
-						<reference key="source" ref="976231189"/>
-						<reference key="destination" ref="23585416"/>
+						<reference key="source" ref="786252604"/>
+						<reference key="destination" ref="517044918"/>
 					</object>
 					<string key="id">3</string>
 				</object>
@@ -63,23 +63,23 @@
 					<object class="IBObjectRecord">
 						<string key="id">0</string>
 						<array key="object" id="0"/>
-						<reference key="children" ref="606541097"/>
+						<reference key="children" ref="623727469"/>
 						<nil key="parent"/>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">-1</string>
-						<reference key="object" ref="976231189"/>
+						<reference key="object" ref="786252604"/>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">File's Owner</string>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">-2</string>
-						<reference key="object" ref="510257045"/>
+						<reference key="object" ref="570987183"/>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">1</string>
-						<reference key="object" ref="23585416"/>
+						<reference key="object" ref="517044918"/>
 						<reference key="parent" ref="0"/>
 					</object>
 				</array>

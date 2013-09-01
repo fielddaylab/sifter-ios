@@ -22,32 +22,31 @@
 			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
 			<integer value="1" key="NS.object.0"/>
 		</object>
-		<array class="NSMutableArray" key="IBDocument.RootObjects" id="655364452">
-			<object class="IBProxyObject" id="645149266">
+		<array class="NSMutableArray" key="IBDocument.RootObjects" id="794972678">
+			<object class="IBProxyObject" id="131582353">
 				<string key="IBProxiedObjectIdentifier">IBFilesOwner</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
-			<object class="IBProxyObject" id="290756060">
+			<object class="IBProxyObject" id="74580210">
 				<string key="IBProxiedObjectIdentifier">IBFirstResponder</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
-			<object class="IBUIView" id="78639462">
-				<reference key="NSNextResponder"/>
+			<object class="IBUIView" id="1038708833">
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">1298</int>
 				<array class="NSMutableArray" key="NSSubviews">
-					<object class="IBUITableView" id="692543548">
-						<reference key="NSNextResponder" ref="78639462"/>
+					<object class="IBUITableView" id="523433207">
+						<reference key="NSNextResponder" ref="1038708833"/>
 						<int key="NSvFlags">1298</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
 						<string key="NSFrameSize">{320, 416}</string>
-						<reference key="NSSuperview" ref="78639462"/>
-						<reference key="NSWindow"/>
+						<reference key="NSSuperview" ref="1038708833"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
 						</object>
 						<bool key="IBUIClipsSubviews">YES</bool>
-						<object class="IBUIScreenMetrics" key="IBUISimulatedDestinationMetrics" id="117825817">
+						<object class="IBUIScreenMetrics" key="IBUISimulatedDestinationMetrics" id="160839756">
 							<string key="IBUISimulatedSizeMetricsClass">IBUIScreenMetrics</string>
 							<object class="NSMutableDictionary" key="IBUINormalizedOrientationToSizeMap">
 								<bool key="EncodedWithXMLCoder">YES</bool>
@@ -77,8 +76,6 @@
 				</array>
 				<object class="NSPSMatrix" key="NSFrameMatrix"/>
 				<string key="NSFrame">{{0, 64}, {320, 416}}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>
 					<bytes key="NSWhite">MQA</bytes>
@@ -90,7 +87,7 @@
 				<object class="IBUISimulatedNavigationBarMetrics" key="IBUISimulatedTopBarMetrics">
 					<bool key="IBUIPrompted">NO</bool>
 				</object>
-				<reference key="IBUISimulatedDestinationMetrics" ref="117825817"/>
+				<reference key="IBUISimulatedDestinationMetrics" ref="160839756"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 		</array>
@@ -100,32 +97,32 @@
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">editNoteTableView</string>
-						<reference key="source" ref="645149266"/>
-						<reference key="destination" ref="692543548"/>
+						<reference key="source" ref="131582353"/>
+						<reference key="destination" ref="523433207"/>
 					</object>
 					<string key="id">31</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">view</string>
-						<reference key="source" ref="645149266"/>
-						<reference key="destination" ref="78639462"/>
+						<reference key="source" ref="131582353"/>
+						<reference key="destination" ref="1038708833"/>
 					</object>
 					<string key="id">3</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">dataSource</string>
-						<reference key="source" ref="692543548"/>
-						<reference key="destination" ref="645149266"/>
+						<reference key="source" ref="523433207"/>
+						<reference key="destination" ref="131582353"/>
 					</object>
 					<string key="id">24</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">delegate</string>
-						<reference key="source" ref="692543548"/>
-						<reference key="destination" ref="645149266"/>
+						<reference key="source" ref="523433207"/>
+						<reference key="destination" ref="131582353"/>
 					</object>
 					<string key="id">25</string>
 				</object>
@@ -135,32 +132,32 @@
 					<object class="IBObjectRecord">
 						<string key="id">0</string>
 						<array key="object" id="0"/>
-						<reference key="children" ref="655364452"/>
+						<reference key="children" ref="794972678"/>
 						<nil key="parent"/>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">-1</string>
-						<reference key="object" ref="645149266"/>
+						<reference key="object" ref="131582353"/>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">File's Owner</string>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">-2</string>
-						<reference key="object" ref="290756060"/>
+						<reference key="object" ref="74580210"/>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">1</string>
-						<reference key="object" ref="78639462"/>
+						<reference key="object" ref="1038708833"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="692543548"/>
+							<reference ref="523433207"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<string key="id">13</string>
-						<reference key="object" ref="692543548"/>
-						<reference key="parent" ref="78639462"/>
+						<reference key="object" ref="523433207"/>
+						<reference key="parent" ref="1038708833"/>
 					</object>
 				</array>
 			</object>
