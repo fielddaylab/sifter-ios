@@ -12,7 +12,7 @@
 
 #warning CHANGE TWITTER HANDLE
 #define DEFAULT_TITLE                @"Note"
-#define TWITTER_HANDLE               @"@y_o_i"
+#define TWITTER_HANDLE               @"@SiftrMadison"
 
 @protocol InnovPopOverSocialContentViewDelegate <NSObject>
 @required
