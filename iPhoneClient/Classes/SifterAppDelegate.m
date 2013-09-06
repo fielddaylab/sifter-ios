@@ -71,7 +71,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     simpleMailShare     = [[SimpleMailShare alloc] init];
     simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
-    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Sifter" appUrl:HOME_URL];
+    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Siftr" appUrl:HOME_URL];
 #warning fix url and appname
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];

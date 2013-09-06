@@ -42,7 +42,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pin1432066</string>
-				<string>fb669647556383669</string>
+				<string>fb419129601530107</string>
 				<string>siftr</string>
 			</array>
 		</dict>
@@ -52,7 +52,7 @@
 	<key>Copyright (human-readable)</key>
 	<string></string>
 	<key>FacebookAppID</key>
-	<string>669647556383669</string>
+	<string>419129601530107</string>
 	<key>FacebookDisplayName</key>
 	<string>Siftr</string>
 	<key>LSRequiresIPhoneOS</key>

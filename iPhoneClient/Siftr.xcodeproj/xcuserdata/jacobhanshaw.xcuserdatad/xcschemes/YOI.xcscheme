@@ -20,6 +20,20 @@
                ReferencedContainer = "container:YOI.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
+               BuildableName = "Siftr.app"
+               BlueprintName = "Siftr"
+               ReferencedContainer = "container:Siftr.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -52,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "ARIS.app"
-            BlueprintName = "YOI"
-            ReferencedContainer = "container:YOI.xcodeproj">
+            BuildableName = "Siftr.app"
+            BlueprintName = "Siftr"
+            ReferencedContainer = "container:Siftr.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +84,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "ARIS.app"
-            BlueprintName = "YOI"
-            ReferencedContainer = "container:YOI.xcodeproj">
+            BuildableName = "Siftr.app"
+            BlueprintName = "Siftr"
+            ReferencedContainer = "container:Siftr.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -81,6 +95,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "Siftr"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
