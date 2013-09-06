@@ -190,6 +190,7 @@
     aSearchBar.text = @"";
     [self searchBar: aSearchBar textDidChange:aSearchBar.text];
     [self searchBar:aSearchBar activate:NO];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
