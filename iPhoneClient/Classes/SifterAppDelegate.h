@@ -18,8 +18,8 @@
 #import "SimpleFacebookShare.h"
 
 #define SERVER                       @"http://arisgames.org/server"  //dev.
-#define HOME_URL                     @"www.arisgames.org/yoi"
-#define GAME_ID                      10690//3438 //10690            // 3438 on dev      10690 on prod
+#define HOME_URL                     @"www.siftr.org"                //for sharing purposes
+#define GAME_ID                      10690//3438 //10690             // 3438 on dev      10690 on prod
 
 @interface SifterAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {
