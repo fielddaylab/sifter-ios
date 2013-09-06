@@ -106,7 +106,14 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])
-        [innov animateInNote: [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]]];
+    {
+        Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+        if(note)
+        {
+            [innov animateInNote: note];
+            [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
+        }
+    }
     
     return YES;
 }
