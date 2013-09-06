@@ -145,11 +145,11 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     self.wantsFullScreenLayout = YES;
     
-    //if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    //{
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
         editNoteTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
         editNoteTableView.scrollIndicatorInsets = editNoteTableView.contentInset;
-    //}
+    }
     
     cancelButton = [[UIBarButtonItem alloc] initWithTitle: CANCEL_BUTTON_TITLE
                                                     style: UIBarButtonItemStyleDone
@@ -199,6 +199,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     [self.view addSubview:ARISMoviePlayer.view];
     UIGraphicsEndImageContext();
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:gestureRecognizer];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -1076,6 +1080,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         self.title = newTagName;
     }
+}
+
+#pragma mark Hide Keyboard
+
+- (void) hideKeyboard: (UIGestureRecognizer *) gesture
+{
+    [captionTextView resignFirstResponder];
 }
 
 #pragma mark Dealloc, and Other Necessary Methods

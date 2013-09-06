@@ -73,11 +73,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     self.wantsFullScreenLayout = YES;
     
-    //if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    //{
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
         commentTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
         commentTableView.scrollIndicatorInsets = commentTableView.contentInset;
-    //}
+    }
     
     addCommentBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0f,
                                                                 self.view.bounds.size.height - COMMENT_BAR_HEIGHT,
@@ -101,6 +101,10 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     addCommentButton = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStyleDone target:self action:@selector(addCommentButtonPressed:)];
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     [addCommentBar setItems:[NSArray arrayWithObjects:flex, addCommentButton, nil]];
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:gestureRecognizer];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -341,6 +345,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:sender.tag inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
     [[InnovNoteModel sharedNoteModel] updateNote:self.note];
     [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
+}
+
+#pragma mark Hide Keyboard
+
+- (void) hideKeyboard: (UIGestureRecognizer *) gesture
+{
+    [addCommentTextView resignFirstResponder];
 }
 
 #pragma mark Remove Memory
