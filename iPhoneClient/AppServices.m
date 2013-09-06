@@ -753,7 +753,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 #pragma mark Async Fetch selectors
 
 - (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date
-{    
+{
     NSError *error;
     NSMutableDictionary *argumentsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                           [NSString stringWithFormat:@"%d", [AppModel sharedAppModel].currentGame.gameId], @"gameId",
@@ -1039,10 +1039,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
         [userInfo removeObjectForKey:@"JSON"];
         
         NSArray *noteListArray = (NSArray *)jsonResult.data;
-        [userInfo setObject:noteListArray   forKey:@"notesJSON"];
-        
-        NSLog(@"NSNotification: NewNoteListReady");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:userInfo]];
+        if([noteListArray count] > 0)
+        {
+            [userInfo setObject:noteListArray   forKey:@"notesJSON"];
+            
+            NSLog(@"NSNotification: NewNoteListReady");
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:userInfo]];
+        }
     }
     isCurrentlyFetchingGameNoteList = NO;
 }
