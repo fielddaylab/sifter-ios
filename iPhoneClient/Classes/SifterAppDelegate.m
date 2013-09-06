@@ -240,7 +240,25 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
         [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
         [[UIBarButtonItem appearance]       setTintColor:[UIColor SifterColorBarButtonTint]];
+        
         [[UISegmentedControl appearance]    setTintColor:[UIColor SifterColorSegmentedControlTint]];
+        
+        [[UISegmentedControl appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
+          [UIColor SifterColorWhite],                           UITextAttributeTextColor,
+          [UIColor clearColor],                                 UITextAttributeTextShadowColor,
+          nil]
+                                                       forState:UIControlStateNormal];
+        
+        [[UISegmentedControl appearance]    setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIColor SifterColorWhite],                         UITextAttributeTextColor,
+          [UIColor clearColor],                               UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          nil]
+                                                          forState:UIControlStateSelected];
+        
         [[UISearchBar appearance]           setTintColor:[UIColor SifterColorNavBarTint]];
         [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
         [[UITabBar appearance]              setTintColor:[UIColor SifterColorTabBarTint]];
@@ -258,6 +276,23 @@ void uncaughtExceptionHandler(NSException *exception) {
     {
         // Load resources for iOS 7 or later
         [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleDefault];
+        
+        [[UISegmentedControl appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
+          [UIColor SifterColorBlack],                           UITextAttributeTextColor,
+          [UIColor clearColor],                                 UITextAttributeTextShadowColor,
+          nil]
+                                                       forState:UIControlStateNormal];
+        
+        [[UISegmentedControl appearance]    setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIColor SifterColorBlack],                         UITextAttributeTextColor,
+          [UIColor clearColor],                               UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          nil]
+                                                          forState:UIControlStateSelected];
+        
         [[UINavigationBar appearance] setBarTintColor:[UIColor SifterColorNavBarTint]];
         [[UINavigationBar appearance] setTintColor:[UIColor SifterColorDarkGray]];
         self.window.rootViewController.edgesForExtendedLayout = UIRectEdgeAll;
@@ -278,22 +313,6 @@ void uncaughtExceptionHandler(NSException *exception) {
      [UIImage imageNamed:@"1pxColorClear"]
                                                       forState:UIControlStateNormal
                                                     barMetrics:UIBarMetricsDefault];
-    
-    [[UISegmentedControl appearance] setTitleTextAttributes:
-     [NSDictionary dictionaryWithObjectsAndKeys:
-      [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
-      [UIColor SifterColorWhite],                      UITextAttributeTextColor,
-      [UIColor clearColor],                               UITextAttributeTextShadowColor,
-      nil]
-                                                   forState:UIControlStateNormal];
-    
-    [[UISegmentedControl appearance]    setTitleTextAttributes:
-     [NSDictionary dictionaryWithObjectsAndKeys:
-      [UIColor SifterColorBlack],                         UITextAttributeTextColor,
-      [UIColor clearColor],                               UITextAttributeTextShadowColor,
-      [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
-      nil]
-                                                      forState:UIControlStateSelected];
     
     [[UINavigationBar appearance] setTitleTextAttributes:
      [NSDictionary dictionaryWithObjectsAndKeys:
