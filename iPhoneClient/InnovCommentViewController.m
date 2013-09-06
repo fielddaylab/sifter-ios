@@ -21,8 +21,8 @@
 
 #define DEFAULT_TEXT                @"Add a comment..."
 #define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
-#define DEFAULT_TEXTVIEW_MARGIN     0
-#define ADJUSTED_TEXTVIEW_MARGIN    0
+#define DEFAULT_TEXTVIEW_MARGIN     8
+#define ADJUSTED_TEXTVIEW_MARGIN    8
 
 #define COMMENT_BAR_HEIGHT          46
 #define COMMENT_BAR_HEIGHT_MAX      80
