@@ -164,10 +164,9 @@
 - (void) prepareToDisplayNote: (Note *) note
 {
     noteToAdd = note;
-#warning could be different
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = @"";
-    [selectedTagsVC updateSelectedContent:kMine];
+    [selectedTagsVC updateSelectedContent:kRecent];
 }
 
 - (void) animateInNote: (Note *) note
