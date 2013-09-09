@@ -9,4 +9,5 @@
 @class Note;
 @interface InnovViewController : UIViewController
 - (void) animateInNote: (Note *) note;
+- (void) animateInNoteOnMap: (Note *) note;
 @end

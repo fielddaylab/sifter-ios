@@ -81,6 +81,7 @@
 		8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10017CFB2BA00AA6165 /* shareWhite.png */; };
 		8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */; };
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
+		893AF8E017DE90BA00F57AE9 /* mli_office.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
 		89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */; };
@@ -352,6 +353,7 @@
 		8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
 		891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverContentView.m; sourceTree = "<group>"; };
+		893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mli_office.gpx; sourceTree = "<group>"; };
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
 		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
 		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
@@ -833,6 +835,7 @@
 		89E1608717CBD75D0014AF3C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */,
 				4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */,
 				4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */,
 				89E1608417CBD7550014AF3C /* UIColor+SifterColors.h */,
@@ -1460,6 +1463,7 @@
 				AB5EEDA417D149A300BF9A32 /* 74-location@2x.png in Resources */,
 				DB0F406D17721F5000F19934 /* mail_alt.png in Resources */,
 				DB0F406F17721FBF00F19934 /* mail_alt96.png in Resources */,
+				893AF8E017DE90BA00F57AE9 /* mli_office.gpx in Resources */,
 				DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */,
 				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,

@@ -110,7 +110,7 @@ void uncaughtExceptionHandler(NSException *exception) {
         Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
         if(note)
         {
-            [innov animateInNote: note];
+            [innov animateInNoteOnMap: note];
             [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
         }
     }
@@ -168,7 +168,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
             if(note)
             {
-                [innov animateInNote: note];
+                [innov animateInNoteOnMap: note];
                 [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
             }
         }

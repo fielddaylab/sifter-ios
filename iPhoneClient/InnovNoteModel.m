@@ -204,7 +204,6 @@
     [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:NO] atIndexedSubscript:selectedContent];
     [self clearAvailableData];
     [self setUpNotifications];
-    unprocessedNotifs = YES;
     
     [self fetchMoreNotes];
 }
