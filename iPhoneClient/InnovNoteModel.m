@@ -30,6 +30,8 @@
     NSMutableArray *selectedTags;
     NSMutableArray *searchTerms;
     
+    NSMutableArray *facebookShareQueue;
+    
     BOOL unprocessedNotifs;
     BOOL clearBeforeFetching;
     
@@ -61,6 +63,7 @@
         allNotes        = [[NSMutableDictionary alloc] init];
         notifNotes      = [[NSMutableDictionary alloc] initWithCapacity:20];
         availableNotes  = [[NSMutableArray alloc] init];
+        facebookShareQueue = [[NSMutableArray alloc] init];
         arrayOfArraysByType             = [[NSMutableArray alloc] initWithCapacity:kNumContents];
         NSMutableArray *topNotes        = [[NSMutableArray alloc] init];
         NSMutableArray *popularNotes    = [[NSMutableArray alloc] init];
@@ -571,6 +574,24 @@
     {
         if([displayedNoteId intValue] == note.noteId)
             return YES;
+    }
+    
+    return NO;
+}
+
+#pragma mark Facebook Share Queue methods
+
+-(void) addNoteToFacebookShareQueue: (Note *) note
+{
+    [facebookShareQueue addObject:[NSNumber numberWithInt:note.noteId]];
+}
+
+-(BOOL) removeNoteFromFacebookShareQueue: (Note *) note
+{
+    if ([facebookShareQueue containsObject:[NSNumber numberWithInt:note.noteId]])
+    {
+        [facebookShareQueue removeObject:[NSNumber numberWithInt:note.noteId]];
+        return YES;
     }
     
     return NO;

@@ -36,13 +36,11 @@
     BOOL bringUpCamera;
 }
 
-@property(nonatomic) NSData *mediaData;
-
 @end
 
 @implementation CameraViewController
 
-@synthesize noteId, backView, editView, mediaData;
+@synthesize noteId, backView, editView;
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
     if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
@@ -97,17 +95,18 @@
     
     overlay.alpha = 0;
     [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
-    {
-       overlay.alpha = 1;
-    } completion:nil];
+     {
+         overlay.alpha = 1;
+     } completion:nil];
     
-	[self presentModalViewController:picker animated:NO];
+    [self presentViewController:picker animated:NO completion:nil];
 }
 
 - (void)showLibraryButtonPressed:(id)sender
 {
 	picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    if(sender != overlay) [self presentModalViewController:picker animated:NO];
+    if(sender != overlay)
+        [self presentViewController:picker animated:NO completion:nil];
 }
 
 #pragma mark UIImagePickerControllerDelegate Protocol Methods
@@ -133,36 +132,32 @@
         
     }
     
-    [aPicker dismissModalViewControllerAnimated:NO];
+    [aPicker dismissViewControllerAnimated:NO completion:nil];
     
     [self.editView startSpinner];
     
-    __weak CameraViewController *selfForBlock = self;
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
         UIImage *image = [[info objectForKey:UIImagePickerControllerEditedImage] fixOrientation];
-     //   image = [selfForBlock cropImage:image];
-        selfForBlock.mediaData = UIImageJPEGRepresentation(image, 0.02);
+        NSData* mediaData = UIImageJPEGRepresentation(image, 0.02);
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [selfForBlock.editView updateImageView:selfForBlock.mediaData];
+            [self.editView updateImageView: mediaData];
         });
         
-        self.mediaData = [selfForBlock dataWithEXIFUsingData:selfForBlock.mediaData];
+        mediaData = [self dataWithEXIFUsingData: mediaData];
         
         NSString *newFilePath =[NSTemporaryDirectory() stringByAppendingString: [NSString stringWithFormat:@"%@image.jpg",[NSDate date]]];
         NSURL *imageURL = [[NSURL alloc] initFileURLWithPath: newFilePath];
-        [self.mediaData writeToURL:imageURL atomically:YES];
+        [mediaData writeToURL:imageURL atomically:YES];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:selfForBlock.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
+            [[[AppModel sharedAppModel] uploadManager]uploadContentForNoteId:self.noteId withTitle:[NSString stringWithFormat:@"%@",[NSDate date]] withText:nil withType:kNoteContentTypePhoto withFileURL:imageURL];
         });
         
         if ([info objectForKey:UIImagePickerControllerReferenceURL] == NULL)
         {
-            
             ALAssetsLibrary *al = [[ALAssetsLibrary alloc] init];
-            [al writeImageDataToSavedPhotosAlbum:selfForBlock.mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
+            [al writeImageDataToSavedPhotosAlbum: mediaData metadata:nil completionBlock:^(NSURL *assetURL, NSError *error)
              {
                  [al assetForURL:assetURL resultBlock:^(ALAsset *asset){}
                     failureBlock:^(NSError *error)
@@ -171,10 +166,8 @@
                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"Your privacy settings are disallowing us from saving to your camera roll. Go into System Settings to turn these settings off." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
                           [alert show];
                       });
-                  }
-                  ];
+                  }];
              }];
-            
         }
     });
     
@@ -188,7 +181,7 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)aPicker
 {
-    [aPicker dismissModalViewControllerAnimated:NO];
+    [aPicker dismissViewControllerAnimated:NO completion:nil];
     
     if([backView isKindOfClass:[InnovViewController class]])
     {
@@ -222,20 +215,24 @@
     
     [locDict setObject:[AppModel sharedAppModel].playerLocation.timestamp forKey:(NSString*)kCGImagePropertyGPSTimeStamp];
 	
-    if (exifLatitude <0.0){
+    if (exifLatitude <0.0)
+    {
         exifLatitude = exifLatitude*(-1);
         [locDict setObject:@"S" forKey:(NSString*)kCGImagePropertyGPSLatitudeRef];
-    }else{
-        [locDict setObject:@"N" forKey:(NSString*)kCGImagePropertyGPSLatitudeRef];
     }
+    else
+        
+        [locDict setObject:@"N" forKey:(NSString*)kCGImagePropertyGPSLatitudeRef];
     [locDict setObject:[NSNumber numberWithFloat:exifLatitude] forKey:(NSString*)kCGImagePropertyGPSLatitude];
 	
-    if (exifLongitude <0.0){
+    if (exifLongitude <0.0)
+    {
         exifLongitude=exifLongitude*(-1);
         [locDict setObject:@"W" forKey:(NSString*)kCGImagePropertyGPSLongitudeRef];
-    }else{
-        [locDict setObject:@"E" forKey:(NSString*)kCGImagePropertyGPSLongitudeRef];
     }
+    else
+        [locDict setObject:@"E" forKey:(NSString*)kCGImagePropertyGPSLongitudeRef];
+    
     [locDict setObject:[NSNumber numberWithFloat:exifLongitude] forKey:(NSString*) kCGImagePropertyGPSLongitude];
 	
     NSDictionary * properties = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -251,20 +248,20 @@
     return newJPEGData;
 }
 /*
-- (UIImage *)cropImage:(UIImage *)oldImage
-{
-    CGRect rect;
-    if(oldImage.size.height > oldImage.size.width)
-        rect = CGRectMake(0, (oldImage.size.height - oldImage.size.width)/2, oldImage.size.width, oldImage.size.width);
-    else
-        rect = CGRectMake((oldImage.size.width - oldImage.size.height)/2, 0, oldImage.size.height, oldImage.size.height);
-    
-    CGImageRef imageRef = CGImageCreateWithImageInRect(oldImage.CGImage, rect);
-    UIImage *result = [UIImage imageWithCGImage:imageRef scale:oldImage.scale orientation:oldImage.imageOrientation];
-    CGImageRelease(imageRef);
-    return result;
-}
-*/
+ - (UIImage *)cropImage:(UIImage *)oldImage
+ {
+ CGRect rect;
+ if(oldImage.size.height > oldImage.size.width)
+ rect = CGRectMake(0, (oldImage.size.height - oldImage.size.width)/2, oldImage.size.width, oldImage.size.width);
+ else
+ rect = CGRectMake((oldImage.size.width - oldImage.size.height)/2, 0, oldImage.size.height, oldImage.size.height);
+ 
+ CGImageRef imageRef = CGImageCreateWithImageInRect(oldImage.CGImage, rect);
+ UIImage *result = [UIImage imageWithCGImage:imageRef scale:oldImage.scale orientation:oldImage.imageOrientation];
+ CGImageRelease(imageRef);
+ return result;
+ }
+ */
 
 #pragma mark Memory Management
 - (void)didReceiveMemoryWarning

@@ -19,12 +19,8 @@
 {
 	NSUserDefaults *defaults;
 	NSURL *serverURL;
-    BOOL museumMode;
-    BOOL skipGameDetails;
 	Game *currentGame;
 	UIAlertView *networkAlert;
-
-    CMMotionManager *motionManager;
 
 	int playerId;
 	int fallbackGameId;
@@ -45,23 +41,9 @@
     NSMutableArray *gameTagList;
 
     UIProgressView *progressBar;
-
-    BOOL overlayIsVisible;
-
-    //Accelerometer Data
-    float averageAccelerometerReadingX;
-    float averageAccelerometerReadingY;
-    float averageAccelerometerReadingZ;
     
-	//Training Flags
-	BOOL hasSeenNearbyTabTutorial;
-	BOOL hasSeenQuestsTabTutorial;
-	BOOL hasSeenMapTabTutorial;
-	BOOL hasSeenInventoryTabTutorial;
     BOOL profilePic,tabsReady,hidePlayers,isGameNoteList;
     BOOL hasReceivedMediaList;
-    
-    BOOL currentlyInteractingWithObject;
 
     //CORE Data
     NSManagedObjectModel *managedObjectModel;
@@ -72,23 +54,8 @@
 }
 
 @property(nonatomic, strong) NSURL *serverURL;
-@property(readwrite) BOOL museumMode;
-@property(readwrite) BOOL skipGameDetails;
-
-@property(nonatomic, retain) CMMotionManager *motionManager;
-
-@property(readwrite) BOOL profilePic;
-
-@property(readwrite) BOOL hidePlayers;
-@property(readwrite) BOOL isGameNoteList;
 
 @property(readwrite) BOOL hasReceivedMediaList;
-
-@property(readwrite) BOOL overlayIsVisible;
-
-@property(readwrite) float averageAccelerometerReadingX;
-@property(readwrite) float averageAccelerometerReadingY;
-@property(readwrite) float averageAccelerometerReadingZ;
 
 @property(nonatomic, strong) NSString *userName;
 @property(nonatomic, strong) NSString *groupName;

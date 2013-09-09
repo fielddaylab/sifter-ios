@@ -10,10 +10,6 @@
 
 #import "InnovPopOverContentView.h"
 
-#warning CHANGE TWITTER HANDLE
-#define DEFAULT_TITLE                @"Note"
-#define TWITTER_HANDLE               @"@SiftrMadison"
-
 @protocol InnovPopOverSocialContentViewDelegate <NSObject>
 @required
 - (void) mailButtonPressed:      (id) sender;

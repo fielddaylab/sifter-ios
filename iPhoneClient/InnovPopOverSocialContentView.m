@@ -63,22 +63,12 @@
 
 - (IBAction)facebookButtonPressed:(id)sender
 {
-    NSString *title = [self getTitleOfCurrentNote];
-    NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
-    
-#warning fix url to be web notebook url
-    NSString *url  = HOME_URL;
-    
-    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:NO];
+    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:self.note automatically:NO];
 }
 
 - (IBAction)twitterButtonPressed:(id)sender
 {
-#warning fix url to be web notebook url
-    NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
-    NSString *url  = HOME_URL;
-    
-    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareText:text withImage:nil andURL:url fromNote:self.note.noteId];
+    [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare  shareNote:self.note toAccounts:nil automatically:NO];
 }
 
 - (IBAction)pinterestButtonPressed:(id)sender

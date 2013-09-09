@@ -746,7 +746,20 @@ BOOL currentlyUpdatingServerWithMapViewed;
 -(void) fetchNote:(int)noteId
 {
     NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
-    Note *note= [self fetchFromService:@"notes" usingMethod:@"getNoteById" withArgs:arguments usingParser:@selector(parseNoteFromDictionary:)];
+    
+    JSONConnection *jsonConnection = [[JSONConnection alloc] initWithServer:[AppModel sharedAppModel].serverURL
+                                                             andServiceName:@"notes"
+                                                              andMethodName:@"getNoteById"
+                                                               andArguments:arguments
+                                                                andUserInfo:nil];
+	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseSingleNote:)];
+}
+
+-(void) parseSingleNote:(JSONResult *) jsonResult
+{
+    Note *note = [self parseNoteFromDictionary:(NSDictionary *)jsonResult.data];
+    if([[InnovNoteModel sharedNoteModel] removeNoteFromFacebookShareQueue:note])
+        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:note automatically:YES];
     [[InnovNoteModel sharedNoteModel] updateNote: note];
 }
 

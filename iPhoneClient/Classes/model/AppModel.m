@@ -22,30 +22,19 @@
 @synthesize playerId;
 @synthesize fallbackGameId;
 @synthesize playerMediaId;
-@synthesize museumMode;
-@synthesize skipGameDetails;
 @synthesize oneGameGameList;
 @synthesize currentGame;
 @synthesize playerList;
 @synthesize playerLocation;
 @synthesize networkAlert;
 @synthesize gameMediaList;
-@synthesize profilePic;
-@synthesize overlayIsVisible;
 @synthesize nearbyLocationsList;
 @synthesize gameTagList;
-@synthesize hidePlayers;
 @synthesize progressBar;
-@synthesize isGameNoteList;
 @synthesize uploadManager;
 @synthesize mediaCache;
 @synthesize hasReceivedMediaList;
 @synthesize fileToDeleteURL;
-
-@synthesize motionManager;
-@synthesize averageAccelerometerReadingX;
-@synthesize averageAccelerometerReadingY;
-@synthesize averageAccelerometerReadingZ;
 
 + (id)sharedAppModel
 {
@@ -64,11 +53,8 @@
     if (self)
     {
 		//Init USerDefaults
-        museumMode      = NO;
-        skipGameDetails = NO;
 		defaults      = [NSUserDefaults standardUserDefaults];
 		gameMediaList = [[NSMutableDictionary alloc] initWithCapacity:10];
-        motionManager = [[CMMotionManager alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearGameLists) name:@"NewGameSelected" object:nil];
 	}
     return self;

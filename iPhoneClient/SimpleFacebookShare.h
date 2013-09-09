@@ -20,6 +20,8 @@
 #import <Foundation/Foundation.h>
 #import <FacebookSDK/FacebookSDK.h>
 
+@class Note;
+
 @interface SimpleFacebookShare : NSObject <FBLoginViewDelegate>
 
 - (id)initWithAppName:(NSString *)theAppName appUrl:(NSString *)theAppUrl;
@@ -29,9 +31,7 @@
 - (void) close;
 - (void) handleDidBecomeActive;
 - (void) openSession;
-- (void) shareUrl:(NSURL *)theUrl;
-- (void) shareText:(NSString *)theText DEPRECATED_ATTRIBUTE;
-- (void) shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId automatically:(BOOL) autoShare;
+- (void) shareNote:(Note *) note automatically:(BOOL) autoShare;
 - (void) getUsernameWithCompletionHandler:(void (^)(NSString *username, NSError *error))completionHandler;
 
 @end

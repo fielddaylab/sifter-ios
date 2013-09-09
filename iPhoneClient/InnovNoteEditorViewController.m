@@ -418,13 +418,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
     }
     
-    if(!imageUploaded && shareToFacebook)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please Wait" message:@"Please Wait for the Photo to Upload Before Sharing to Facebook" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-        [alert show];
-        return;
-    }
-    
     if(textContentId == 0)
     {
         NSString *urlString = [NSString stringWithFormat:@"%@.txt",[NSDate date]];
@@ -464,20 +457,14 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     if(shareToFacebook)
     {
-        NSString *title = ([self.note.tags count] > 0) ? ((Tag *)[self.note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
-        NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
-#warning fix url to be web notebook url
-        NSString *url  = HOME_URL;
-        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
+        if(imageUploaded)
+            [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:self.note automatically:YES];
+        else
+            [[InnovNoteModel sharedNoteModel] addNoteToFacebookShareQueue:self.note];
     }
     
     if(shareToTwitter)
-    {
-        NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
-        NSString *url  = HOME_URL;
-#warning fix url to be web notebook url
-        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
-    }
+        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareNote:self.note toAccounts:selectedTwitterAccounts automatically:YES];
     
     [[InnovNoteModel sharedNoteModel] updateNote:note];
     [self.delegate prepareToDisplayNote: self.note];

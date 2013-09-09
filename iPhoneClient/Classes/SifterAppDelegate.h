@@ -21,6 +21,10 @@
 #define HOME_URL                     @"www.siftr.org"                //for sharing purposes
 #define GAME_ID                      10690//3438 //10690             // 3438 on dev      10690 on prod
 
+#warning CHANGE TWITTER HANDLE
+#define DEFAULT_TITLE                @"Note"
+#define TWITTER_HANDLE               @"@SiftrMadison"
+
 @interface SifterAppDelegate : NSObject <AVAudioPlayerDelegate,UIApplicationDelegate, UIAccelerometerDelegate>
 {
 	UIWindow *window;

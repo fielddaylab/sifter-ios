@@ -19,11 +19,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class Note;
+
 @interface SimpleTwitterShare : NSObject
 
 - (BOOL) canSendTweet;
-- (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId;
 - (void) getAvailableTwitterAccounts;
-- (void) autoTweetWithText:(NSString *)text image:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId toAccounts:(NSArray *) accounts;
+- (void) shareNote:(Note *) note toAccounts:(NSArray *) accounts automatically:(BOOL)autoShare;
 
 @end
