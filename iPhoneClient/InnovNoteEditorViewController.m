@@ -135,6 +135,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         tagList = [[NSArray alloc] init];
         originalTagName = @"";
         newTagName = @"";
+        tempSelectedIndex = -1;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewFromNote:) name:UIApplicationWillEnterForegroundNotification object:nil];
     }
@@ -244,7 +245,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
             self.title = originalTagName;
         }
-        else
+        else if(tempSelectedIndex != -1)
             [self tableView:editNoteTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:tempSelectedIndex inSection:TagSection]];
         
         if(self.note.latitude != 0 && self.note.longitude != 0)
@@ -409,6 +410,14 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (void) shareButtonPressed: (id) sender
 {
+    if([originalTagName length] == 0 && [newTagName length] == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Select Category" message: @"Please select which category this note best fits under before submitting." delegate: self cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
+        
+        [alert show];
+        return;
+    }
+    
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
     else self.note.text = captionTextView.text;
     
@@ -1060,7 +1069,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     if(indexPath.section == TagSection)
     {
-        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:tempSelectedIndex inSection:TagSection]].accessoryType = UITableViewCellAccessoryNone;
+        if(tempSelectedIndex != -1)
+            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:tempSelectedIndex inSection:TagSection]].accessoryType = UITableViewCellAccessoryNone;
         
         NSIndexPath *oldIndex = [tableView indexPathForSelectedRow];
         [tableView cellForRowAtIndexPath:oldIndex].accessoryType = UITableViewCellAccessoryNone;

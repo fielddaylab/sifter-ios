@@ -215,8 +215,8 @@
         Annotation *tmpAnnotation;
         for (int i = 0; i < [[mapView annotations] count]; i++)
         {
-         //   if(notePopUp.note.noteId == note.noteId)
-         //       [notePopUp hide];
+            if(notePopUp.note.noteId == note.noteId)
+                [notePopUp hide];
             
             if((tmpMKAnnotation = [[mapView annotations] objectAtIndex:i]) == mapView.userLocation ||
                !((tmpAnnotation = (Annotation*)tmpMKAnnotation) && [tmpAnnotation respondsToSelector:@selector(title)])) continue;
