@@ -112,7 +112,7 @@
         }
         else
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are You Sure?" message:@"Are you sure you want to mark this content as inappropriate?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Mark Inappropriate" message:@"Are you sure you want to mark this content as inappropriate?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
             [alert show];
         }
         
@@ -157,7 +157,7 @@
     {
         [delegate presentLogIn];
     }
-    else if(buttonIndex != 0)
+    else if([alertView.title isEqualToString:@"Mark Inappropriate"] && buttonIndex != 0)
     {
         note.userFlagged = !flagButton.selected;
         [[AppServices sharedAppServices]flagNote:note.noteId];

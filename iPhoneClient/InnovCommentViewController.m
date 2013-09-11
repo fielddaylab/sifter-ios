@@ -48,6 +48,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     UIBarButtonItem *addCommentButton;
     
     BOOL expanded;
+    int lastNoteDeleteIndex;
 }
 
 @end
@@ -104,7 +105,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
     gestureRecognizer.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:gestureRecognizer];
+    [commentTableView addGestureRecognizer:gestureRecognizer];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -249,6 +250,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     if([alertView.title isEqualToString:@"Must Be Logged In"] && buttonIndex != 0)
         [self presentLogIn];
+    else if([alertView.title isEqualToString:@"Delete Comment"] && buttonIndex != 0)
+    {
+        self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
+        int deletedNoteId = ((Note *)[self.note.comments objectAtIndex:lastNoteDeleteIndex]).noteId;
+        [self.note.comments removeObjectAtIndex:lastNoteDeleteIndex];
+        [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:lastNoteDeleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [[InnovNoteModel sharedNoteModel] updateNote:self.note];
+        [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
+    }
 }
 
 #pragma mark Table view methods
@@ -339,12 +349,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void)deleteButtonPressed:(UIButton *)sender
 {
-    self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-    int deletedNoteId = ((Note *)[self.note.comments objectAtIndex:sender.tag]).noteId;
-    [self.note.comments removeObjectAtIndex:sender.tag];
-    [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:sender.tag inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [[InnovNoteModel sharedNoteModel] updateNote:self.note];
-    [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
+    lastNoteDeleteIndex = sender.tag;
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete Comment" message:@"Are you sure you want to delete this comment?" delegate:self cancelButtonTitle:@"No" otherButtonTitles: @"Yes", nil];
+    [alert show];
 }
 
 #pragma mark Hide Keyboard
