@@ -757,10 +757,15 @@ BOOL currentlyUpdatingServerWithMapViewed;
 
 -(void) parseSingleNote:(JSONResult *) jsonResult
 {
-    Note *note = [self parseNoteFromDictionary:(NSDictionary *)jsonResult.data];
-    if([[InnovNoteModel sharedNoteModel] removeNoteFromFacebookShareQueue:note])
-        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:note automatically:YES];
-    [[InnovNoteModel sharedNoteModel] updateNote: note];
+    if(jsonResult.data)
+    {
+        Note *note = [self parseNoteFromDictionary:(NSDictionary *)jsonResult.data];
+        if(note){
+            if([[InnovNoteModel sharedNoteModel] removeNoteFromFacebookShareQueue:note])
+                [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:note automatically:YES];
+            [[InnovNoteModel sharedNoteModel] updateNote: note];
+        }
+    }
 }
 
 #pragma mark Async Fetch selectors
