@@ -177,14 +177,6 @@
         [listVC animateInNote:note];
 }
 
-- (void) animateInNoteOnMap: (Note *) note
-{
-    if (![contentView.subviews containsObject:mapVC.view])
-        [self switchViews];
-    
-    [self animateInNote:note];
-}
-
 #pragma mark Search Bar Delegate Methods
 
 - (void) searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
