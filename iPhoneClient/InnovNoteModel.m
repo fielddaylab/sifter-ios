@@ -169,7 +169,7 @@
         while (([[notifNotesCounts objectAtIndex:i] intValue]-[notifNoteIds count]) > 0 && indexInArray < [[arrayOfArraysByType objectAtIndex:i] count])
         {
             Note* currentNote = [allNotes objectForKey: [[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
-            if([self noteShouldBeAvailable:currentNote] && ![self noteHasBeenDisplayedByNotif:currentNote])
+            if([self noteShouldBeAvailable:currentNote] && ![self noteHasBeenDisplayedByNotif:currentNote] && ![notifNoteIds containsObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]])
                 [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
             ++indexInArray;
         }
