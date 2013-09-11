@@ -30,8 +30,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
                BuildableName = "Siftr.app"
-               BlueprintName = "Siftr"
-               ReferencedContainer = "container:Siftr.xcodeproj">
+               BlueprintName = "Sift"
+               ReferencedContainer = "container:Sift.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -67,8 +67,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
             BuildableName = "Siftr.app"
-            BlueprintName = "Siftr"
-            ReferencedContainer = "container:Siftr.xcodeproj">
+            BlueprintName = "Sift"
+            ReferencedContainer = "container:Sift.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -85,8 +85,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
             BuildableName = "Siftr.app"
-            BlueprintName = "Siftr"
-            ReferencedContainer = "container:Siftr.xcodeproj">
+            BlueprintName = "Sift"
+            ReferencedContainer = "container:Sift.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
