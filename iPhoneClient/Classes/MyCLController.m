@@ -194,6 +194,7 @@
     localNotification.alertBody = [NSString stringWithFormat:@"Nearby note about %@.", tagName];
     localNotification.alertAction = nil;
     localNotification.hasAction = YES;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
     localNotification.userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     //  }
