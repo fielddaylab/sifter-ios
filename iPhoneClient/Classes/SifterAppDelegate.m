@@ -14,6 +14,7 @@
 #import "InnovViewController.h"
 
 #import "UIColor+SifterColors.h"
+#import "TestFlight.h"
 
 @interface SifterAppDelegate()
 {
@@ -48,6 +49,8 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [TestFlight takeOff:@"fce465bd-4f6c-4c98-8451-2585fe6af73a"];
+    
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
@@ -101,8 +104,6 @@ void uncaughtExceptionHandler(NSException *exception) {
         [window setRootViewController:nav];
     else
         [window addSubview:nav.view];
-    
-    [Crittercism enableWithAppID:@"51e40fef558d6a55a4000007"];
     
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>Sift</string>
+	<string>Siftr</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
@@ -21,7 +21,7 @@
 		<string>Icon.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>org.arisgames.sift</string>
+	<string>org.arisgames.siftr</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -43,18 +43,18 @@
 			<array>
 				<string>pin1432066</string>
 				<string>fb599034320156343</string>
-				<string>sift</string>
+				<string>siftr</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20130910</string>
+	<string>20130911</string>
 	<key>Copyright (human-readable)</key>
 	<string></string>
 	<key>FacebookAppID</key>
 	<string>599034320156343</string>
 	<key>FacebookDisplayName</key>
-	<string>Sift</string>
+	<string>Siftr</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
