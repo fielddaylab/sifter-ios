@@ -182,6 +182,8 @@
 		ABDA40C110506AF400823A94 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA40B110506AF400823A94 /* Annotation.m */; };
 		ABDA40C210506AF400823A94 /* AnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA40B310506AF400823A94 /* AnnotationView.m */; };
 		ABDA40DE10506CB300823A94 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDA40DD10506CB300823A94 /* MapKit.framework */; };
+		ABEF1FCE17E3C2F600F7B26D /* 14-tag-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = ABEF1FCC17E3C2F600F7B26D /* 14-tag-highlighted.png */; };
+		ABEF1FCF17E3C2F600F7B26D /* 14-tag-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABEF1FCD17E3C2F600F7B26D /* 14-tag-highlighted@2x.png */; };
 		ABF1392A17D391A0000464BF /* sifter120.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392617D391A0000464BF /* sifter120.png */; };
 		ABF1392B17D391A0000464BF /* sifter114.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392717D391A0000464BF /* sifter114.png */; };
 		ABF1392C17D391A0000464BF /* sifter57.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392817D391A0000464BF /* sifter57.png */; };
@@ -490,6 +492,8 @@
 		ABDA40B210506AF400823A94 /* AnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AnnotationView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		ABDA40B310506AF400823A94 /* AnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AnnotationView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABDA40DD10506CB300823A94 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		ABEF1FCC17E3C2F600F7B26D /* 14-tag-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "14-tag-highlighted.png"; sourceTree = "<group>"; };
+		ABEF1FCD17E3C2F600F7B26D /* 14-tag-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "14-tag-highlighted@2x.png"; sourceTree = "<group>"; };
 		ABF1392617D391A0000464BF /* sifter120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter120.png; sourceTree = "<group>"; };
 		ABF1392717D391A0000464BF /* sifter114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter114.png; sourceTree = "<group>"; };
 		ABF1392817D391A0000464BF /* sifter57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter57.png; sourceTree = "<group>"; };
@@ -732,6 +736,8 @@
 		89B9200F17A70EEE0011ABFD /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
+				ABEF1FCC17E3C2F600F7B26D /* 14-tag-highlighted.png */,
+				ABEF1FCD17E3C2F600F7B26D /* 14-tag-highlighted@2x.png */,
 				AB16970117D155A000B53861 /* 86-camera-red@2x.png */,
 				AB1696FF17D1554B00B53861 /* 86-camera-red.png */,
 				AB5EEDAD17D14ACF00BF9A32 /* 40-dialpad.png */,
@@ -1365,6 +1371,7 @@
 				28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */,
 				2B3D11AD0F4361380067FD3A /* LoginViewController.xib in Resources */,
 				ABF1392C17D391A0000464BF /* sifter57.png in Resources */,
+				ABEF1FCE17E3C2F600F7B26D /* 14-tag-highlighted.png in Resources */,
 				2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */,
 				A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */,
 				A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */,
@@ -1441,6 +1448,7 @@
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
 				89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */,
 				AB5EED9F17D1499000BF9A32 /* 19-gear.png in Resources */,
+				ABEF1FCF17E3C2F600F7B26D /* 14-tag-highlighted@2x.png in Resources */,
 				8902C52317874A760071373E /* InnovPopOverNotifContentView.xib in Resources */,
 				8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */,
 				89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */,
