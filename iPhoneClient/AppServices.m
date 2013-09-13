@@ -453,7 +453,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                           text,
                           nil];
     
-    NSMutableDictionary* userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", fileURL, @"localURL", nil];
+    NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", fileURL, @"localURL", nil];
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
                                                              andMethodName:@"addContentToNote"
@@ -721,7 +721,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                 andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseUpdateServerWithPlayerLocationFromJSON:)];
 }
-
+/*
 #pragma mark Sync Fetch selectors
 - (id) fetchFromService:(NSString *)aService usingMethod:(NSString *)aMethod withArgs:(NSArray *)arguments usingParser:(SEL)aSelector
 {
@@ -742,7 +742,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	
 	return [self performSelector:aSelector withObject:jsonResult.data];
 }
-
+*/
 -(void) fetchNote:(int)noteId
 {
     NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
@@ -760,11 +760,20 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if(jsonResult.data)
     {
         Note *note = [self parseNoteFromDictionary:(NSDictionary *)jsonResult.data];
-        if(note){
+        if(note)
+        {
             if([[InnovNoteModel sharedNoteModel] removeNoteFromFacebookShareQueue:note])
                 [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:note automatically:YES];
             [[InnovNoteModel sharedNoteModel] updateNote: note];
         }
+        else
+        {
+            [[Logger sharedLogger] logDebug:@"Nil note in parse"];
+        }
+    }
+    else
+    {
+        [[Logger sharedLogger] logDebug:@"No data about note in parse"];
     }
 }
 

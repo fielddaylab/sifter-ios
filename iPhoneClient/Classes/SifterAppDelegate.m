@@ -14,7 +14,6 @@
 #import "InnovViewController.h"
 
 #import "UIColor+SifterColors.h"
-#import "TestFlight.h"
 
 @interface SifterAppDelegate()
 {
@@ -24,9 +23,6 @@
 @end
 
 @implementation SifterAppDelegate
-
-int readingCountUpToOneHundredThousand = 0;
-int steps = 0;
 
 @synthesize window;
 @synthesize player;
@@ -42,15 +38,13 @@ int steps = 0;
 #pragma mark -
 #pragma mark Application State
 
-void uncaughtExceptionHandler(NSException *exception) {
-    
+void uncaughtExceptionHandler(NSException *exception)
+{    
     NSLog(@"Call Stack: %@", exception.callStackSymbols);
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"ea7739d5-8bcf-4c6f-a0de-e8c17bb9dc7d"];
-    
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
@@ -80,7 +74,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     
-    application.idleTimerDisabled = YES;
+    application.idleTimerDisabled = NO;
     
     //Log the current Language
 	NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
@@ -89,7 +83,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 	NSLog(@"Current language: %@", currentLanguage);
     
     [self setUpWithDefaultAppearance];
-    //[[UIAccelerometer sharedAccelerometer] setUpdateInterval:0.2];
     
     //Init keys in UserDefaults in case the user has not visited the Sifter Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
@@ -261,9 +254,9 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         [[UISegmentedControl appearance]    setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          [UIColor SifterColorWhite],                         UITextAttributeTextColor,
-          [UIColor clearColor],                               UITextAttributeTextShadowColor,
-          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          [UIColor SifterColorWhite],                               UITextAttributeTextColor,
+          [UIColor clearColor],                                     UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],   UITextAttributeFont,
           nil]
                                                           forState:UIControlStateSelected];
         
@@ -271,11 +264,11 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
         [[UITabBar appearance]              setTintColor:[UIColor SifterColorTabBarTint]];
         [[UINavigationBar appearance]       setTintColor:[UIColor SifterColorNavBarTint]];
-        [[UINavigationBar appearance] setTitleTextAttributes:
+        [[UINavigationBar appearance]       setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          [UIColor SifterColorNavBarText],                      UITextAttributeTextColor,
-          [UIColor clearColor],                               UITextAttributeTextShadowColor,
-          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          [UIColor SifterColorNavBarText],                          UITextAttributeTextColor,
+          [UIColor clearColor],                                     UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],   UITextAttributeFont,
           nil]
          ];
         
@@ -314,7 +307,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     [[UIBarButtonItem appearance] setTitleTextAttributes:
      [NSDictionary dictionaryWithObjectsAndKeys:
       [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
-      [UIColor SifterColorDarkGray], UITextAttributeTextColor,
+      [UIColor SifterColorDarkGray],                        UITextAttributeTextColor,
+      [UIColor clearColor],                                 UITextAttributeTextShadowColor,
       nil]
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:

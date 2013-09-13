@@ -237,11 +237,13 @@
         [self addChildViewController:selectedTagsVC];
         [self.view insertSubview:selectedTagsVC.view belowSubview:toolBarImageView];
         [selectedTagsVC didMoveToParentViewController:self];
+        contentView.userInteractionEnabled = NO;
         [selectedTagsVC show];
     }
     else
     {
         [showTagsButton setSelected:NO];
+        contentView.userInteractionEnabled = YES;
         [selectedTagsVC hide];
     }
 }
@@ -339,6 +341,7 @@
     [self searchBarCancelButtonClicked:searchBar];
     [settingsView hide];
     [showTagsButton setSelected:NO];
+    contentView.userInteractionEnabled = YES;
     [selectedTagsVC hide];
 }
 

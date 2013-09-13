@@ -45,6 +45,13 @@
         
         contentRect = CGRectInset(self.bounds, 0, 10);
         
+        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+        {
+            [notificationsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [aboutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            [logInOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        }
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLogInOutButtonTitle) name:@"NewLoginResponseReady" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performLogout:)            name:@"PassChangeRequested"   object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performLogout:)            name:@"LogoutRequested"       object:nil];
