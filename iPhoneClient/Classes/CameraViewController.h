@@ -15,7 +15,7 @@
 @interface CameraViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (assign)    int noteId;
-@property (nonatomic) UIViewController *backView;
-@property (nonatomic) id<CameraViewControllerDelegate> editView;
+@property (nonatomic, weak) UIViewController *backView;
+@property (nonatomic, weak) id<CameraViewControllerDelegate> editView;
 
 @end

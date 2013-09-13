@@ -49,6 +49,7 @@
     {
         _photoView = [[AsyncMediaImageView alloc] init];
         _photoView.clipsToBounds = YES;
+        [_photoView setSpinnerColor:[UIColor blackColor]];
         [self addSubview:_photoView];
     }
     return _photoView;

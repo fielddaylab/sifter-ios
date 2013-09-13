@@ -81,6 +81,7 @@
 		8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10017CFB2BA00AA6165 /* shareWhite.png */; };
 		8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */; };
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
+		893AF8E017DE90BA00F57AE9 /* mli_office.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
 		89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */; };
@@ -182,6 +183,12 @@
 		ABDA40C110506AF400823A94 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA40B110506AF400823A94 /* Annotation.m */; };
 		ABDA40C210506AF400823A94 /* AnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDA40B310506AF400823A94 /* AnnotationView.m */; };
 		ABDA40DE10506CB300823A94 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDA40DD10506CB300823A94 /* MapKit.framework */; };
+		ABF1392A17D391A0000464BF /* sifter120.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392617D391A0000464BF /* sifter120.png */; };
+		ABF1392B17D391A0000464BF /* sifter114.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392717D391A0000464BF /* sifter114.png */; };
+		ABF1392C17D391A0000464BF /* sifter57.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392817D391A0000464BF /* sifter57.png */; };
+		ABF1392D17D391A0000464BF /* sifter80.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392917D391A0000464BF /* sifter80.png */; };
+		ABF1393017D391A6000464BF /* sifter29.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392E17D391A6000464BF /* sifter29.png */; };
+		ABF1393117D391A6000464BF /* sifter58.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF1392F17D391A6000464BF /* sifter58.png */; };
 		ABF41CAA14744DAC00B60D05 /* camera_roll.png in Resources */ = {isa = PBXBuildFile; fileRef = ABF41CA914744DAB00B60D05 /* camera_roll.png */; };
 		ABF4A3AD116847E50043EB1C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF4A3AC116847E40043EB1C /* SystemConfiguration.framework */; };
 		ABF4A3B1116847F50043EB1C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF4A3B0116847F50043EB1C /* MobileCoreServices.framework */; };
@@ -346,6 +353,7 @@
 		8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
 		891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverContentView.m; sourceTree = "<group>"; };
+		893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mli_office.gpx; sourceTree = "<group>"; };
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
 		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
 		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
@@ -380,7 +388,7 @@
 		A78FD8B10F4B7EA200820FEA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		A79202630F8E717C0049F990 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		A7955B920F73E095005148E4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		A7A172720F4F26280017E865 /* ARIS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARIS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7A172720F4F26280017E865 /* Siftr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Siftr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7E32E9C0FD1CEFD0058EDB7 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		A7E32E9D0FD1CEFD0058EDB7 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		A7E39EAB0F5F60D000826198 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = CameraViewController.h; path = Classes/CameraViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -489,6 +497,12 @@
 		ABDA40B210506AF400823A94 /* AnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AnnotationView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		ABDA40B310506AF400823A94 /* AnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AnnotationView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		ABDA40DD10506CB300823A94 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		ABF1392617D391A0000464BF /* sifter120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter120.png; sourceTree = "<group>"; };
+		ABF1392717D391A0000464BF /* sifter114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter114.png; sourceTree = "<group>"; };
+		ABF1392817D391A0000464BF /* sifter57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter57.png; sourceTree = "<group>"; };
+		ABF1392917D391A0000464BF /* sifter80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter80.png; sourceTree = "<group>"; };
+		ABF1392E17D391A6000464BF /* sifter29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter29.png; sourceTree = "<group>"; };
+		ABF1392F17D391A6000464BF /* sifter58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sifter58.png; sourceTree = "<group>"; };
 		ABF41CA914744DAB00B60D05 /* camera_roll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_roll.png; sourceTree = "<group>"; };
 		ABF4A3AC116847E40043EB1C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		ABF4A3B0116847F50043EB1C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -640,7 +654,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A7A172720F4F26280017E865 /* ARIS.app */,
+				A7A172720F4F26280017E865 /* Siftr.app */,
 				AB1660BB14E8754A002C6ACB /* UploadManager Tests.octest */,
 			);
 			name = Products;
@@ -649,7 +663,6 @@
 		29B97314FDCFA39411CA2CEA /* ARIS */ = {
 			isa = PBXGroup;
 			children = (
-				DBFEDCE0176115FB009C080A /* AppMedia */,
 				DD5C6AA71700D6FE00717031 /* InnovationViewControllers */,
 				A7986D6A0F8FEC7200A5469F /* Core App */,
 				A7986D650F8FEC1100A5469F /* Login */,
@@ -822,6 +835,7 @@
 		89E1608717CBD75D0014AF3C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */,
 				4ADE919D13CB84B80009F4AF /* UIDevice+Hardware.h */,
 				4ADE919E13CB84B80009F4AF /* UIDevice+Hardware.m */,
 				89E1608417CBD7550014AF3C /* UIColor+SifterColors.h */,
@@ -1228,6 +1242,12 @@
 		DBFEDCE0176115FB009C080A /* AppMedia */ = {
 			isa = PBXGroup;
 			children = (
+				ABF1392E17D391A6000464BF /* sifter29.png */,
+				ABF1392F17D391A6000464BF /* sifter58.png */,
+				ABF1392617D391A0000464BF /* sifter120.png */,
+				ABF1392717D391A0000464BF /* sifter114.png */,
+				ABF1392817D391A0000464BF /* sifter57.png */,
+				ABF1392917D391A0000464BF /* sifter80.png */,
 				89B9201B17A715DD0011ABFD /* App LaunchScreen and Icons */,
 				AB37BC2E1184CDE600C5CE8B /* Sound Effects */,
 				AB1EF609175FDE180073DBF4 /* Icons */,
@@ -1256,6 +1276,7 @@
 			isa = PBXGroup;
 			children = (
 				89E1608717CBD75D0014AF3C /* Utils */,
+				DBFEDCE0176115FB009C080A /* AppMedia */,
 				DB0743951754FE060068A1DB /* Extern Libraries */,
 				DB0743971754FE680068A1DB /* Header Files */,
 				DB1A8AE8174D55570052DDC6 /* Views */,
@@ -1287,9 +1308,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* YOI */ = {
+		1D6058900D05DD3D006BFB54 /* Siftr */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "YOI" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Siftr" */;
 			buildPhases = (
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
@@ -1300,9 +1321,9 @@
 			);
 			dependencies = (
 			);
-			name = YOI;
+			name = Siftr;
 			productName = ARIS;
-			productReference = A7A172720F4F26280017E865 /* ARIS.app */;
+			productReference = A7A172720F4F26280017E865 /* Siftr.app */;
 			productType = "com.apple.product-type.application";
 		};
 		AB1660BA14E8754A002C6ACB /* UploadManager Tests */ = {
@@ -1332,11 +1353,11 @@
 				LastUpgradeCheck = 0460;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = 94WTN6924S;
+						DevelopmentTeam = QYWVT766UU;
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "YOI" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Siftr" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -1353,7 +1374,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* YOI */,
+				1D6058900D05DD3D006BFB54 /* Siftr */,
 				AB1660BA14E8754A002C6ACB /* UploadManager Tests */,
 			);
 		};
@@ -1368,6 +1389,7 @@
 				AB16970217D155A000B53861 /* 86-camera-red@2x.png in Resources */,
 				28AD73880D9D96C1002E5188 /* MainWindow.xib in Resources */,
 				2B3D11AD0F4361380067FD3A /* LoginViewController.xib in Resources */,
+				ABF1392C17D391A0000464BF /* sifter57.png in Resources */,
 				2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */,
 				A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */,
 				A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */,
@@ -1388,17 +1410,20 @@
 				AB2FE579120A154B00758F8C /* deleteComment.png in Resources */,
 				1147E15913F32260000E4BC2 /* noteicon.png in Resources */,
 				11DD5423141E70D00007CD70 /* DropOnMapViewController.xib in Resources */,
+				ABF1393117D391A6000464BF /* sifter58.png in Resources */,
 				11DD5430141E80D20007CD70 /* Pin.png in Resources */,
 				AB5EEDA717D149AB00BF9A32 /* 86-camera.png in Resources */,
 				11DD5431141E80D20007CD70 /* PinDown1.png in Resources */,
 				11DD5432141E80D20007CD70 /* PinDown2.png in Resources */,
 				11DD5433141E80D20007CD70 /* PinDown3.png in Resources */,
 				11DD5434141E80D20007CD70 /* PinFloating.png in Resources */,
+				ABF1393017D391A6000464BF /* sifter29.png in Resources */,
 				11DD5435141E80D20007CD70 /* PinShadow.png in Resources */,
 				111CFA9414520EC700D56207 /* ForgotViewController.xib in Resources */,
 				8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */,
 				ABF41CAA14744DAC00B60D05 /* camera_roll.png in Resources */,
 				11B28B9914C4A49600759BCD /* stop_button.png in Resources */,
+				ABF1392B17D391A0000464BF /* sifter114.png in Resources */,
 				11B28B9A14C4A49600759BCD /* play.png in Resources */,
 				11D7F9331537510D0046410F /* LoadingViewController.xib in Resources */,
 				4A7F910015B09FFC00988446 /* pingtone.wav in Resources */,
@@ -1416,6 +1441,7 @@
 				DBFE8260174E758600E4496B /* InnovListViewController.xib in Resources */,
 				AB8552AF176095230027F1F5 /* showTagsIcon.png in Resources */,
 				AB8552B0176095230027F1F5 /* showTagsIcon@2x.png in Resources */,
+				ABF1392D17D391A0000464BF /* sifter80.png in Resources */,
 				AB5EEDA817D149AB00BF9A32 /* 86-camera@2x.png in Resources */,
 				AB8552B3176095230027F1F5 /* newNoteIcon.png in Resources */,
 				AB8552B4176095230027F1F5 /* newNoteIcon@2x.png in Resources */,
@@ -1437,6 +1463,7 @@
 				AB5EEDA417D149A300BF9A32 /* 74-location@2x.png in Resources */,
 				DB0F406D17721F5000F19934 /* mail_alt.png in Resources */,
 				DB0F406F17721FBF00F19934 /* mail_alt96.png in Resources */,
+				893AF8E017DE90BA00F57AE9 /* mli_office.gpx in Resources */,
 				DB0F40741772217B00F19934 /* PinterestSDKResources.bundle in Resources */,
 				DB0F4076177223F500F19934 /* pinterest_badge_red.png in Resources */,
 				DB01B1031774E6B1005E1784 /* cropBox.png in Resources */,
@@ -1455,6 +1482,7 @@
 				8906DE571799C32500B2D7BF /* commentWhite@2x.png in Resources */,
 				AB5EEDA017D1499000BF9A32 /* 19-gear@2x.png in Resources */,
 				8906DE591799C32500B2D7BF /* flagRed.png in Resources */,
+				ABF1392A17D391A0000464BF /* sifter120.png in Resources */,
 				8906DE5A1799C32500B2D7BF /* flagWhite.png in Resources */,
 				8906DE5B1799C32500B2D7BF /* commentWhite.png in Resources */,
 				7196616F1799D12E00605767 /* likeWhite.png in Resources */,
@@ -1646,8 +1674,8 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: UW Division of Information Technology";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: UW Division of Information Technology";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1665,7 +1693,7 @@
 					"\"$(SRCROOT)/zxing-Classes\"/**",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/**",
@@ -1679,9 +1707,9 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
-				PRODUCT_NAME = ARIS;
-				PROVISIONING_PROFILE = "8411B94E-1D39-4C3D-8623-5C178280CE7B";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8411B94E-1D39-4C3D-8623-5C178280CE7B";
+				PRODUCT_NAME = Siftr;
+				PROVISIONING_PROFILE = "643EBA27-D242-4530-A19D-36BB17725F87";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "643EBA27-D242-4530-A19D-36BB17725F87";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = iphoneos;
@@ -1779,8 +1807,8 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: UW Division of Information Technology";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: UW Division of Information Technology";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1796,7 +1824,7 @@
 					"\"$(SRCROOT)/zxing-Classes\"/**",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/**",
@@ -1810,9 +1838,9 @@
 					"-lsqlite3.0",
 					"-ObjC",
 				);
-				PRODUCT_NAME = ARIS;
-				PROVISIONING_PROFILE = "8411B94E-1D39-4C3D-8623-5C178280CE7B";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8411B94E-1D39-4C3D-8623-5C178280CE7B";
+				PRODUCT_NAME = Siftr;
+				PROVISIONING_PROFILE = "643EBA27-D242-4530-A19D-36BB17725F87";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "643EBA27-D242-4530-A19D-36BB17725F87";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = iphoneos;
@@ -1844,7 +1872,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "YOI" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Siftr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -1862,7 +1890,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "YOI" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Siftr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

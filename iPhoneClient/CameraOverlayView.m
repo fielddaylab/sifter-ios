@@ -15,7 +15,7 @@
 
 @interface CameraOverlayView()
 {
-    id<CameraOverlayViewDelegate> delegate;
+    __weak id<CameraOverlayViewDelegate> delegate;
     
     UIButton *libraryButton;
     UIActivityIndicatorView *spinner;

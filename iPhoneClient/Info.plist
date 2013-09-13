@@ -5,17 +5,23 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>YOI</string>
+	<string>Siftr</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFiles</key>
 	<array>
+		<string>sifter58</string>
+		<string>sifter80</string>
+		<string>sifter29</string>
+		<string>sifter120</string>
+		<string>sifter114</string>
+		<string>sifter57</string>
 		<string>Icon.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>org.arisgames.YOI</string>
+	<string>org.arisgames.siftr</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -23,30 +29,32 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string>
+	<string>1.1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>org.arisgames</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pin1432066</string>
-				<string>fb669647556383669</string>
-				<string>YOI</string>
+				<string>fb419129601530107</string>
+				<string>siftr</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20130831</string>
+	<string>20130910</string>
 	<key>Copyright (human-readable)</key>
 	<string></string>
 	<key>FacebookAppID</key>
-	<string>669647556383669</string>
+	<string>419129601530107</string>
 	<key>FacebookDisplayName</key>
-	<string>YOI</string>
+	<string>Siftr</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -55,6 +63,8 @@
 	<array>
 		<string>location</string>
 	</array>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>location-services</string>

@@ -8,7 +8,7 @@
 
 @protocol SelfRegistrationDelegate <NSObject>
 @required
-- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode;
+- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId;
 @end
 
 @interface SelfRegistrationViewController : UIViewController <UITextFieldDelegate, UITextViewDelegate>

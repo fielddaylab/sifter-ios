@@ -95,7 +95,7 @@
 
 -(IBAction)loginButtonTouched:(id)sender
 {
-    [self attemptLoginWithUserName:usernameField.text andPassword:passwordField.text andGameId:0 inMuseumMode:false];
+    [self attemptLoginWithUserName:usernameField.text andPassword:passwordField.text andGameId:0];
 }
 
 -(IBAction)changePassTouch:(id)sender
@@ -111,19 +111,15 @@
     [[self navigationController] pushViewController:selfRegistrationViewController animated:NO];
 }
 
-- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId inMuseumMode:(BOOL)museumMode
+- (void)attemptLoginWithUserName:(NSString *)userName andPassword:(NSString *)password andGameId:(int)gameId
 {
 	[AppModel sharedAppModel].userName = userName;
 	[AppModel sharedAppModel].password = password;
-	[AppModel sharedAppModel].museumMode = museumMode;
     
 	[[AppServices sharedAppServices] login];
     
     if(gameId != 0)
-    {
-        [AppModel sharedAppModel].skipGameDetails = YES;
         [[AppServices sharedAppServices] fetchOneGameGameList:gameId];
-    }
 }
 
 @end

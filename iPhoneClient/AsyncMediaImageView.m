@@ -159,7 +159,6 @@
     }
     
     spinner.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-    spinner.color = [UIColor whiteColor];
     [spinner startAnimating];
     
     if(aMedia != self.media && aMedia.image != self.media.image)

@@ -52,4 +52,7 @@ typedef enum {
 -(void) removeSearchTerm: (NSString *) term;
 -(void) setSelectedContent: (ContentSelector) contentSelector;
 
+-(void) addNoteToFacebookShareQueue: (Note *) note;
+-(BOOL) removeNoteFromFacebookShareQueue: (Note *) note;
+
 @end

@@ -78,7 +78,7 @@
 #warning add?
 //	[[RootViewController sharedRootViewController] removeWaitingIndicator];
     
-    [delegate attemptLoginWithUserName:[AppModel sharedAppModel].userName andPassword:[AppModel sharedAppModel].password andGameId:0 inMuseumMode:true];
+    [delegate attemptLoginWithUserName:[AppModel sharedAppModel].userName andPassword:[AppModel sharedAppModel].password andGameId:0];
 	[self.view endEditing:YES];
 
 	[self.navigationController popToRootViewControllerAnimated:YES];

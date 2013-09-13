@@ -27,6 +27,7 @@
 #import "SVProgressHUD.h"
 
 #import "JSONResult.h"
+#import "Note.h"
 
 #define TWEET_SIZE 140
 #define URL_SIZE   22
@@ -48,6 +49,17 @@
         return YES;
     }
     return NO;
+}
+
+- (void) shareNote:(Note *) note toAccounts:(NSArray *) accounts automatically:(BOOL)autoShare
+{
+    NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, note.text];
+    NSString *url  = HOME_URL;
+    
+    if(autoShare)
+        [self autoTweetWithText:text image:nil andURL:url fromNote:note.noteId toAccounts:accounts];
+    else
+        [self shareText:text withImage:nil andURL:url fromNote:note.noteId];
 }
 
 - (void) shareText:(NSString *)text withImage:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId
@@ -130,7 +142,6 @@
 
 - (void) autoTweetWithText:(NSString *)text image:(UIImage *) image andURL:(NSString *) urlString fromNote:(int) noteId toAccounts:(NSArray *) accounts
 {
-    
     for(ACAccount *twitterAccount in accounts)
     {
         int characterCountRemaining = TWEET_SIZE;
