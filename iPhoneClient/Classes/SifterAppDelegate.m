@@ -99,8 +99,6 @@ void uncaughtExceptionHandler(NSException *exception)
     else
         [window addSubview:nav.view];
     
-    [Crittercism enableWithAppID:@"51e40fef558d6a55a4000007"];
-    
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])
     {

@@ -112,8 +112,6 @@
 		AA1E2D4E1652CC6000219535 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E2D4D1652CC6000219535 /* libicucore.dylib */; };
 		AA1E2D501652CC7500219535 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E2D4F1652CC7500219535 /* Security.framework */; };
 		AA39E32116C4370D005A4E06 /* libPusher-combined.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA39E32016C4370D005A4E06 /* libPusher-combined.a */; };
-		AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */ = {isa = PBXBuildFile; fileRef = AABD101716B7164C007278EF /* README_ABOUT_LINK_ERRORS */; };
-		AABD101B16B71787007278EF /* libCrittercism_v3_4_9.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AABD101A16B71787007278EF /* libCrittercism_v3_4_9.a */; };
 		AB0A5BA5120365420065CE68 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0A5BA3120365420065CE68 /* Localizable.strings */; };
 		AB0DE80911559D0500A6EC3E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0DE80811559D0500A6EC3E /* AVFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AB0DE80D11559D1200A6EC3E /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0DE80C11559D1200A6EC3E /* CoreAudio.framework */; };
@@ -401,10 +399,6 @@
 		AA1E2D4F1652CC7500219535 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		AA39E32016C4370D005A4E06 /* libPusher-combined.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libPusher-combined.a"; sourceTree = "<group>"; };
 		AA7A428A16B86C9E00E84252 /* UploadContent1.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UploadContent1.8.xcdatamodel; sourceTree = "<group>"; };
-		AABD101416B7164C007278EF /* Crittercism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crittercism.h; sourceTree = "<group>"; };
-		AABD101516B7164C007278EF /* CrittercismDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrittercismDelegate.h; sourceTree = "<group>"; };
-		AABD101716B7164C007278EF /* README_ABOUT_LINK_ERRORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README_ABOUT_LINK_ERRORS; sourceTree = "<group>"; };
-		AABD101A16B71787007278EF /* libCrittercism_v3_4_9.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCrittercism_v3_4_9.a; sourceTree = "<group>"; };
 		AB0A5BA4120365420065CE68 /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AB0A5BA61203665C0065CE68 /* es */ = {isa = PBXFileReference; explicitFileType = text.plist.strings; fileEncoding = 10; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AB0DE80811559D0500A6EC3E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -621,7 +615,6 @@
 				ABF4A3AD116847E50043EB1C /* SystemConfiguration.framework in Frameworks */,
 				AA1E2D501652CC7500219535 /* Security.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				AABD101B16B71787007278EF /* libCrittercism_v3_4_9.a in Frameworks */,
 				AA39E32116C4370D005A4E06 /* libPusher-combined.a in Frameworks */,
 				DDCF4110171A4EBC00F839FC /* FacebookSDK.framework in Frameworks */,
 				DB0F40731772217B00F19934 /* Pinterest.framework in Frameworks */,
@@ -916,17 +909,6 @@
 			name = "Core App";
 			sourceTree = "<group>";
 		};
-		AABD101316B7164C007278EF /* CrittercismSDK */ = {
-			isa = PBXGroup;
-			children = (
-				AABD101A16B71787007278EF /* libCrittercism_v3_4_9.a */,
-				AABD101416B7164C007278EF /* Crittercism.h */,
-				AABD101516B7164C007278EF /* CrittercismDelegate.h */,
-				AABD101716B7164C007278EF /* README_ABOUT_LINK_ERRORS */,
-			);
-			path = CrittercismSDK;
-			sourceTree = "<group>";
-		};
 		AB0DE7FE11559CCA00A6EC3E /* Audio Recorder */ = {
 			isa = PBXGroup;
 			children = (
@@ -1154,7 +1136,6 @@
 				89D8B25317820182002A53CA /* CustomBadge.m */,
 				DBFEDCE21761160F009C080A /* UIImage+ */,
 				DB0743961754FE210068A1DB /* QuiltView */,
-				AABD101316B7164C007278EF /* CrittercismSDK */,
 				AB549ED11047007B00A901EF /* JSON Framework */,
 				DB071212176F8CD60069E15A /* SVProgressHUD */,
 				DB0712401770B89A0069E15A /* SimpleShare */,
@@ -1429,7 +1410,6 @@
 				4A7F910015B09FFC00988446 /* pingtone.wav in Resources */,
 				AB5EED9B17D1497100BF9A32 /* 14-tag.png in Resources */,
 				2D73EA24160CD07600A1F570 /* PlayerSettingsViewController.xib in Resources */,
-				AABD101916B7164C007278EF /* README_ABOUT_LINK_ERRORS in Resources */,
 				DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */,
 				DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */,
 				DDCF4113171A4F3D00F839FC /* FacebookSDKResources.bundle in Resources */,
@@ -1698,8 +1678,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/**",
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/thirdParty/CrittercismSDK\"",
-					"\"$(SRCROOT)/CrittercismSDK\"",
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1829,8 +1807,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/**",
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/thirdParty/CrittercismSDK\"",
-					"\"$(SRCROOT)/CrittercismSDK\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
