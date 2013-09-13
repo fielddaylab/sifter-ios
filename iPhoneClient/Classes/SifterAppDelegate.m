@@ -49,7 +49,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"fce465bd-4f6c-4c98-8451-2585fe6af73a"];
+    [TestFlight takeOff:@"ea7739d5-8bcf-4c6f-a0de-e8c17bb9dc7d"];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
