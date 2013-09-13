@@ -173,6 +173,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(NOTE_CONTENT_CELL_X_MARGIN + imageView.frame.size.width + NOTE_CONTENT_IMAGE_TEXT_MARGIN, NOTE_CONTENT_CELL_Y_MARGIN, 196, IMAGE_HEIGHT)];
     captionTextView.delegate = self;
+    captionTextView.bounces = NO;
     captionTextView.returnKeyType = UIReturnKeyDone;
     
     recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, CELL_BUTTON_HEIGHT)];
@@ -410,6 +411,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (void) shareButtonPressed: (id) sender
 {
+    [captionTextView resignFirstResponder];
+    
     if([originalTagName length] == 0 && [newTagName length] == 0)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Select Category" message: @"Please select which category this note best fits under before submitting." delegate: self cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
@@ -488,7 +491,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     if(shareToTwitter)
         [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareNote:self.note toAccounts:selectedTwitterAccounts automatically:YES];
     
-    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    [[InnovNoteModel sharedNoteModel] updateNote: self.note];
     [self.delegate prepareToDisplayNote: self.note];
     
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];

@@ -229,7 +229,7 @@
                                         repeats:NO];
     }
     else
-    {        
+    {
         if(clearBeforeFetching)
         {
             [self clearAllData];
@@ -393,34 +393,37 @@
 
 -(void) updateNote:(Note *) note
 {
-    [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
-    int indexToRemove = -1;
-    for(int i = 0; i < [availableNotes count]; ++i)
+    if(note)
     {
-        Note *existingNote = [availableNotes objectAtIndex:i];
-        if(note.noteId == existingNote.noteId)
+        [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+        int indexToRemove = -1;
+        for(int i = 0; i < [availableNotes count]; ++i)
         {
-            indexToRemove = i;
-            break;
+            Note *existingNote = [availableNotes objectAtIndex:i];
+            if(note.noteId == existingNote.noteId)
+            {
+                indexToRemove = i;
+                break;
+            }
         }
+        
+        if(indexToRemove != -1)
+        {
+            [self sendLostNotesNotif:[NSArray arrayWithObject:[availableNotes objectAtIndex:indexToRemove]]];
+            [availableNotes removeObjectAtIndex:indexToRemove];
+        }
+        if([self noteShouldBeAvailable:note])
+        {
+            if(indexToRemove >= [availableNotes count])
+                [availableNotes addObject:note];
+            else
+                [availableNotes insertObject:note atIndex:indexToRemove];
+            [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+        }
+        
+        [self sendChangeNotesNotif];
+        [self sendNotesUpdateNotification];
     }
-    
-    if(indexToRemove != -1)
-    {
-        [self sendLostNotesNotif:[NSArray arrayWithObject:[availableNotes objectAtIndex:indexToRemove]]];
-        [availableNotes removeObjectAtIndex:indexToRemove];
-    }
-    if([self noteShouldBeAvailable:note])
-    {
-        if(indexToRemove >= [availableNotes count])
-            [availableNotes addObject:note];
-        else
-            [availableNotes insertObject:note atIndex:indexToRemove];
-        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
-    }
-    
-    [self sendChangeNotesNotif];
-    [self sendNotesUpdateNotification];
 }
 
 -(void) removeNote:(Note *) note

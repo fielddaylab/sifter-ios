@@ -14,7 +14,6 @@
 #import "InnovViewController.h"
 
 #import "UIColor+SifterColors.h"
-#import "TestFlight.h"
 
 @interface SifterAppDelegate()
 {
@@ -24,9 +23,6 @@
 @end
 
 @implementation SifterAppDelegate
-
-int readingCountUpToOneHundredThousand = 0;
-int steps = 0;
 
 @synthesize window;
 @synthesize player;
@@ -42,15 +38,13 @@ int steps = 0;
 #pragma mark -
 #pragma mark Application State
 
-void uncaughtExceptionHandler(NSException *exception) {
-    
+void uncaughtExceptionHandler(NSException *exception)
+{    
     NSLog(@"Call Stack: %@", exception.callStackSymbols);
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"fce465bd-4f6c-4c98-8451-2585fe6af73a"];
-    
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
@@ -104,6 +98,8 @@ void uncaughtExceptionHandler(NSException *exception) {
         [window setRootViewController:nav];
     else
         [window addSubview:nav.view];
+    
+    [Crittercism enableWithAppID:@"51e40fef558d6a55a4000007"];
     
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])
@@ -261,9 +257,9 @@ void uncaughtExceptionHandler(NSException *exception) {
         
         [[UISegmentedControl appearance]    setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          [UIColor SifterColorWhite],                         UITextAttributeTextColor,
-          [UIColor clearColor],                               UITextAttributeTextShadowColor,
-          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          [UIColor SifterColorWhite],                               UITextAttributeTextColor,
+          [UIColor clearColor],                                     UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],   UITextAttributeFont,
           nil]
                                                           forState:UIControlStateSelected];
         
@@ -271,11 +267,11 @@ void uncaughtExceptionHandler(NSException *exception) {
         [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
         [[UITabBar appearance]              setTintColor:[UIColor SifterColorTabBarTint]];
         [[UINavigationBar appearance]       setTintColor:[UIColor SifterColorNavBarTint]];
-        [[UINavigationBar appearance] setTitleTextAttributes:
+        [[UINavigationBar appearance]       setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          [UIColor SifterColorNavBarText],                      UITextAttributeTextColor,
-          [UIColor clearColor],                               UITextAttributeTextShadowColor,
-          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          [UIColor SifterColorNavBarText],                          UITextAttributeTextColor,
+          [UIColor clearColor],                                     UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],   UITextAttributeFont,
           nil]
          ];
         
@@ -314,7 +310,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     [[UIBarButtonItem appearance] setTitleTextAttributes:
      [NSDictionary dictionaryWithObjectsAndKeys:
       [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
-      [UIColor SifterColorDarkGray], UITextAttributeTextColor,
+      [UIColor SifterColorDarkGray],                        UITextAttributeTextColor,
+      [UIColor clearColor],                                 UITextAttributeTextShadowColor,
       nil]
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:
