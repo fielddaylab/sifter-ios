@@ -83,7 +83,6 @@ void uncaughtExceptionHandler(NSException *exception)
 	NSLog(@"Current language: %@", currentLanguage);
     
     [self setUpWithDefaultAppearance];
-    //[[UIAccelerometer sharedAccelerometer] setUpdateInterval:0.2];
     
     //Init keys in UserDefaults in case the user has not visited the Sifter Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
