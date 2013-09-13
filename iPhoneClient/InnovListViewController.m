@@ -37,7 +37,6 @@ static NSString * const CELL_ID = @"Cell";
     CustomRefreshControl *refreshControl;
     NSArray *notes;
     
-    BOOL hasForcedRefresh;
     BOOL currentlyWaitingForMoreNotes;
 }
 
@@ -96,19 +95,6 @@ static NSString * const CELL_ID = @"Cell";
   //  }
     
     [quiltView reloadData];
-}
-
-- (void) viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-#warning Below is EXTREMELY hacky, but must be done due to Apple's iOS7 silliness
- //   if(!hasForcedRefresh)
- //   {
- //       hasForcedRefresh = YES;
- //       [refreshControl beginRefreshing];
- //       [[InnovNoteModel sharedNoteModel] refreshCurrentNotesWithDelegate:self];
- //   }
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl

@@ -78,6 +78,7 @@
 		8906DE5B1799C32500B2D7BF /* commentWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE4D1799C32500B2D7BF /* commentWhite.png */; };
 		8906DE5E179D86E800B2D7BF /* likeBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */; };
 		8906DE5F179D86E800B2D7BF /* likeBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 8906DE5D179D86E800B2D7BF /* likeBlack.png */; };
+		890B876617E3B96500E8448F /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 890B876517E3B96500E8448F /* FacebookSDK.framework */; };
 		8918B10217CFB2BA00AA6165 /* shareWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10017CFB2BA00AA6165 /* shareWhite.png */; };
 		8918B10317CFB2BA00AA6165 /* shareWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */; };
 		891A96B117972AAF009DF0A7 /* InnovPopOverContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 891A96B017972AAF009DF0A7 /* InnovPopOverContentView.m */; };
@@ -234,9 +235,6 @@
 		DDC0E11E1721AF56007DBDAA /* InnovMapNotePopUp.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC0E11D1721AF56007DBDAA /* InnovMapNotePopUp.m */; };
 		DDC6826A170F42C1006AEA8D /* InnovNoteEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */; };
 		DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */; };
-		DDCF4110171A4EBC00F839FC /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF410F171A4EBC00F839FC /* FacebookSDK.framework */; };
-		DDCF4113171A4F3D00F839FC /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DDCF4112171A4F3D00F839FC /* FacebookSDKResources.bundle */; };
-		DDCF4115171A4F4800F839FC /* FBUserSettingsViewResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DDCF4114171A4F4800F839FC /* FBUserSettingsViewResources.bundle */; };
 		DDCF4117171A518700F839FC /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF4116171A518700F839FC /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		DDCF4119171A519200F839FC /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF4118171A519200F839FC /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		DDCF411B171A519E00F839FC /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF411A171A519E00F839FC /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -347,6 +345,7 @@
 		8906DE4D1799C32500B2D7BF /* commentWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commentWhite.png; sourceTree = "<group>"; };
 		8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "likeBlack@2x.png"; sourceTree = "<group>"; };
 		8906DE5D179D86E800B2D7BF /* likeBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = likeBlack.png; sourceTree = "<group>"; };
+		890B876517E3B96500E8448F /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		8918B10017CFB2BA00AA6165 /* shareWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareWhite.png; sourceTree = "<group>"; };
 		8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
@@ -570,9 +569,6 @@
 		DDC68267170F42C1006AEA8D /* InnovNoteEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteEditorViewController.h; sourceTree = "<group>"; };
 		DDC68268170F42C1006AEA8D /* InnovNoteEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteEditorViewController.m; sourceTree = "<group>"; };
 		DDC68269170F42C1006AEA8D /* InnovNoteEditorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovNoteEditorViewController.xib; sourceTree = "<group>"; };
-		DDCF410F171A4EBC00F839FC /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		DDCF4112171A4F3D00F839FC /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKResources.bundle; sourceTree = "<group>"; };
-		DDCF4114171A4F4800F839FC /* FBUserSettingsViewResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FBUserSettingsViewResources.bundle; sourceTree = "<group>"; };
 		DDCF4116171A518700F839FC /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		DDCF4118171A519200F839FC /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		DDCF411A171A519E00F839FC /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -593,6 +589,7 @@
 				AB7D277813C7556100F10AD5 /* AddressBookUI.framework in Frameworks */,
 				113F56DE14E4435300525BE6 /* AssetsLibrary.framework in Frameworks */,
 				A7955B930F73E095005148E4 /* AudioToolbox.framework in Frameworks */,
+				890B876617E3B96500E8448F /* FacebookSDK.framework in Frameworks */,
 				AB0DE80911559D0500A6EC3E /* AVFoundation.framework in Frameworks */,
 				D4D366DF111B6789009C4D00 /* CFNetwork.framework in Frameworks */,
 				AB0DE80D11559D1200A6EC3E /* CoreAudio.framework in Frameworks */,
@@ -616,7 +613,6 @@
 				AA1E2D501652CC7500219535 /* Security.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				AA39E32116C4370D005A4E06 /* libPusher-combined.a in Frameworks */,
-				DDCF4110171A4EBC00F839FC /* FacebookSDK.framework in Frameworks */,
 				DB0F40731772217B00F19934 /* Pinterest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -924,9 +920,6 @@
 				DDCF411A171A519E00F839FC /* AdSupport.framework */,
 				DDCF4118171A519200F839FC /* Accounts.framework */,
 				DDCF4116171A518700F839FC /* Social.framework */,
-				DDCF410F171A4EBC00F839FC /* FacebookSDK.framework */,
-				DDCF4114171A4F4800F839FC /* FBUserSettingsViewResources.bundle */,
-				DDCF4112171A4F3D00F839FC /* FacebookSDKResources.bundle */,
 				AA1E2D4F1652CC7500219535 /* Security.framework */,
 				AB1660BD14E8754B002C6ACB /* SenTestingKit.framework */,
 				AB1660BF14E8754B002C6ACB /* UIKit.framework */,
@@ -967,6 +960,7 @@
 		AB1CA8AA13C7CC9000131F81 /* Frameworks and Dependancies */ = {
 			isa = PBXGroup;
 			children = (
+				890B876517E3B96500E8448F /* FacebookSDK.framework */,
 				DB0F40701772217B00F19934 /* Pinterest.framework */,
 				DB0F40711772217B00F19934 /* Resources */,
 				DB071210176F8CAA0069E15A /* Twitter.framework */,
@@ -1412,8 +1406,6 @@
 				2D73EA24160CD07600A1F570 /* PlayerSettingsViewController.xib in Resources */,
 				DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */,
 				DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */,
-				DDCF4113171A4F3D00F839FC /* FacebookSDKResources.bundle in Resources */,
-				DDCF4115171A4F4800F839FC /* FBUserSettingsViewResources.bundle in Resources */,
 				DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */,
 				DB1A8AEA174D55B10052DDC6 /* InnovMapNotePopUp.xib in Resources */,
 				DB1A8AF4174D84D80052DDC6 /* InnovMapViewController.xib in Resources */,
@@ -1659,7 +1651,8 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					/Users/JacobHanshaw/Desktop/ARIS/YOI/iPhoneClient,
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1790,7 +1783,8 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					/Users/JacobHanshaw/Desktop/ARIS/YOI/iPhoneClient,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ARIS_Prefix.pch;

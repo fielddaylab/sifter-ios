@@ -74,7 +74,7 @@ void uncaughtExceptionHandler(NSException *exception)
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     
-    application.idleTimerDisabled = YES;
+    application.idleTimerDisabled = NO;
     
     //Log the current Language
 	NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
