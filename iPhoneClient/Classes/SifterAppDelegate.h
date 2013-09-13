@@ -12,7 +12,6 @@
 #import "AudioToolbox/AudioToolbox.h"
 #import "Reachability.h"
 
-#import "Crittercism.h"
 #import "SimpleMailShare.h"
 #import "SimpleTwitterShare.h"
 #import "SimpleFacebookShare.h"

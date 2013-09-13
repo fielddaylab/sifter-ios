@@ -74,7 +74,7 @@ void uncaughtExceptionHandler(NSException *exception)
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     
-    application.idleTimerDisabled = YES;
+    application.idleTimerDisabled = NO;
     
     //Log the current Language
 	NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
@@ -83,7 +83,6 @@ void uncaughtExceptionHandler(NSException *exception)
 	NSLog(@"Current language: %@", currentLanguage);
     
     [self setUpWithDefaultAppearance];
-    //[[UIAccelerometer sharedAccelerometer] setUpdateInterval:0.2];
     
     //Init keys in UserDefaults in case the user has not visited the Sifter Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
@@ -98,8 +97,6 @@ void uncaughtExceptionHandler(NSException *exception)
         [window setRootViewController:nav];
     else
         [window addSubview:nav.view];
-    
-    [Crittercism enableWithAppID:@"51e40fef558d6a55a4000007"];
     
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])

@@ -84,20 +84,20 @@ static NSString * const CELL_ID = @"Cell";
     [self.view addGestureRecognizer:gestureRecognizer];
     
     refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
-    //refreshControl.tintColor = [UIColor whiteColor];
+    refreshControl.tintColor = [UIColor SifterColorRed];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    {
+  //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+  //  {
         quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
         quiltView.scrollIndicatorInsets = quiltView.contentInset;
-    }
+  //  }
     
     [quiltView reloadData];
 }
 
--(void)refresh:(UIRefreshControl *)refreshControl
+- (void)refresh:(UIRefreshControl *)refreshControl
 {
     [[InnovNoteModel sharedNoteModel] refreshCurrentNotesWithDelegate:self];
 }

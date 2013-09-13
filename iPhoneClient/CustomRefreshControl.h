@@ -6,8 +6,5 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 @interface CustomRefreshControl : UIRefreshControl
-
 @end
