@@ -30,6 +30,8 @@
     NSMutableArray *selectedTags;
     NSMutableArray *searchTerms;
     
+    NSMutableArray *facebookShareQueue;
+    
     BOOL unprocessedNotifs;
     BOOL clearBeforeFetching;
     
@@ -61,6 +63,7 @@
         allNotes        = [[NSMutableDictionary alloc] init];
         notifNotes      = [[NSMutableDictionary alloc] initWithCapacity:20];
         availableNotes  = [[NSMutableArray alloc] init];
+        facebookShareQueue = [[NSMutableArray alloc] init];
         arrayOfArraysByType             = [[NSMutableArray alloc] initWithCapacity:kNumContents];
         NSMutableArray *topNotes        = [[NSMutableArray alloc] init];
         NSMutableArray *popularNotes    = [[NSMutableArray alloc] init];
@@ -166,7 +169,7 @@
         while (([[notifNotesCounts objectAtIndex:i] intValue]-[notifNoteIds count]) > 0 && indexInArray < [[arrayOfArraysByType objectAtIndex:i] count])
         {
             Note* currentNote = [allNotes objectForKey: [[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
-            if([self noteShouldBeAvailable:currentNote] && ![self noteHasBeenDisplayedByNotif:currentNote])
+            if([self noteShouldBeAvailable:currentNote] && ![self noteHasBeenDisplayedByNotif:currentNote] && ![notifNoteIds containsObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]])
                 [notifNoteIds addObject:[[arrayOfArraysByType objectAtIndex:i] objectAtIndex:indexInArray]];
             ++indexInArray;
         }
@@ -201,7 +204,6 @@
     [allNotesFetchedInCategory setObject:[NSNumber numberWithBool:NO] atIndexedSubscript:selectedContent];
     [self clearAvailableData];
     [self setUpNotifications];
-    unprocessedNotifs = YES;
     
     [self fetchMoreNotes];
 }
@@ -227,7 +229,7 @@
                                         repeats:NO];
     }
     else
-    {        
+    {
         if(clearBeforeFetching)
         {
             [self clearAllData];
@@ -391,34 +393,37 @@
 
 -(void) updateNote:(Note *) note
 {
-    [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
-    int indexToRemove = -1;
-    for(int i = 0; i < [availableNotes count]; ++i)
+    if(note)
     {
-        Note *existingNote = [availableNotes objectAtIndex:i];
-        if(note.noteId == existingNote.noteId)
+        [allNotes setObject:note forKey:[NSNumber numberWithInt:note.noteId]];
+        int indexToRemove = -1;
+        for(int i = 0; i < [availableNotes count]; ++i)
         {
-            indexToRemove = i;
-            break;
+            Note *existingNote = [availableNotes objectAtIndex:i];
+            if(note.noteId == existingNote.noteId)
+            {
+                indexToRemove = i;
+                break;
+            }
         }
+        
+        if(indexToRemove != -1)
+        {
+            [self sendLostNotesNotif:[NSArray arrayWithObject:[availableNotes objectAtIndex:indexToRemove]]];
+            [availableNotes removeObjectAtIndex:indexToRemove];
+        }
+        if([self noteShouldBeAvailable:note])
+        {
+            if(indexToRemove >= [availableNotes count])
+                [availableNotes addObject:note];
+            else
+                [availableNotes insertObject:note atIndex:indexToRemove];
+            [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
+        }
+        
+        [self sendChangeNotesNotif];
+        [self sendNotesUpdateNotification];
     }
-    
-    if(indexToRemove != -1)
-    {
-        [self sendLostNotesNotif:[NSArray arrayWithObject:[availableNotes objectAtIndex:indexToRemove]]];
-        [availableNotes removeObjectAtIndex:indexToRemove];
-    }
-    if([self noteShouldBeAvailable:note])
-    {
-        if(indexToRemove >= [availableNotes count])
-            [availableNotes addObject:note];
-        else
-            [availableNotes insertObject:note atIndex:indexToRemove];
-        [self sendNewNotesNotif:[NSArray arrayWithObject:note]];
-    }
-    
-    [self sendChangeNotesNotif];
-    [self sendNotesUpdateNotification];
 }
 
 -(void) removeNote:(Note *) note
@@ -571,6 +576,24 @@
     {
         if([displayedNoteId intValue] == note.noteId)
             return YES;
+    }
+    
+    return NO;
+}
+
+#pragma mark Facebook Share Queue methods
+
+-(void) addNoteToFacebookShareQueue: (Note *) note
+{
+    [facebookShareQueue addObject:[NSNumber numberWithInt:note.noteId]];
+}
+
+-(BOOL) removeNoteFromFacebookShareQueue: (Note *) note
+{
+    if ([facebookShareQueue containsObject:[NSNumber numberWithInt:note.noteId]])
+    {
+        [facebookShareQueue removeObject:[NSNumber numberWithInt:note.noteId]];
+        return YES;
     }
     
     return NO;

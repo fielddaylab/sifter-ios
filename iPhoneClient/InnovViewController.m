@@ -164,10 +164,9 @@
 - (void) prepareToDisplayNote: (Note *) note
 {
     noteToAdd = note;
-#warning could be different
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = @"";
-    [selectedTagsVC updateSelectedContent:kMine];
+    [selectedTagsVC updateSelectedContent:kRecent];
 }
 
 - (void) animateInNote: (Note *) note
@@ -180,32 +179,40 @@
 
 #pragma mark Search Bar Delegate Methods
 
+- (void) searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
+{
+    [self searchBar:searchBar activate:YES];
+}
+
+- (void) searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
+{
+    aSearchBar.text = @"";
+    [self searchBar: aSearchBar textDidChange:aSearchBar.text];
+    [self searchBar:aSearchBar activate:NO];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+}
+
+- (void) searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
+{
+    [self searchBar:searchBar activate:NO];
+    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+}
+
+- (void) searchBar:(UISearchBar *)aSearchBar activate:(BOOL)active
+{
+   listVC.view.userInteractionEnabled = !active;
+    mapVC.view.userInteractionEnabled = !active;
+    if (!active)
+        [aSearchBar resignFirstResponder];
+
+    [aSearchBar setShowsCancelButton:active animated:YES];
+}
+
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = searchText.lowercaseString;
     [[InnovNoteModel sharedNoteModel] addSearchTerm:currentSearchTerm];
-}
-
-//Enables search bar when search field is empty
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
-{
-    UITextField *searchField = nil;
-    for (UIView *subview in aSearchBar.subviews) {
-        if ([subview isKindOfClass:[UITextField class]]) {
-            searchField = (UITextField *)subview;
-            break;
-        }
-    }
-    
-    if (searchField)
-        searchField.enablesReturnKeyAutomatically = NO;
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
-{
-    [aSearchBar resignFirstResponder];
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 
 #pragma mark Buttons Pressed
@@ -230,11 +237,13 @@
         [self addChildViewController:selectedTagsVC];
         [self.view insertSubview:selectedTagsVC.view belowSubview:toolBarImageView];
         [selectedTagsVC didMoveToParentViewController:self];
+        contentView.userInteractionEnabled = NO;
         [selectedTagsVC show];
     }
     else
     {
         [showTagsButton setSelected:NO];
+        contentView.userInteractionEnabled = YES;
         [selectedTagsVC hide];
     }
 }
@@ -329,9 +338,10 @@
     
 #warning SHOULD WORK and DID BEFORE Xcode 5
    // [self.view endEditing: YES];
-    [searchBar resignFirstResponder];
+    [self searchBarCancelButtonClicked:searchBar];
     [settingsView hide];
     [showTagsButton setSelected:NO];
+    contentView.userInteractionEnabled = YES;
     [selectedTagsVC hide];
 }
 

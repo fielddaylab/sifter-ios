@@ -32,7 +32,11 @@
 + (UIColor *) SifterColorTabBarText           { return [UIColor SifterColorBlack]; }
 + (UIColor *) SifterColorToolBarTint          { return [UIColor SifterColorWhite]; }
 + (UIColor *) SifterColorBarButtonTint        { return [UIColor SifterColorLightGray]; }
-+ (UIColor *) SifterColorSegmentedControlTint { return [UIColor SifterColorRed]; }
++ (UIColor *) SifterColorSegmentedControlTint
+{
+    // return [UIColor SifterColorRed];
+    return [UIColor colorWithRed:(220.0/255.0) green:( 52.0/255.0)  blue:( 71.0/255.0) alpha:1.0];
+}
 + (UIColor *) SifterColorSearchBarTint        { return [UIColor SifterColorWhite]; }
 
 + (UIColor *) SifterColorTextBackdrop       { return [UIColor SifterColorTranslucentWhite]; }

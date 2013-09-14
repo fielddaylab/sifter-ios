@@ -8,5 +8,6 @@
 
 @class Note;
 @interface InnovViewController : UIViewController
+- (void) presentNote:(Note *) note;
 - (void) animateInNote: (Note *) note;
 @end

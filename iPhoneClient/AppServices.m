@@ -453,7 +453,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                           text,
                           nil];
     
-    NSMutableDictionary* userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", fileURL, @"localURL", nil];
+    NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:noteId], @"noteId", fileURL, @"localURL", nil];
 	JSONConnection *jsonConnection = [[JSONConnection alloc]initWithServer:[AppModel sharedAppModel].serverURL
                                                             andServiceName:@"notes"
                                                              andMethodName:@"addContentToNote"
@@ -721,7 +721,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
                                                                 andUserInfo:nil];
 	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseUpdateServerWithPlayerLocationFromJSON:)];
 }
-
+/*
 #pragma mark Sync Fetch selectors
 - (id) fetchFromService:(NSString *)aService usingMethod:(NSString *)aMethod withArgs:(NSArray *)arguments usingParser:(SEL)aSelector
 {
@@ -742,18 +742,45 @@ BOOL currentlyUpdatingServerWithMapViewed;
 	
 	return [self performSelector:aSelector withObject:jsonResult.data];
 }
-
+*/
 -(void) fetchNote:(int)noteId
 {
     NSArray *arguments = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%d",noteId],[NSString stringWithFormat:@"%d",[AppModel sharedAppModel].playerId], nil];
-    Note *note= [self fetchFromService:@"notes" usingMethod:@"getNoteById" withArgs:arguments usingParser:@selector(parseNoteFromDictionary:)];
-    [[InnovNoteModel sharedNoteModel] updateNote: note];
+    
+    JSONConnection *jsonConnection = [[JSONConnection alloc] initWithServer:[AppModel sharedAppModel].serverURL
+                                                             andServiceName:@"notes"
+                                                              andMethodName:@"getNoteById"
+                                                               andArguments:arguments
+                                                                andUserInfo:nil];
+	[jsonConnection performAsynchronousRequestWithHandler:@selector(parseSingleNote:)];
+}
+
+-(void) parseSingleNote:(JSONResult *) jsonResult
+{
+    if(jsonResult.data)
+    {
+        Note *note = [self parseNoteFromDictionary:(NSDictionary *)jsonResult.data];
+        if(note)
+        {
+            if([[InnovNoteModel sharedNoteModel] removeNoteFromFacebookShareQueue:note])
+                [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:note automatically:YES];
+            [[InnovNoteModel sharedNoteModel] updateNote: note];
+        }
+        else
+        {
+            [[Logger sharedLogger] logDebug:@"Nil note in parse"];
+        }
+    }
+    else
+    {
+        [[Logger sharedLogger] logDebug:@"No data about note in parse"];
+    }
 }
 
 #pragma mark Async Fetch selectors
 
 - (void)fetch:(int) noteCount more: (ContentSelector) selectedContent NotesContainingSearchTerms: (NSArray *) searchTerms withTagIds: (NSArray *) tagIds StartingFromLocation: (int) lastLocation andDate: (NSString *) date
-{    
+{
     NSError *error;
     NSMutableDictionary *argumentsDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                           [NSString stringWithFormat:@"%d", [AppModel sharedAppModel].currentGame.gameId], @"gameId",
@@ -1039,10 +1066,13 @@ BOOL currentlyUpdatingServerWithMapViewed;
         [userInfo removeObjectForKey:@"JSON"];
         
         NSArray *noteListArray = (NSArray *)jsonResult.data;
-        [userInfo setObject:noteListArray   forKey:@"notesJSON"];
-        
-        NSLog(@"NSNotification: NewNoteListReady");
-        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:userInfo]];
+        if([noteListArray count] > 0)
+        {
+            [userInfo setObject:noteListArray   forKey:@"notesJSON"];
+            
+            NSLog(@"NSNotification: NewNoteListReady");
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"NewNoteListReady"      object:nil userInfo:userInfo]];
+        }
     }
     isCurrentlyFetchingGameNoteList = NO;
 }

@@ -385,9 +385,14 @@
     InnovPopOverSocialContentView *socialContent = [[InnovPopOverSocialContentView alloc] init];
     socialContent.note = self.note;
     InnovPopOverView *popOver = [[InnovPopOverView alloc] initWithFrame:self.view.frame andContentView:socialContent];
-    CGRect newFrame = socialContent.frame;
-    newFrame.origin.y -= NAV_BAR_HEIGHT;
-    [popOver adjustContentFrame:newFrame];
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+    {
+        CGRect newFrame = socialContent.frame;
+        newFrame.origin.y -= NAV_BAR_HEIGHT;
+        [popOver adjustContentFrame:newFrame];
+    }
+    
     popOver.alpha = 0.0f;
     [self.view addSubview:popOver];
     

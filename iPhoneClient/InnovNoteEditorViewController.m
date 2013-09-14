@@ -95,7 +95,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     int originalTagId;
     NSString  *originalTagName;
-    int selectedIndex;
+    int tempSelectedIndex;
     NSString  *newTagName;
     NSArray *tagList;
     
@@ -132,7 +132,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deselectTwitterButton)   name:@"NoTwitterAccounts"  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectTwitterAccounts:)  name:@"TwitterAccountListReady"  object:nil];
         
-        tagList = [[NSArray alloc]init];
+        tagList = [[NSArray alloc] init];
+        originalTagName = @"";
+        newTagName = @"";
+        tempSelectedIndex = -1;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewFromNote:) name:UIApplicationWillEnterForegroundNotification object:nil];
     }
     return self;
 }
@@ -168,6 +173,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     captionTextView = [[UITextView alloc] initWithFrame:CGRectMake(NOTE_CONTENT_CELL_X_MARGIN + imageView.frame.size.width + NOTE_CONTENT_IMAGE_TEXT_MARGIN, NOTE_CONTENT_CELL_Y_MARGIN, 196, IMAGE_HEIGHT)];
     captionTextView.delegate = self;
+    captionTextView.bounces = NO;
     captionTextView.returnKeyType = UIReturnKeyDone;
     
     recordButton = [[ProgressButton alloc] initWithFrame:CGRectMake(0, 0, 44, CELL_BUTTON_HEIGHT)];
@@ -199,26 +205,36 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [ARISMoviePlayer.moviePlayer setFullscreen:NO];
     [self.view addSubview:ARISMoviePlayer.view];
     UIGraphicsEndImageContext();
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:)             name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:)         name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:)  name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:gestureRecognizer];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear: animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerLoadStateDidChange:)             name:MPMoviePlayerLoadStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackStateDidChange:)         name:MPMoviePlayerPlaybackStateDidChangeNotification object:ARISMoviePlayer.moviePlayer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(MPMoviePlayerPlaybackDidFinishNotification:)  name:MPMoviePlayerPlaybackDidFinishNotification object:ARISMoviePlayer.moviePlayer];
-    
-    originalTagName = @"";
-    newTagName = @"";
+    [self updateViewFromNote:nil];
+}
+
+- (void)updateViewFromNote: (NSNotification *) notif
+{
     CLLocationCoordinate2D coordinate = [AppModel sharedAppModel].playerLocation.coordinate;
     
     if(self.note.noteId != 0)
     {
-        captionTextView.text = note.text;
+        if([note.text length] > 0)
+            captionTextView.text = note.text;
         
         if([note.text length] > 0 && ![note.text isEqualToString:DEFAULT_TEXT])
+        {
             captionTextView.textColor = [UIColor blackColor];
+        }
         
         imageView.userInteractionEnabled = YES;
         
@@ -230,8 +246,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             originalTagName = ((Tag *)[self.note.tags objectAtIndex:0]).tagName;
             self.title = originalTagName;
         }
-        else
-            [self tableView:editNoteTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:TagSection]];
+        else if(tempSelectedIndex != -1)
+            [self tableView:editNoteTableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:tempSelectedIndex inSection:TagSection]];
         
         if(self.note.latitude != 0 && self.note.longitude != 0)
             coordinate = CLLocationCoordinate2DMake(self.note.latitude, self.note.longitude);
@@ -286,6 +302,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         dropOnMapVC = [[DropOnMapViewController alloc] initWithCoordinate:coordinate];
         [self addChildViewController:dropOnMapVC];
     }
+    
+    if(notif)
+        [editNoteTableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -392,6 +411,16 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (void) shareButtonPressed: (id) sender
 {
+    [captionTextView resignFirstResponder];
+    
+    if([originalTagName length] == 0 && [newTagName length] == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Select Category" message: @"Please select which category this note best fits under before submitting." delegate: self cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
+        
+        [alert show];
+        return;
+    }
+    
     if([captionTextView.text isEqualToString:DEFAULT_TEXT] || [captionTextView.text length] == 0) self.note.text = @"";
     else self.note.text = captionTextView.text;
     
@@ -414,13 +443,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         }
     }
     
-    if(!imageUploaded && shareToFacebook)
-    {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please Wait" message:@"Please Wait for the Photo to Upload Before Sharing to Facebook" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-        [alert show];
-        return;
-    }
-    
     if(textContentId == 0)
     {
         NSString *urlString = [NSString stringWithFormat:@"%@.txt",[NSDate date]];
@@ -431,7 +453,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     else
         [[AppServices sharedAppServices]updateNoteContent:textContentId text:self.note.text];
     
-    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:@"YOI Note" publicToMap:YES publicToList:YES];
+    [[AppServices sharedAppServices] updateNoteWithNoteId:self.note.noteId title:@"Sifter Note" publicToMap:YES publicToList:YES];
     
     if(mode == kInnovAudioRecorderRecording)
         [self recordButtonPressed:nil];
@@ -460,22 +482,16 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     if(shareToFacebook)
     {
-        NSString *title = ([self.note.tags count] > 0) ? ((Tag *)[self.note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
-        NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
-#warning fix url to be web notebook url
-        NSString *url  = HOME_URL;
-        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareText:self.note.text withImage:imageURL title:title andURL:url fromNote:self.note.noteId automatically:YES];
+        if(imageUploaded)
+            [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleFacebookShare shareNote:self.note automatically:YES];
+        else
+            [[InnovNoteModel sharedNoteModel] addNoteToFacebookShareQueue:self.note];
     }
     
     if(shareToTwitter)
-    {
-        NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, self.note.text];
-        NSString *url  = HOME_URL;
-#warning fix url to be web notebook url
-        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare autoTweetWithText:text image:nil andURL:url fromNote:self.note.noteId toAccounts:selectedTwitterAccounts];
-    }
+        [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleTwitterShare shareNote:self.note toAccounts:selectedTwitterAccounts automatically:YES];
     
-    [[InnovNoteModel sharedNoteModel] updateNote:note];
+    [[InnovNoteModel sharedNoteModel] updateNote: self.note];
     [self.delegate prepareToDisplayNote: self.note];
     
     [self.navigationController popToViewController:(UIViewController *)self.delegate animated:YES];
@@ -1003,7 +1019,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             else
                 [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
             
-            if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName])) [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]))
+                [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            else
+                [cell setAccessoryType:UITableViewCellAccessoryNone];
             
             return cell;
         }
@@ -1040,23 +1059,21 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     }
 }
 
--(NSIndexPath *)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(indexPath.section == TagSection)
     {
         ((InnovTagCell *)cell).mediaImageView.frame = CGRectMake(SPACING, (cell.frame.size.height - TAG_CELL_IMAGE_HEIGHT)/2, TAG_CELL_IMAGE_WIDTH, TAG_CELL_IMAGE_HEIGHT);
         ((InnovTagCell *)cell).tagLabel.frame = CGRectMake(SPACING + TAG_CELL_IMAGE_WIDTH + SPACING, 0, cell.frame.size.width - (SPACING + TAG_CELL_IMAGE_WIDTH + SPACING), cell.frame.size.height);
     }
-    
-    return indexPath;
 }
 
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //Not considered selected when auto set to first row, so clear first row
     if(indexPath.section == TagSection)
     {
-        [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:TagSection]].accessoryType = UITableViewCellAccessoryNone;
+        if(tempSelectedIndex != -1)
+            [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:tempSelectedIndex inSection:TagSection]].accessoryType = UITableViewCellAccessoryNone;
         
         NSIndexPath *oldIndex = [tableView indexPathForSelectedRow];
         [tableView cellForRowAtIndexPath:oldIndex].accessoryType = UITableViewCellAccessoryNone;
@@ -1072,10 +1089,18 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         
-        newTagName = ((InnovTagCell *)cell).tagLabel.text;
+        newTagName = ((Tag *)[tagList objectAtIndex:indexPath.row]).tagName;
+        tempSelectedIndex = indexPath.row;
         
         self.title = newTagName;
     }
+}
+
+#pragma mark Hide Keyboard
+
+- (void) hideKeyboard: (UIGestureRecognizer *) gesture
+{
+    [captionTextView resignFirstResponder];
 }
 
 #pragma mark Dealloc, and Other Necessary Methods

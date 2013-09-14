@@ -190,9 +190,11 @@
     NSString *tagName = ([note.tags count] > 0) ? ((Tag *)[note.tags objectAtIndex:0]).tagName : @"Madison";
     
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.alertLaunchImage = @"sifter29.png";
     localNotification.alertBody = [NSString stringWithFormat:@"Nearby note about %@.", tagName];
     localNotification.alertAction = nil;
     localNotification.hasAction = YES;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
     localNotification.userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     //  }

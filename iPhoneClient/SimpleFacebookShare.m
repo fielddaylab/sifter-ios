@@ -24,6 +24,11 @@
 #import "ViewControllerHelper.h"
 #import "Logger.h"
 
+#import "AppModel.h"
+#import "SifterAppDelegate.h"
+#import "Note.h"
+#import "Tag.h"
+
 #define ACCESS_TOKEN_KEY    @"AccessToken"
 #define EXPIRATION_DATE_KEY @"ExpDate"
 
@@ -32,13 +37,9 @@
     NSString *appActionLink;
 }
 
-@property(nonatomic, readwrite) int noteId;
-
 @end
 
 @implementation SimpleFacebookShare
-
-@synthesize noteId;
 
 - (id)initWithAppName:(NSString *)theAppName appUrl:(NSString *)theAppUrl {
     self = [super init];
@@ -53,57 +54,24 @@
     return self;
 }
 
-- (BOOL)handleOpenURL:(NSURL *)theUrl
-{
-    return [FBSession.activeSession handleOpenURL:theUrl];
-}
-
-
-- (void)logOut {
-    [FBSession.activeSession closeAndClearTokenInformation];
-    
-    //Delete data from User Defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:@"FBAccessTokenInformationKey"];
-    
-    //Remove facebook Cookies:
-    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *cookie in [storage cookies]) {
-        if ([cookie.domain isEqualToString:@".facebook.com"] || [cookie.domain isEqualToString:@"facebook.com"]) {
-            [storage deleteCookie:cookie];
-            NSLog(@"Delete facebook cookie: %@", cookie);
-        }
-    }
-    [defaults synchronize];
-}
-
-- (void)shareUrl:(NSURL *)theUrl {
-    [self _shareInitalParams:@{
-     @"link" : [theUrl absoluteString],
-     @"actions" : appActionLink
-     }  automatically: NO];
-}
-
-- (void)shareText:(NSString *)theText {
-    [self _shareInitalParams:@{
-     @"description" : theText,
-     @"actions" : appActionLink
-     }  automatically: NO];
-}
-
 //NEW METHOD
-- (void)shareText:(NSString *) text withImage:(NSString *)imageURL title:(NSString *) title andURL:(NSString *) urlString fromNote:(int)aNoteId automatically:(BOOL) autoShare
+- (void)shareNote:(Note *) note automatically:(BOOL) autoShare
 {
-    self.noteId = aNoteId;
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:imageURL, @"picture", title, @"name", text, @"description", text, @"message", urlString, @"link", nil];
-    [self _shareInitalParams:params automatically:autoShare];
+    NSString *title = ([note.tags count] > 0) ? ((Tag *)[note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
+    NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
+#warning fix url to be web notebook url
+    NSString *urlString  = HOME_URL;
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys: imageURL, @"picture", title, @"name", note.text, @"description", note.text, @"message", urlString, @"link", nil];
+    NSDictionary *completionParams = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];
+    [self _shareInitalParams:params completionParams:completionParams automatically:autoShare];
 }
 
-- (void)_shareInitalParams:(NSDictionary *)params automatically: (BOOL) autoShare {
+- (void)_shareInitalParams:(NSDictionary *)params completionParams:(NSDictionary *) completionParams automatically: (BOOL) autoShare {
     if (!(FBSession.activeSession.isOpen))
         [self openSession];
     
-    [self _shareAndReauthorize:params automatically: autoShare];
+    [self _shareAndReauthorize:params completionParams:completionParams automatically: autoShare];
 }
 
 - (void) openSession
@@ -130,7 +98,7 @@
     }
 }
 
-- (void)_shareAndReauthorize:(NSDictionary *)params automatically: (BOOL) autoShare
+- (void)_shareAndReauthorize:(NSDictionary *)params completionParams:(NSDictionary *) completionParams automatically: (BOOL) autoShare
 {
     __weak SimpleFacebookShare *selfForBlock = self;
     if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound)
@@ -145,39 +113,16 @@
                  [SVProgressHUD showErrorWithStatus:@"Authorization Error"];
              }
              else
-                 [selfForBlock _shareParams:params automatically: autoShare];
+                 [selfForBlock _shareParams:params completionParams:completionParams automatically: autoShare];
              
          }];
     }
     else
-        [self _shareParams:params automatically: autoShare];
+        [self _shareParams:params completionParams: completionParams automatically: autoShare];
 }
 
-/*
- - (void)_shareAndOpenSession:(NSDictionary *)params automatically: (BOOL) autoShare
- {
- __weak SimpleFacebookShare *selfForBlock = self;
- if (FBSession.activeSession.state == FBSessionStateCreatedTokenLoaded)
- {
- [FBSession.activeSession openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error)
- {
- [selfForBlock _shareAndReauthorize:params automatically: autoShare];
- }];
- }
- else {
- [FBSession openActiveSessionWithPublishPermissions:@[@"publish_actions"] defaultAudience:FBSessionDefaultAudienceFriends allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
- if (error)
- {
- [[Logger sharedLogger] logError:error];
- [SVProgressHUD showErrorWithStatus:@"Authorization Error."];
- }
- else
- [selfForBlock _shareAndReauthorize:params automatically: autoShare];
- }];
- }
- } */
 //MODIFIED METHOD
-- (void)_shareParams:(NSDictionary *)params automatically: (BOOL) autoShare {
+- (void)_shareParams:(NSDictionary *)params completionParams:(NSDictionary *) completionParams automatically: (BOOL) autoShare {
     if(!autoShare)
     {
         __weak SimpleFacebookShare *selfForBlock = self;
@@ -199,7 +144,10 @@
                  {
                      if(!autoShare)
                          [SVProgressHUD showSuccessWithStatus:@"Success"];
-                     [[AppServices sharedAppServices] sharedNoteToFacebook: selfForBlock.noteId];
+                     
+                     NSNumber *noteIdNumber = [completionParams objectForKey:@"noteId"];
+                     if(noteIdNumber)
+                         [[AppServices sharedAppServices] sharedNoteToFacebook: [noteIdNumber intValue]];
                  }
              }
          }];
@@ -213,11 +161,6 @@
     }
 }
 
-/*     [simpleFacebookShare getUsernameWithCompletionHandler:^(NSString *username, NSError *error){
- //empty
- NSLog(@"STUFF");
- }]; */
-#warning below methods likely unused
 - (void)getUsernameWithCompletionHandler:(void (^)(NSString *username, NSError *error))completionHandler {
     if (completionHandler)
     {
@@ -246,25 +189,6 @@
                                   completionHandler(username, nil);
                               }
                           }];
-}
-
-- (BOOL)isLoggedIn
-{
-    FBSessionState state = FBSession.activeSession.state;
-    if (state == FBSessionStateOpen || state == FBSessionStateCreatedTokenLoaded || state == FBSessionStateOpenTokenExtended)
-        return YES;
-    
-    return NO;
-}
-
-- (void)handleDidBecomeActive
-{
-    [FBSession.activeSession handleDidBecomeActive];
-}
-
-- (void)close
-{
-    [FBSession.activeSession close];
 }
 
 - (NSDictionary *) _parseURLParams:(NSString *)query
@@ -333,6 +257,51 @@
                           cancelButtonTitle:@"OK"
                           otherButtonTitles:nil] show];
     }
+}
+
+#pragma mark Facebook Status
+
+- (void)handleDidBecomeActive
+{
+    [FBSession.activeSession handleDidBecomeActive];
+}
+
+- (BOOL)handleOpenURL:(NSURL *)theUrl
+{
+    return [FBSession.activeSession handleOpenURL:theUrl];
+}
+
+- (BOOL)isLoggedIn
+{
+    FBSessionState state = FBSession.activeSession.state;
+    if (state == FBSessionStateOpen || state == FBSessionStateCreatedTokenLoaded || state == FBSessionStateOpenTokenExtended)
+        return YES;
+    
+    return NO;
+}
+
+- (void)logOut
+{
+    [FBSession.activeSession closeAndClearTokenInformation];
+    
+    //Delete data from User Defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"FBAccessTokenInformationKey"];
+    
+    //Remove facebook Cookies:
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [storage cookies]) {
+        if ([cookie.domain isEqualToString:@".facebook.com"] || [cookie.domain isEqualToString:@"facebook.com"]) {
+            [storage deleteCookie:cookie];
+            NSLog(@"Delete facebook cookie: %@", cookie);
+        }
+    }
+    [defaults synchronize];
+}
+
+- (void)close
+{
+    [FBSession.activeSession close];
 }
 
 @end

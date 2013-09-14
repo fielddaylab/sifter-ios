@@ -94,7 +94,6 @@
     [UIView setAnimationDelegate:self];
 	[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
 	[UIView commitAnimations];
-    
 }
 
 - (void) hide

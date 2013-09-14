@@ -79,21 +79,25 @@ static NSString * const CELL_ID = @"Cell";
     [self.view addSubview:quiltView];
     quiltView.backgroundColor = [UIColor SifterColorWhite];
     
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:gestureRecognizer];
+    
     refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
-    //refreshControl.tintColor = [UIColor whiteColor];
+    refreshControl.tintColor = [UIColor SifterColorRed];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    {
+  //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+  //  {
         quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
         quiltView.scrollIndicatorInsets = quiltView.contentInset;
-    }
+  //  }
     
     [quiltView reloadData];
 }
 
--(void)refresh:(UIRefreshControl *)refreshControl
+- (void)refresh:(UIRefreshControl *)refreshControl
 {
     [[InnovNoteModel sharedNoteModel] refreshCurrentNotesWithDelegate:self];
 }
@@ -226,6 +230,12 @@ static NSString * const CELL_ID = @"Cell";
         currentlyWaitingForMoreNotes = YES;
         [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
     }
+}
+
+- (void) hideKeyboard: (UIGestureRecognizer *) gesture
+{
+    [self touchesBegan:nil withEvent:nil];
+    [[self.navigationController.viewControllers objectAtIndex:0] touchesBegan:nil withEvent:nil];
 }
 
 /*

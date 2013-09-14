@@ -28,7 +28,6 @@ extern NSString *const kNoteContentTypeText;
 @property(readwrite, assign) int twitterShareCount;
 @property(readwrite, assign) int pinterestShareCount;
 @property(readwrite, assign) int emailShareCount;
-@property(readwrite, assign) BOOL shared;
 @property(readwrite, assign) BOOL dropped;
 @property(readwrite, assign) BOOL showOnMap;
 @property(readwrite, assign) BOOL showOnList;

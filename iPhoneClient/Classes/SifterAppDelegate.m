@@ -24,9 +24,6 @@
 
 @implementation SifterAppDelegate
 
-int readingCountUpToOneHundredThousand = 0;
-int steps = 0;
-
 @synthesize window;
 @synthesize player;
 @synthesize simpleMailShare;
@@ -41,8 +38,8 @@ int steps = 0;
 #pragma mark -
 #pragma mark Application State
 
-void uncaughtExceptionHandler(NSException *exception) {
-    
+void uncaughtExceptionHandler(NSException *exception)
+{    
     NSLog(@"Call Stack: %@", exception.callStackSymbols);
 }
 
@@ -71,13 +68,13 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     simpleMailShare     = [[SimpleMailShare alloc] init];
     simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
-    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"YOI" appUrl:HOME_URL];
+    simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Siftr" appUrl:HOME_URL];
 #warning fix url and appname
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     
-    application.idleTimerDisabled = YES;
+    application.idleTimerDisabled = NO;
     
     //Log the current Language
 	NSArray *languages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
@@ -86,7 +83,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 	NSLog(@"Current language: %@", currentLanguage);
     
     [self setUpWithDefaultAppearance];
-    //[[UIAccelerometer sharedAccelerometer] setUpdateInterval:0.2];
     
     //Init keys in UserDefaults in case the user has not visited the Sifter Settings page
 	//To set these defaults, edit Settings.bundle->Root.plist
@@ -102,11 +98,16 @@ void uncaughtExceptionHandler(NSException *exception) {
     else
         [window addSubview:nav.view];
     
-    [Crittercism enableWithAppID:@"51e40fef558d6a55a4000007"];
-    
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])
-        [innov animateInNote: [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]]];
+    {
+        Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+        if(note)
+        {
+            [innov presentNote: note];
+            [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
+        }
+    }
     
     return YES;
 }
@@ -161,7 +162,7 @@ void uncaughtExceptionHandler(NSException *exception) {
             Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
             if(note)
             {
-                [innov animateInNote: note];
+                [innov presentNote: note];
                 [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
             }
         }
@@ -234,27 +235,65 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     [[UINavigationBar appearance]       setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
         // Load resources for iOS 6.1 or earlier
         [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleBlackOpaque];
         [[UIToolbar appearance]             setTintColor:[UIColor SifterColorToolBarTint]];
         [[UIBarButtonItem appearance]       setTintColor:[UIColor SifterColorBarButtonTint]];
+        
         [[UISegmentedControl appearance]    setTintColor:[UIColor SifterColorSegmentedControlTint]];
+        
+        [[UISegmentedControl appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
+          [UIColor SifterColorWhite],                           UITextAttributeTextColor,
+          [UIColor clearColor],                                 UITextAttributeTextShadowColor,
+          nil]
+                                                       forState:UIControlStateNormal];
+        
+        [[UISegmentedControl appearance]    setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIColor SifterColorWhite],                               UITextAttributeTextColor,
+          [UIColor clearColor],                                     UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],   UITextAttributeFont,
+          nil]
+                                                          forState:UIControlStateSelected];
+        
         [[UISearchBar appearance]           setTintColor:[UIColor SifterColorNavBarTint]];
         [[UISearchBar appearance]           setBackgroundColor:[UIColor clearColor]];
         [[UITabBar appearance]              setTintColor:[UIColor SifterColorTabBarTint]];
         [[UINavigationBar appearance]       setTintColor:[UIColor SifterColorNavBarTint]];
-        [[UINavigationBar appearance] setTitleTextAttributes:
+        [[UINavigationBar appearance]       setTitleTextAttributes:
          [NSDictionary dictionaryWithObjectsAndKeys:
-          [UIColor SifterColorNavBarText],                      UITextAttributeTextColor,
-          [UIColor clearColor],                               UITextAttributeTextShadowColor,
-          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          [UIColor SifterColorNavBarText],                          UITextAttributeTextColor,
+          [UIColor clearColor],                                     UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],   UITextAttributeFont,
           nil]
          ];
         
-    } else {
+    }
+    else
+    {
         // Load resources for iOS 7 or later
         [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleDefault];
+        
+        [[UISegmentedControl appearance] setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
+          [UIColor SifterColorBlack],                           UITextAttributeTextColor,
+          [UIColor clearColor],                                 UITextAttributeTextShadowColor,
+          nil]
+                                                       forState:UIControlStateNormal];
+        
+        [[UISegmentedControl appearance]    setTitleTextAttributes:
+         [NSDictionary dictionaryWithObjectsAndKeys:
+          [UIColor SifterColorBlack],                         UITextAttributeTextColor,
+          [UIColor clearColor],                               UITextAttributeTextShadowColor,
+          [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
+          nil]
+                                                          forState:UIControlStateSelected];
+        
         [[UINavigationBar appearance] setBarTintColor:[UIColor SifterColorNavBarTint]];
         [[UINavigationBar appearance] setTintColor:[UIColor SifterColorDarkGray]];
         self.window.rootViewController.edgesForExtendedLayout = UIRectEdgeAll;
@@ -268,29 +307,14 @@ void uncaughtExceptionHandler(NSException *exception) {
     [[UIBarButtonItem appearance] setTitleTextAttributes:
      [NSDictionary dictionaryWithObjectsAndKeys:
       [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
-      [UIColor SifterColorDarkGray], UITextAttributeTextColor,
+      [UIColor SifterColorDarkGray],                        UITextAttributeTextColor,
+      [UIColor clearColor],                                 UITextAttributeTextShadowColor,
       nil]
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:
      [UIImage imageNamed:@"1pxColorClear"]
                                                       forState:UIControlStateNormal
                                                     barMetrics:UIBarMetricsDefault];
-    
-    [[UISegmentedControl appearance] setTitleTextAttributes:
-     [NSDictionary dictionaryWithObjectsAndKeys:
-      [UIFont fontWithName:@"HelveticaNeue-Light" size:12], UITextAttributeFont,
-      [UIColor SifterColorWhite],                      UITextAttributeTextColor,
-      [UIColor clearColor],                               UITextAttributeTextShadowColor,
-      nil]
-                                                   forState:UIControlStateNormal];
-    
-    [[UISegmentedControl appearance]    setTitleTextAttributes:
-     [NSDictionary dictionaryWithObjectsAndKeys:
-      [UIColor SifterColorBlack],                         UITextAttributeTextColor,
-      [UIColor clearColor],                               UITextAttributeTextShadowColor,
-      [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0],    UITextAttributeFont,
-      nil]
-                                                      forState:UIControlStateSelected];
     
     [[UINavigationBar appearance] setTitleTextAttributes:
      [NSDictionary dictionaryWithObjectsAndKeys:
