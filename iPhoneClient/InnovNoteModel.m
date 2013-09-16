@@ -116,7 +116,7 @@
     [notifNotes removeAllObjects];
     [self clearAllNotesFetched];
     [self clearAvailableData];
-    [self setUpNotifications];
+    unprocessedNotifs = YES;
 }
 
 -(void) clearAvailableData
@@ -232,9 +232,8 @@
     {
         if(clearBeforeFetching)
         {
-            [self clearAllData];
-            unprocessedNotifs = YES;
             clearBeforeFetching = NO;
+            [self clearAllData];
         }
         
         if((specifiedContent != kMine || [AppModel sharedAppModel].playerId != 0) && ![[allNotesFetchedInCategory objectAtIndex:specifiedContent] boolValue])
