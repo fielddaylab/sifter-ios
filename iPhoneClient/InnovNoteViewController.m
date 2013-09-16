@@ -225,8 +225,9 @@
 {
     [super viewDidAppear:animated];
     
+    CGSize textViewSize = [captionTextView sizeThatFits:CGSizeMake(self.view.frame.size.width, MAXFLOAT)];
     CGRect frame = captionTextView.frame;
-    frame.size.height = captionTextView.contentSize.height;
+    frame.size.height = textViewSize.height;
     captionTextView.frame = frame;
     if(!([captionTextView.text length] > 0))
         captionTextView.hidden = YES;
@@ -274,9 +275,9 @@
     
     captionTextView.text = note.text;
     
+    CGSize textViewSize = [captionTextView sizeThatFits:CGSizeMake(self.view.frame.size.width, MAXFLOAT)];
     CGRect frame = captionTextView.frame;
-    frame.size.height = captionTextView.contentSize.height;
-    captionTextView.frame = frame;
+    frame.size.height = textViewSize.height;
     if(!([captionTextView.text length] > 0))
         captionTextView.hidden = YES;
     

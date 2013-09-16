@@ -112,8 +112,12 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [super viewWillAppear: animated];
     
-    addCommentTextView.text      = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
+    if([addCommentTextView.text length] == 0)
+    {
+        addCommentTextView.text      = DEFAULT_TEXT;
+        addCommentTextView.textColor = [UIColor lightGrayColor];
+    }
+    
     [self adjustCommentBarToFitText];
     
     if([self.note.tags count] > 0)
@@ -236,17 +240,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         
         //Must perform second call to update as note is set incomplete in initial call
         [[AppServices sharedAppServices] updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:NO];
+        
+        addCommentTextView.text = DEFAULT_TEXT;
+        addCommentTextView.textColor = [UIColor lightGrayColor];
     }
-    
-    addCommentTextView.text = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
     
     [self adjustCommentBarToFitText];
     
     if([commentTableView numberOfRowsInSection:0] > 0)
         [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-    
- //   [commentTableView reloadData];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
