@@ -210,13 +210,6 @@
 
 - (void) fetchMoreNotes
 {
-    NSString *sourceString = [[NSThread callStackSymbols] objectAtIndex:1];
-    NSCharacterSet *separatorSet = [NSCharacterSet characterSetWithCharactersInString:@" -[]+?.,"];
-    NSMutableArray *array = [NSMutableArray arrayWithArray:[sourceString  componentsSeparatedByCharactersInSet:separatorSet]];
-    [array removeObject:@""];
-    
-    NSLog(@"%@: %@ Debug: %@", [array objectAtIndex:3], [array objectAtIndex:4], @"Fetch Happened");
-    
     [self fetchMoreNotesOfType:selectedContent];
 }
 
