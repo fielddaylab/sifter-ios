@@ -253,8 +253,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     else if([alertView.title isEqualToString:@"Delete Comment"] && buttonIndex != 0)
     {
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-        int deletedNoteId = ((Note *)[self.note.comments objectAtIndex:lastNoteDeleteIndex]).noteId;
-        [self.note.comments removeObjectAtIndex:lastNoteDeleteIndex];
+        int deletedNoteId = ((Note *)[self.note.comments objectAtIndex: [self getCommentIndexForRow: lastNoteDeleteIndex]]).noteId;
+        [self.note.comments removeObjectAtIndex:[self getCommentIndexForRow: lastNoteDeleteIndex]];
         [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:lastNoteDeleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
         [[InnovNoteModel sharedNoteModel] updateNote:self.note];
         [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
@@ -307,9 +307,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         
-        [cell updateWithNote:[self.note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]] andIndex:indexPath.row];
-        
         return cell;
+    }
+}
+
+-(void)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(!(!expanded && indexPath.row == EXPAND_INDEX && [self.note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS))
+    {
+        [((InnovCommentCell *)cell) updateWithNote:[self.note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]] andIndex:indexPath.row];
     }
 }
 
