@@ -184,7 +184,6 @@
                                   completionHandler(nil, error);
                               }
                               else {
-                                  //   NSString *facebookID = [result objectForKey:@"id"];
                                   NSString *username = [result objectForKey:@"name"];
                                   completionHandler(username, nil);
                               }
@@ -221,7 +220,7 @@
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
                             user:(id<FBGraphUser>)user
 {
-    [[AppServices sharedAppServices] loginWithFacebookEmail:[user objectForKey:@"email"] displayName:user.name andId:user.id];
+    [[AppServices sharedAppServices] loginWithFacebookEmail:[user objectForKey:@"email"] displayName:user.name andId:[user objectForKey:@"id"]];
     // [((UINavigationController *)[ViewControllerHelper getCurrentRootViewController]) popToRootViewControllerAnimated:YES];
 }
 
