@@ -37,6 +37,7 @@ static NSString * const CELL_ID = @"Cell";
     CustomRefreshControl *refreshControl;
     NSArray *notes;
     
+    BOOL firstFakedScrollIgnored;
     BOOL currentlyWaitingForMoreNotes;
 }
 
@@ -83,7 +84,8 @@ static NSString * const CELL_ID = @"Cell";
     gestureRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:gestureRecognizer];
     
-    refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
+    refreshControl = [[CustomRefreshControl alloc] init];
+    refreshControl.hidden = YES;
     refreshControl.tintColor = [UIColor SifterColorRed];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
@@ -224,6 +226,17 @@ static NSString * const CELL_ID = @"Cell";
     float scrollViewHeight   = aScrollView.bounds.size.height;
     float totalContentHeight = aScrollView.contentSize.height;
     float bottomInset        = aScrollView.contentInset.bottom;
+    
+//Not good code start
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
+        if(!firstFakedScrollIgnored)
+            firstFakedScrollIgnored = YES;
+        else
+            refreshControl.hidden = NO;
+        
+    }
+//Not good code end
     
     if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT) && !currentlyWaitingForMoreNotes)
     {
