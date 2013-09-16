@@ -84,6 +84,7 @@
     
     usernameLabel.text = ([note.displayname length] > 0) ? note.displayname : note.username;
     deleteButton.tag = index;
+    deleteButton.hidden = !(note.creatorId == [AppModel sharedAppModel].playerId);
     [flagButton setSelected:note.userFlagged];
     [self updateLikeButton];
     

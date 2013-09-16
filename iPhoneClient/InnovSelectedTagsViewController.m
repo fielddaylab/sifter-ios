@@ -23,6 +23,7 @@
     __weak IBOutlet UITableView *tagTableView;
     
     BOOL hiding;
+    BOOL selectedTagsChanged;
     CGSize originalSize;
     CGSize hiddenSize;
     NSArray *tags;
@@ -107,7 +108,11 @@
                              [weakSelf willMoveToParentViewController:nil];
                              [weakSelf.view removeFromSuperview];
                              [weakSelf removeFromParentViewController];
-                             [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+                             if(selectedTagsChanged)
+                             {
+                                 selectedTagsChanged = NO;
+                                 [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+                             }
                          }];
     }
 }
@@ -177,6 +182,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    selectedTagsChanged = YES;
     if([tableView cellForRowAtIndexPath:indexPath].accessoryType == UITableViewCellAccessoryCheckmark)
     {
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;

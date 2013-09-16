@@ -41,7 +41,7 @@
 						<int key="NSvFlags">1298</int>
 						<array class="NSMutableArray" key="NSSubviews"/>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
-						<string key="NSFrameSize">{320, 416.00000000000006}</string>
+						<string key="NSFrameSize">{320, 416}</string>
 						<reference key="NSSuperview" ref="31784700"/>
 						<reference key="NSNextKeyView" ref="633869401"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -55,7 +55,7 @@
 						<reference key="NSNextResponder" ref="31784700"/>
 						<int key="NSvFlags">1295</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
-						<string key="NSFrame">{{0, 344.00000000000006}, {320, 84}}</string>
+						<string key="NSFrame">{{0, 344}, {320, 84}}</string>
 						<reference key="NSSuperview" ref="31784700"/>
 						<reference key="NSNextKeyView" ref="196208390"/>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
@@ -94,7 +94,7 @@
 						<reference key="NSNextResponder" ref="31784700"/>
 						<int key="NSvFlags">1292</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
-						<string key="NSFrame">{{20, 382.00000000000006}, {30, 29}}</string>
+						<string key="NSFrame">{{20, 382}, {30, 29}}</string>
 						<reference key="NSSuperview" ref="31784700"/>
 						<reference key="NSNextKeyView" ref="692049051"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -126,7 +126,7 @@
 						<reference key="NSNextResponder" ref="31784700"/>
 						<int key="NSvFlags">1293</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
-						<string key="NSFrame">{{132, 356.00000000000006}, {60, 60}}</string>
+						<string key="NSFrame">{{132, 356}, {60, 60}}</string>
 						<reference key="NSSuperview" ref="31784700"/>
 						<reference key="NSNextKeyView" ref="135100279"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -150,7 +150,7 @@
 						<reference key="NSNextResponder" ref="31784700"/>
 						<int key="NSvFlags">1289</int>
 						<object class="NSPSMatrix" key="NSFrameMatrix"/>
-						<string key="NSFrame">{{270, 382.00000000000006}, {30, 29}}</string>
+						<string key="NSFrame">{{270, 382}, {30, 29}}</string>
 						<reference key="NSSuperview" ref="31784700"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -171,7 +171,7 @@
 					</object>
 				</array>
 				<object class="NSPSMatrix" key="NSFrameMatrix"/>
-				<string key="NSFrame">{{0, 64}, {320, 416.00000000000006}}</string>
+				<string key="NSFrame">{{0, 64}, {320, 416}}</string>
 				<reference key="NSNextKeyView" ref="167964221"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>

@@ -47,6 +47,9 @@
     InnovSelectedTagsViewController *selectedTagsVC;
     InnovPopOverView *popOver;
     
+    
+    BOOL searchActive;
+    BOOL searchBarTextDidChange;
     Note *noteToAdd;
     NSString *currentSearchTerm;
 }
@@ -186,21 +189,30 @@
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
 {
-    aSearchBar.text = @"";
-    [self searchBar: aSearchBar textDidChange:aSearchBar.text];
+    if(![searchBar.text isEqualToString:@""])
+    {
+        aSearchBar.text = @"";
+        [self searchBar: aSearchBar textDidChange:aSearchBar.text];
+        searchBarTextDidChange = NO;
+        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    }
     [self searchBar:aSearchBar activate:NO];
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)aSearchBar
 {
     [self searchBar:searchBar activate:NO];
-    [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    if(searchBarTextDidChange)
+    {
+        searchBarTextDidChange = NO;
+        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+    }
 }
 
 - (void) searchBar:(UISearchBar *)aSearchBar activate:(BOOL)active
 {
-   listVC.view.userInteractionEnabled = !active;
+    searchActive = active;
+    listVC.view.userInteractionEnabled = !active;
     mapVC.view.userInteractionEnabled = !active;
     if (!active)
         [aSearchBar resignFirstResponder];
@@ -210,6 +222,7 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
+    searchBarTextDidChange = YES;
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = searchText.lowercaseString;
     [[InnovNoteModel sharedNoteModel] addSearchTerm:currentSearchTerm];
@@ -222,10 +235,14 @@
     if(![self.view.subviews containsObject:settingsView])
     {
         [self.view addSubview:settingsView];
+        contentView.userInteractionEnabled = NO;
         [settingsView show];
     }
     else
+    {
         [settingsView hide];
+        contentView.userInteractionEnabled = YES;
+    }
 }
 
 - (IBAction)showTagsPressed:(id)sender
@@ -242,9 +259,9 @@
     }
     else
     {
+        [selectedTagsVC hide];
         [showTagsButton setSelected:NO];
         contentView.userInteractionEnabled = YES;
-        [selectedTagsVC hide];
     }
 }
 
@@ -338,11 +355,12 @@
     
 #warning SHOULD WORK and DID BEFORE Xcode 5
    // [self.view endEditing: YES];
-    [self searchBarCancelButtonClicked:searchBar];
+    if(searchActive)
+        [self searchBarCancelButtonClicked:searchBar];
     [settingsView hide];
+    [selectedTagsVC hide];
     [showTagsButton setSelected:NO];
     contentView.userInteractionEnabled = YES;
-    [selectedTagsVC hide];
 }
 
 #pragma mark Switch Views
