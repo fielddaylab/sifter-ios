@@ -89,8 +89,10 @@
     [self updateLikeButton];
     
     textView.text = note.title;
+    
+    CGSize textViewSize = [textView sizeThatFits:CGSizeMake(self.frame.size.width, MAXFLOAT)];
     CGRect frame = textView.frame;
-    frame.size.height = textView.contentSize.height;
+    frame.size.height = textViewSize.height;
     textView.frame = frame;
 }
 
@@ -116,7 +118,6 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Mark Inappropriate" message:@"Are you sure you want to mark this content as inappropriate?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
             [alert show];
         }
-        
     }
 }
 

@@ -153,11 +153,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     if([commentTableView numberOfRowsInSection:0] > 0)
         [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    
+    [commentTableView reloadData];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+-(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     [self.view removeKeyboardControl];
 }
 
@@ -212,7 +214,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void) addCommentButtonPressed:(id)sender
 {
-    [self.view endEditing:YES];
+    [addCommentTextView resignFirstResponder];
     
     if([AppModel sharedAppModel].playerId == 0)
     {
@@ -241,9 +243,10 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     [self adjustCommentBarToFitText];
     
-    [commentTableView reloadData];
     if([commentTableView numberOfRowsInSection:0] > 0)
         [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    
+ //   [commentTableView reloadData];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -255,7 +258,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
         int deletedNoteId = ((Note *)[self.note.comments objectAtIndex: [self getCommentIndexForRow: lastNoteDeleteIndex]]).noteId;
         [self.note.comments removeObjectAtIndex:[self getCommentIndexForRow: lastNoteDeleteIndex]];
-        [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:lastNoteDeleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        if(expanded)
+            [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:lastNoteDeleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         [[InnovNoteModel sharedNoteModel] updateNote:self.note];
         [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
     }
