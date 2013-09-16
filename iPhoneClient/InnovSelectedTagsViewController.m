@@ -62,9 +62,6 @@
     hiddenFrame.size = hiddenSize;
     self.view.frame = hiddenFrame;
     
-    selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
-    [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
-    
     [self updateTags];
 }
 

@@ -37,7 +37,7 @@ static NSString * const CELL_ID = @"Cell";
     CustomRefreshControl *refreshControl;
     NSArray *notes;
     
-    BOOL firstFakedScrollIgnored;
+    BOOL ignoreInitialContentOffsetScroll;
     BOOL currentlyWaitingForMoreNotes;
 }
 
@@ -69,6 +69,8 @@ static NSString * const CELL_ID = @"Cell";
 {
     [super viewDidLoad];
     
+    ignoreInitialContentOffsetScroll = YES;
+    
     CGRect quiltViewFrame = self.view.frame;
     quiltViewFrame.origin.x = 0;
     quiltViewFrame.origin.y = 0;
@@ -90,11 +92,11 @@ static NSString * const CELL_ID = @"Cell";
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
-  //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-  //  {
-        quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
-        quiltView.scrollIndicatorInsets = quiltView.contentInset;
-  //  }
+    //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    //  {
+    quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
+    quiltView.scrollIndicatorInsets = quiltView.contentInset;
+    //  }
     
     [quiltView reloadData];
 }
@@ -221,28 +223,25 @@ static NSString * const CELL_ID = @"Cell";
     [delegate presentNote: [notes objectAtIndex:indexPath.row]];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
-    float yOffset            = aScrollView.contentOffset.y;
-    float scrollViewHeight   = aScrollView.bounds.size.height;
-    float totalContentHeight = aScrollView.contentSize.height;
-    float bottomInset        = aScrollView.contentInset.bottom;
-    
-//Not good code start
-    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView
+{
+    if(!ignoreInitialContentOffsetScroll)
     {
-        if(!firstFakedScrollIgnored)
-            firstFakedScrollIgnored = YES;
-        else
-            refreshControl.hidden = NO;
+        float yOffset            = aScrollView.contentOffset.y;
+        float scrollViewHeight   = aScrollView.bounds.size.height;
+        float totalContentHeight = aScrollView.contentSize.height;
+        float bottomInset        = aScrollView.contentInset.bottom;
         
+        refreshControl.hidden = NO;
+        
+        if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT) && !currentlyWaitingForMoreNotes)
+        {
+            currentlyWaitingForMoreNotes = YES;
+            [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+        }
     }
-//Not good code end
-    
-    if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT) && !currentlyWaitingForMoreNotes)
-    {
-        currentlyWaitingForMoreNotes = YES;
-        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
-    }
+    else
+        ignoreInitialContentOffsetScroll = NO;
 }
 
 - (void) hideKeyboard: (UIGestureRecognizer *) gesture
