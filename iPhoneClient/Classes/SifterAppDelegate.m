@@ -47,6 +47,8 @@ void uncaughtExceptionHandler(NSException *exception)
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    [TestFlight takeOff:@"ea7739d5-8bcf-4c6f-a0de-e8c17bb9dc7d"];
+    
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
 #warning change game and finalize settings
