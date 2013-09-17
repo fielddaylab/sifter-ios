@@ -112,8 +112,12 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 {
     [super viewWillAppear: animated];
     
-    addCommentTextView.text      = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
+    if([addCommentTextView.text length] == 0)
+    {
+        addCommentTextView.text      = DEFAULT_TEXT;
+        addCommentTextView.textColor = [UIColor lightGrayColor];
+    }
+    
     [self adjustCommentBarToFitText];
     
     if([self.note.tags count] > 0)
@@ -153,11 +157,13 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     if([commentTableView numberOfRowsInSection:0] > 0)
         [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    
+    [commentTableView reloadData];
 }
 
--(void)viewDidDisappear:(BOOL)animated
+-(void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     [self.view removeKeyboardControl];
 }
 
@@ -212,7 +218,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 - (void) addCommentButtonPressed:(id)sender
 {
-    [self.view endEditing:YES];
+    [addCommentTextView resignFirstResponder];
     
     if([AppModel sharedAppModel].playerId == 0)
     {
@@ -222,26 +228,25 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     else if([addCommentTextView.text length] > 0 && ![addCommentTextView.text isEqualToString:DEFAULT_TEXT])
     {
         Note *commentNote = [[Note alloc] init];
-        commentNote.noteId = [[AppServices sharedAppServices] addCommentToNoteWithId:self.note.noteId andTitle:@""];
+        commentNote.noteId = [[AppServices sharedAppServices] addCommentToNoteWithId:self.note.noteId andTitle:addCommentTextView.text];
         
         commentNote.title = addCommentTextView.text;
         commentNote.parentNoteId = self.note.noteId;
-        commentNote.creatorId = [AppModel sharedAppModel].playerId;
-        commentNote.username = [AppModel sharedAppModel].userName;
+        commentNote.creatorId   = [AppModel sharedAppModel].playerId;
+        commentNote.username    = [AppModel sharedAppModel].userName;
         commentNote.displayname = [AppModel sharedAppModel].displayName;
-#warning probably unnecessary to do this second call
-        [[AppServices sharedAppServices]updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:YES];
-        
         [self.note.comments insertObject:commentNote atIndex:0];
-        [[InnovNoteModel sharedNoteModel] updateNote:note];
+        [[InnovNoteModel sharedNoteModel] updateNote: self.note];
+        
+        //Must perform second call to update as note is set incomplete in initial call
+        [[AppServices sharedAppServices] updateCommentWithId:commentNote.noteId andTitle:commentNote.title andRefresh:NO];
+        
+        addCommentTextView.text = DEFAULT_TEXT;
+        addCommentTextView.textColor = [UIColor lightGrayColor];
     }
-    
-    addCommentTextView.text = DEFAULT_TEXT;
-    addCommentTextView.textColor = [UIColor lightGrayColor];
     
     [self adjustCommentBarToFitText];
     
-    [commentTableView reloadData];
     if([commentTableView numberOfRowsInSection:0] > 0)
         [commentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:([commentTableView numberOfRowsInSection:0] - 1) inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
@@ -253,9 +258,11 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     else if([alertView.title isEqualToString:@"Delete Comment"] && buttonIndex != 0)
     {
         self.note = [[InnovNoteModel sharedNoteModel] noteForNoteId:self.note.noteId];
-        int deletedNoteId = ((Note *)[self.note.comments objectAtIndex:lastNoteDeleteIndex]).noteId;
-        [self.note.comments removeObjectAtIndex:lastNoteDeleteIndex];
-        [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:lastNoteDeleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        int deletedNoteId = ((Note *)[self.note.comments objectAtIndex: [self getCommentIndexForRow: lastNoteDeleteIndex]]).noteId;
+        [self.note.comments removeObjectAtIndex:[self getCommentIndexForRow: lastNoteDeleteIndex]];
+        
+        if(expanded)
+            [commentTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:lastNoteDeleteIndex inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
         [[InnovNoteModel sharedNoteModel] updateNote:self.note];
         [[AppServices sharedAppServices] deleteNoteWithNoteId:deletedNoteId];
     }
@@ -270,26 +277,26 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if([note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS && !expanded)
+    if([self.note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS && !expanded)
         return DEFAULT_MAX_VISIBLE_COMMENTS;
     else
-        return [note.comments count];
+        return [self.note.comments count];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
+    if(!expanded && indexPath.row == EXPAND_INDEX && [self.note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
         return  44;
     
     CGSize size = CGSizeMake(self.view.frame.size.width - (2 * DEFAULT_TEXTVIEW_MARGIN), CGFLOAT_MAX);
-    NSString *text      = ((Note *)[note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]]).title;
+    NSString *text      = ((Note *)[self.note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]]).title;
     
     return [text sizeWithFont:DEFAULT_FONT constrainedToSize:size].height + (2 * DEFAULT_TEXTVIEW_MARGIN)+AUTHOR_ROW_HEIGHT;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(!expanded && indexPath.row == EXPAND_INDEX && [note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
+    if(!expanded && indexPath.row == EXPAND_INDEX && [self.note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS)
     {
         UITableViewCell *expandCell = [tableView dequeueReusableCellWithIdentifier:EXPAND_CELL_ID];
         if(!expandCell)
@@ -307,9 +314,15 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
         
-        [cell updateWithNote:[self.note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]] andIndex:indexPath.row];
-        
         return cell;
+    }
+}
+
+-(void)tableView:(UITableView *) tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(!(!expanded && indexPath.row == EXPAND_INDEX && [self.note.comments count] > DEFAULT_MAX_VISIBLE_COMMENTS))
+    {
+        [((InnovCommentCell *)cell) updateWithNote:[self.note.comments objectAtIndex:[self getCommentIndexForRow:indexPath.row]] andIndex:indexPath.row];
     }
 }
 
@@ -333,8 +346,8 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
 
 -(int)getCommentIndexForRow:(int) row
 {
-    if(expanded || row < EXPAND_INDEX || [note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
-        return [note.comments count]-row-1;
+    if(expanded || row < EXPAND_INDEX || [self. note.comments count] <= DEFAULT_MAX_VISIBLE_COMMENTS)
+        return [self.note.comments count]-row-1;
     else
         return DEFAULT_MAX_VISIBLE_COMMENTS-row-1;
 }

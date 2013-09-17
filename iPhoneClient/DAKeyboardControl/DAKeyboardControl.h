@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Daniel Amitay. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+
 typedef void (^DAKeyboardDidMoveBlock)(CGRect keyboardFrameInView);
 
 /** DAKeyboardControl allows you to easily add keyboard awareness and scrolling

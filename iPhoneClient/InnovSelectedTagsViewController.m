@@ -23,6 +23,7 @@
     __weak IBOutlet UITableView *tagTableView;
     
     BOOL hiding;
+    BOOL selectedTagsChanged;
     CGSize originalSize;
     CGSize hiddenSize;
     NSArray *tags;
@@ -60,9 +61,6 @@
     CGRect hiddenFrame = self.view.frame;
     hiddenFrame.size = hiddenSize;
     self.view.frame = hiddenFrame;
-    
-    selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
-    [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
     
     [self updateTags];
 }
@@ -107,7 +105,11 @@
                              [weakSelf willMoveToParentViewController:nil];
                              [weakSelf.view removeFromSuperview];
                              [weakSelf removeFromParentViewController];
-                             [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+                             if(selectedTagsChanged)
+                             {
+                                 selectedTagsChanged = NO;
+                                 [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+                             }
                          }];
     }
 }
@@ -177,6 +179,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    selectedTagsChanged = YES;
     if([tableView cellForRowAtIndexPath:indexPath].accessoryType == UITableViewCellAccessoryCheckmark)
     {
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryNone;

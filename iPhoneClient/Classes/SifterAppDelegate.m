@@ -144,7 +144,6 @@ void uncaughtExceptionHandler(NSException *exception)
     [[[AppModel sharedAppModel]uploadManager] checkForFailedContent];
     
     [[InnovNoteModel sharedNoteModel] clearAllData];
-    [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
     
     [simpleFacebookShare handleDidBecomeActive];
     [[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];

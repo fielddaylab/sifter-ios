@@ -85,6 +85,7 @@
 		893AF8E017DE90BA00F57AE9 /* mli_office.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
+		89915CAF17E797F10013FB49 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 89915CAE17E797F10013FB49 /* DAKeyboardControl.m */; };
 		89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */; };
 		89B9201417A712C60011ABFD /* showTagsIconBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201217A712C60011ABFD /* showTagsIconBlue.png */; };
 		89B9201717A7141A0011ABFD /* trackingIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201517A7141A0011ABFD /* trackingIconBlue@2x.png */; };
@@ -200,7 +201,6 @@
 		DB00697A17347403009A4A17 /* InnovSelectedTagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB00697917347403009A4A17 /* InnovSelectedTagsViewController.m */; };
 		DB01B1031774E6B1005E1784 /* cropBox.png in Resources */ = {isa = PBXBuildFile; fileRef = DB01B1021774E6B1005E1784 /* cropBox.png */; };
 		DB02C62F173AE6FD00A31D55 /* InnovNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */; };
-		DB05E41C1753F7FA00FB3BB4 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = DB05E41B1753F7FA00FB3BB4 /* DAKeyboardControl.m */; };
 		DB071206176F80230069E15A /* InnovCommentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DB071205176F80220069E15A /* InnovCommentCell.m */; };
 		DB071211176F8CAA0069E15A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB071210176F8CAA0069E15A /* Twitter.framework */; };
 		DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DB071213176F8CEC0069E15A /* SVProgressHUD.m */; };
@@ -357,6 +357,8 @@
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
 		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
 		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
+		89915CAD17E797F10013FB49 /* DAKeyboardControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAKeyboardControl.h; sourceTree = "<group>"; };
+		89915CAE17E797F10013FB49 /* DAKeyboardControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAKeyboardControl.m; sourceTree = "<group>"; };
 		89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "showTagsIconBlue@2x.png"; sourceTree = "<group>"; };
 		89B9201217A712C60011ABFD /* showTagsIconBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = showTagsIconBlue.png; sourceTree = "<group>"; };
 		89B9201517A7141A0011ABFD /* trackingIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trackingIconBlue@2x.png"; sourceTree = "<group>"; };
@@ -513,8 +515,6 @@
 		DB01B1021774E6B1005E1784 /* cropBox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cropBox.png; sourceTree = "<group>"; };
 		DB02C62C173AE6FD00A31D55 /* InnovNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovNoteViewController.h; sourceTree = "<group>"; };
 		DB02C62D173AE6FD00A31D55 /* InnovNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovNoteViewController.m; sourceTree = "<group>"; };
-		DB05E41A1753F7FA00FB3BB4 /* DAKeyboardControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAKeyboardControl.h; sourceTree = "<group>"; };
-		DB05E41B1753F7FA00FB3BB4 /* DAKeyboardControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAKeyboardControl.m; sourceTree = "<group>"; };
 		DB071204176F80220069E15A /* InnovCommentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentCell.h; sourceTree = "<group>"; };
 		DB071205176F80220069E15A /* InnovCommentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovCommentCell.m; sourceTree = "<group>"; };
 		DB071210176F8CAA0069E15A /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
@@ -1098,8 +1098,8 @@
 		DB05E4191753F7FA00FB3BB4 /* DAKeyboardControl */ = {
 			isa = PBXGroup;
 			children = (
-				DB05E41A1753F7FA00FB3BB4 /* DAKeyboardControl.h */,
-				DB05E41B1753F7FA00FB3BB4 /* DAKeyboardControl.m */,
+				89915CAD17E797F10013FB49 /* DAKeyboardControl.h */,
+				89915CAE17E797F10013FB49 /* DAKeyboardControl.m */,
 			);
 			path = DAKeyboardControl;
 			sourceTree = "<group>";
@@ -1590,13 +1590,13 @@
 				DB00697A17347403009A4A17 /* InnovSelectedTagsViewController.m in Sources */,
 				DB02C62F173AE6FD00A31D55 /* InnovNoteViewController.m in Sources */,
 				DBEDC713174BC8AC004C8966 /* TMQuiltView.m in Sources */,
+				89915CAF17E797F10013FB49 /* DAKeyboardControl.m in Sources */,
 				DBEDC714174BC8AC004C8966 /* TMQuiltViewCell.m in Sources */,
 				DBEDC718174BD02B004C8966 /* TMPhotoQuiltViewCell.m in Sources */,
 				DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */,
 				DB1A8AF3174D84D80052DDC6 /* InnovMapViewController.m in Sources */,
 				DBFE825F174E758600E4496B /* InnovListViewController.m in Sources */,
 				DB0773C8174FE10C002D71ED /* InnovNoteModel.m in Sources */,
-				DB05E41C1753F7FA00FB3BB4 /* DAKeyboardControl.m in Sources */,
 				DB071206176F80230069E15A /* InnovCommentCell.m in Sources */,
 				DB071216176F8CEC0069E15A /* SVProgressHUD.m in Sources */,
 				DB07125A1770EA870069E15A /* SimpleFacebookShare.m in Sources */,
@@ -1691,8 +1691,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Siftr;
-				PROVISIONING_PROFILE = "387C618D-56A7-48E8-BE66-AFFC6964A595";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "387C618D-56A7-48E8-BE66-AFFC6964A595";
+				PROVISIONING_PROFILE = "643EBA27-D242-4530-A19D-36BB17725F87";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "643EBA27-D242-4530-A19D-36BB17725F87";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = iphoneos;
@@ -1790,8 +1790,8 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: David Gagnon (VDP976Y25G)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: David Gagnon (VDP976Y25G)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1821,8 +1821,8 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = Siftr;
-				PROVISIONING_PROFILE = "12CF5D5F-B615-4744-A841-2D9418A073AF";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "12CF5D5F-B615-4744-A841-2D9418A073AF";
+				PROVISIONING_PROFILE = "643EBA27-D242-4530-A19D-36BB17725F87";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "643EBA27-D242-4530-A19D-36BB17725F87";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
 				SDKROOT = iphoneos;

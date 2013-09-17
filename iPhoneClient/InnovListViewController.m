@@ -37,6 +37,7 @@ static NSString * const CELL_ID = @"Cell";
     CustomRefreshControl *refreshControl;
     NSArray *notes;
     
+    BOOL ignoreInitialContentOffsetScroll;
     BOOL currentlyWaitingForMoreNotes;
 }
 
@@ -68,6 +69,8 @@ static NSString * const CELL_ID = @"Cell";
 {
     [super viewDidLoad];
     
+    ignoreInitialContentOffsetScroll = YES;
+    
     CGRect quiltViewFrame = self.view.frame;
     quiltViewFrame.origin.x = 0;
     quiltViewFrame.origin.y = 0;
@@ -83,16 +86,17 @@ static NSString * const CELL_ID = @"Cell";
     gestureRecognizer.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:gestureRecognizer];
     
-    refreshControl = [[CustomRefreshControl alloc] initWithFrame:CGRectMake(0, 100, 320, 100)];
+    refreshControl = [[CustomRefreshControl alloc] init];
+    refreshControl.hidden = YES;
     refreshControl.tintColor = [UIColor SifterColorRed];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
-  //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-  //  {
-        quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
-        quiltView.scrollIndicatorInsets = quiltView.contentInset;
-  //  }
+    //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    //  {
+    quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
+    quiltView.scrollIndicatorInsets = quiltView.contentInset;
+    //  }
     
     [quiltView reloadData];
 }
@@ -219,17 +223,25 @@ static NSString * const CELL_ID = @"Cell";
     [delegate presentNote: [notes objectAtIndex:indexPath.row]];
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)aScrollView {
-    float yOffset            = aScrollView.contentOffset.y;
-    float scrollViewHeight   = aScrollView.bounds.size.height;
-    float totalContentHeight = aScrollView.contentSize.height;
-    float bottomInset        = aScrollView.contentInset.bottom;
-    
-    if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT) && !currentlyWaitingForMoreNotes)
+- (void)scrollViewDidScroll:(UIScrollView *)aScrollView
+{
+    if(!ignoreInitialContentOffsetScroll)
     {
-        currentlyWaitingForMoreNotes = YES;
-        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+        float yOffset            = aScrollView.contentOffset.y;
+        float scrollViewHeight   = aScrollView.bounds.size.height;
+        float totalContentHeight = aScrollView.contentSize.height;
+        float bottomInset        = aScrollView.contentInset.bottom;
+        
+        refreshControl.hidden = NO;
+        
+        if((yOffset+scrollViewHeight+bottomInset) >= (totalContentHeight - 10 * CELL_HEIGHT) && !currentlyWaitingForMoreNotes)
+        {
+            currentlyWaitingForMoreNotes = YES;
+            [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
+        }
     }
+    else
+        ignoreInitialContentOffsetScroll = NO;
 }
 
 - (void) hideKeyboard: (UIGestureRecognizer *) gesture

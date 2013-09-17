@@ -97,7 +97,7 @@
         
         NSString *url    = HOME_URL;
         NSString *title  = [self getTitleOfCurrentNote];
-        NSString *text   = [NSString stringWithFormat:@"Check out this note about %@ I %@ on the UW-Madison Campus: %@ \n\n\nSee the whole note at: %@ or download the Sifter app", title, creationIndication, self.note.text, url];
+        NSString *text   = [NSString stringWithFormat:@"Check out this note about %@ I %@ on the UW-Madison Campus: \n\n\"%@\" \n\n\nSee the whole note at: %@ or download the Sifter app", title, creationIndication, self.note.text, url];
         NSString *subject = [NSString stringWithFormat:@"Interesting note on %@ from UW-Madison Campus", title];
         [((SifterAppDelegate *)[[UIApplication sharedApplication] delegate]).simpleMailShare shareText:text asHTML:NO withImage:image andSubject:subject toRecipients:nil fromNote:self.note.noteId];
     }
