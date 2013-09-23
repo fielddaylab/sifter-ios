@@ -14,6 +14,7 @@
 #import "InnovViewController.h"
 
 #import "UIColor+SifterColors.h"
+#import "TestFlight.h"
 
 @interface SifterAppDelegate()
 {
