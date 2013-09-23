@@ -120,6 +120,7 @@
 {
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
     [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
+    [tagTableView reloadData];
 }
 
 - (void)updateSelectedContent:(ContentSelector) selector
@@ -127,6 +128,7 @@
     contentSelectorSegCntrl.selectedSegmentIndex = selector;
     selectedContent = [contentSelectorSegCntrl selectedSegmentIndex];
     [[InnovNoteModel sharedNoteModel] setSelectedContent:selectedContent];
+    [tagTableView reloadData];
 }
 
 #pragma mark TableView DataSource and Delegate Methods
@@ -163,9 +165,9 @@
     
     int mediaId = ((Tag *)[tags  objectAtIndex:indexPath.row]).mediaId;
     if(mediaId != 0)
-        [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
+        [cell.mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
     else
-        [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
+        [cell.mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
     
     BOOL match = NO;
     for(int i = 0; i < [selectedTags count]; ++i)
@@ -173,6 +175,19 @@
     
     if(match) cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else cell.accessoryType = UITableViewCellAccessoryNone;
+    
+    if(selectedContent == kMine)
+    {
+        cell.tagLabel.alpha       = 0.439216f;
+        cell.mediaImageView.alpha = 0.439216f;
+        cell.userInteractionEnabled = NO;
+    }
+    else
+    {
+        cell.tagLabel.alpha       = 1.0f;
+        cell.mediaImageView.alpha = 1.0f;
+        cell.userInteractionEnabled = YES;
+    }
     
     return cell;
 }

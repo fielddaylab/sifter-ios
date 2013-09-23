@@ -85,11 +85,11 @@
 		893AF8E017DE90BA00F57AE9 /* mli_office.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 893AF8DF17DE90BA00F57AE9 /* mli_office.gpx */; };
 		89729FCB17971E10009058B7 /* InnovPopOverTwitterAccountContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */; };
 		89729FCD17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */; };
-		89915CAF17E797F10013FB49 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 89915CAE17E797F10013FB49 /* DAKeyboardControl.m */; };
 		89B9201317A712C60011ABFD /* showTagsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */; };
 		89B9201417A712C60011ABFD /* showTagsIconBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201217A712C60011ABFD /* showTagsIconBlue.png */; };
 		89B9201717A7141A0011ABFD /* trackingIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201517A7141A0011ABFD /* trackingIconBlue@2x.png */; };
 		89B9201817A7141A0011ABFD /* trackingIconBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 89B9201617A7141A0011ABFD /* trackingIconBlue.png */; };
+		89CFE82017F0C0A6000BA676 /* DAKeyboardControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CFE81F17F0C0A6000BA676 /* DAKeyboardControl.m */; };
 		89D8B25517820182002A53CA /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B25317820182002A53CA /* CustomBadge.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		89D8B263178228F8002A53CA /* InnovCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D8B261178228F7002A53CA /* InnovCommentViewController.m */; };
 		89D8B264178228F8002A53CA /* InnovCommentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89D8B262178228F7002A53CA /* InnovCommentViewController.xib */; };
@@ -357,12 +357,12 @@
 		89729FC917971E0F009058B7 /* InnovPopOverTwitterAccountContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverTwitterAccountContentView.h; sourceTree = "<group>"; };
 		89729FCA17971E0F009058B7 /* InnovPopOverTwitterAccountContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InnovPopOverTwitterAccountContentView.m; sourceTree = "<group>"; };
 		89729FCC17971E4D009058B7 /* InnovPopOverTwitterAccountContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InnovPopOverTwitterAccountContentView.xib; sourceTree = "<group>"; };
-		89915CAD17E797F10013FB49 /* DAKeyboardControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAKeyboardControl.h; sourceTree = "<group>"; };
-		89915CAE17E797F10013FB49 /* DAKeyboardControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAKeyboardControl.m; sourceTree = "<group>"; };
 		89B9201117A712C60011ABFD /* showTagsIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "showTagsIconBlue@2x.png"; sourceTree = "<group>"; };
 		89B9201217A712C60011ABFD /* showTagsIconBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = showTagsIconBlue.png; sourceTree = "<group>"; };
 		89B9201517A7141A0011ABFD /* trackingIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trackingIconBlue@2x.png"; sourceTree = "<group>"; };
 		89B9201617A7141A0011ABFD /* trackingIconBlue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackingIconBlue.png; sourceTree = "<group>"; };
+		89CFE81E17F0C0A6000BA676 /* DAKeyboardControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAKeyboardControl.h; sourceTree = "<group>"; };
+		89CFE81F17F0C0A6000BA676 /* DAKeyboardControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAKeyboardControl.m; sourceTree = "<group>"; };
 		89D8B25317820182002A53CA /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		89D8B25417820182002A53CA /* CustomBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomBadge.h; sourceTree = "<group>"; };
 		89D8B260178228F7002A53CA /* InnovCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovCommentViewController.h; sourceTree = "<group>"; };
@@ -1098,8 +1098,8 @@
 		DB05E4191753F7FA00FB3BB4 /* DAKeyboardControl */ = {
 			isa = PBXGroup;
 			children = (
-				89915CAD17E797F10013FB49 /* DAKeyboardControl.h */,
-				89915CAE17E797F10013FB49 /* DAKeyboardControl.m */,
+				89CFE81E17F0C0A6000BA676 /* DAKeyboardControl.h */,
+				89CFE81F17F0C0A6000BA676 /* DAKeyboardControl.m */,
 			);
 			path = DAKeyboardControl;
 			sourceTree = "<group>";
@@ -1590,7 +1590,7 @@
 				DB00697A17347403009A4A17 /* InnovSelectedTagsViewController.m in Sources */,
 				DB02C62F173AE6FD00A31D55 /* InnovNoteViewController.m in Sources */,
 				DBEDC713174BC8AC004C8966 /* TMQuiltView.m in Sources */,
-				89915CAF17E797F10013FB49 /* DAKeyboardControl.m in Sources */,
+				89CFE82017F0C0A6000BA676 /* DAKeyboardControl.m in Sources */,
 				DBEDC714174BC8AC004C8966 /* TMQuiltViewCell.m in Sources */,
 				DBEDC718174BD02B004C8966 /* TMPhotoQuiltViewCell.m in Sources */,
 				DB1A8AE2174D4D7F0052DDC6 /* InnovSettingsView.m in Sources */,

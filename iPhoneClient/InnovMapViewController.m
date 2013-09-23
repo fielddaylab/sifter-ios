@@ -33,8 +33,9 @@
 #define MADISON_LONG    -89.40
 #define MAX_DISTANCE    20000
 
-@interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
+#define LEGAL_BUTTON_SHIFT 64
 
+@interface InnovMapViewController () <MKMapViewDelegate, InnovPresentNoteDelegate>
 {
     IBOutlet MKMapView *mapView;
     InnovMapNotePopUp *notePopUp;
@@ -77,10 +78,8 @@
     notePopUp.center   = self.view.center;
     notePopUp.delegate = self;
     
-    NSString *reqSysVer = @"6.0";
-    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
-    if ([currSysVer compare:reqSysVer options:NSNumericSearch] != NSOrderedDescending)
-    {        
+    if (floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_6_0)
+    {
         WildcardGestureRecognizer * tapInterceptor = [[WildcardGestureRecognizer alloc] init];
         __weak InnovMapViewController *weakSelf = self;
         tapInterceptor.touchesBeganCallback = ^(NSSet * touches, UIEvent * event) {
@@ -108,7 +107,7 @@
             legalView = subview;
         }
     }
-    legalView.frame = CGRectMake(legalView.frame.origin.x, self.view.frame.size.height - 64, legalView.frame.size.width, legalView.frame.size.height);
+    legalView.frame = CGRectMake(legalView.frame.origin.x, self.view.frame.size.height - LEGAL_BUTTON_SHIFT, legalView.frame.size.width, legalView.frame.size.height);
 }
 
 /*
@@ -166,18 +165,22 @@
 
 - (void) addAnnotationsForNotes:(NSNotification *)notification
 {
-    for(Note *note in unshownNotesQueue)
+    for(int i = 0; i < [unshownNotesQueue count]; ++i)
     {
         if(shownNotesCount < MAX_MAP_NOTES_COUNT)
         {
+            Note *note = [unshownNotesQueue objectAtIndex:i];
             CLLocationCoordinate2D locationLatLong = CLLocationCoordinate2DMake(note.latitude, note.longitude);
             Annotation *annotation = [[Annotation alloc]initWithCoordinate:locationLatLong];
-            annotation.note = note;
+            annotation.note  = note;
             annotation.title = note.text;
-            annotation.kind = NearbyObjectNote;
+            annotation.kind  = NearbyObjectNote;
             annotation.iconMediaId = ((Tag *)[note.tags objectAtIndex:0]).mediaId;
             ++shownNotesCount;
             [mapView addAnnotation:annotation];
+            
+            [unshownNotesQueue removeObjectAtIndex:i];
+            --i;
         }
         else break;
     }
@@ -229,7 +232,8 @@
                 break;
             }
         }
-        if(!found) [unshownNotesQueue removeObject:note];
+        if(!found)
+            [unshownNotesQueue removeObject:note];
     }
 }
 
@@ -275,7 +279,8 @@
 - (void) showNotePopUpForNote: (Note *) note
 {
     //Note: will always be hidden by touches began except when re-displayed from editor
-    if(!notePopUp.hidden) [notePopUp hide];
+    if(!notePopUp.hidden)
+        [notePopUp hide];
     
     MKCoordinateRegion region = mapView.region;
     region.center = CLLocationCoordinate2DMake(note.latitude, note.longitude);

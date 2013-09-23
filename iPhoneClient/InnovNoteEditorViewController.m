@@ -102,7 +102,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     BOOL hasAudioToUpload;
     
     ARISMoviePlayerViewController *ARISMoviePlayer;
-    //AudioMeter *meter;
 	AVAudioRecorder *soundRecorder;
 	AVAudioPlayer *soundPlayer;
 	NSURL *soundFileURL;
@@ -188,11 +187,13 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     [deleteNoteButton setTitle:@"Delete" forState:UIControlStateNormal];
     [deleteNoteButton setTitle:@"Delete" forState:UIControlStateHighlighted];
     
+    NSError *error;
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
+    [[Logger sharedLogger] logError:error];
+    [[AVAudioSession sharedInstance] setActive: YES error: &error];
+    [[Logger sharedLogger] logError:error];
     [[AVAudioSession sharedInstance] setDelegate: self];
-    NSString *tempDir = NSTemporaryDirectory ();
-    NSString *soundFilePath =[tempDir stringByAppendingString: [NSString stringWithFormat:@"%@.caf",[self getUniqueId]]];
-    soundFileURL = [[NSURL alloc] initFileURLWithPath: soundFilePath];
-    
+
     [self updateTags];
     
     UIGraphicsBeginImageContext(CGSizeMake(1,1));
@@ -219,7 +220,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewWillAppear: animated];
     
-    [self updateViewFromNote:nil];
+    [self updateViewFromNote: nil];
 }
 
 - (void)updateViewFromNote: (NSNotification *) notif
@@ -228,17 +229,14 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     if(self.note.noteId != 0)
     {
-        if([note.text length] > 0)
-            captionTextView.text = note.text;
-        
-        if([note.text length] > 0 && ![note.text isEqualToString:DEFAULT_TEXT])
+        if([self.note.text length] > 0)
         {
-            captionTextView.textColor = [UIColor blackColor];
+            captionTextView.text = self.note.text;
+            if(![self.note.text isEqualToString:DEFAULT_TEXT])
+                captionTextView.textColor = [UIColor blackColor];
         }
         
         imageView.userInteractionEnabled = YES;
-        
-        [editNoteTableView reloadData];
         
         if([self.note.tags count] != 0)
         {
@@ -252,17 +250,12 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         if(self.note.latitude != 0 && self.note.longitude != 0)
             coordinate = CLLocationCoordinate2DMake(self.note.latitude, self.note.longitude);
         
-        NSError *error;
-        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
-        [[Logger sharedLogger] logError:error];
-        [[AVAudioSession sharedInstance] setActive: YES error: &error];
-        [[Logger sharedLogger] logError:error];
-        
         mode = kInnovAudioRecorderNoAudio;
         [self updateButtonsForCurrentMode];
-        hasAudioToUpload = NO;
         
         [self refreshViewFromModel];
+        
+        [editNoteTableView reloadData];
     }
     else if(!cameraHasBeenPresented)
     {
@@ -311,7 +304,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewDidAppear:animated];
     
-    [editNoteTableView reloadData];
+   // [editNoteTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -588,6 +581,10 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 											[NSNumber numberWithInt: AVAudioQualityMin],        AVSampleRateConverterAudioQualityKey,
 											nil];
             
+            NSString *tempDir = NSTemporaryDirectory ();
+            NSString *soundFilePath =[tempDir stringByAppendingString: [NSString stringWithFormat:@"%@.caf",[self getUniqueId]]];
+            soundFileURL = [[NSURL alloc] initFileURLWithPath: soundFilePath];
+
 			soundRecorder = [[AVAudioRecorder alloc] initWithURL: soundFileURL settings: recordSettings error: &error];
 			[[Logger sharedLogger] logError:error];
             
@@ -702,7 +699,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (void)deleteAudioButtonPressed:(id)sender
 {
-    if(hasAudioToUpload) hasAudioToUpload = NO;
+    if(hasAudioToUpload)
+        hasAudioToUpload = NO;
     else
     {
         for(int i = 0; i < [note.contents count]; ++i)

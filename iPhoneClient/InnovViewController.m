@@ -47,7 +47,6 @@
     InnovSelectedTagsViewController *selectedTagsVC;
     InnovPopOverView *popOver;
     
-    
     BOOL searchActive;
     BOOL searchBarTextDidChange;
     Note *noteToAdd;
@@ -74,12 +73,14 @@
     
     mapVC = [[InnovMapViewController alloc] init];
     mapVC.delegate = self;
+    mapVC.view.autoresizingMask |=  (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     [self addChildViewController:mapVC];
     [contentView addSubview:mapVC.view];
     [mapVC didMoveToParentViewController:self];
     
     listVC = [[InnovListViewController alloc] init];
     listVC.delegate = self;
+    listVC.view.autoresizingMask |=  (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     [self addChildViewController:listVC];
     
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -116,8 +117,6 @@
     settingsView.alpha = 0.0f;
     
     selectedTagsVC = [[InnovSelectedTagsViewController alloc] init];
-    
-    [showTagsButton setTintColor:[UIColor orangeColor]];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -139,15 +138,11 @@
     contentVCFrame.origin.x = 0;
     contentVCFrame.origin.y = 0;
     mapVC.view.frame = contentVCFrame;
-    mapVC.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
-    
     listVC.view.frame = contentVCFrame;
-    listVC.view.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
     
     CGRect selectedTagsFrame = selectedTagsVC.view.frame;
     selectedTagsFrame.origin.x = 0;
     selectedTagsFrame.origin.y = self.view.frame.size.height;
-   // selectedTagsFrame.size.height = self.view.frame.size.height - selectedTagsFrame.origin.y;
     selectedTagsVC.view.frame = selectedTagsFrame;
 }
 
@@ -169,7 +164,7 @@
     noteToAdd = note;
     [[InnovNoteModel sharedNoteModel] removeSearchTerm:currentSearchTerm];
     currentSearchTerm = @"";
-    [selectedTagsVC updateSelectedContent:kRecent];
+    [selectedTagsVC updateSelectedContent:kMine];
 }
 
 - (void) animateInNote: (Note *) note
@@ -212,8 +207,7 @@
 - (void) searchBar:(UISearchBar *)aSearchBar activate:(BOOL)active
 {
     searchActive = active;
-    listVC.view.userInteractionEnabled = !active;
-    mapVC.view.userInteractionEnabled = !active;
+    contentView.userInteractionEnabled = !active;
     if (!active)
         [aSearchBar resignFirstResponder];
 
@@ -247,7 +241,6 @@
 
 - (IBAction)showTagsPressed:(id)sender
 {
-    
     if(![self.view.subviews containsObject:selectedTagsVC.view])
     {
         [showTagsButton setSelected:YES];
