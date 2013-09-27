@@ -73,11 +73,11 @@
 
 - (IBAction)pinterestButtonPressed:(id)sender
 {
-    NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
+    NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:self.note.imageMediaId].url;
     
     Pinterest *pinterest = [[Pinterest alloc] initWithClientId:PINTEREST_CLIENT_ID];
     [pinterest createPinWithImageURL:[NSURL URLWithString:imageURL]
-                           sourceURL:[NSURL URLWithString: HOME_URL]
+                           sourceURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%d", NOTE_URL, self.note.noteId]]
                          description:self.note.text];
     
     [[AppServices sharedAppServices] sharedNoteToPinterest:self.note.noteId];
@@ -95,7 +95,7 @@
         else
             creationIndication = @"found";
         
-        NSString *url    = HOME_URL;
+        NSString *url    = [NSString stringWithFormat:@"%@%d", NOTE_URL, self.note.noteId];
         NSString *title  = [self getTitleOfCurrentNote];
         NSString *text   = [NSString stringWithFormat:@"Check out this note about %@ I %@ on the UW-Madison Campus: \n\n\"%@\" \n\n\nSee the whole note at: %@ or download the Sifter app", title, creationIndication, self.note.text, url];
         NSString *subject = [NSString stringWithFormat:@"Interesting note on %@ from UW-Madison Campus", title];

@@ -53,7 +53,7 @@
         [mailComposeViewController addAttachmentData:image mimeType:@"image/png" fileName:@"coolImage.png"];
         
         UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
-        [viewController presentModalViewController:mailComposeViewController animated:YES];
+        [viewController presentViewController:mailComposeViewController animated:YES completion:nil];
     }
     else
     {
@@ -75,7 +75,7 @@
         [mailComposeViewController setMessageBody:text isHTML:isHTML];
     
         UIViewController *viewController = [ViewControllerHelper getCurrentRootViewController];
-        [viewController presentModalViewController:mailComposeViewController animated:YES];
+        [viewController presentViewController:mailComposeViewController animated:YES completion:nil];
     }
     else
     {
@@ -94,7 +94,7 @@
 {
     if(result == MFMailComposeResultSent)
         [[AppServices sharedAppServices] sharedNoteToEmail:noteId];
-    [mailComposeViewController dismissModalViewControllerAnimated:YES];
+    [mailComposeViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

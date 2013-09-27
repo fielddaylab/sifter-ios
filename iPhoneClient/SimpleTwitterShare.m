@@ -54,7 +54,7 @@
 - (void) shareNote:(Note *) note toAccounts:(NSArray *) accounts automatically:(BOOL)autoShare
 {
     NSString *text = [NSString stringWithFormat:@"%@ %@", TWITTER_HANDLE, note.text];
-    NSString *url  = HOME_URL;
+    NSString *url  = [NSString stringWithFormat:@"%@%d", NOTE_URL, note.noteId];
     
     if(autoShare)
         [self autoTweetWithText:text image:nil andURL:url fromNote:note.noteId toAccounts:accounts];

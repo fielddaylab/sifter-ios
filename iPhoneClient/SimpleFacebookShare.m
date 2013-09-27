@@ -59,8 +59,7 @@
 {
     NSString *title = ([note.tags count] > 0) ? ((Tag *)[note.tags objectAtIndex:0]).tagName : DEFAULT_TITLE;
     NSString *imageURL = [[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId].url;
-#warning fix url to be web notebook url
-    NSString *urlString  = HOME_URL;
+    NSString *urlString  = [NSString stringWithFormat:@"%@%d", NOTE_URL, note.noteId];
     
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys: imageURL, @"picture", title, @"name", note.text, @"description", note.text, @"message", urlString, @"link", nil];
     NSDictionary *completionParams = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:note.noteId] forKey:@"noteId"];

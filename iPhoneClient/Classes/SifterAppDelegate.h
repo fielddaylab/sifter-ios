@@ -18,9 +18,9 @@
 
 #define SERVER                       @"http://arisgames.org/server"  //dev.
 #define HOME_URL                     @"www.siftr.org"                //for sharing purposes
+#define NOTE_URL                     (HOME_URL @"/#noteId")
 #define GAME_ID                      10690//3438 //10690             // 3438 on dev      10690 on prod
 
-#warning CHANGE TWITTER HANDLE
 #define DEFAULT_TITLE                @"Note"
 #define TWITTER_HANDLE               @"@SiftrMadison"
 
