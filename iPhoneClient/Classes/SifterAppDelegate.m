@@ -101,14 +101,9 @@ void uncaughtExceptionHandler(NSException *exception)
     
     NSDictionary *localNotifOptions = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
     if([localNotifOptions objectForKey:@"noteId"])
-    {
-        Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
-        if(note)
-        {
-            [innov presentNote: note];
-            [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
-        }
-    }
+        [self showNoteFromNotification:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+    
+    [self fetchNotesAndTagsIfNecessary];
     
     return YES;
 }
@@ -148,24 +143,29 @@ void uncaughtExceptionHandler(NSException *exception)
     
     [simpleFacebookShare handleDidBecomeActive];
     [[[MyCLController sharedMyCLController] locationManager] startUpdatingLocation];
+    
+    [self fetchNotesAndTagsIfNecessary];
+}
+
+- (void) fetchNotesAndTagsIfNecessary
+{
+    if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
+        [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
+    
+    if([[InnovNoteModel sharedNoteModel].availableNotes count] == 0 && ![AppServices sharedAppServices].isCurrentlyFetchingGameNoteList)
+        [[InnovNoteModel sharedNoteModel] fetchMoreNotes];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    if (application.applicationState == UIApplicationStateInactive )
+    if (application.applicationState == UIApplicationStateInactive)
     {
         [innov.navigationController popToRootViewControllerAnimated:YES];
         
         NSDictionary *localNotifOptions = notification.userInfo;
         if([localNotifOptions objectForKey:@"noteId"])
-        {
-            Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:[[localNotifOptions objectForKey:@"noteId"] intValue]];
-            if(note)
-            {
-                [innov presentNote: note];
-                [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
-            }
-        }
+            [self showNoteFromNotification:[[localNotifOptions objectForKey:@"noteId"] intValue]];
+        
         //The application received the notification from an inactive state, i.e. the user tapped the "View" button for the alert.
         //If the visible view controller in your view controller stack isn't the one you need then show the right one.
     }
@@ -173,6 +173,16 @@ void uncaughtExceptionHandler(NSException *exception)
     if(application.applicationState == UIApplicationStateActive )
     {
         //The application received a notification in the active state, so you can display an alert view or do something appropriate.
+    }
+}
+
+- (void)showNoteFromNotification:(int) noteId
+{
+    Note * note = [[InnovNoteModel sharedNoteModel] noteForNoteId:noteId];
+    if(note)
+    {
+        [innov presentNote: note];
+        [[InnovNoteModel sharedNoteModel] setNoteAsPreviouslyDisplayed:note];
     }
 }
 

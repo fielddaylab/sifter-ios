@@ -14,6 +14,7 @@
 #import "Comment.h"
 #import "AppModel.h"
 #import "AppServices.h"
+#import "GlobalDefines.h"
 #import "InnovNoteModel.h"
 #import "InnovCommentCell.h"
 #import "DAKeyboardControl.h"
@@ -76,7 +77,9 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
-        commentTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
+        float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+        float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+        commentTableView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0, 0.0, 0.0);
         commentTableView.scrollIndicatorInsets = commentTableView.contentInset;
     }
     

@@ -10,6 +10,7 @@
 #import "InnovViewController.h"
 
 #import "AppModel.h"
+#import "GlobalDefines.h"
 #import "AppServices.h"
 #import "SifterAppDelegate.h"
 #import "Note.h"
@@ -91,9 +92,12 @@
     switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
     self.navigationItem.leftBarButtonItem = switchViewsBarButton;
     
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height)];
+    float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+    float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+    
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(-5.0, 0.0, self.navigationController.navigationBar.frame.size.width, navBarHeight)];
     searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.navigationController.navigationBar.frame.size.width-10, self.navigationController.navigationBar.frame.size.height)];
+    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.navigationController.navigationBar.frame.size.width-10, navBarHeight)];
     searchBarView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     searchBar.delegate = self;
     [searchBar setBackgroundImage:[UIImage new]];
@@ -112,7 +116,7 @@
     settingsView.delegate = self;
     CGRect settingsLocation = settingsView.frame;
     settingsLocation.origin.x = self.view.frame.size.width  - settingsView.frame.size.width;
-    settingsLocation.origin.y = [UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height;
+    settingsLocation.origin.y = statusBarHeight + navBarHeight;
     settingsView.frame = settingsLocation;
     settingsView.alpha = 0.0f;
     
@@ -130,9 +134,6 @@
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
         [self.navigationController setNavigationBarHidden:NO animated:NO];
     }
-    
-    if([[InnovNoteModel sharedNoteModel].allTags count] == 0)
-        [[AppServices sharedAppServices] fetchGameNoteTagsAsynchronously:YES];
     
     CGRect contentVCFrame = contentView.frame;
     contentVCFrame.origin.x = 0;

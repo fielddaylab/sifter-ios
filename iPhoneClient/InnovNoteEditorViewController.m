@@ -22,6 +22,7 @@ typedef enum {
 
 #import "AppModel.h"
 #import "InnovNoteModel.h"
+#import "GlobalDefines.h"
 #import "AppServices.h"
 #import "SifterAppDelegate.h"
 #import "Note.h"
@@ -151,7 +152,9 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
-        editNoteTableView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,0.0,0.0);
+        float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+        float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+        editNoteTableView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0, 0.0, 0.0);
         editNoteTableView.scrollIndicatorInsets = editNoteTableView.contentInset;
     }
     

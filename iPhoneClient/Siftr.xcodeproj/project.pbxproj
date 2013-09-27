@@ -352,6 +352,7 @@
 		8906DE5C179D86E800B2D7BF /* likeBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "likeBlack@2x.png"; sourceTree = "<group>"; };
 		8906DE5D179D86E800B2D7BF /* likeBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = likeBlack.png; sourceTree = "<group>"; };
 		890B876517E3B96500E8448F /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		8912AD2B17F62393001BEAEE /* GlobalDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalDefines.h; sourceTree = "<group>"; };
 		8918B10017CFB2BA00AA6165 /* shareWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareWhite.png; sourceTree = "<group>"; };
 		8918B10117CFB2BA00AA6165 /* shareWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareWhite@2x.png"; sourceTree = "<group>"; };
 		891A96AF17972AAF009DF0A7 /* InnovPopOverContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InnovPopOverContentView.h; sourceTree = "<group>"; };
@@ -1187,6 +1188,7 @@
 				DBEDC70D174AC6D4004C8966 /* InnovAudioEnums.h */,
 				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteDelegate.h */,
+				8912AD2B17F62393001BEAEE /* GlobalDefines.h */,
 			);
 			name = "Header Files";
 			sourceTree = "<group>";

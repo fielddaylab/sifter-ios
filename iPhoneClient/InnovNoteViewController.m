@@ -10,6 +10,7 @@
 
 #import "InnovNoteModel.h"
 #import "AppServices.h"
+#import "GlobalDefines.h"
 #import "InnovAudioEnums.h"
 #import "Note.h"
 #import "NoteContent.h"
@@ -85,8 +86,9 @@
     noteView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     {
-#warning 44.0 SHOULD BE self.navigationController.navigationBar.frame.size.height change if we don't have a white nav on a white backround. Apple is taking over and setting what it wants
-        noteView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + 44.0,0.0,0.0,0.0);
+        float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+        float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+        noteView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0, 0.0, 0.0);
         noteView.scrollIndicatorInsets = noteView.contentInset;
     }
     

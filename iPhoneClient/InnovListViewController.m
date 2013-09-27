@@ -8,6 +8,7 @@
 
 #import "InnovListViewController.h"
 #import "InnovNoteModel.h"
+#import "GlobalDefines.h"
 
 #import "Note.h"
 #import "Tag.h"
@@ -63,8 +64,6 @@ static NSString * const CELL_ID = @"Cell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#warning doesn't handle touches began
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -94,7 +93,9 @@ static NSString * const CELL_ID = @"Cell";
     
     //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
     //  {
-    quiltView.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height + self.navigationController.navigationBar.frame.size.height,0.0,CELL_HEIGHT/2,0.0);
+    float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+    float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+    quiltView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0,CELL_HEIGHT/2, 0.0);
     quiltView.scrollIndicatorInsets = quiltView.contentInset;
     //  }
     
