@@ -186,13 +186,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     deleteNoteButton.backgroundColor = [UIColor redColor];
     [deleteNoteButton setTitle:@"Delete" forState:UIControlStateNormal];
     [deleteNoteButton setTitle:@"Delete" forState:UIControlStateHighlighted];
-    
-    NSError *error;
-    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
-    [[Logger sharedLogger] logError:error];
-    [[AVAudioSession sharedInstance] setActive: YES error: &error];
-    [[Logger sharedLogger] logError:error];
-    [[AVAudioSession sharedInstance] setDelegate: self];
 
     [self updateTags];
     
@@ -250,27 +243,32 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         if(self.note.latitude != 0 && self.note.longitude != 0)
             coordinate = CLLocationCoordinate2DMake(self.note.latitude, self.note.longitude);
         
+        NSError *error;
+        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayAndRecord error: &error];
+        [[Logger sharedLogger] logError:error];
+        [[AVAudioSession sharedInstance] setActive: YES error: &error];
+        [[Logger sharedLogger] logError:error];
+        [[AVAudioSession sharedInstance] setDelegate: self];
+        
         mode = kInnovAudioRecorderNoAudio;
         [self updateButtonsForCurrentMode];
         
         [self refreshViewFromModel];
-        
-        [editNoteTableView reloadData];
     }
     else if(!cameraHasBeenPresented)
     {
         self.note = [[Note alloc] init];
         self.note.text =  DEFAULT_TEXT;
-        self.note.showOnMap = YES;
-        self.note.showOnList = YES;
+        self.note.showOnMap   = YES;
+        self.note.showOnList  = YES;
         self.note.creatorId   = [AppModel sharedAppModel].playerId;
-#warning Probably useless to put in user/display name
         self.note.username    = [AppModel sharedAppModel].userName;
         self.note.displayname = [AppModel sharedAppModel].displayName;
         self.note.noteId      = [[AppServices sharedAppServices] createNoteStartIncomplete];
         self.note.latitude    = [AppModel sharedAppModel].playerLocation.coordinate.latitude;
         self.note.longitude   = [AppModel sharedAppModel].playerLocation.coordinate.longitude;
         newNote = YES;
+        
         if(self.note.noteId == 0)
         {
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"NoteEditorCreateNoteFailedKey", @"") message: NSLocalizedString(@"NoteEditorCreateNoteFailedMessageKey", @"") delegate:nil cancelButtonTitle: NSLocalizedString(@"OkKey", @"") otherButtonTitles: nil];
@@ -304,7 +302,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewDidAppear:animated];
     
-   // [editNoteTableView reloadData];
+    [editNoteTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -360,7 +358,8 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     
-    if([text isEqualToString:@"\n"]) {
+    if([text isEqualToString:@"\n"])
+    {
         [textView resignFirstResponder];
         return NO;
     }

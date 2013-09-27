@@ -173,7 +173,7 @@
     for(int i = 0; i < [selectedTags count]; ++i)
         if(((Tag *)[tags objectAtIndex:indexPath.row]).tagId == ((Tag *)[selectedTags objectAtIndex:i]).tagId) match = YES;
     
-    if(match) cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    if(match || selectedContent == kMine) cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else cell.accessoryType = UITableViewCellAccessoryNone;
     
     if(selectedContent == kMine)
