@@ -11,6 +11,13 @@
 #import "Media.h"
 #import "AppServices.h"
 
+@interface AppModel()
+{
+    NSMutableDictionary *cachedImages;
+}
+
+@end
+
 @implementation AppModel
 
 @synthesize serverURL;
@@ -54,8 +61,10 @@
     {
 		//Init USerDefaults
 		defaults      = [NSUserDefaults standardUserDefaults];
+        cachedImages = [[NSMutableDictionary alloc] init];
 		gameMediaList = [[NSMutableDictionary alloc] initWithCapacity:10];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearGameLists) name:@"NewGameSelected" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCache:) name:@"ImageReady" object:nil];
 	}
     return self;
 }
@@ -159,7 +168,26 @@
 	[[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"PlayerMoved" object:nil]];
 }
 
-#pragma mark Retrieving Cashed Objects 
+#pragma mark Retrieving Cached Objects
+
+-(void) addImageToCache:(NSNotification *) notif
+{
+    NSString *key  = [notif.userInfo objectForKey:@"mediaId"];
+    UIImage *image = [notif.userInfo objectForKey:@"image"];
+    
+    if([key length] > 0 && image)
+        [cachedImages setObject:image forKey:key];
+}
+
+-(UIImage *) cachedImageForMediaId:(int) mId
+{
+    return [cachedImages objectForKey:[NSString stringWithFormat:@"%d", mId]];
+}
+
+-(void) clearCachedImages
+{
+    [cachedImages removeAllObjects];
+}
 
 -(Media *)mediaForMediaId:(int)mId
 {

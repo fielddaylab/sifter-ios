@@ -173,12 +173,22 @@
         [spinner stopAnimating];
         return;
     }
-    
+
     if(self.isLoading) return;
 
     self.isLoading = YES;
 
-	//check if the media already as the image, if so, just grab it
+    //check if the media already as the image, if so, just grab it
+    UIImage *cachedImage = [[AppModel sharedAppModel] cachedImageForMediaId:[self.media.uid intValue]];
+    if(cachedImage)
+    {
+        [self updateViewWithNewImage:cachedImage];
+        self.loaded = YES;
+        self.isLoading = NO;
+        [spinner stopAnimating];
+		return;
+    }
+    
 	if (self.media.image && !dontUseImage)
     {
         [self updateViewWithNewImage:[UIImage imageWithData:self.media.image]];
@@ -239,17 +249,18 @@
 	
 	//Save the image in the media
     if(image)
-	self.media.image =data;
+        self.media.image = data;
     
     //throw out the data
 
     self.loaded = YES;
 	self.isLoading= NO;
-	[self updateViewWithNewImage:[UIImage imageWithData:self.media.image]];
+	[self updateViewWithNewImage:image];
     self.data=nil;
     
     NSLog(@"NSNotification: ImageReady");
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ImageReady" object:nil]];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%d", [self.media.uid intValue]], @"mediaId", image, @"image", nil];
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ImageReady" object:nil userInfo:userInfo]];
 }
 
 - (void)connection:(NSURLConnection *) theConnection didFailWithError:(NSError *)error

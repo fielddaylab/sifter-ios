@@ -23,4 +23,5 @@
 -(NSArray *)mediaForPredicate:(NSPredicate *)predicate;
 -(Media *)addMediaToCache:(int) uid;
 - (void)clearCache;
+
 @end

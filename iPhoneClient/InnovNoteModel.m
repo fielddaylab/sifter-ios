@@ -109,6 +109,7 @@
 -(void) clearAllData
 {
     [allNotes removeAllObjects];
+    [[AppModel sharedAppModel] clearCachedImages];
     [self sendSelectedTagsUpdateNotification];
     for(int i = 0; i < kNumContents; ++i)
         [[arrayOfArraysByType objectAtIndex:i] removeAllObjects];

@@ -49,6 +49,7 @@
 
 #import "AppModel.h"
 #import "InnovNoteModel.h"
+#import "AsyncMediaImageView.h"
 #import "Note.h"
 #import "Tag.h"
 
@@ -174,6 +175,13 @@
         // Create the region to be monitored.
         for(Note *note in notes)
         {
+            if(![[AppModel sharedAppModel] cachedImageForMediaId:note.imageMediaId])
+            {
+                AsyncMediaImageView *mediaView = [[AsyncMediaImageView alloc] init];
+                mediaView.dontUseImage = YES;
+                [mediaView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+            }
+            
             CLRegion* region = [[CLRegion alloc] initCircularRegionWithCenter:CLLocationCoordinate2DMake(note.latitude, note.longitude)
                                                                        radius:kCLLocationAccuracyHundredMeters identifier:[NSString stringWithFormat:@"%d", note.noteId]];
             [self.locationManager startMonitoringForRegion:region];

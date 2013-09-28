@@ -101,6 +101,8 @@
 - (void)initUserDefaults;
 - (void)clearGameLists;
 
+- (void)clearCachedImages;
+- (UIImage *)cachedImageForMediaId:(int) mId;
 - (Media *)mediaForMediaId:(int)mId;
 
 @end

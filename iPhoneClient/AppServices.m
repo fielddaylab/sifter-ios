@@ -1290,6 +1290,7 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if (![[AppModel sharedAppModel].mediaCache.context save:&error])
         NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
     
+    
     NSLog(@"NSNotification: ReceivedMediaList");
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"ReceivedMediaList" object:nil]];
     NSLog(@"NSNotification: GamePieceReceived");
