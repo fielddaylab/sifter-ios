@@ -58,6 +58,7 @@
 
 @interface MyCLController()
 {
+    NSMutableArray *imageViews;
     CLRegion *backgroundNoteRegion;
 }
 
@@ -82,6 +83,8 @@
 - (MyCLController*) init{
 	self = [super init];
 	if (self != nil) {
+        imageViews = [[NSMutableArray alloc] initWithCapacity:20];
+        
         CLLocationManager *locationManagerAlloc = [[CLLocationManager alloc] init];
 		self.locationManager = locationManagerAlloc;
 		self.locationManager.delegate = self; // Tells the location manager to send updates to this object
@@ -172,6 +175,8 @@
          radius = self.locManager.maximumRegionMonitoringDistance;
          }*/
         
+        [imageViews removeAllObjects];
+        
         // Create the region to be monitored.
         for(Note *note in notes)
         {
@@ -180,6 +185,8 @@
                 AsyncMediaImageView *mediaView = [[AsyncMediaImageView alloc] init];
                 mediaView.dontUseImage = YES;
                 [mediaView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+                
+                [imageViews addObject:mediaView];
             }
             
             CLRegion* region = [[CLRegion alloc] initCircularRegionWithCenter:CLLocationCoordinate2DMake(note.latitude, note.longitude)
