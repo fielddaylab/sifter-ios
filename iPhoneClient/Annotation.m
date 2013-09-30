@@ -19,7 +19,7 @@
     {
 		coordinate=c;
 	}
-	NSLog(@"Item annotation created");
+
 	return self;
 }
 

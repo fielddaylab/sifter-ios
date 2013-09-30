@@ -28,6 +28,7 @@
 #define CELL_X_MARGIN 3
 #define CELL_Y_MARGIN 3
 
+#define iOS7_CHANGE_ANIMATION_DURATION 0.001
 #define ANIMATION_TIME     0.5
 
 static NSString * const CELL_ID = @"Cell";
@@ -95,11 +96,31 @@ static NSString * const CELL_ID = @"Cell";
     //  {
     float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
     float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+    quiltView.contentOffset = CGPointMake(0.0, -(statusBarHeight + navBarHeight));
     quiltView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0,CELL_HEIGHT/2, 0.0);
     quiltView.scrollIndicatorInsets = quiltView.contentInset;
     //  }
     
     [quiltView reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+    {
+        [UIView animateWithDuration:iOS7_CHANGE_ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseInOut animations:^
+         {
+        
+        float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+        float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+        if(quiltView.contentOffset.y <= 0)
+            quiltView.contentOffset = CGPointMake(0.0, -(statusBarHeight + navBarHeight));
+        quiltView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0,CELL_HEIGHT/2, 0.0);
+        quiltView.scrollIndicatorInsets = quiltView.contentInset;
+         } completion: nil];
+    }
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl
