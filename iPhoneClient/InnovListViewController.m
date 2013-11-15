@@ -92,14 +92,7 @@ static NSString * const CELL_ID = @"Cell";
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [quiltView addSubview:refreshControl];
     
-    //  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
-    //  {
-    float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
-    float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
-    quiltView.contentOffset = CGPointMake(0.0, -(statusBarHeight + navBarHeight));
-    quiltView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0,CELL_HEIGHT/2, 0.0);
-    quiltView.scrollIndicatorInsets = quiltView.contentInset;
-    //  }
+    [self fixContentInset];
     
     [quiltView reloadData];
 }
@@ -110,17 +103,20 @@ static NSString * const CELL_ID = @"Cell";
     
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
     {
+        __weak id weakSelfForBlock = self;
         [UIView animateWithDuration:iOS7_CHANGE_ANIMATION_DURATION delay:0.0f options:UIViewAnimationCurveEaseInOut animations:^
-         {
-        
-        float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
-        float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
-        if(quiltView.contentOffset.y <= 0)
-            quiltView.contentOffset = CGPointMake(0.0, -(statusBarHeight + navBarHeight));
-        quiltView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0,CELL_HEIGHT/2, 0.0);
-        quiltView.scrollIndicatorInsets = quiltView.contentInset;
-         } completion: nil];
+         {  [weakSelfForBlock fixContentInset]; } completion: nil];
     }
+}
+
+- (void)fixContentInset
+{
+    float statusBarHeight = ([UIApplication sharedApplication].statusBarFrame.size.height == 0) ? STATUS_BAR_HEIGHT : [UIApplication sharedApplication].statusBarFrame.size.height;
+    float navBarHeight = (self.navigationController.navigationBar.frame.size.height == 0) ? NAV_BAR_HEIGHT : self.navigationController.navigationBar.frame.size.height;
+    if(quiltView.contentOffset.y <= 0)
+        quiltView.contentOffset = CGPointMake(0.0, -(statusBarHeight + navBarHeight));
+    quiltView.contentInset = UIEdgeInsetsMake(statusBarHeight + navBarHeight, 0.0,CELL_HEIGHT/2, 0.0);
+    quiltView.scrollIndicatorInsets = quiltView.contentInset;
 }
 
 - (void)refresh:(UIRefreshControl *)refreshControl
