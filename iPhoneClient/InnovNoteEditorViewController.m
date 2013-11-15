@@ -23,6 +23,7 @@ typedef enum {
 #import "AppModel.h"
 #import "InnovNoteModel.h"
 #import "GlobalDefines.h"
+#import "DeprecatedEnums.h"
 #import "AppServices.h"
 #import "SifterAppDelegate.h"
 #import "Note.h"
@@ -39,7 +40,7 @@ typedef enum {
 #import "DropOnMapViewController.h"
 #import "InnovViewController.h"
 #import "InnovNoteEditorViewController.h"
-#import "CameraViewController.h"
+#import "CameraManager.h"
 
 #import "Logger.h"
 
@@ -72,13 +73,14 @@ static NSString *TagCellIdentifier         = @"TagCell";
 static NSString *DropOnMapCellIdentifier   = @"DropOnMapCell";
 static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
-@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraViewControllerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate>
+@interface InnovNoteEditorViewController ()<AVAudioSessionDelegate, AVAudioRecorderDelegate, AVAudioPlayerDelegate, UITextViewDelegate, UITableViewDataSource, UITableViewDelegate, AsyncMediaTouchableImageViewDelegate, AsyncMediaImageViewDelegate, CameraManagerDelegate, InnovPopOverViewDelegate, InnovPopOverTwitterAccountContentViewDelegate>
 {
     UIBarButtonItem *cancelButton;
     
     Note *note;
     BOOL newNote;
     BOOL cameraHasBeenPresented;
+    CameraManager *cameraManager;
     __weak IBOutlet UITableView *editNoteTableView;
     
     AsyncMediaTouchableImageView *imageView;
@@ -216,7 +218,25 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 {
     [super viewWillAppear: animated];
     
+    //Fixes missing status bar when cancelling picture pick from library
+    if([UIApplication sharedApplication].statusBarHidden)
+    {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleBlackTranslucent];
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
+    }
+    
     [self updateViewFromNote: nil];
+}
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+ //   if(newNote && !cameraHasBeenPresented)
+ //       [self performSelector:@selector(cameraButtonTouchAction) withObject:nil afterDelay:0.3];
+ //   else
+        [editNoteTableView reloadData];
 }
 
 - (void)updateViewFromNote: (NSNotification *) notif
@@ -271,6 +291,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         self.note.latitude    = [AppModel sharedAppModel].playerLocation.coordinate.latitude;
         self.note.longitude   = [AppModel sharedAppModel].playerLocation.coordinate.longitude;
         newNote = YES;
+        self.title = @"New Note";
         
         if(self.note.noteId == 0)
         {
@@ -288,6 +309,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
         
         [[InnovNoteModel sharedNoteModel] addNote:self.note];
         
+   //     [self performSelector:@selector(cameraButtonTouchAction) withObject:nil afterDelay:0.3];
         [self cameraButtonTouchAction];
     }
     
@@ -299,13 +321,6 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     if(notif)
         [editNoteTableView reloadData];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    [editNoteTableView reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -494,16 +509,22 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
 
 -(void)cameraButtonTouchAction
 {
-    CameraViewController *cameraVC = [[CameraViewController alloc] init];
+    cameraManager = [[CameraManager alloc] init];
     
-    if(!newNote) cameraVC.backView = self;
-    else cameraVC.backView = self.delegate;
-    cameraVC.editView = self;
-    cameraVC.noteId = self.note.noteId;
+    cameraManager.deleteUponCancel = newNote;
+    cameraManager.editView = self;
+    cameraManager.noteId = self.note.noteId;
     
     cameraHasBeenPresented = YES;
     
-    [self.navigationController pushViewController:cameraVC animated:NO];
+    UIImagePickerController *picker = [cameraManager createPickerToTakePicture:YES];
+    
+    [self.navigationController presentViewController:picker animated:NO completion:nil];
+}
+
+-(void)dismiss
+{
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void)deleteNoteButtonPressed:(id)sender
@@ -901,23 +922,17 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
     
     return nil;
 }
-#warning Eliminate Redundancy with Default
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.section)
     {
         case NoteContentSection:
             return IMAGE_HEIGHT + 2 * NOTE_CONTENT_CELL_Y_MARGIN;
-        case RecordSection:
-            return 44;
         case ShareSection:
             return 2 * SHARE_BUTTON_HEIGHT;
-        case TagSection:
-            return 44;
         case DropOnMapSection:
             return DROP_ON_MAP_HEIGHT;
-        case DeleteSection:
-            return 44;
         default:
             return 44;
     }
@@ -1005,7 +1020,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             {
                 cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TagCellIdentifier];
                 [cell.tagLabel setNumberOfLines:1];
-                [cell.tagLabel setLineBreakMode:UILineBreakModeTailTruncation];
+                [cell.tagLabel setLineBreakMode:kLabelTruncationTail];
                 [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
                 cell.backgroundView = nil;
             }
@@ -1017,7 +1032,7 @@ static NSString *DeleteCellIdentifier      = @"DeleteCell";
             if(mediaId != 0)
                 [((InnovTagCell *)cell).mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
             else
-                [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
+                [((InnovTagCell *)cell).mediaImageView setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"noteicon" ofType:@"png"]]];
             
             if(([newTagName length] > 0 && [newTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]) || ([newTagName length] == 0 && [originalTagName isEqualToString:((Tag *)[tagList objectAtIndex:indexPath.row]).tagName]))
                 [cell setAccessoryType:UITableViewCellAccessoryCheckmark];

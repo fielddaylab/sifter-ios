@@ -13,6 +13,7 @@
 #import "InnovNoteModel.h"
 #import "Tag.h"
 #import "InnovTagCell.h"
+#import "DeprecatedEnums.h"
 #import "Logger.h"
 
 #define ANIMATION_DURATION 0.15
@@ -157,7 +158,7 @@
     {
         cell = [[InnovTagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         [cell.tagLabel setNumberOfLines:1];
-        [cell.tagLabel setLineBreakMode:UILineBreakModeTailTruncation];
+        [cell.tagLabel setLineBreakMode:kLabelTruncationTail];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
@@ -167,7 +168,7 @@
     if(mediaId != 0)
         [cell.mediaImageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
     else
-        [cell.mediaImageView setImage:[UIImage imageNamed:@"noteicon.png"]];
+        [cell.mediaImageView setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"noteicon" ofType:@"png"]]];
     
     BOOL match = NO;
     for(int i = 0; i < [selectedTags count]; ++i)

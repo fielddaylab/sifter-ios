@@ -35,7 +35,7 @@ BOOL isLoading;
         if(!self.media)
             self.media = [[AppModel sharedAppModel] mediaForMediaId:mediaId];
         
-        [self setImage:[UIImage imageNamed:@"play_button.png"] forState:UIControlStateNormal];
+        [self setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"play_button" ofType:@"png"]]forState:UIControlStateNormal];
         [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
         [self setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
         [self addTarget:self action:@selector(playMovie:) forControlEvents:UIControlEventTouchUpInside];
@@ -77,8 +77,9 @@ BOOL isLoading;
         }
         else if ([media.type isEqualToString:kMediaTypeAudio])
         {
-            self.media.image = UIImageJPEGRepresentation([UIImage imageNamed:@"microphoneBackground.jpg"], 1.0);
-            UIImage *videoThumbSized = [[UIImage imageNamed:@"microphoneBackground.jpg"] scaleToSize:self.frame.size];
+            UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"microphoneBackground" ofType:@"jpg"]];
+            self.media.image = UIImageJPEGRepresentation(image, 1.0);
+            UIImage *videoThumbSized = [image scaleToSize:self.frame.size];
             [self setBackgroundImage:videoThumbSized forState:UIControlStateNormal];
         }
     }

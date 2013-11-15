@@ -17,7 +17,7 @@
     self = [super initWithNibName:nibName bundle:nibBundle];
     if (self) {
         self.title = @"Account";
-        self.tabBarItem.image = [UIImage imageNamed:@"123-id-card"];
+        self.tabBarItem.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"123-id-card" ofType:@"png"]];
     }
     return self;
 }

@@ -87,8 +87,9 @@
     switchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     switchButton.frame = CGRectMake(0, 0, 30, 30);
     [switchButton addTarget:self action:@selector(switchViews) forControlEvents:UIControlEventTouchUpInside];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"40-dialpad"] forState:UIControlStateNormal];
-    [switchButton setBackgroundImage: [UIImage imageNamed:@"40-dialpad"] forState:UIControlStateHighlighted];
+    UIImage *dialImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"40-dialpad" ofType:@"png"]];
+    [switchButton setBackgroundImage: dialImage forState:UIControlStateNormal];
+    [switchButton setBackgroundImage: dialImage forState:UIControlStateHighlighted];
     switchViewsBarButton = [[UIBarButtonItem alloc] initWithCustomView:switchButton];
     self.navigationItem.leftBarButtonItem = switchViewsBarButton;
     
@@ -107,8 +108,9 @@
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     settingsButton.frame = CGRectMake(0, 0, 30, 30);
     [settingsButton addTarget:self action:@selector(settingsPressed) forControlEvents:UIControlEventTouchUpInside];
-    [settingsButton setBackgroundImage: [UIImage imageNamed:@"19-gear"] forState:UIControlStateNormal];
-    [settingsButton setBackgroundImage: [UIImage imageNamed:@"19-gear"] forState:UIControlStateHighlighted];
+    UIImage *settingsImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"19-gear" ofType:@"png"]];
+    [settingsButton setBackgroundImage: settingsImage forState:UIControlStateNormal];
+    [settingsButton setBackgroundImage: settingsImage forState:UIControlStateHighlighted];
     settingsBarButton = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
@@ -347,7 +349,7 @@
 {
     [super touchesBegan:touches withEvent:event];
     
-#warning SHOULD WORK and DID BEFORE Xcode 5
+   //SHOULD WORK and DID BEFORE Xcode 5
    // [self.view endEditing: YES];
     if(searchActive)
         [self searchBarCancelButtonClicked:searchBar];
@@ -400,8 +402,9 @@
     [UIView setAnimationDuration:SWITCH_VIEWS_ANIMATION_DURATION];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationTransition: transition forView:switchViewsBarButton.customView cache:YES];
-    [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateNormal];
-    [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: [UIImage imageNamed:newButtonImageName] forState:UIControlStateHighlighted];
+    UIImage *buttonImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:newButtonImageName ofType:@"png"]];
+    [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: buttonImage forState:UIControlStateNormal];
+    [((UIButton *)switchViewsBarButton.customView) setBackgroundImage: buttonImage forState:UIControlStateHighlighted];
     [UIView commitAnimations];
 }
 

@@ -49,18 +49,14 @@ void uncaughtExceptionHandler(NSException *exception)
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     [AppModel sharedAppModel].serverURL = [NSURL URLWithString:SERVER];
     
-#warning change game and finalize settings
     Game *game = [[Game alloc] init];
     game.gameId                   = GAME_ID;
     game.hasBeenPlayed            = YES;
     game.isLocational             = YES;
-    game.showPlayerLocation       = YES;
     game.allowNoteComments        = YES;
     game.allowNoteLikes           = YES;
     game.rating                   = 5;
     game.pcMediaId                = 0;
-    game.numPlayers               = 10;
-    game.playerCount              = 5;
     game.gdescription             = @"Fun";
     game.name                     = @"Note Share";
     game.authors                  = @"Jacob Hanshaw";
@@ -70,7 +66,6 @@ void uncaughtExceptionHandler(NSException *exception)
     simpleMailShare     = [[SimpleMailShare alloc] init];
     simpleTwitterShare  = [[SimpleTwitterShare alloc] init];
     simpleFacebookShare = [[SimpleFacebookShare alloc] initWithAppName: @"Siftr" appUrl:HOME_URL];
-#warning fix url and appname
     
     NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/movie.m4v"]];
     UISaveVideoAtPathToSavedPhotosAlbum(path, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
@@ -322,7 +317,7 @@ void uncaughtExceptionHandler(NSException *exception)
       nil]
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setBackButtonBackgroundImage:
-     [UIImage imageNamed:@"1pxColorClear"]
+     [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"1pxColorClear" ofType:@"png"]]
                                                       forState:UIControlStateNormal
                                                     barMetrics:UIBarMetricsDefault];
     

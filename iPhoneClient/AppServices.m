@@ -436,7 +436,6 @@ BOOL currentlyUpdatingServerWithMapViewed;
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [[AppModel sharedAppModel].uploadManager deleteContentFromNoteId:[self validIntForKey:@"noteId"      inDictionary:result.userInfo]
                                                               andFileURL:[self validObjectForKey:@"localURL" inDictionary:result.userInfo]];
-#warning above likely is just the cause of an error
     [[AppModel sharedAppModel].uploadManager contentFinishedUploading];
     if([self validObjectForKey:@"noteId" inDictionary:result.userInfo])
         [self fetchNote:[self validIntForKey:@"noteId" inDictionary:result.userInfo]];

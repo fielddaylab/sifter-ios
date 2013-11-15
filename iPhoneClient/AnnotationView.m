@@ -13,6 +13,7 @@
 #import "Annotation.h"
 #import "Media.h"
 #import "NearbyObjectProtocol.h"
+#import "DeprecatedEnums.h"
 
 #define POINTER_LENGTH 10
 #define WIGGLE_DISTANCE 3.0
@@ -50,9 +51,6 @@
     {
         titleFont = [UIFont fontWithName:@"Arial" size:18];
         subtitleFont = [UIFont fontWithName:@"Arial" size:12];
-#warning add in?
-      //  showTitle = (annotation.location.showTitle && annotation.title != nil && ![annotation.title isEqualToString:@""]) ? YES : NO;
-      //  shouldWiggle = annotation.location.wiggle;
         totalWiggleOffsetFromOriginalPosition = 0;
         incrementalWiggleOffset = 0;
         xOnSinWave = 0;
@@ -107,12 +105,8 @@
             Media *iconMedia = [[AppModel sharedAppModel] mediaForMediaId:annotation.iconMediaId];
             [iconView loadImageFromMedia:iconMedia];
         }
-        else if (annotation.kind == NearbyObjectItem)    iconView.image = [UIImage imageNamed:@"item.png"];
-        else if (annotation.kind == NearbyObjectNode)    iconView.image = [UIImage imageNamed:@"page.png"];
-        else if (annotation.kind == NearbyObjectNPC)     iconView.image = [UIImage imageNamed:@"npc.png"];
-        else if (annotation.kind == NearbyObjectPlayer)  iconView.image = [UIImage imageNamed:@"player.png"];
-        else if (annotation.kind == NearbyObjectWebPage) iconView.image = [UIImage imageNamed:@"page.png"];
-        else if (annotation.kind == NearbyObjectNote)    iconView.image = [UIImage imageNamed:@"noteicon.png"]; //annotation.icon
+        else
+            iconView.image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"noteicon" ofType:@"png"]];
         
         self.opaque = NO; 
     }
@@ -145,8 +139,8 @@
         [[UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:0.8] set];
         CGContextFillPath(UIGraphicsGetCurrentContext());
         [[UIColor whiteColor] set];
-        [self.annotation.title drawInRect:titleRect withFont:titleFont lineBreakMode:UILineBreakModeMiddleTruncation alignment:UITextAlignmentCenter];
-        [self.annotation.subtitle drawInRect:subtitleRect withFont:subtitleFont lineBreakMode:UILineBreakModeMiddleTruncation alignment:UITextAlignmentCenter];
+        [self.annotation.title drawInRect:titleRect withFont:titleFont lineBreakMode:kLabelTruncationMiddle alignment:kLabelAlignmentCenter];
+        [self.annotation.subtitle drawInRect:subtitleRect withFont:subtitleFont lineBreakMode:kLabelTruncationMiddle alignment:kLabelAlignmentCenter];
         CGContextAddPath(UIGraphicsGetCurrentContext(), calloutPath);
         CGContextStrokePath(UIGraphicsGetCurrentContext());
     }

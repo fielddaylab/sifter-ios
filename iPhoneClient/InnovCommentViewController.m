@@ -16,9 +16,11 @@
 #import "AppServices.h"
 #import "GlobalDefines.h"
 #import "InnovNoteModel.h"
+#import "DeprecatedEnums.h"
 #import "InnovCommentCell.h"
 #import "DAKeyboardControl.h"
 #import "LoginViewController.h"
+
 
 #define DEFAULT_TEXT                @"Add a comment..."
 #define DEFAULT_FONT                [UIFont fontWithName:@"Helvetica" size:14]
@@ -139,7 +141,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
          when you are done with the view controller by calling:
          [self.view removeKeyboardControl];
          */
-#warning check if necessary now that is loaded and released with view visibile
+        
         if (weakSelf.isViewLoaded && weakSelf.view.window)
         {
             if(weakSelf != nil)
@@ -305,7 +307,7 @@ static NSString * const COMMENT_CELL_ID = @"CommentCell";
         if(!expandCell)
             expandCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EXPAND_CELL_ID];
         expandCell.textLabel.text = EXPAND_TEXT;
-        expandCell.textLabel.textAlignment = UITextAlignmentCenter;
+        expandCell.textLabel.textAlignment = kLabelAlignmentCenter;
         return expandCell;
     }
     else

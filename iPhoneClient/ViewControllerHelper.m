@@ -43,8 +43,11 @@
     else if ([topWindow respondsToSelector:@selector(rootViewController)] && topWindow.rootViewController != nil)
         result = topWindow.rootViewController;
 
-    while (result.modalViewController != nil)
-        result = result.modalViewController;
+   // while (result.modalViewController != nil)
+    //    result = result.modalViewController;
+    
+    while (result.presentedViewController != nil)
+        result = result.presentedViewController;
     return result;
 }
 

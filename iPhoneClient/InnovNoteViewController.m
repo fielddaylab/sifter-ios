@@ -107,8 +107,9 @@
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     playButton.backgroundColor = [UIColor clearColor];
-    [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
-    [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateHighlighted];
+    UIImage *playImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"play" ofType:@"png"]];
+    [playButton setImage:playImage forState:UIControlStateNormal];
+    [playButton setImage:playImage forState:UIControlStateHighlighted];
 	[playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:playButton];
     
@@ -126,9 +127,10 @@
                                                              BUTTON_HEIGHT)];
     
     flagButton.backgroundColor = [UIColor blackColor];
-    [flagButton setImage:[UIImage imageNamed:@"flagWhite.png"] forState:UIControlStateNormal];
-    [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateSelected];
-    [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateHighlighted];
+    [flagButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"flagWhite" ofType:@"png"]] forState:UIControlStateNormal];
+    UIImage *flagRed = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"flagRed" ofType:@"png"]];
+    [flagButton setImage:flagRed forState:UIControlStateSelected];
+    [flagButton setImage:flagRed forState:UIControlStateHighlighted];
 	[flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:flagButton];
     
@@ -140,9 +142,10 @@
     [likeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"likeWhite.png"] forState:UIControlStateNormal];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateSelected];
-    [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateHighlighted];
+    [likeButton setBackgroundImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"likeWhite" ofType:@"png"]]forState:UIControlStateNormal];
+    UIImage *likeRed = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"likeRed" ofType:@"png"]];
+    [likeButton setBackgroundImage:likeRed forState:UIControlStateSelected];
+    [likeButton setBackgroundImage:likeRed forState:UIControlStateHighlighted];
 	[likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:likeButton];
     
@@ -151,7 +154,7 @@
                                                              BUTTON_WIDTH,
                                                              BUTTON_HEIGHT)];
     shareButton.backgroundColor = [UIColor blackColor];
-    [shareButton setImage:[UIImage imageNamed:@"shareWhite.png"] forState:UIControlStateNormal];
+    [shareButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"shareWhite" ofType:@"png"]] forState:UIControlStateNormal];
 	[shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     shareBadge = [CustomBadge customBadgeWithString:@"0"];
@@ -164,7 +167,7 @@
                                                                BUTTON_WIDTH,
                                                                BUTTON_HEIGHT)];
     commentButton.backgroundColor = [UIColor blackColor];
-    [commentButton setImage:[UIImage imageNamed:@"commentWhite.png"] forState:UIControlStateNormal];
+    [commentButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"commentWhite" ofType:@"png"]] forState:UIControlStateNormal];
 	[commentButton addTarget:self action:@selector(commentButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [noteView addSubview:commentButton];
     
@@ -422,13 +425,19 @@
             playButton.hidden = YES;
 			break;
 		case kInnovAudioPlayerAudio:
-            [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
-            [playButton setImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateHighlighted];
-			break;
+        {
+            UIImage *playImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"play" ofType:@"png"]];
+            [playButton setImage:playImage forState:UIControlStateNormal];
+            [playButton setImage:playImage forState:UIControlStateHighlighted];
+            break;
+        }
 		case kInnovAudioPlayerPlaying:
-            [playButton setImage:[UIImage imageNamed:@"stop_button.png"] forState:UIControlStateNormal];
-            [playButton setImage:[UIImage imageNamed:@"stop_button.png"] forState:UIControlStateHighlighted];
-			break;
+        {
+            UIImage *stopImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"stop_button" ofType:@"png"]];
+            [playButton setImage:stopImage forState:UIControlStateNormal];
+            [playButton setImage:stopImage forState:UIControlStateHighlighted];
+            break;
+        }
 		default:
 			break;
 	}

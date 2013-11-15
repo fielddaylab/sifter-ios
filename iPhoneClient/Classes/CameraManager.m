@@ -6,7 +6,7 @@
 //  Copyright 2009 University of Wisconsin - Madison. All rights reserved.
 //
 
-#import "CameraViewController.h"
+#import "CameraManager.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <QuartzCore/QuartzCore.h>
 #import <ImageIO/ImageIO.h>
@@ -28,7 +28,7 @@
 #define ANIMATE_DURATION     0.5
 #define ANIMATE_DELAY        1.0
 
-@interface CameraViewController() <CameraOverlayViewDelegate>
+@interface CameraManager() <UINavigationControllerDelegate, UIImagePickerControllerDelegate, CameraOverlayViewDelegate>
 {
     UIImagePickerController *picker;
     CameraOverlayView *overlay;
@@ -38,75 +38,47 @@
 
 @end
 
-@implementation CameraViewController
+@implementation CameraManager
 
-@synthesize noteId, backView, editView;
+@synthesize noteId, deleteUponCancel, editView;
 
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-        self.title = NSLocalizedString(@"CameraTitleKey",@"");
-        self.tabBarItem.image = [UIImage imageNamed:@"camera.png"];
-        bringUpCamera = YES;
-    }
-    return self;
+- (id)init
+{
+    return [super init];
 }
 
-- (void)viewDidLoad
+- (UIImagePickerController *)createPickerToTakePicture:(BOOL) takePicture
 {
-    [super viewDidLoad];
-    
     picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
     picker.allowsEditing = YES;
-}
 
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    //Fixes missing status bar when cancelling picture pick from library
-    if([UIApplication sharedApplication].statusBarHidden)
+    if(takePicture && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     {
-        [self.navigationController setNavigationBarHidden:YES animated:NO];
-        [[UIApplication sharedApplication] setStatusBarHidden:NO];
-        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleBlackTranslucent];
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
-    }
-    
-    if(bringUpCamera){
-        bringUpCamera = NO;
+        CGRect frame = CGRectMake(0, 375, picker.view.frame.size.width, BUTTON_HEIGHT);
+        if (picker.view.bounds.size.height > 480.0f)
+            frame.origin.y = 422;
         
-        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-            [self showCamera];
-        else
-            [self showLibraryButtonPressed:self];
+        overlay = [[CameraOverlayView alloc] initWithFrame:frame andDelegate:self];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.cameraOverlayView = overlay;
+        
+        overlay.alpha = 0;
+        [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
+         {
+             overlay.alpha = 1;
+         } completion:nil];
+        
     }
-}
-
-- (void)showCamera
-{
-    CGRect frame = CGRectMake(0, 375, picker.view.frame.size.width, BUTTON_HEIGHT);
-    if (picker.view.bounds.size.height > 480.0f)
-        frame.origin.y = 422;
+    else
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
-    overlay = [[CameraOverlayView alloc] initWithFrame:frame andDelegate:self];
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.cameraOverlayView = overlay;
-    
-    overlay.alpha = 0;
-    [UIView animateWithDuration:ANIMATE_DURATION delay:ANIMATE_DELAY options:UIViewAnimationCurveEaseIn animations:^
-     {
-         overlay.alpha = 1;
-     } completion:nil];
-    
-    [self presentViewController:picker animated:NO completion:nil];
+    return picker;
 }
 
 - (void)showLibraryButtonPressed:(id)sender
 {
-	picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    if(sender != overlay)
-        [self presentViewController:picker animated:NO completion:nil];
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
 }
 
 #pragma mark UIImagePickerControllerDelegate Protocol Methods
@@ -138,7 +110,7 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, (unsigned long)NULL), ^(void) {
         UIImage *image = [[info objectForKey:UIImagePickerControllerEditedImage] fixOrientation];
-        NSData* mediaData = UIImageJPEGRepresentation(image, 0.02);
+        NSData* mediaData = UIImageJPEGRepresentation(image, 0.2);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.editView updateImageView: mediaData];
@@ -170,8 +142,6 @@
              }];
         }
     });
-    
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -183,12 +153,12 @@
 {
     [aPicker dismissViewControllerAnimated:NO completion:nil];
     
-    if([backView isKindOfClass:[InnovViewController class]])
+    if(deleteUponCancel)
     {
         [[AppServices sharedAppServices] deleteNoteWithNoteId:self.noteId];
         [[InnovNoteModel sharedNoteModel] removeNote:[[InnovNoteModel sharedNoteModel] noteForNoteId:self.noteId]];
+        [editView dismiss];
     }
-    [self.navigationController popToViewController:self.backView animated:YES];
 }
 
 - (NSMutableData*)dataWithEXIFUsingData:(NSData*)originalJPEGData
@@ -262,17 +232,5 @@
  return result;
  }
  */
-
-#pragma mark Memory Management
-- (void)didReceiveMemoryWarning
-{
-    NSLog(@"CAMERA DID RECEIVE MEMORY WARNING!");
-    [super didReceiveMemoryWarning];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-}
 
 @end

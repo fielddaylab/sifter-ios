@@ -219,7 +219,7 @@ static NSString * const CELL_ID = @"Cell";
         if(mediaId != 0)
             [cell.categoryIconView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:mediaId]];
         else
-            [cell.categoryIconView setImage:[UIImage imageNamed:@"noteicon.png"]];
+            [cell.categoryIconView setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"noteicon" ofType:@"png"]]];
     }
     
     return cell;

@@ -92,8 +92,9 @@
             }
             else if ([media.type isEqualToString:kMediaTypeAudio])
             {
-                self.media.image = UIImageJPEGRepresentation([UIImage imageNamed:@"microphoneBackground.jpg"], 1.0);
-                [self updateViewWithNewImage:[UIImage imageNamed:@"microphoneBackground.jpg"]];
+                UIImage *image = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"microphoneBackground" ofType:@"jpg"]];
+                self.media.image = UIImageJPEGRepresentation(image, 1.0);
+                [self updateViewWithNewImage:image];
                 self.loaded = YES;
             }
         }

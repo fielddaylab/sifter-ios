@@ -44,8 +44,6 @@
 		2D2669821623487000342A7E /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D26697F1623487000342A7E /* UIImage+Alpha.m */; };
 		2D2669831623487000342A7E /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D2669811623487000342A7E /* UIImage+RoundedCorner.m */; };
 		2D26698616234CE400342A7E /* UIImage+fixOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D26698516234CE400342A7E /* UIImage+fixOrientation.m */; };
-		2D73EA23160CD07600A1F570 /* PlayerSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D73EA21160CD07600A1F570 /* PlayerSettingsViewController.m */; };
-		2D73EA24160CD07600A1F570 /* PlayerSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2D73EA22160CD07600A1F570 /* PlayerSettingsViewController.xib */; };
 		2D73EA27160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D73EA26160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m */; };
 		3A29205D152CB83B00B91231 /* NSMutableDictionary+ImageMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A29205C152CB83B00B91231 /* NSMutableDictionary+ImageMetadata.m */; };
 		3AB24ACB152B8CE500B49876 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB24ACA152B8CE500B49876 /* ImageIO.framework */; };
@@ -107,8 +105,7 @@
 		A79202640F8E717C0049F990 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A79202630F8E717C0049F990 /* MediaPlayer.framework */; };
 		A7955B930F73E095005148E4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7955B920F73E095005148E4 /* AudioToolbox.framework */; };
 		A7E32E9E0FD1CEFD0058EDB7 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E32E9D0FD1CEFD0058EDB7 /* Player.m */; };
-		A7E39EAD0F5F60D000826198 /* CameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E39EAC0F5F60D000826198 /* CameraViewController.m */; };
-		A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A7E39EC90F5F655E00826198 /* CameraViewController.xib */; };
+		A7E39EAD0F5F60D000826198 /* CameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A7E39EAC0F5F60D000826198 /* CameraManager.m */; };
 		A7E4C88C0F54C4D000C6D9E8 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E4C88B0F54C4D000C6D9E8 /* QuartzCore.framework */; };
 		A7E4C8990F54C5E300C6D9E8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7E4C8980F54C5E300C6D9E8 /* CoreLocation.framework */; };
 		AA1E2D4E1652CC6000219535 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E2D4D1652CC6000219535 /* libicucore.dylib */; };
@@ -305,9 +302,6 @@
 		2D26698416234CE400342A7E /* UIImage+fixOrientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+fixOrientation.h"; sourceTree = "<group>"; };
 		2D26698516234CE400342A7E /* UIImage+fixOrientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+fixOrientation.m"; sourceTree = "<group>"; };
 		2D2C5D4715DED4770052C056 /* UploadContent1.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UploadContent1.7.xcdatamodel; sourceTree = "<group>"; };
-		2D73EA20160CD07600A1F570 /* PlayerSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSettingsViewController.h; sourceTree = "<group>"; };
-		2D73EA21160CD07600A1F570 /* PlayerSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerSettingsViewController.m; sourceTree = "<group>"; };
-		2D73EA22160CD07600A1F570 /* PlayerSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerSettingsViewController.xib; sourceTree = "<group>"; };
 		2D73EA25160CE0AA00A1F570 /* AsyncMediaTouchableImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncMediaTouchableImageView.h; sourceTree = "<group>"; };
 		2D73EA26160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncMediaTouchableImageView.m; sourceTree = "<group>"; };
 		3A29205B152CB83B00B91231 /* NSMutableDictionary+ImageMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableDictionary+ImageMetadata.h"; path = "thirdParty/NSMutableDictionary+ImageMetadata.h"; sourceTree = "<group>"; };
@@ -380,6 +374,7 @@
 		89E6E10E17CFEEA100038658 /* CustomRefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshControl.m; sourceTree = "<group>"; };
 		89F99AEF17866A7900DEB46F /* ProgressButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressButton.h; sourceTree = "<group>"; };
 		89F99AF017866A7900DEB46F /* ProgressButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressButton.m; sourceTree = "<group>"; };
+		89FD0D8D1836C2E700F5680A /* DeprecatedEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeprecatedEnums.h; sourceTree = "<group>"; };
 		89FFAF30178B3BF800A0F589 /* WildcardGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WildcardGestureRecognizer.h; sourceTree = "<group>"; };
 		89FFAF31178B3BF800A0F589 /* WildcardGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WildcardGestureRecognizer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -397,9 +392,8 @@
 		A7A172720F4F26280017E865 /* Siftr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Siftr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7E32E9C0FD1CEFD0058EDB7 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		A7E32E9D0FD1CEFD0058EDB7 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
-		A7E39EAB0F5F60D000826198 /* CameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = CameraViewController.h; path = Classes/CameraViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		A7E39EAC0F5F60D000826198 /* CameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = CameraViewController.m; path = Classes/CameraViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A7E39EC90F5F655E00826198 /* CameraViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CameraViewController.xib; sourceTree = "<group>"; };
+		A7E39EAB0F5F60D000826198 /* CameraManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = CameraManager.h; path = Classes/CameraManager.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		A7E39EAC0F5F60D000826198 /* CameraManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = CameraManager.m; path = Classes/CameraManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A7E4C88B0F54C4D000C6D9E8 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A7E4C8980F54C5E300C6D9E8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		AA1771A11652DDAB00A3836D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -725,9 +719,6 @@
 		2D73EA1F160CCFD900A1F570 /* Public Name and Image */ = {
 			isa = PBXGroup;
 			children = (
-				2D73EA20160CD07600A1F570 /* PlayerSettingsViewController.h */,
-				2D73EA21160CD07600A1F570 /* PlayerSettingsViewController.m */,
-				2D73EA22160CD07600A1F570 /* PlayerSettingsViewController.xib */,
 				2D73EA25160CE0AA00A1F570 /* AsyncMediaTouchableImageView.h */,
 				2D73EA26160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m */,
 			);
@@ -882,9 +873,8 @@
 		A7986D690F8FEC6300A5469F /* Camera */ = {
 			isa = PBXGroup;
 			children = (
-				A7E39EAB0F5F60D000826198 /* CameraViewController.h */,
-				A7E39EAC0F5F60D000826198 /* CameraViewController.m */,
-				A7E39EC90F5F655E00826198 /* CameraViewController.xib */,
+				A7E39EAB0F5F60D000826198 /* CameraManager.h */,
+				A7E39EAC0F5F60D000826198 /* CameraManager.m */,
 				89E1608817CBE36F0014AF3C /* CameraOverlayView.h */,
 				89E1608917CBE36F0014AF3C /* CameraOverlayView.m */,
 			);
@@ -1185,6 +1175,7 @@
 		DB0743971754FE680068A1DB /* Header Files */ = {
 			isa = PBXGroup;
 			children = (
+				89FD0D8D1836C2E700F5680A /* DeprecatedEnums.h */,
 				DBEDC70D174AC6D4004C8966 /* InnovAudioEnums.h */,
 				DBFCAE39173460CA0060715F /* InnovDisplayProtocol.h */,
 				DB1A8AF5174D943B0052DDC6 /* InnovPresentNoteDelegate.h */,
@@ -1360,7 +1351,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = QYWVT766UU;
@@ -1402,7 +1393,6 @@
 				ABF1392C17D391A0000464BF /* sifter57.png in Resources */,
 				ABEF1FCE17E3C2F600F7B26D /* 14-tag-highlighted.png in Resources */,
 				2B3D12EE0F4382A00067FD3A /* Account.xib in Resources */,
-				A7E39ECA0F5F655E00826198 /* CameraViewController.xib in Resources */,
 				A7149F9D0FB89DC8008BAB5D /* Settings.bundle in Resources */,
 				A722C8C00FBCD8D0009432DB /* SelfRegistration.xib in Resources */,
 				AB4151CB11595A2600DBA15F /* cameraBackground.jpg in Resources */,
@@ -1439,7 +1429,6 @@
 				11D7F9331537510D0046410F /* LoadingViewController.xib in Resources */,
 				4A7F910015B09FFC00988446 /* pingtone.wav in Resources */,
 				AB5EED9B17D1497100BF9A32 /* 14-tag.png in Resources */,
-				2D73EA24160CD07600A1F570 /* PlayerSettingsViewController.xib in Resources */,
 				DD235FCD1700DCCB00795077 /* InnovViewController.xib in Resources */,
 				DDC6826B170F42C1006AEA8D /* InnovNoteEditorViewController.xib in Resources */,
 				DB1A8AE4174D4DC80052DDC6 /* InnovSettingsView.xib in Resources */,
@@ -1565,7 +1554,7 @@
 				2B3D17070F49C99B0067FD3A /* Game.m in Sources */,
 				2B3D18D60F4B25720067FD3A /* AppModel.m in Sources */,
 				A763B5250F4E283100FDCC55 /* MyCLController.m in Sources */,
-				A7E39EAD0F5F60D000826198 /* CameraViewController.m in Sources */,
+				A7E39EAD0F5F60D000826198 /* CameraManager.m in Sources */,
 				A722C8C60FBCD92E009432DB /* SelfRegistrationViewController.m in Sources */,
 				A7E32E9E0FD1CEFD0058EDB7 /* Player.m in Sources */,
 				AB549EDF1047007B00A901EF /* NSObject+SBJSON.m in Sources */,
@@ -1602,7 +1591,6 @@
 				11D0ABE21524E6FA00FE4544 /* MediaCache.m in Sources */,
 				3A29205D152CB83B00B91231 /* NSMutableDictionary+ImageMetadata.m in Sources */,
 				11D7F9321537510D0046410F /* LoadingViewController.m in Sources */,
-				2D73EA23160CD07600A1F570 /* PlayerSettingsViewController.m in Sources */,
 				2D73EA27160CE0AA00A1F570 /* AsyncMediaTouchableImageView.m in Sources */,
 				2D26697D1623483200342A7E /* UIImage+Resize.m in Sources */,
 				2D2669821623487000342A7E /* UIImage+Alpha.m in Sources */,
@@ -1680,10 +1668,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv7,
-					armv6,
-				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1791,7 +1775,6 @@
 		AB1CA8BB13C7D2B700131F81 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: UW Division of Information Technology";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: UW Division of Information Technology";
 				COPY_PHASE_STRIP = NO;
@@ -1801,7 +1784,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PROVISIONING_PROFILE = "070A9037-D69F-46F7-9769-74B7B2F68318";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "070A9037-D69F-46F7-9769-74B7B2F68318";
@@ -1813,10 +1796,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv7,
-					armv6,
-				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1864,7 +1843,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -1873,8 +1851,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;

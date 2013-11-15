@@ -44,15 +44,17 @@
         
         deleteButton  = [[UIButton alloc] initWithFrame:CGRectMake(usernameLabel.frame.size.width, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [deleteButton addTarget:delegate action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [deleteButton setImage:[UIImage imageNamed:@"deleteComment.png"] forState:UIControlStateNormal];
-        [deleteButton setImage:[UIImage imageNamed:@"deleteComment.png"] forState:UIControlStateHighlighted];
+        UIImage *deleteImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"deleteComment" ofType:@"png"]];
+        [deleteButton setImage:deleteImage forState:UIControlStateNormal];
+        [deleteButton setImage:deleteImage forState:UIControlStateHighlighted];
         [self addSubview:deleteButton];
         
         flagButton  = [[UIButton alloc] initWithFrame:CGRectMake(deleteButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
         [flagButton addTarget:self action:@selector(flagButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [flagButton setImage:[UIImage imageNamed:@"flagBlack.png"] forState:UIControlStateNormal];
-        [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateSelected];
-        [flagButton setImage:[UIImage imageNamed:@"flagRed.png"] forState:UIControlStateHighlighted];
+        [flagButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"flagBlack" ofType:@"png"]] forState:UIControlStateNormal];
+        UIImage *redFlagImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"flagRed" ofType:@"png"]];
+        [flagButton setImage:redFlagImage forState:UIControlStateSelected];
+        [flagButton setImage:redFlagImage forState:UIControlStateHighlighted];
         [self addSubview:flagButton];
         
         likeButton  = [[UIButton alloc] initWithFrame:CGRectMake(flagButton.frame.origin.x + BUTTON_WIDTH, 0, BUTTON_WIDTH, BUTTON_HEIGHT)];
@@ -60,9 +62,10 @@
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         [likeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"likeBlack.png"] forState:UIControlStateNormal];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateSelected];
-        [likeButton setBackgroundImage:[UIImage imageNamed:@"likeRed.png"] forState:UIControlStateHighlighted];
+        [likeButton setBackgroundImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"likeBlack" ofType:@"png"]] forState:UIControlStateNormal];
+        UIImage *redLikeImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"likeRed" ofType:@"png"]];
+        [likeButton setBackgroundImage:redLikeImage forState:UIControlStateSelected];
+        [likeButton setBackgroundImage:redLikeImage forState:UIControlStateHighlighted];
         [self addSubview:likeButton];
         
         textView = [[UITextView alloc] initWithFrame:CGRectMake(0, BUTTON_HEIGHT, self.frame.size.width, self.frame.size.height-BUTTON_HEIGHT)];

@@ -65,7 +65,7 @@
     {
         NSLog(@"NSNotification: GameFinishedLoading");
         [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:@"GameFinishedLoading" object:nil userInfo:nil]];
-        [self dismissModalViewControllerAnimated:NO];//<- depricated
+        [self dismissViewControllerAnimated:NO completion:nil];
         receivedData = 0;
     }
     else if(actual > 1)

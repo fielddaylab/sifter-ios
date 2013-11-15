@@ -8,6 +8,7 @@
 //
 
 #import "SVProgressHUD.h"
+#import "DeprecatedEnums.h"
 #import <QuartzCore/QuartzCore.h>
 
 CGFloat SVProgressHUDRingRadius = 14;
@@ -605,11 +606,7 @@ CGFloat SVProgressHUDRingThickness = 6;
         stringLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 		stringLabel.backgroundColor = [UIColor clearColor];
 		stringLabel.adjustsFontSizeToFitWidth = YES;
-		#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-			stringLabel.textAlignment = UITextAlignmentCenter;
-		#else
-			stringLabel.textAlignment = NSTextAlignmentCenter;
-		#endif
+        stringLabel.textAlignment = kLabelAlignmentCenter;
 		stringLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
 
         // UIAppearance is used when iOS >= 5.0

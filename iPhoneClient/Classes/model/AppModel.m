@@ -65,6 +65,7 @@
 		gameMediaList = [[NSMutableDictionary alloc] initWithCapacity:10];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearGameLists) name:@"NewGameSelected" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addImageToCache:) name:@"ImageReady" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearCache:) name:@"UIApplicationDidReceiveMemoryWarningNotification" object:nil];
 	}
     return self;
 }
@@ -177,6 +178,11 @@
     
     if([key length] > 0 && image)
         [cachedImages setObject:image forKey:key];
+}
+
+-(void) clearCache:(NSNotification *) notif
+{
+    [cachedImages removeAllObjects];
 }
 
 -(UIImage *) cachedImageForMediaId:(int) mId

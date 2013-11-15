@@ -47,8 +47,9 @@
         exitButton.center = CGPointMake(self.frame.origin.x + contentView.frame.origin.x + contentView.frame.size.width,
                                         self.frame.origin.y + contentView.frame.origin.y);
         exitButton.backgroundColor = [UIColor clearColor];
-        [exitButton setImage:[UIImage imageNamed:@"298-circlex.png"] forState:UIControlStateNormal];
-        [exitButton setImage:[UIImage imageNamed:@"298-circlex.png"] forState:UIControlStateHighlighted];
+        UIImage *circleXImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"298-circlex" ofType:@"png"]];
+        [exitButton setImage:circleXImage forState:UIControlStateNormal];
+        [exitButton setImage:circleXImage forState:UIControlStateHighlighted];
         [exitButton addTarget:self action:@selector(exitButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview: exitButton]; */
     }
