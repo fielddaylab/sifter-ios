@@ -63,7 +63,11 @@
 
         if(note.imageMediaId)
         {
-            [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
+            UIImage *cachedImage = [[AppModel sharedAppModel] cachedImageForMediaId:note.imageMediaId];
+            if(cachedImage)
+                [imageView setImage:cachedImage];
+            else
+                [imageView loadImageFromMedia:[[AppModel sharedAppModel] mediaForMediaId:note.imageMediaId]];
         }
         else
         {
@@ -120,6 +124,7 @@
         if ([animationID isEqualToString:@"animationShrinkNote"] && hiding)
         {
             self.hidden = YES;
+            [imageView setImage:nil];
             [self removeFromSuperview];
         }
     }
